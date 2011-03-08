@@ -1,0 +1,4 @@
+<project name="ext" default="compile">
+	<import file="build.impl.xml" />
+	<target name="clean-lib" />
+</project>

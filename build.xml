@@ -1,0 +1,30 @@
+<project name="og-pirate" default="compile">
+
+	<property file="${basedir}/build.properties" />
+	<import file="${og.language.dir}/build-prefix.xml" />
+
+	<path id="java.build.path">
+		<pathelement path="${basedir}/Ext" />
+	</path>
+	<path id="javatest.build.path">
+		<path refid="java.build.path" />
+	</path>
+	<path id="cc.build.path">
+		<pathelement path="${basedir}/Plugin" />
+	</path>
+	<path id="cctest.build.path">
+		<pathelement path="${basedir}/PluginTest" />
+	</path>
+
+	<import file="${og.language.dir}/build-suffix.xml" />
+
+	<target name="unpack-resolve" depends="build-suffix.unpack-resolve">
+		<unpack-include org="com.opengamma" name="og-language" />
+		<unzip dest="${lib.dir}" overwrite="false">
+			<fileset dir="${lib.dir}/lib/com.opengamma/og-language">
+				<include name="*.zip" />
+			</fileset>
+		</unzip>
+	</target>
+
+</project>

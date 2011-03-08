@@ -1,0 +1,12 @@
+<project name="ext-impl">
+
+	<property file="${basedir}/build.properties"/>
+	<import file="${common.dir}/common.xml"/>
+
+	<target name="deploy" depends="jar" />
+
+	<target name="dist">
+		<copy file="${build.dir}/ext.jar" tofile="${dist.dir}/og-pirate-ext.jar" />
+	</target>
+
+</project>

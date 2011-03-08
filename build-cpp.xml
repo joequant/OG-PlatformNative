@@ -1,0 +1,5 @@
+<project name="build-cpp-proxy">
+	<property file="${basedir}/build.properties" />
+	<property file="${solution.dir}/build.properties" />
+	<import file="${og.language.dir}/build-cpp.xml" />
+</project>
