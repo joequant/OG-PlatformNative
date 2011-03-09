@@ -1,5 +1,18 @@
 <project name="build-cpp-proxy">
+
 	<property file="${basedir}/build.properties" />
 	<property file="${solution.dir}/build.properties" />
 	<import file="${og.language.dir}/build-cpp.xml" />
+
+	<target name="dist">
+		<mkdir dir="${package.dir}/${ant.project.name}" />
+		<copy todir="${package.dir}/${ant.project.name}">
+			<fileset dir="${basedir}">
+				<include name="*.c" />
+				<include name="*.cpp" />
+				<include name="*.h" />
+			</fileset>
+		</copy>
+	</target>
+
 </project>

@@ -1,3 +1,3 @@
-<project name="Plugin">
+<project name="Client">
 	<import file="${basedir}/../build-cpp.xml" />
 </project>

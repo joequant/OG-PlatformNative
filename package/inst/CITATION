@@ -1,0 +1,12 @@
+citHeader ("To cite package 'OpenGamma' in publications use:")
+
+year <- sub (".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- paste ("R package version", meta$Version)
+
+citEntry (
+	entry = "Manual",
+	title = "OpenGamma Risk Analytics for R",
+	author = personList(person("OpenGamma Ltd")),
+	year = year,
+	note = vers,
+	textVersion = paste ("OpenGamma Ltd (", year, "). OpenGamma Risk Analytics for R. ", vers, ".", sep = ""))

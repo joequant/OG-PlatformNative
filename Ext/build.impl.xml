@@ -9,4 +9,6 @@
 		<copy file="${build.dir}/ext.jar" tofile="${dist.dir}/og-pirate-ext.jar" />
 	</target>
 
+	<target name="proto-c" />
+
 </project>

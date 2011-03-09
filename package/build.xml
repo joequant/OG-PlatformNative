@@ -1,0 +1,37 @@
+<project name="package">
+
+	<property file="${basedir}/build.properties" />
+	<property file="${solution.dir}/build.properties" />
+
+	<target name="description">
+		<tstamp>
+			<format property="module.date" pattern="yyyy-MM-dd" />
+		</tstamp>
+		<echo file="${basedir}/DESCRIPTION">Package: OpenGamma
+Version: ${module.version}
+Date: ${module.date}
+Title: OpenGamma for R
+Author: OpenGamma Ltd
+Maintainer: OpenGamma Ltd &lt;info@opengamma.com&gt;
+Depends: R (>= 2.11.1)
+Description: Connects to the OpenGamma platform, giving access to risk analytics from running views.
+License: file LICENSE
+URL: http://www.opengamma.com/R, http://www.github.com/OpenGamma/OG-Pirate
+BugReports: http://jira.opengamma.com/browse/PIR</echo>
+	</target>
+
+	<target name="compile" depends="description">
+	</target>
+
+	<target name="dist">
+		<mkdir dir="${dist.dir}/package" />
+		<mkdir dir="${dist.dir}/package/opengamma" />
+		<copy todir="${dist.dir}/package/opengamma">
+			<fileset dir="${basedir}">
+				<exclude name="build.properties" />
+				<exclude name="build.xml" />
+			</fileset>
+		</copy>
+	</target>
+
+</project>

@@ -4,6 +4,12 @@
       <conf name="core"/>
       <conf name="opengamma" extends="core"/>
     </configurations>
+    <publications>
+      <!-- JAR files -->
+      <artifact name="og-pirate-ext" type="jar" ext="jar" />
+      <!-- Binary files -->
+      <artifact name="og-pirate-lib" type="lib" ext="zip" />
+    </publications>
     <dependencies>
       <dependency name="og-language" rev="latest.integration" conf="opengamma->*" />
     </dependencies>

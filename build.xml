@@ -10,10 +10,10 @@
 		<path refid="java.build.path" />
 	</path>
 	<path id="cc.build.path">
-		<pathelement path="${basedir}/Plugin" />
+		<pathelement path="${basedir}/Client" />
 	</path>
 	<path id="cctest.build.path">
-		<pathelement path="${basedir}/PluginTest" />
+		<pathelement path="${basedir}/ClientTest" />
 	</path>
 
 	<import file="${og.language.dir}/build-suffix.xml" />
@@ -25,6 +25,34 @@
 				<include name="*.zip" />
 			</fileset>
 		</unzip>
+	</target>
+
+	<target name="compile" depends="build-suffix.compile">
+		<subant target="compile" buildpath="${basedir}/package" />
+	</target>
+
+	<target name="dist" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<subant target="dist" buildpath="${basedir}/package" />
+		<subant target="dist" buildpathref="java.build.path" antfile="build.parent-invoked.xml" />
+		<subant target="dist" buildpathref="cc.build.path" />
+		<zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${dist.dir}/package" />
+	</target>
+
+	<target name="test-dist" depends="dist" description="--> Tests the R package distribution using 'R CMD check'">
+		<exec executable="R" failonerror="true">
+			<arg value="CMD" />
+			<arg value="check" />
+			<arg value="${dist.dir}/package/opengamma" />
+		</exec>
+	</target>
+
+	<target name="install" depends="dist" description="--> Installs the R package using 'R CMD INSTALL'">
+		<exec executable="R" failonerror="true">
+			<arg value="CMD" />
+			<arg value="INSTALL" />
+			<arg value="${dist.dir}/package/opengamma" />
+		</exec>
 	</target>
 
 </project>
