@@ -10,6 +10,5 @@
 #}
 
 .Last.lib <- function (path) {
-  print ("TODO: shutdown the native code")
-  print (paste ("path:", path))
+  library.dynam.unload ("OpenGamma", path)
 }

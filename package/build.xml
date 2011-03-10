@@ -25,8 +25,8 @@ LazyLoad: true</echo>
 	</target>
 
 	<target name="dist" depends="compile">
-		<mkdir dir="${package.dir}/opengamma" />
-		<copy todir="${package.dir}/opengamma">
+		<mkdir dir="${package.dir}/OpenGamma" />
+		<copy todir="${package.dir}/OpenGamma">
 			<fileset dir="${basedir}">
 				<exclude name=".gitignore" />
 				<exclude name="build.properties" />

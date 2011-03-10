@@ -23,4 +23,8 @@
 #include <Connector/Connector.h>
 #include <Util/Logging.h>
 
+#ifndef Client
+#define Client(path) #path
+#endif /* ifndef Client */
+
 #endif /* ifndef __inc_og_pirate_client_stdafx_h */

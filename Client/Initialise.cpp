@@ -5,10 +5,10 @@
  */
 
 #include "stdafx.h"
-#include "Settings.h"
 #ifndef _WIN32
-#include "DllVersionInfo.h"
+#include Client(DllVersionInfo.h)
 #endif /* ifndef _WIN32 */
+#include Client(Settings.h)
 #include <Util/DllVersion.h>
 
 LOGGING (com.opengamma.pirate.client.Initialise);
@@ -43,7 +43,6 @@ static bool WaitForConnectorInitialisation () {
 }
 
 bool Initialise () {
-	LOGINFO (TEXT ("Initialising library"));
 	if (g_poConnector) {
 		LOGWARN (TEXT ("Library already initialised"));
 		SetLastError (EALREADY);
@@ -61,6 +60,7 @@ bool Initialise () {
 		SetLastError (ec);
 		return false;
 	}
+	LOGINFO (TEXT ("Initialising library"));
 	if (!InitialiseConnector ()) {
 		int ec = GetLastError ();
 		LOGWARN (TEXT ("Couldn't initialise connector, error ") << ec);
@@ -77,6 +77,7 @@ bool Initialise () {
 		return false;
 	}
 	// TODO: any other initialisation that requires the connection
+	LOGINFO (TEXT ("Library initialised"));
 	return true;
 }
 

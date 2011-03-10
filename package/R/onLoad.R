@@ -5,7 +5,5 @@
  ##
 
 .onLoad <- function (libname, pkgname) {
-  print ("TODO: fire up the native code and connect to the OG-Language service")
-  print (paste ("libname:", libname))
-  print (paste ("pkgname:", pkgname))
+  library.dynam ("OpenGamma", pkgname)
 }

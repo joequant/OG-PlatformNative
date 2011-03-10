@@ -7,19 +7,20 @@
 #ifndef __inc_og_pirate_client_settings_h
 #define __inc_og_pirate_client_settings_h
 
-#define SETTINGS_LOG_CONFIGURATION	TEXT ("clientLogConfiguration")
 #define SETTINGS_STARTUP_TIMEOUT	TEXT ("startupTimeout")
 
+#include <Connector/Settings.h>
+#undef CSettings
 #define CSettings CClientSettings
 
 class CSettings : public CAbstractSettings {
 private:
-	const TCHAR *GetLogConfiguration (const TCHAR *pszDefault) { return Get (SETTINGS_LOG_CONFIGURATION, pszDefault); }
+	CConnectorSettings m_oConnectorSettings;
 	long GetStartupTimeout (long lDefault) { return Get (SETTINGS_STARTUP_TIMEOUT, lDefault); }
 public:
 	CSettings ();
 	~CSettings ();
-	const TCHAR *GetLogConfiguration ();
+	const TCHAR *GetLogConfiguration () { return m_oConnectorSettings.GetLogConfiguration (); }
 	long GetStartupTimeout ();
 };
 

@@ -14,12 +14,13 @@
 	</target>
 
 	<target name="dist">
-		<copy todir="${package.dir}/opengamma/src/${ant.project.name}">
+		<copy todir="${package.dir}/OpenGamma/src">
 			<fileset dir="${basedir}">
 				<include name="*.c" />
 				<include name="*.cpp" />
 				<include name="*.h" />
 			</fileset>
+			<mapper type="glob" from="*" to="${ant.project.name}_*" />
 		</copy>
 	</target>
 

@@ -5,21 +5,27 @@
  */
 
 #include "stdafx.h"
-#include "Client/Initialise.h"
+#include Client(Initialise.h)
 #include <R.h>
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 
 LOGGING (com.opengamma.pirate.package.DllMain);
 
-void LibExport R_init_mylib (DllInfo *pInfo) {
-	LOGINFO (TEXT ("Initialising Dll"));
+extern "C" {
+
+void LibExport R_init_OpenGamma (DllInfo *pInfo) {
+	LOGDEBUG (TEXT ("Initialising Dll"));
 	if (!Initialise ()) {
 		LOGERROR (TEXT ("Couldn't initialise DLL, error ") << GetLastError ());
 	}
 }
 
-void LibExport R_unload_mylib (DllInfo *pInfo) {
+void LibExport R_unload_OpenGamma (DllInfo *pInfo) {
 	LOGINFO (TEXT ("Unloading DLL"));
-	// TODO - any cleanup actions ?
+	if (!Shutdown ()) {
+		LOGERROR (TEXT ("Couldn't shutdown DLL, error ") << GetLastError ());
+	}
+}
+
 }

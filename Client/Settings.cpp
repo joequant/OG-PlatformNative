@@ -5,21 +5,16 @@
  */
 
 #include "stdafx.h"
-#include "Settings.h"
+#include Client(Settings.h)
 
 LOGGING (com.opengamma.pirate.client.Settings);
 
-#define DEFAULT_LOG_CONFIGURATION	NULL
 #define DEFAULT_STARTUP_TIMEOUT		30000 /* 30s */
 
 CSettings::CSettings () : CAbstractSettings () {
 }
 
 CSettings::~CSettings () {
-}
-
-const TCHAR *CSettings::GetLogConfiguration () {
-	return GetLogConfiguration (DEFAULT_LOG_CONFIGURATION);
 }
 
 long CSettings::GetStartupTimeout () {

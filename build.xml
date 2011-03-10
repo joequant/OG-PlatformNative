@@ -57,7 +57,7 @@
 		<exec executable="R" failonerror="true">
 			<arg value="CMD" />
 			<arg value="check" />
-			<arg value="${package.dir}/opengamma" />
+			<arg value="${package.dir}/OpenGamma" />
 		</exec>
 	</target>
 
@@ -65,7 +65,7 @@
 		<exec executable="R" failonerror="true">
 			<arg value="CMD" />
 			<arg value="INSTALL" />
-			<arg value="${package.dir}/opengamma" />
+			<arg value="${package.dir}/OpenGamma" />
 		</exec>
 	</target>
 
