@@ -8,5 +8,6 @@
 #define __inc_og_pirate_client_initialise_h
 
 bool Initialise ();
+bool Shutdown ();
 
 #endif /* ifndef __inc_og_pirate_client_initialise_h */

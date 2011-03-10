@@ -4,4 +4,26 @@
  # Please see distribution for license.
  ##
 
-# TODO
+# TODO: Find the OG-Language installation; that will have the INCLUDE and LIB files we need
+
+ifndef CONFIGURATION
+#CONFIGURATION=Release
+CONFIGURATION=Debug
+endif
+
+ifndef PLATFORM
+ifdef _WIN64
+PLATFORM=x64
+elseifdef _WIN32
+PLATFORM=Win32
+else
+PLATFORM=
+endif
+endif
+
+PROJECT_DIR=../../../..
+OG_LANGUAGE_INCLUDE_DIR=$(PROJECT_DIR)/lib/include
+OG_LANGUAGE_LIB_DIR=$(PROJECT_DIR)/lib/$(CONFIGURATION)$(PLATFORM)
+
+PKG_CPPFLAGS=-I$(OG_LANGUAGE_INCLUDE_DIR)
+PKG_LIBS=-L$(OG_LANGUAGE_LIB_DIR) -lConnector -lService -lUtil

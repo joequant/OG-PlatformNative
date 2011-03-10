@@ -5,8 +5,7 @@
 	<import file="${og.language.dir}/build-cpp.xml" />
 
 	<target name="dist">
-		<mkdir dir="${package.dir}/${ant.project.name}" />
-		<copy todir="${package.dir}/${ant.project.name}">
+		<copy todir="${package.dir}/opengamma/src/${ant.project.name}">
 			<fileset dir="${basedir}">
 				<include name="*.c" />
 				<include name="*.cpp" />

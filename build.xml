@@ -33,6 +33,7 @@
 
 	<target name="dist" depends="compile">
 		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${package.dir}" />
 		<subant target="dist" buildpath="${basedir}/package" />
 		<subant target="dist" buildpathref="java.build.path" antfile="build.parent-invoked.xml" />
 		<subant target="dist" buildpathref="cc.build.path" />
@@ -43,7 +44,7 @@
 		<exec executable="R" failonerror="true">
 			<arg value="CMD" />
 			<arg value="check" />
-			<arg value="${dist.dir}/package/opengamma" />
+			<arg value="${package.dir}/opengamma" />
 		</exec>
 	</target>
 
@@ -51,7 +52,7 @@
 		<exec executable="R" failonerror="true">
 			<arg value="CMD" />
 			<arg value="INSTALL" />
-			<arg value="${dist.dir}/package/opengamma" />
+			<arg value="${package.dir}/opengamma" />
 		</exec>
 	</target>
 
