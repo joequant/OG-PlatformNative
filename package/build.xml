@@ -17,7 +17,8 @@ Depends: R (>= 2.11.1)
 Description: Connects to the OpenGamma platform, giving access to risk analytics from running views.
 License: file LICENSE
 URL: http://www.opengamma.com/R, http://www.github.com/OpenGamma/OG-Pirate
-BugReports: http://jira.opengamma.com/browse/PIR</echo>
+BugReports: http://jira.opengamma.com/browse/PIR
+LazyLoad: true</echo>
 	</target>
 
 	<target name="compile" depends="description">
@@ -28,8 +29,10 @@ BugReports: http://jira.opengamma.com/browse/PIR</echo>
 		<mkdir dir="${dist.dir}/package/opengamma" />
 		<copy todir="${dist.dir}/package/opengamma">
 			<fileset dir="${basedir}">
+				<exclude name=".gitignore" />
 				<exclude name="build.properties" />
 				<exclude name="build.xml" />
+				<exclude name="DESCRIPTION" />
 			</fileset>
 		</copy>
 	</target>

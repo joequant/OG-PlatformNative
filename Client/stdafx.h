@@ -21,5 +21,8 @@
 #endif /* ifdef _WIN32 */
 
 #include <assert.h>
+#include <Connector/Connector.h>
+#include <Util/AbstractSettings.h>
+#include <Util/Logging.h>
 
 #endif /* ifndef __inc_og_pirate_plugin_stdafx_h */
