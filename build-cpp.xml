@@ -4,6 +4,15 @@
 	<property file="${solution.dir}/build.properties" />
 	<import file="${og.language.dir}/build-cpp.xml" />
 
+	<target name="compile-after" depends="build-cpp.compile-after">
+		<copy todir="${build.dir}/${compile.type}">
+			<fileset dir="${lib.dir}/${compile.type}">
+				<include name="ServiceRunner*" />
+			</fileset>
+		</copy>
+		<chmod perm="+x" dir="${build.dir}/${compile.type}" includes="ServiceRunner" />
+	</target>
+
 	<target name="dist">
 		<copy todir="${package.dir}/opengamma/src/${ant.project.name}">
 			<fileset dir="${basedir}">

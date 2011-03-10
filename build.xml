@@ -18,13 +18,26 @@
 
 	<import file="${og.language.dir}/build-suffix.xml" />
 
+	<!-- This pattern should probably be in OG-Language; it will be needed for any child project -->
 	<target name="unpack-resolve" depends="build-suffix.unpack-resolve">
 		<unpack-include org="com.opengamma" name="og-language" />
 		<unzip dest="${lib.dir}" overwrite="false">
 			<fileset dir="${lib.dir}/lib/com.opengamma/og-language">
 				<include name="*.zip" />
 			</fileset>
+			<fileset dir="${lib.dir}/bin/com.opengamma/og-language">
+				<include name="*.zip" />
+			</fileset>
 		</unzip>
+	</target>
+	<target name="deploy-jars" depends="build-suffix.deploy-jars">
+		<move file="${build.dir}/jar/com.opengamma-og-language-og-language-client.jar" tofile="${build.dir}/client.jar" />
+		<copy todir="${build.dir}">
+			<fileset dir="${basedir}/config">
+				<include name="OpenGamma.*" />
+				<include name="logback*.xml" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="compile" depends="build-suffix.compile">
