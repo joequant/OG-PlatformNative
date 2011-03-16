@@ -98,3 +98,13 @@ bool Shutdown () {
 	LOGDEBUG (TEXT ("Pointers released"));
 	return true;
 }
+
+CConnector *ConnectorInstance () {
+	if (!g_poConnector) {
+		LOGFATAL (TEXT ("ConnectorInstance called on uninitialised library"));
+		assert (0);
+		return NULL;
+	}
+	g_poConnector->Retain ();
+	return g_poConnector;
+}

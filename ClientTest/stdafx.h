@@ -24,4 +24,6 @@
 
 #include <Util/AbstractTest.h>
 
+#define Client(path) #path
+
 #endif /* ifndef __inc_og_pirate_plugin_stdafx_h */

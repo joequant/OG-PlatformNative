@@ -22,6 +22,7 @@
 
 #include <Connector/Connector.h>
 #include <Util/Logging.h>
+#include <Util/String.h>
 
 #ifndef Client
 #define Client(path) #path

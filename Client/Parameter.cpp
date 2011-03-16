@@ -1,0 +1,21 @@
+/**
+ * Copyright (C) 2011 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
+#include "stdafx.h"
+#include Client(Parameter.h)
+
+CParameter::CParameter (com_opengamma_language_definition_Parameter *pDefinition) {
+	m_pszName = _tcsAsciiDup (pDefinition->_name);
+	m_nFlags = 0;
+	if (!pDefinition->_required) {
+		m_nFlags |= PARAMETER_FLAG_OPTIONAL;
+	}
+}
+
+CParameter::~CParameter () {
+	delete m_pszName;
+}
+

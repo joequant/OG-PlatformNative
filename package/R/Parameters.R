@@ -4,7 +4,4 @@
  # Please see distribution for license.
  ##
 
-.onLoad <- function (libname, pkgname) {
-  library.dynam ("OpenGamma", pkgname)
-  Functions_install ()
-}
+PARAMETER_FLAG_OPTIONAL <- 1

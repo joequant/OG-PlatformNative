@@ -7,8 +7,8 @@
     <publications>
       <!-- JAR files -->
       <artifact name="og-pirate-ext" type="jar" ext="jar" />
-      <!-- Binary files -->
-      <artifact name="og-pirate-lib" type="lib" ext="zip" />
+      <!-- R package files -->
+      <artifact name="og-pirate-R" type="R" ext="zip" />
     </publications>
     <dependencies>
       <dependency name="og-language" rev="latest.integration" conf="opengamma->*" />

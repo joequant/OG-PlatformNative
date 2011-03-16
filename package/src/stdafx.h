@@ -12,4 +12,11 @@
 
 #include Client(stdafx.h)
 
+// Define it here as we might need __cdecl, __stdcall, etc ... on some platforms
+#define RPROC
+
+#include <R.h>
+#include <Rinternals.h>
+#include <R_ext/Rdynload.h>
+
 #endif /* ifndef __inc_og_pirate_package_stdafx_h */
