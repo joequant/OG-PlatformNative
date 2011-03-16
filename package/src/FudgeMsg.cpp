@@ -8,7 +8,7 @@
 #include "FudgeMsg.h"
 #include "Errors.h"
 
-LOGGING (com.opengamma.pirate.package.FudgeMsg);
+LOGGING (com.opengamma.rstats.package.FudgeMsg);
 
 static SEXP _CreateByteArray (const fudge_byte *bytes, int elements) {
 	TODO (TEXT ("byte[") << elements << TEXT ("] array"));
@@ -58,9 +58,18 @@ static void RPROC FudgeMsg_finalizer (SEXP msgptr) {
 SEXP FudgeMsg_CreateRObject (FudgeMsg msg) {
 	FudgeMsg_retain (msg);
 	SEXP msgptr = R_MakeExternalPtr (msg, R_NilValue, R_NilValue);
-	// TODO: can we wrap this as a "FudgeMsg" instance with the msgptr in its slot
+	PROTECT (msgptr);
+	SEXP args = allocList (2);
+	PROTECT (args);
+	SEXP argptr = args;
+	SETCAR (argptr, install ("FudgeMsg"));
+	argptr = CDR (argptr);
+	SETCAR (argptr, msgptr);
+	SET_TAG (argptr, install ("message"));
+	SEXP msgobj = R_do_new_object (args);
 	R_RegisterCFinalizerEx (msgptr, FudgeMsg_finalizer, TRUE);
-	return msgptr;
+	UNPROTECT (2);
+	return msgobj;
 }
 
 SEXP FudgeMsg_getAllFields1 (SEXP message) {

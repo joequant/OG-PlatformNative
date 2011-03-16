@@ -8,7 +8,7 @@
 #include Client(Procedures.h)
 #include Client(Connector.h)
 
-LOGGING (com.opengamma.pirate.client.Procedures);
+LOGGING (com.opengamma.rstats.client.Procedures);
 
 CProcedureEntry::CProcedureEntry (int nInvocationId, com_opengamma_language_procedure_Definition *pDefinition) {
 	m_nInvocationId = nInvocationId;

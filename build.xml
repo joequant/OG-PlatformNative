@@ -1,4 +1,4 @@
-<project name="og-pirate" default="compile">
+<project name="og-rstats" default="compile">
 
 	<property file="${basedir}/build.properties" />
 	<import file="${og.language.dir}/build-prefix.xml" />

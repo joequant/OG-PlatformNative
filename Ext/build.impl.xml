@@ -6,7 +6,7 @@
 	<target name="deploy" depends="jar" />
 
 	<target name="dist">
-		<copy file="${build.dir}/ext.jar" tofile="${dist.dir}/og-pirate-ext.jar" />
+		<copy file="${build.dir}/ext.jar" tofile="${dist.dir}/og-rstats-ext.jar" />
 	</target>
 
 	<target name="proto-c" />

@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include Client(DataUtil.h)
 
-LOGGING (com.opengamma.pirate.client.DataUtil);
+LOGGING (com.opengamma.rstats.client.DataUtil);
 
 int CDataUtil::TypeOf (const com_opengamma_language_Value *pValue) {
 	if (!pValue) {

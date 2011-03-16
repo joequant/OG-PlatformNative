@@ -15,7 +15,7 @@
 #include "Procedures.h"
 #include "globals.h"
 
-LOGGING (com.opengamma.pirate.package.DllMain);
+LOGGING (com.opengamma.rstats.package.DllMain);
 
 extern "C" {
 	void LibExport R_init_OpenGamma (DllInfo *pInfo);

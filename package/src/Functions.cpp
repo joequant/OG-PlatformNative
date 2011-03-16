@@ -10,7 +10,7 @@
 #include "Errors.h"
 #include "Parameters.h"
 
-LOGGING (com.opengamma.pirate.package.Functions);
+LOGGING (com.opengamma.rstats.package.Functions);
 
 SEXP Functions_count0 () {
 	SEXP count = R_NilValue;

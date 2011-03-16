@@ -9,7 +9,7 @@
 #include "globals.h"
 #include "Errors.h"
 
-LOGGING (com.opengamma.pirate.package.LiveData);
+LOGGING (com.opengamma.rstats.package.LiveData);
 
 SEXP LiveData_count0 () {
     SEXP count = R_NilValue;

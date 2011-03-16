@@ -16,8 +16,8 @@ Maintainer: OpenGamma Ltd &lt;info@opengamma.com&gt;
 Depends: R (>= 2.11.1)
 Description: Connects to the OpenGamma platform, giving access to risk analytics from running views.
 License: file LICENSE
-URL: http://www.opengamma.com/R, http://www.github.com/OpenGamma/OG-Pirate
-BugReports: http://jira.opengamma.com/browse/PIR
+URL: http://www.opengamma.com/R, http://www.github.com/OpenGamma/OG-RStats
+BugReports: http://jira.opengamma.com/browse/R
 LazyLoad: true</echo>
 	</target>
 

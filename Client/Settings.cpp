@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include Client(Settings.h)
 
-LOGGING (com.opengamma.pirate.client.Settings);
+LOGGING (com.opengamma.rstats.client.Settings);
 
 #define DEFAULT_STARTUP_TIMEOUT		30000 /* 30s */
 

@@ -9,7 +9,7 @@
 #include "globals.h"
 #include "Errors.h"
 
-LOGGING (com.opengamma.pirate.package.Procedures);
+LOGGING (com.opengamma.rstats.package.Procedures);
 
 SEXP Procedures_count0 () {
     SEXP count = R_NilValue;

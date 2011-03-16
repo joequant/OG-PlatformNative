@@ -12,7 +12,7 @@
 #include "Client/Repositories.h"
 #include "Client/Initialise.h"
 
-LOGGING (com.opengamma.pirate.client.FunctionsTest);
+LOGGING (com.opengamma.rstats.client.FunctionsTest);
 
 static void Construct () {
 	CConnector *poConnector = ConnectorInstance ();

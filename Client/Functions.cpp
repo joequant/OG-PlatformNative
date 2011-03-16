@@ -8,7 +8,7 @@
 #include Client(Functions.h)
 #include Client(Connector.h)
 
-LOGGING (com.opengamma.pirate.client.Functions);
+LOGGING (com.opengamma.rstats.client.Functions);
 
 CFunctionEntry::CFunctionEntry (int nInvocationId, com_opengamma_language_function_Definition *pDefinition) {
 	m_nInvocationId = nInvocationId;

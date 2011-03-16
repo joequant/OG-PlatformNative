@@ -11,7 +11,7 @@
 #include Client(Settings.h)
 #include <Util/DllVersion.h>
 
-LOGGING (com.opengamma.pirate.client.Initialise);
+LOGGING (com.opengamma.rstats.client.Initialise);
 
 static CConnector *g_poConnector = NULL;
 

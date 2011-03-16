@@ -10,7 +10,7 @@
 
 #include "Client/DataUtil.h"
 
-LOGGING (com.opengamma.pirate.client.DataUtilTest);
+LOGGING (com.opengamma.rstats.client.DataUtilTest);
 
 static com_opengamma_language_Value *Alloc () {
 	com_opengamma_language_Value *pValue = new com_opengamma_language_Value;

@@ -7,6 +7,8 @@
 #include "stdafx.h"
 #include Client(Parameter.h)
 
+LOGGING (com.opengamma.rstats.client.Parameter);
+
 CParameter::CParameter (com_opengamma_language_definition_Parameter *pDefinition) {
 	m_pszName = _tcsAsciiDup (pDefinition->_name);
 	m_nFlags = 0;

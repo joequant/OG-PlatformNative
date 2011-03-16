@@ -8,7 +8,7 @@
 #include Client(LiveData.h)
 #include Client(Connector.h)
 
-LOGGING (com.opengamma.pirate.client.LiveData);
+LOGGING (com.opengamma.rstats.client.LiveData);
 
 CLiveDataEntry::CLiveDataEntry (int nInvocationId, com_opengamma_language_livedata_Definition *pDefinition) {
 	m_nInvocationId = nInvocationId;

@@ -10,7 +10,7 @@
 
 #include "Client/Initialise.h"
 
-LOGGING (com.opengamma.pirate.client.InitialiseTest);
+LOGGING (com.opengamma.rstats.client.InitialiseTest);
 
 static void CallInitialise () {
 	ASSERT (Initialise ());

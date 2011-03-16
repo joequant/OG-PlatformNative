@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include Client(Repositories.h)
 
-LOGGING (com.opengamma.pirate.client.Repositories);
+LOGGING (com.opengamma.rstats.client.Repositories);
 
 CRepositories::CRepositories (CConnector *poConnector) {
 	LOGINFO (TEXT ("Creating function, live data and procedure repositories"));
