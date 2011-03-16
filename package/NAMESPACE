@@ -1,1 +1,2 @@
 export (.Last.lib)
+exportPattern ("^[^\\.].*\\.FudgeMsg")

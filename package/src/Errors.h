@@ -12,5 +12,6 @@
 #define ERR_PARAMETER_TYPE		"Bad parameter type"
 #define ERR_PARAMETER_VALUE		"Bad parameter value"
 #define ERR_MEMORY				"Out of memory"
+#define ERR_INTERNAL			"Internal error"
 
 #endif /* ifndef __inc_og_pirate_package_errors_h */

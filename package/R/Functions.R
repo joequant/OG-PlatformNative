@@ -32,11 +32,12 @@ Functions_installImpl <- function (index) {
     argFlags <- Functions_getParameterFlags (index)
     if (length (argNames) == length (argFlags)) {
       argDecl <- c ()
+      validate <- c ()
       if (length (argNames) > 0) {
         for (i in seq (from = 1, to = length (argNames))) {
           flagOptional <- FALSE
           flags <- argFlags[i]
-          if (flags > PARAMETER_FLAG_OPTIONAL) {
+          if (flags >= PARAMETER_FLAG_OPTIONAL) {
             flags <- flags - PARAMETER_FLAG_OPTIONAL
             flagOptional <- TRUE
           }
@@ -44,12 +45,17 @@ Functions_installImpl <- function (index) {
             argDecl <- append (argDecl, paste (argNames[i], "= NULL"))
           } else {
             argDecl <- append (argDecl, argNames[i])
+            validate <- append (validate, paste ("if (is.null (", argNames[i], ")) stop (\"Parameter '", argNames[i], "' may not be null\")", sep = ""))
           }
         }
       }
-      argDecl <- paste (argDecl, sep = ", ")
-      argInvoke <- paste (argNames, sep = ", ")
-      cmd <- paste (name, " <<- function (", argDecl, ") Functions_invoke (", index, ", list (", argInvoke, "))", sep = "")
+      argDecl <- paste (argDecl, collapse = ", ")
+      argInvoke <- paste (argNames, collapse = ", ")
+      cmd <- paste (c (
+        paste (name, " <<- function (", argDecl, ") {", sep = ""),
+        validate,
+        paste ("Functions_invoke (", index, ", list (", argInvoke, "))", sep = ""),
+        "}"), sep = "\n")
       eval (parse (text = cmd))
     } else {
       LOGERROR (paste ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags))

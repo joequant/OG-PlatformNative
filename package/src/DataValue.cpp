@@ -7,11 +7,15 @@
 #include "stdafx.h"
 #include "DataValue.h"
 #include "Errors.h"
+#include "FudgeMsg.h"
 #include Client(DataUtil.h)
 
 LOGGING (com.opengamma.pirate.package.DataValue);
 
 com_opengamma_language_Value *CValue::FromSEXP (SEXP value, int index) {
+	if (TYPEOF (value) == VECSXP) {
+		return FromSEXP (VECTOR_ELT (value, index));
+	}
 	com_opengamma_language_Value *pValue = new com_opengamma_language_Value;
 	if (pValue) {
 		memset (pValue, 0, sizeof (com_opengamma_language_Value));
@@ -56,7 +60,7 @@ void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_langu
 		SET_STRING_ELT (vector, index, mkChar (pValue->_stringValue));
 		break;
 	case DATATYPE_MESSAGE :
-		TODO (TEXT ("Store MESSAGE type in vector"));
+		SET_VECTOR_ELT (vector, index, FudgeMsg_CreateRObject (pValue->_messageValue));
 		break;
 	case DATATYPE_ERROR :
 		TODO (TEXT ("Store ERROR type in vector"));
@@ -86,7 +90,8 @@ SEXP CValue::ToSEXP (const com_opengamma_language_Value *pValue) {
 		ToSEXP (DATATYPE_INTEGER, result, 0, pValue);
 	} else if (pValue->_messageValue) {
 		LOGDEBUG (TEXT ("MESSAGE value"));
-		TODO (TEXT ("Wrap up a Fudge message as an R object"));
+		result = allocVector (VECSXP, 1);
+		ToSEXP (DATATYPE_MESSAGE, result, 0, pValue);
 	} else if (pValue->_stringValue) {
 		LOGDEBUG (TEXT ("STRING value"));
 		result = mkString (pValue->_stringValue);
@@ -127,10 +132,13 @@ com_opengamma_language_Data *CData::FromSEXP (SEXP data) {
 					LOGFATAL (ERR_MEMORY);
 				}
 			} else if (length (data) == 1) {
+				LOGDEBUG (TEXT ("Primitive"));
 				pData->_single = CValue::FromSEXP (data);
 			} else {
-				LOGDEBUG (TEXT ("Empty SEXP vector"));
+				LOGDEBUG (TEXT ("Empty vector"));
 			}
+		} else if (isNull (data)) {
+			LOGDEBUG (TEXT ("NULL"));
 		} else {
 			LOGWARN (ERR_PARAMETER_TYPE);
 		}
@@ -162,7 +170,7 @@ static SEXPTYPE _DataTypeToSEXPTYPE (int type) {
 	case DATATYPE_DOUBLE :
 		return REALSXP;
 	case DATATYPE_MESSAGE :
-		TODO (TEXT ("DATATYPE_MESSAGE"));
+		// Force degeneration to lists
 		return 0;
 	case DATATYPE_ERROR :
 		TODO (TEXT ("DATATYPE_ERROR"));

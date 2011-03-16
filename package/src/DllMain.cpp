@@ -9,6 +9,7 @@
 #include Client(Initialise.h)
 #include Client(Repositories.h)
 #define GLOBALS
+#include "FudgeMsg.h"
 #include "Functions.h"
 #include "LiveData.h"
 #include "Procedures.h"
@@ -24,6 +25,7 @@ extern "C" {
 #define F(name, args) { #name, (DL_FUNC)&name##args, args }
 
 static R_CallMethodDef g_aMethods[] = {
+	F (FudgeMsg_getAllFields, 1),
 	F (Functions_count, 0),
 	F (Functions_getName, 1),
 	F (Functions_getParameterFlags, 1),
