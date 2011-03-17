@@ -7,7 +7,7 @@
 		<tstamp>
 			<format property="module.date" pattern="yyyy-MM-dd" />
 		</tstamp>
-		<echo file="${basedir}/DESCRIPTION">Package: OpenGamma
+		<echo file="${basedir}/DESCRIPTION">Package: ${package.name}
 Version: ${module.version}
 Date: ${module.date}
 Title: OpenGamma for R
@@ -25,8 +25,8 @@ LazyLoad: true</echo>
 	</target>
 
 	<target name="dist" depends="compile">
-		<mkdir dir="${package.dir}/OpenGamma" />
-		<copy todir="${package.dir}/OpenGamma">
+		<mkdir dir="${package.dir}/${package.name}" />
+		<copy todir="${package.dir}/${package.name}">
 			<fileset dir="${basedir}">
 				<exclude name=".gitignore" />
 				<exclude name="build.properties" />

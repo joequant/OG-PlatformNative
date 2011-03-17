@@ -3,7 +3,7 @@
 /Ext/tests/classes/
 /Ext/tests/output/
 /lib/
-/opengamma.Rcheck/
+/OpenGamma.Rcheck/
 /TestResults/
 /*/Debug/
 /*/Release/
@@ -13,7 +13,7 @@
 /*/Releasex64/
 /*/*.aps
 /*/*.vcxproj.user
-/OG-Pirate.suo
+/OG-RStats.suo
 .fudge-proto-gitignore
 MANIFEST.MF
 build.number

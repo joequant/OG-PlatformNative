@@ -8,9 +8,22 @@
 #include "DataValue.h"
 #include "Errors.h"
 #include "FudgeMsg.h"
+#include "RCallback.h"
 #include Client(DataUtil.h)
 
 LOGGING (com.opengamma.pirate.package.DataValue);
+
+static com_opengamma_language_Value *_FudgeMsgValue (FudgeMsg msg) {
+	com_opengamma_language_Value *pValue = new com_opengamma_language_Value;
+	if (pValue) {
+		memset (pValue, 0, sizeof (com_opengamma_language_Value));
+		FudgeMsg_retain (msg);
+		pValue->_messageValue = msg;
+	} else {
+		LOGFATAL (ERR_MEMORY);
+	}
+	return pValue;
+}
 
 com_opengamma_language_Value *CValue::FromSEXP (SEXP value, int index) {
 	if (TYPEOF (value) == VECSXP) {
@@ -27,6 +40,9 @@ com_opengamma_language_Value *CValue::FromSEXP (SEXP value, int index) {
 			case LGLSXP :
 				pValue->_boolValue = (fudge_bool*)malloc (sizeof (fudge_bool));
 				if (pValue->_boolValue) *pValue->_boolValue = INTEGER (value)[index] ? FUDGE_TRUE : FUDGE_FALSE;
+				break;
+			case NILSXP :
+				LOGDEBUG (TEXT ("NULL value"));
 				break;
 			case REALSXP :
 				pValue->_doubleValue = (fudge_f64*)malloc (sizeof (fudge_f64));
@@ -60,7 +76,7 @@ void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_langu
 		SET_STRING_ELT (vector, index, mkChar (pValue->_stringValue));
 		break;
 	case DATATYPE_MESSAGE :
-		SET_VECTOR_ELT (vector, index, FudgeMsg_CreateRObject (pValue->_messageValue));
+		SET_VECTOR_ELT (vector, index, RFudgeMsg::FromFudgeMsg (pValue->_messageValue));
 		break;
 	case DATATYPE_ERROR :
 		TODO (TEXT ("Store ERROR type in vector"));
@@ -90,8 +106,7 @@ SEXP CValue::ToSEXP (const com_opengamma_language_Value *pValue) {
 		ToSEXP (DATATYPE_INTEGER, result, 0, pValue);
 	} else if (pValue->_messageValue) {
 		LOGDEBUG (TEXT ("MESSAGE value"));
-		result = allocVector (VECSXP, 1);
-		ToSEXP (DATATYPE_MESSAGE, result, 0, pValue);
+		result = RFudgeMsg::FromFudgeMsg (pValue->_messageValue);
 	} else if (pValue->_stringValue) {
 		LOGDEBUG (TEXT ("STRING value"));
 		result = mkString (pValue->_stringValue);
@@ -118,7 +133,7 @@ com_opengamma_language_Data *CData::FromSEXP (SEXP data) {
 				pData->_matrix[i][cols] = NULL;
 			}
 			pData->_matrix[rows] = NULL;
-		} else if (isVector (data)) {
+		} else if (isVector (data) || isList (data)) {
 			if (length (data) > 1) {
 				LOGDEBUG (TEXT ("Vector with ") << length (data) << TEXT (" elements"));
 				pData->_linear = new com_opengamma_language_Value*[length (data) + 1];
@@ -139,6 +154,16 @@ com_opengamma_language_Data *CData::FromSEXP (SEXP data) {
 			}
 		} else if (isNull (data)) {
 			LOGDEBUG (TEXT ("NULL"));
+		} else if (isObject (data)) {
+			FudgeMsg msg = RFudgeMsg::ToFudgeMsg (data);
+			if (msg) {
+				LOGDEBUG (TEXT ("Single FudgeMsg"));
+				pData->_single = _FudgeMsgValue (msg);
+				FudgeMsg_release (msg);
+			} else {
+				LOGDEBUG (TEXT ("Using toString on unknown object type"));
+				pData->_single = CValue::FromSEXP (CRCallback::ToString (data));
+			}
 		} else {
 			LOGWARN (ERR_PARAMETER_TYPE);
 		}

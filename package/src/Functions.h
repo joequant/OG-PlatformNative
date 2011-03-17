@@ -7,14 +7,42 @@
 #ifndef __inc_og_pirate_package_functions_h
 #define __inc_og_pirate_package_functions_h
 
+class RFunctions {
+private:
+	RFunctions () { }
+	~RFunctions () { }
+public:
+	static SEXP Count ();
+	static SEXP GetName (SEXP index);
+	static SEXP GetParameterFlags (SEXP index);
+	static SEXP GetParameterNames (SEXP index);
+	static SEXP Invoke (SEXP index, SEXP args);
+};
+
+#ifdef GLOBALS
 extern "C" {
 
-	SEXP RPROC Functions_count0 ();
-	SEXP RPROC Functions_getName1 (SEXP index);
-	SEXP RPROC Functions_getParameterFlags1 (SEXP index);
-	SEXP RPROC Functions_getParameterNames1 (SEXP index);
-	SEXP RPROC Functions_invoke2 (SEXP index, SEXP args);
+	SEXP RPROC Functions_count0 () {
+		return RFunctions::Count ();
+	}
+
+	SEXP RPROC Functions_getName1 (SEXP index) {
+		return RFunctions::GetName (index);
+	}
+
+	SEXP RPROC Functions_getParameterFlags1 (SEXP index) {
+		return RFunctions::GetParameterFlags (index);
+	}
+
+	SEXP RPROC Functions_getParameterNames1 (SEXP index) {
+		return RFunctions::GetParameterNames (index);
+	}
+
+	SEXP RPROC Functions_invoke2 (SEXP index, SEXP args) {
+		return RFunctions::Invoke (index, args);
+	}
 
 }
+#endif /* ifdef GLOBALS */
 
 #endif /* ifndef __inc_og_pirate_package_functions_h */

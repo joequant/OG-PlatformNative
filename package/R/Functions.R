@@ -5,23 +5,23 @@
  ##
 
 Functions_count <- function () {
-  .Call ("Functions_count")
+  OpenGammaCall ("Functions_count")
 }
 
 Functions_getName <- function (index) {
-  .Call ("Functions_getName", as.integer (index))
+  OpenGammaCall ("Functions_getName", as.integer (index))
 }
 
 Functions_getParameterNames <- function (index) {
-  .Call ("Functions_getParameterNames", as.integer (index))
+  OpenGammaCall ("Functions_getParameterNames", as.integer (index))
 }
 
 Functions_getParameterFlags <- function (index) {
-  .Call ("Functions_getParameterFlags", as.integer (index))
+  OpenGammaCall ("Functions_getParameterFlags", as.integer (index))
 }
 
 Functions_invoke <- function (index, args) {
-  .Call ("Functions_invoke", as.integer (index), args)
+  OpenGammaCall ("Functions_invoke", as.integer (index), args)
 }
 
 Functions_installImpl <- function (index) {

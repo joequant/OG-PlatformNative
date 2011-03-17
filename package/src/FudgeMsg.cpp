@@ -7,8 +7,16 @@
 #include "stdafx.h"
 #include "FudgeMsg.h"
 #include "Errors.h"
+#include "RCallback.h"
 
 LOGGING (com.opengamma.rstats.package.FudgeMsg);
+
+#define R_FUDGEMSG_CLASS		"FudgeMsg"
+#define R_FUDGEMSG_POINTER		"message"
+#define R_FUDGEFIELD_VALUE		"Value"
+#define R_FUDGEFIELD_ORDINAL	"Ordinal"
+#define R_FUDGEFIELD_NAME		"Name"
+#define R_FUDGEINDICATOR		"indicator"
 
 static SEXP _CreateByteArray (const fudge_byte *bytes, int elements) {
 	TODO (TEXT ("byte[") << elements << TEXT ("] array"));
@@ -55,24 +63,69 @@ static void RPROC FudgeMsg_finalizer (SEXP msgptr) {
 	}
 }
 
-SEXP FudgeMsg_CreateRObject (FudgeMsg msg) {
+SEXP RFudgeMsg::FromFudgeMsg (FudgeMsg msg) {
 	FudgeMsg_retain (msg);
 	SEXP msgptr = R_MakeExternalPtr (msg, R_NilValue, R_NilValue);
 	PROTECT (msgptr);
-	SEXP args = allocList (2);
-	PROTECT (args);
-	SEXP argptr = args;
-	SETCAR (argptr, install ("FudgeMsg"));
-	argptr = CDR (argptr);
-	SETCAR (argptr, msgptr);
-	SET_TAG (argptr, install ("message"));
-	SEXP msgobj = R_do_new_object (args);
+	SEXP cls = R_getClassDef (R_FUDGEMSG_CLASS);
+	PROTECT (cls);
+	SEXP obj = R_do_new_object (cls);
+	PROTECT (obj);
+	R_do_slot_assign (obj, mkString (R_FUDGEMSG_POINTER), msgptr);
 	R_RegisterCFinalizerEx (msgptr, FudgeMsg_finalizer, TRUE);
-	UNPROTECT (2);
-	return msgobj;
+	UNPROTECT (3);
+	return obj;
 }
 
-SEXP FudgeMsg_getAllFields1 (SEXP message) {
+static FudgeMsg _GetFudgeMsg (SEXP msgValue) {
+	FudgeMsg msg = NULL;
+	SEXP slot = mkString (R_FUDGEMSG_POINTER);
+	PROTECT (slot);
+	if (R_has_slot (msgValue, slot)) {
+		SEXP msgPointer = R_do_slot (msgValue, slot);
+		msg = (FudgeMsg)R_ExternalPtrAddr (msgPointer);
+		// Safe to pass NULL to FudgeMsg_retain
+		FudgeMsg_retain (msg);
+	}
+	UNPROTECT (1);
+	return msg;
+}
+
+FudgeMsg RFudgeMsg::ToFudgeMsg (SEXP value) {
+	if (isObject (value)) {
+		SEXP cls = getAttrib (value, install ("class"));
+		if (isString (cls)) {
+			if (!strcmp (CHAR (STRING_ELT (cls, 0)), R_FUDGEMSG_CLASS)) {
+				FudgeMsg msg = _GetFudgeMsg (value);
+				if (msg) {
+					return msg;
+				} else {
+					LOGERROR (TEXT ("FudgeMsg object does not have message pointer"));
+				}
+			} else {
+				LOGDEBUG ("Class " << CHAR (STRING_ELT (cls, 0)) << " not a FudgeMsg");
+				value = CRCallback::ToFudgeMsg (value);
+				if (value != R_NilValue) {
+					FudgeMsg msg = _GetFudgeMsg (value);
+					if (msg) {
+						return msg;
+					} else {
+						LOGERROR (TEXT ("toFudgeMsg conversion does not have message pointer"));
+					}
+				} else {
+					LOGWARN (TEXT ("Object can't be converted to FudgeMsg"))
+				}
+			}
+		} else {
+			LOGWARN (TEXT ("Class attribute not a string"));
+		}
+	} else {
+		LOGDEBUG (TEXT ("Not an object"));
+	}
+	return NULL;
+}
+
+SEXP RFudgeMsg::GetAllFields (SEXP message) {
 	SEXP result = R_NilValue;
 	FudgeMsg msg = (FudgeMsg)R_ExternalPtrAddr (message);
 	if (msg) {
@@ -82,11 +135,11 @@ SEXP FudgeMsg_getAllFields1 (SEXP message) {
 			if (FudgeMsg_getFields (aFields, nFields, msg) == nFields) {
 				result = allocVector (VECSXP, nFields);
 				PROTECT (result);
-				SEXP strValue = install ("Value");
+				SEXP strValue = install (R_FUDGEFIELD_VALUE);
 				PROTECT (strValue);
-				SEXP strName = install ("Name");
+				SEXP strName = install (R_FUDGEFIELD_NAME);
 				PROTECT (strName);
-				SEXP strOrdinal = install ("Ordinal");
+				SEXP strOrdinal = install (R_FUDGEFIELD_ORDINAL);
 				PROTECT (strOrdinal);
 				int n;
 				char sz[32], *psz;
@@ -113,7 +166,7 @@ SEXP FudgeMsg_getAllFields1 (SEXP message) {
 					SEXP elem = R_NilValue;
 					switch (aFields[n].type) {
 					case FUDGE_TYPE_INDICATOR :
-						elem = install ("indicator");
+						elem = mkString (R_FUDGEINDICATOR);
 						break;
 					case FUDGE_TYPE_BOOLEAN :
 						elem = ScalarLogical (aFields[n].data.boolean);
@@ -161,7 +214,7 @@ SEXP FudgeMsg_getAllFields1 (SEXP message) {
 						}
 						break;
 					case FUDGE_TYPE_FUDGE_MSG :
-						elem = FudgeMsg_CreateRObject (aFields[n].data.message);
+						elem = FromFudgeMsg (aFields[n].data.message);
 						break;
 					case FUDGE_TYPE_BYTE_ARRAY_4 :
 						elem = _CreateByteArray (aFields[n].data.bytes, 4);

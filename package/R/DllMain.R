@@ -8,3 +8,11 @@
   library.dynam ("OpenGamma", pkgname)
   Functions_install ()
 }
+
+OpenGammaCall <- function (method, ...) {
+  .Call (method, ..., PACKAGE = "OpenGamma")
+}
+
+.Last.lib <- function (path) {
+  library.dynam.unload ("OpenGamma", path)
+}

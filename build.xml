@@ -53,11 +53,11 @@
 		<zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${dist.dir}/package" />
 	</target>
 
-	<target name="test-dist" depends="dist" description="--> Tests the R package distribution using 'R CMD check'">
+	<target name="test-dist" depends="clean-dist,dist" description="--> Tests the R package distribution using 'R CMD check'">
 		<exec executable="R" failonerror="true">
 			<arg value="CMD" />
 			<arg value="check" />
-			<arg value="${package.dir}/OpenGamma" />
+			<arg value="${package.dir}/${package.name}" />
 		</exec>
 	</target>
 
@@ -65,8 +65,12 @@
 		<exec executable="R" failonerror="true">
 			<arg value="CMD" />
 			<arg value="INSTALL" />
-			<arg value="${package.dir}/OpenGamma" />
+			<arg value="${package.dir}/${package.name}" />
 		</exec>
+	</target>
+
+	<target name="clean-tests" depends="build-suffix.clean-tests">
+		<delete includeemptydirs="true" failonerror="false" dir="${basedir}/${package.name}.Rcheck" />
 	</target>
 
 </project>

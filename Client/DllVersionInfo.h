@@ -10,9 +10,9 @@
 #define DllVersion_FileDescription	"OpenGamma client library for R"
 
 #ifdef _WIN32
-#define DllVersion_OriginalFilename	"OGPirate.dll"
+#define DllVersion_OriginalFilename	"OpenGamma.dll"
 #else /* ifdef _WIN32 */
-#define DllVersion_OriginalFilename	"libOGPirate.so"
+#define DllVersion_OriginalFilename	"OpenGamma.so"
 #endif /* ifdef _WIN32 */
 
 #define DllVersion_ProductName		"OpenGamma/R"

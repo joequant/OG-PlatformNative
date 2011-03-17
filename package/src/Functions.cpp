@@ -12,7 +12,7 @@
 
 LOGGING (com.opengamma.rstats.package.Functions);
 
-SEXP Functions_count0 () {
+SEXP RFunctions::Count () {
 	SEXP count = R_NilValue;
 	if (g_poFunctions) {
 		count = allocVector (INTSXP, 1);
@@ -23,7 +23,7 @@ SEXP Functions_count0 () {
 	return count;
 }
 
-SEXP Functions_getName1 (SEXP index) {
+SEXP RFunctions::GetName (SEXP index) {
 	SEXP name = R_NilValue;
 	if (g_poFunctions) {
 		if (isInteger (index)) {
@@ -42,7 +42,7 @@ SEXP Functions_getName1 (SEXP index) {
 	return name;
 }
 
-SEXP Functions_getParameterFlags1 (SEXP index) {
+SEXP RFunctions::GetParameterFlags (SEXP index) {
     SEXP flags = R_NilValue;
     if (g_poFunctions) {
         if (isInteger (index)) {
@@ -65,7 +65,7 @@ SEXP Functions_getParameterFlags1 (SEXP index) {
     return flags;
 }
 
-SEXP Functions_getParameterNames1 (SEXP index) {
+SEXP RFunctions::GetParameterNames (SEXP index) {
 	SEXP names = R_NilValue;
 	if (g_poFunctions) {
 		if (isInteger (index)) {
@@ -91,7 +91,7 @@ SEXP Functions_getParameterNames1 (SEXP index) {
 	return names;
 }
 
-SEXP Functions_invoke2 (SEXP index, SEXP args) {
+SEXP RFunctions::Invoke (SEXP index, SEXP args) {
 	SEXP result = R_NilValue;
 	if (g_poFunctions) {
 		if (isInteger (index)) {

@@ -4,12 +4,7 @@
  # Please see distribution for license.
  ##
 
-setClass (
-  "FudgeMsg",
-  representation (
-    message = "externalptr"
-  )
-)
+# TODO: Migrate the code from here to a Fudge-R project, or change things elsewhere to use that if one already exists
 
 # Asserts the msg parameter is a FudgeMsg instance
 .assert.FudgeMsg <- function (msg) {
@@ -21,52 +16,64 @@ setClass (
 # Get all the fields of a Fudge message
 fields.FudgeMsg <- function (msg) {
   .assert.FudgeMsg (msg)
-  .Call ("FudgeMsg_getAllFields", msg@message)
+  OpenGammaCall ("FudgeMsg_getAllFields", msg@message)
 }
 
 # Get a named field of a Fudge message
 field.FudgeMsg <- function (msg, field) {
   fields <- fields.FudgeMsg (msg)
   if (length (fields) > 0) {
-    result <- c ()
-    if (is.numeric (field)) {
-      ordinal <- as.integer (field)
-      for (i in seq (from = 1, to = length (fields))) {
-        if (fields[[i]]$Ordinal == ordinal) {
-          result <- append (result, fields[[i]]$Value)
-        }
-      }
+    if (length (field) > 1) {
+      sapply (field, function (x) { .field.FudgeMsg (fields, x) })
     } else {
-      name <- as.character (field)
-      for (i in seq (from = 1, to = length (fields))) {
-        if (fields[[i]]$Name == name) {
-          result <- append (result, fields[[i]]$Value)
-        }
-      }
+      .field.FudgeMsg (fields, field)
     }
-    result
   } else {
     fields
   }
 }
 
+# Returns a vector comparing field names or ordinals
+.isField.FudgeMsg <- function (fields, field) {
+  if (is.numeric (field)) {
+    ordinal <- as.integer (field)
+    sapply (fields, function (x) { !is.null (x$Ordinal) && (x$Ordinal == ordinal) })
+  } else {
+    name <- as.character (field)
+    sapply (fields, function (x) { !is.null (x$Name) && (x$Name == name) })
+  }
+}
+
+# Get a named field from a list of fields (e.g. one returned by fields.FudgeMsg)
+.field.FudgeMsg <- function (fields, field) {
+  result <- sapply (fields[.isField.FudgeMsg (fields, field)], function (x) { x$Value })
+  if (length (result) == 1) {
+    result[[1]]
+  } else {
+    result
+  }
+}
+
+# Test if a value is a Fudge message
+is.FudgeMsg <- function (obj) {
+  is.object (obj) && (class (obj) == "FudgeMsg");
+}
+
 # Fully expand a Fudge message
 expand.FudgeMsg <- function (msg) {
-  fields <- allFields.FudgeMsg (msg)
-  if (length (fields) > 0) {
-    for (i in seq (from = 1, to = length (fields))) {
-      fieldValue <- fields[[i]]$Value;
-      if (is.object (fieldValue) && (class (fieldValue) == "FudgeMsg")) {
-        fields[[i]]$Value = expand.FudgeMsg (fieldValue)
-      }
+  lapply (fields.FudgeMsg (msg), function (x) {
+    value <- x$Value
+    if (is.FudgeMsg (value)) {
+      list (Name = x$Name, Ordinal = x$Ordinal, Value = expand.FudgeMsg (value))
+    } else {
+      x
     }
-  }
-  fields
+  })
 }
 
 # Return the fully qualified class names
 classNames.FudgeMsg <- function (msg) {
-  field.FudgeMsg (msg, 0)
+  msg[0]
 }
 
 # Return a display name based on the class name
@@ -79,3 +86,17 @@ displayName.FudgeMsg <- function (msg) {
     "FudgeMsg"
   }
 }
+
+# Return a string representation of the Fudge message
+toString.FudgeMsg <- function (msg) {
+  paste (c ("{", paste (sapply (fields.FudgeMsg (msg), function (x) { paste (x$Name, x$Ordinal, "=", toString (x$Value)) }), collapse = ", "), "}"), collapse = "")
+}
+
+setClass ("FudgeMsg", representation (message = "externalptr"))
+setMethod ("[", signature = "FudgeMsg", definition = function (x, i, j, ..., drop) { field.FudgeMsg (x, i) })
+setMethod ("$", signature = "FudgeMsg", definition = function (x, name) { field.FudgeMsg (x, name) })
+setMethod ("length", signature = "FudgeMsg", definition = function (x) { length (fields.FudgeMsg (x)) } )
+setMethod ("toString", signature = "FudgeMsg", definition = function (x) { toString.FudgeMsg (x) })
+toFudgeMsg <- function (x) { NULL }
+setGeneric ("toFudgeMsg");
+setMethod ("toFudgeMsg", signature = "FudgeMsg", definition = function (x) { x })
