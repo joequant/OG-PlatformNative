@@ -8,40 +8,23 @@
 #define __inc_og_pirate_client_functions_h
 
 #include <Connector/Functions.h>
-#include <Connector/com_opengamma_language_Data.h>
-#include <Util/Atomic.h>
-#include Client(Parameter.h)
+#include Client(Entities.h)
 
-class CFunctionEntry {
-private:
-	int m_nInvocationId;
-	char *m_pszName;
-	int m_nParameter;
-	CParameter **m_ppoParameter;
+class CFunctionEntry : public CEntityEntry {
 public:
 	CFunctionEntry (int nInvocationId, com_opengamma_language_function_Definition *pDefinition);
 	~CFunctionEntry ();
-	const char *GetName () { return m_pszName; }
-	int GetParameterCount () { return m_nParameter; }
-	CParameter *GetParameter (int n);
 	com_opengamma_language_Data *Invoke (CConnector *poConnector, com_opengamma_language_Data **ppArg);
 };
 
-class CFunctions {
+class CFunctions : public CEntities {
 private:
-	CAtomicInt m_oRefCount;
-	int m_nFunction;
-	CFunctionEntry **m_ppoFunction;
-	CConnector *m_poConnector;
 	CFunctions (CConnector *poConnector, com_opengamma_language_function_Available *pAvailable);
 	~CFunctions ();
 public:
 	static CFunctions *GetAvailable (CFunctionQueryAvailable *poQuery);
-	void Retain () { m_oRefCount.IncrementAndGet (); }
-	static void Release (CFunctions *poFunctions) { if (!poFunctions->m_oRefCount.DecrementAndGet ()) delete poFunctions; }
-	int Size () { return m_nFunction; }
-	CFunctionEntry *Get (int n);
-	com_opengamma_language_Data *Invoke (CFunctionEntry *poEntry, com_opengamma_language_Data **ppArg) { return poEntry->Invoke (m_poConnector, ppArg); }
+	CFunctionEntry *Get (int n) { return (CFunctionEntry*)GetImpl (n); }
+	com_opengamma_language_Data *Invoke (CFunctionEntry *poEntry, com_opengamma_language_Data **ppArg) { return poEntry->Invoke (GetConnector (), ppArg); }
 };
 
 #endif /* ifndef __inc_og_pirate_client_functions_h */

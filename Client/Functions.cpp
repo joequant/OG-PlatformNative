@@ -10,39 +10,18 @@
 
 LOGGING (com.opengamma.rstats.client.Functions);
 
-CFunctionEntry::CFunctionEntry (int nInvocationId, com_opengamma_language_function_Definition *pDefinition) {
-	m_nInvocationId = nInvocationId;
-	m_pszName = _tcsAsciiDup (pDefinition->fudgeParent._name);
-	m_nParameter = pDefinition->fudgeParent.fudgeCountParameter;
-	m_ppoParameter = new CParameter*[m_nParameter];
-	int n;
-	for (n = 0; n < m_nParameter; n++) {
-		m_ppoParameter[n] = new CParameter (pDefinition->fudgeParent._parameter[n]);
-	}
+CFunctionEntry::CFunctionEntry (int nInvocationId, com_opengamma_language_function_Definition *pDefinition)
+: CEntityEntry (nInvocationId, &pDefinition->fudgeParent) {
 }
 
 CFunctionEntry::~CFunctionEntry () {
-	free (m_pszName);
-	int n;
-	for (n = 0; n < m_nParameter; n++) {
-		delete m_ppoParameter[n];
-	}
-	delete m_ppoParameter;
-}
-
-CParameter *CFunctionEntry::GetParameter (int n) {
-	if ((n < 0) || (n >= m_nParameter)) {
-		LOGWARN (TEXT ("Index ") << n << TEXT (" out of range (") << m_nParameter << TEXT (")"));
-		return NULL;
-	}
-	return m_ppoParameter[n];
 }
 
 com_opengamma_language_Data *CFunctionEntry::Invoke (CConnector *poConnector, com_opengamma_language_Data **ppArg) {
-	LOGDEBUG ("Invoking " << m_pszName);
+	LOGDEBUG ("Invoking " << GetName ());
 	CFunctionInvoke invoke (poConnector);
-	invoke.SetInvocationId (m_nInvocationId);
-	invoke.SetParameters (m_nParameter, ppArg);
+	invoke.SetInvocationId (GetInvocationId ());
+	invoke.SetParameters (GetParameterCount (), ppArg);
 	if (!invoke.Send ()) {
 		LOGWARN (TEXT ("Could not send invocation request"));
 		return NULL;
@@ -65,26 +44,16 @@ com_opengamma_language_Data *CFunctionEntry::Invoke (CConnector *poConnector, co
 }
 
 CFunctions::CFunctions (CConnector *poConnector, com_opengamma_language_function_Available *pAvailable)
-	: m_oRefCount (1) {
+: CEntities (poConnector, pAvailable->fudgeCountFunction) {
 	LOGINFO (TEXT ("Creating function repository"));
-	m_nFunction = pAvailable->fudgeCountFunction;
-	m_ppoFunction = new CFunctionEntry*[m_nFunction];
-	int n;
-	for (n = 0; n < m_nFunction; n++) {
-		m_ppoFunction[n] = new CFunctionEntry (pAvailable->_function[n]->_identifier, pAvailable->_function[n]->_definition);
+	int n, count = pAvailable->fudgeCountFunction;
+	for (n = 0; n < count; n++) {
+		SetImpl (n, new CFunctionEntry (pAvailable->_function[n]->_identifier, pAvailable->_function[n]->_definition));
 	}
-	// poConnector not released in GetAvailable, so don't need to retain
-	m_poConnector = poConnector;
 }
 
 CFunctions::~CFunctions () {
 	LOGINFO (TEXT ("Destroying function repository"));
-	assert (m_oRefCount.Get () == 0);
-	int n;
-	for (n = 0; n < m_nFunction; n++) {
-		delete m_ppoFunction[n];
-	}
-	delete m_ppoFunction;
 }
 
 CFunctions *CFunctions::GetAvailable (CFunctionQueryAvailable *poQuery) {
@@ -95,18 +64,12 @@ CFunctions *CFunctions::GetAvailable (CFunctionQueryAvailable *poQuery) {
 		return NULL;
 	}
 	if (pAvailable->fudgeCountFunction > 0) {
-		// CFunctions will not retain, so we don't need to release
-		return new CFunctions (poQuery->GetConnector (), pAvailable);
+		CConnector *poConnector = poQuery->GetConnector ();
+		CFunctions *poFunctions = new CFunctions (poQuery->GetConnector (), pAvailable);
+		CConnector::Release (poConnector);
+		return poFunctions;
 	} else {
 		LOGWARN (TEXT ("No functions available"));
 		return NULL;
 	}
-}
-
-CFunctionEntry *CFunctions::Get (int n) {
-	if ((n < 0) || (n >= m_nFunction)) {
-		LOGWARN (TEXT ("Index ") << n << TEXT (" out of range (") << m_nFunction << TEXT (")"));
-		return NULL;
-	}
-	return m_ppoFunction[n];
 }

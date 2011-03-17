@@ -10,34 +10,30 @@
 
 LOGGING (com.opengamma.rstats.client.Procedures);
 
-CProcedureEntry::CProcedureEntry (int nInvocationId, com_opengamma_language_procedure_Definition *pDefinition) {
-	m_nInvocationId = nInvocationId;
-	m_pszName = _tcsAsciiDup (pDefinition->fudgeParent._name);
+CProcedureEntry::CProcedureEntry (int nInvocationId, com_opengamma_language_procedure_Definition *pDefinition)
+: CEntityEntry (nInvocationId, &pDefinition->fudgeParent) {
 }
 
 CProcedureEntry::~CProcedureEntry () {
-	free (m_pszName);
 }
 
-CProcedures::CProcedures (com_opengamma_language_procedure_Available *pAvailable)
-	: m_oRefCount (1) {
+com_opengamma_language_Data *CProcedureEntry::Invoke (CConnector *poConnector, com_opengamma_language_Data **ppArg) {
+	LOGDEBUG ("Invoking " << GetName ());
+	TODO (TEXT ("Invoke ") << GetInvocationId ());
+	return NULL;
+}
+
+CProcedures::CProcedures (CConnector *poConnector, com_opengamma_language_procedure_Available *pAvailable)
+: CEntities (poConnector, pAvailable->fudgeCountProcedure) {
 	LOGINFO (TEXT ("Creating procedure repository"));
-	m_nProcedure = pAvailable->fudgeCountProcedure;
-	m_ppoProcedure = new CProcedureEntry*[m_nProcedure];
-	int n;
-	for (n = 0; n < m_nProcedure; n++) {
-		m_ppoProcedure[n] = new CProcedureEntry (pAvailable->_procedure[n]->_identifier, pAvailable->_procedure[n]->_definition);
+	int n, count = pAvailable->fudgeCountProcedure;
+	for (n = 0; n < count; n++) {
+		SetImpl (n, new CProcedureEntry (pAvailable->_procedure[n]->_identifier, pAvailable->_procedure[n]->_definition));
 	}
 }
 
 CProcedures::~CProcedures () {
 	LOGINFO (TEXT ("Destroying procedure repository"));
-	assert (m_oRefCount.Get () == 0);
-	int n;
-	for (n = 0; n < m_nProcedure; n++) {
-		delete m_ppoProcedure[n];
-	}
-	delete m_ppoProcedure;
 }
 
 CProcedures *CProcedures::GetAvailable (CProcedureQueryAvailable *poQuery) {
@@ -48,17 +44,12 @@ CProcedures *CProcedures::GetAvailable (CProcedureQueryAvailable *poQuery) {
 		return NULL;
 	}
 	if (pAvailable->fudgeCountProcedure > 0) {
-		return new CProcedures (pAvailable);
+		CConnector *poConnector = poQuery->GetConnector ();
+		CProcedures *poProcedures = new CProcedures (poConnector, pAvailable);
+		CConnector::Release (poConnector);
+		return poProcedures;
 	} else {
 		LOGWARN (TEXT ("No procedures available"));
 		return NULL;
 	}
-}
-
-CProcedureEntry *CProcedures::Get (int n) {
-	if ((n < 0) || (n >= m_nProcedure)) {
-		LOGWARN (TEXT ("Index ") << n << TEXT (" out of range (") << m_nProcedure << TEXT (")"));
-		return NULL;
-	}
-	return m_ppoProcedure[n];
 }

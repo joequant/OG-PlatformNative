@@ -8,31 +8,21 @@
 #define __inc_og_pirate_client_livedata_h
 
 #include <Connector/LiveData.h>
-#include <Util/Atomic.h>
+#include Client(Entities.h)
 
-class CLiveDataEntry {
-private:
-	int m_nInvocationId;
-	char *m_pszName;
+class CLiveDataEntry : public CEntityEntry {
 public:
 	CLiveDataEntry (int nInvocationId, com_opengamma_language_livedata_Definition *pDefinition);
 	~CLiveDataEntry ();
-	const char *GetName () { return m_pszName; }
 };
 
-class CLiveData {
+class CLiveData : public CEntities {
 private:
-	CAtomicInt m_oRefCount;
-	int m_nLiveData;
-	CLiveDataEntry **m_ppoLiveData;
-	CLiveData (com_opengamma_language_livedata_Available *pAvailable);
+	CLiveData (CConnector *poConnector, com_opengamma_language_livedata_Available *pAvailable);
 	~CLiveData ();
 public:
 	static CLiveData *GetAvailable (CLiveDataQueryAvailable *poQuery);
-	void Retain () { m_oRefCount.IncrementAndGet (); }
-	static void Release (CLiveData *poLiveData) { if (!poLiveData->m_oRefCount.DecrementAndGet ()) delete poLiveData; }
-	int Size () { return m_nLiveData; }
-	CLiveDataEntry *Get (int n);
+	CLiveDataEntry *Get (int n) { return (CLiveDataEntry*)GetImpl (n); }
 };
 
 #endif /* ifndef __inc_og_pirate_client_livedata_h */

@@ -10,34 +10,24 @@
 
 LOGGING (com.opengamma.rstats.client.LiveData);
 
-CLiveDataEntry::CLiveDataEntry (int nInvocationId, com_opengamma_language_livedata_Definition *pDefinition) {
-	m_nInvocationId = nInvocationId;
-	m_pszName = _tcsAsciiDup (pDefinition->fudgeParent._name);
+CLiveDataEntry::CLiveDataEntry (int nInvocationId, com_opengamma_language_livedata_Definition *pDefinition)
+: CEntityEntry (nInvocationId, &pDefinition->fudgeParent) {
 }
 
 CLiveDataEntry::~CLiveDataEntry () {
-	free (m_pszName);
 }
 
-CLiveData::CLiveData (com_opengamma_language_livedata_Available *pAvailable)
-	: m_oRefCount (1) {
+CLiveData::CLiveData (CConnector *poConnector, com_opengamma_language_livedata_Available *pAvailable)
+: CEntities (poConnector, pAvailable->fudgeCountLiveData) {
 	LOGINFO (TEXT ("Creating live data repository"));
-	m_nLiveData = pAvailable->fudgeCountLiveData;
-	m_ppoLiveData = new CLiveDataEntry*[m_nLiveData];
-	int n;
-	for (n = 0; n < m_nLiveData; n++) {
-		m_ppoLiveData[n] = new CLiveDataEntry (pAvailable->_liveData[n]->_identifier, pAvailable->_liveData[n]->_definition);
+	int n, count = pAvailable->fudgeCountLiveData;
+	for (n = 0; n < count; n++) {
+		SetImpl (n, new CLiveDataEntry (pAvailable->_liveData[n]->_identifier, pAvailable->_liveData[n]->_definition));
 	}
 }
 
 CLiveData::~CLiveData () {
 	LOGINFO (TEXT ("Destroying live data repository"));
-	assert (m_oRefCount.Get () == 0);
-	int n;
-	for (n = 0; n < m_nLiveData; n++) {
-		delete m_ppoLiveData[n];
-	}
-	delete m_ppoLiveData;
 }
 
 CLiveData *CLiveData::GetAvailable (CLiveDataQueryAvailable *poQuery) {
@@ -48,17 +38,12 @@ CLiveData *CLiveData::GetAvailable (CLiveDataQueryAvailable *poQuery) {
 		return NULL;
 	}
 	if (pAvailable->fudgeCountLiveData > 0) {
-		return new CLiveData (pAvailable);
+		CConnector *poConnector = poQuery->GetConnector ();
+		CLiveData *poLiveData = new CLiveData (poConnector, pAvailable);
+		CConnector::Release (poConnector);
+		return poLiveData;
 	} else {
 		LOGWARN (TEXT ("No live data available"));
 		return NULL;
 	}
-}
-
-CLiveDataEntry *CLiveData::Get (int n) {
-	if ((n < 0) || (n >= m_nLiveData)) {
-		LOGWARN (TEXT ("Index ") << n << TEXT (" out of range (") << m_nLiveData << TEXT (")"));
-		return NULL;
-	}
-	return m_ppoLiveData[n];
 }

@@ -8,31 +8,24 @@
 #define __inc_og_pirate_client_procedures_h
 
 #include <Connector/Procedures.h>
-#include <Util/Atomic.h>
+#include <Connector/com_opengamma_language_Data.h>
+#include Client(Entities.h)
 
-class CProcedureEntry {
-private:
-	int m_nInvocationId;
-	char *m_pszName;
+class CProcedureEntry : public CEntityEntry {
 public:
 	CProcedureEntry (int nInvocationId, com_opengamma_language_procedure_Definition *pDefinition);
 	~CProcedureEntry ();
-	const char *GetName () { return m_pszName; }
+	com_opengamma_language_Data *Invoke (CConnector *poConnector, com_opengamma_language_Data **ppArg);
 };
 
-class CProcedures {
+class CProcedures : public CEntities {
 private:
-	CAtomicInt m_oRefCount;
-	int m_nProcedure;
-	CProcedureEntry **m_ppoProcedure;
-	CProcedures (com_opengamma_language_procedure_Available *pAvailable);
+	CProcedures (CConnector *poConnector, com_opengamma_language_procedure_Available *pAvailable);
 	~CProcedures ();
 public:
 	static CProcedures *GetAvailable (CProcedureQueryAvailable *poQuery);
-	void Retain () { m_oRefCount.IncrementAndGet (); }
-	static void Release (CProcedures *poProcedures) { if (!poProcedures->m_oRefCount.DecrementAndGet ()) delete poProcedures; }
-	int Size () { return m_nProcedure; }
-	CProcedureEntry *Get (int n);
+	CProcedureEntry *Get (int n) { return (CProcedureEntry*)GetImpl (n); }
+	com_opengamma_language_Data *Invoke (CProcedureEntry *poEntry, com_opengamma_language_Data **ppArg) { return poEntry->Invoke (GetConnector (), ppArg); }
 };
 
 #endif /* ifndef __inc_og_pirate_client_procedures_h */
