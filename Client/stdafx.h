@@ -10,6 +10,7 @@
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <wchar.h>
 #ifdef __cplusplus
 #pragma warning(disable:4995)
 #endif /* ifdef __cplusplus */
