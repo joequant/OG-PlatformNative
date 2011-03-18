@@ -1,0 +1,23 @@
+<project name="og-rstats-prefix">
+
+	<property environment="env" />
+	<property file="${user.home}/.OG-Build-common.properties" />
+	<property file="${basedir}/build.properties" />
+	<property file="${common.dir}/build.properties" />
+	<property file="${build.dir}/og-language.properties" />
+
+	<!--	Stock code to bootstrap the OG-Language build system; alternatively specify og.language.dir in
+		the environment or project build properties -->
+	<target name="fetch-og-language-build" unless="og.language.dir">
+		<echo>Bootstrapping OG-Language build system</echo>
+		<subant genericantfile="${common.dir}/common.xml" buildpath="${basedir}" target="resolve" inheritall="true" />
+		<property name="og.language.dir" value="${build.dir}/og-language" />
+		<unzip dest="${og.language.dir}" overwrite="true">
+			<fileset dir="${lib.dir}/source/com.opengamma/og-language">
+				<include name="*-build-*.zip" />
+			</fileset>
+		</unzip>
+		<echo file="${build.dir}/og-language.properties">og.language.dir=${og.language.dir}</echo>
+	</target>
+
+</project>

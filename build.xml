@@ -1,7 +1,8 @@
 <project name="og-rstats" default="compile">
 
-	<property file="${basedir}/build.properties" />
-	<import file="${og.language.dir}/build-prefix.xml" />
+	<import file="${basedir}/build-prefix.xml" />
+	<subant antfile="build-prefix.xml" buildpath="${basedir}" target="fetch-og-language-build" />
+	<property file="${build.dir}/og-language.properties" />
 
 	<path id="java.build.path">
 		<pathelement path="${basedir}/Ext" />
@@ -20,16 +21,12 @@
 
 	<!-- This pattern should probably be in OG-Language; it will be needed for any child project -->
 	<target name="unpack-resolve" depends="build-suffix.unpack-resolve">
-		<unpack-include org="com.opengamma" name="og-language" />
-		<unzip dest="${lib.dir}" overwrite="false">
-			<fileset dir="${lib.dir}/lib/com.opengamma/og-language">
-				<include name="*.zip" />
-			</fileset>
-			<fileset dir="${lib.dir}/bin/com.opengamma/og-language">
-				<include name="*.zip" />
-			</fileset>
-		</unzip>
+		<echo>${og.language.dir}</echo>
+		<unpack-zip org="com.opengamma" name="og-language" type="include" />
+		<unpack-zip org="com.opengamma" name="og-language" type="lib" />
+		<unpack-zip org="com.opengamma" name="og-language" type="bin" />
 	</target>
+
 	<target name="deploy-jars" depends="build-suffix.deploy-jars">
 		<move file="${build.dir}/jar/com.opengamma-og-language-og-language-client.jar" tofile="${build.dir}/client.jar" />
 		<copy todir="${build.dir}">
