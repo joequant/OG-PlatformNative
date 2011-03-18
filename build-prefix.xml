@@ -11,7 +11,9 @@
 	<target name="fetch-og-language-build" unless="og.language.dir">
 		<echo>Bootstrapping OG-Language build system</echo>
 		<subant genericantfile="${common.dir}/common.xml" buildpath="${basedir}" target="resolve" inheritall="true" />
-		<property name="og.language.dir" value="${build.dir}/og-language" />
+		<pathconvert targetos="unix" property="og.language.dir">
+			<path location="${build.dir}/og-language" />
+		</pathconvert>
 		<unzip dest="${og.language.dir}" overwrite="true">
 			<fileset dir="${lib.dir}/source/com.opengamma/og-language">
 				<include name="*-build-*.zip" />
