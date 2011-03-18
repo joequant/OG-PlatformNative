@@ -2,7 +2,7 @@
 
 	<property file="${basedir}/build.properties" />
 	<property file="${solution.dir}/build.properties" />
-	<property file="${build.dir}/og-language.properties" />
+	<property file="${og.language.file}" />
 	<import file="${og.language.dir}/build-cpp.xml" />
 
 	<target name="compile-after" depends="build-cpp.compile-after">

@@ -4,7 +4,7 @@
 	<property file="${user.home}/.OG-Build-common.properties" />
 	<property file="${basedir}/build.properties" />
 	<property file="${common.dir}/build.properties" />
-	<property file="${build.dir}/og-language.properties" />
+	<property file="${og.language.file}" />
 
 	<!--	Stock code to bootstrap the OG-Language build system; alternatively specify og.language.dir in
 		the environment or project build properties -->
@@ -17,7 +17,7 @@
 				<include name="*-build-*.zip" />
 			</fileset>
 		</unzip>
-		<echo file="${build.dir}/og-language.properties">og.language.dir=${og.language.dir}</echo>
+		<echo file="${og.language.file}">og.language.dir=${og.language.dir}</echo>
 	</target>
 
 </project>

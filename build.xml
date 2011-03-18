@@ -2,7 +2,7 @@
 
 	<import file="${basedir}/build-prefix.xml" />
 	<subant antfile="build-prefix.xml" buildpath="${basedir}" target="fetch-og-language-build" />
-	<property file="${build.dir}/og-language.properties" />
+	<property file="${og.language.file}" />
 
 	<path id="java.build.path">
 		<pathelement path="${basedir}/Ext" />
