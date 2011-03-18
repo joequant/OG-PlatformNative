@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_stdafx_h
-#define __inc_og_pirate_client_stdafx_h
+#ifndef STDAFX_H
+#define STDAFX_H
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -26,4 +26,4 @@
 
 #define Client(path) #path
 
-#endif /* ifndef __inc_og_pirate_client_stdafx_h */
+#endif /* ifndef STDAFX_H */
