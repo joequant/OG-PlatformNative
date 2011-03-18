@@ -106,7 +106,7 @@ static void CanCoerce () {
 
 #define COERCE_INIT \
 	com_opengamma_language_Value *v1 = Integer (1); \
-	com_opengamma_language_Value *v2 = String ("1000"); \
+	com_opengamma_language_Value *v2 = String (TEXT ("1000")); \
 	com_opengamma_language_Value *v3 = Boolean (FUDGE_FALSE); \
 	com_opengamma_language_Value *v4 = Double (1.0); \
 	com_opengamma_language_Value *r1[] = { v1, v2, NULL }; \
