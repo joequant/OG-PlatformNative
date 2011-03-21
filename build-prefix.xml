@@ -10,7 +10,13 @@
 		the environment or project build properties -->
 	<target name="fetch-og-language-build" unless="og.language.dir">
 		<echo>Bootstrapping OG-Language build system</echo>
-		<subant genericantfile="${common.dir}/common.xml" buildpath="${basedir}" target="resolve" inheritall="true" />
+		<subant genericantfile="${common.dir}/common.xml" buildpath="${basedir}" target="resolve" inheritall="true" failonerror="false" />
+        <available property="og.language.found" file="${lib.dir}/source/com.opengamma/og-language" />
+        <antcall target="unzip-og-language-build" />
+        <property name="og.language.dir" value="${basedir}/../OG-Language" />
+        <echo file="${og.language.file}">og.language.dir=${og.language.dir}</echo>
+    </target>
+    <target name="unzip-og-language-build" if="og.language.found">
 		<pathconvert targetos="unix" property="og.language.dir">
 			<path location="${build.dir}/og-language" />
 		</pathconvert>
@@ -19,7 +25,6 @@
 				<include name="*-build-*.zip" />
 			</fileset>
 		</unzip>
-		<echo file="${og.language.file}">og.language.dir=${og.language.dir}</echo>
 	</target>
 
 </project>
