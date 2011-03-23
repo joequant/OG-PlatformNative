@@ -6,6 +6,7 @@
 
 package com.opengamma.rstats;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -15,6 +16,7 @@ public class TodoTest {
 
   @Test
   public void todo () {
+    Assert.assertTrue (Todo.placeholder ());
   }
 
 }
