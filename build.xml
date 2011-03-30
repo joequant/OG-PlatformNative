@@ -1,8 +1,7 @@
 <project name="og-rstats" default="compile">
 
-	<import file="${basedir}/build-prefix.xml" />
 	<subant antfile="build-prefix.xml" buildpath="${basedir}" target="fetch-og-language-build" />
-	<property file="${og.language.file}" />
+	<import file="${basedir}/build-prefix.xml" />
 
 	<path id="java.build.path">
 		<pathelement path="${basedir}/Ext" />
@@ -21,7 +20,6 @@
 
 	<!-- This pattern should probably be in OG-Language; it will be needed for any child project -->
 	<target name="unpack-resolve" depends="build-suffix.unpack-resolve">
-		<echo>${og.language.dir}</echo>
 		<unpack-zip org="com.opengamma" name="og-language" type="include" />
 		<unpack-zip org="com.opengamma" name="og-language" type="lib" />
 		<unpack-zip org="com.opengamma" name="og-language" type="bin" />
