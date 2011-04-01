@@ -33,6 +33,7 @@ Functions_installImpl <- function (index) {
     if (length (argNames) == length (argFlags)) {
       argDecl <- c ()
       validate <- c ()
+      argStrings <- c ()
       if (length (argNames) > 0) {
         for (i in seq (from = 1, to = length (argNames))) {
           flagOptional <- FALSE
@@ -47,14 +48,20 @@ Functions_installImpl <- function (index) {
             argDecl <- append (argDecl, argNames[i])
             validate <- append (validate, paste ("if (is.null (", argNames[i], ")) stop (\"Parameter '", argNames[i], "' may not be null\")", sep = ""))
           }
+          argStrings <- append (argStrings, paste ("\"", argNames[i], "\"", sep = ""))
         }
       }
       argDecl <- paste (argDecl, collapse = ", ")
       argInvoke <- paste (argNames, collapse = ", ")
+      argStrings <- paste (argStrings, collapse = ", ")
       cmd <- paste (c (
         paste (name, " <<- function (", argDecl, ") {", sep = ""),
         validate,
-        paste ("Functions_invoke (", index, ", list (", argInvoke, "))", sep = ""),
+        paste ("result <- Functions_invoke (", index, ", list (", argInvoke, "))", sep = ""),
+        "if (is.ErrorValue (result)) {",
+        paste ("if (result@code == 1) stop (paste (\"Parameter '\", switch (result@index + 1, ", argStrings, "), \"' invalid - \", result@message, sep = \"\"))", sep = ""),
+        "stop (result@toString)",
+        "} else result",
         "}"), sep = "\n")
       eval (parse (text = cmd))
     } else {

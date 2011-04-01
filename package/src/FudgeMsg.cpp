@@ -71,9 +71,11 @@ SEXP RFudgeMsg::FromFudgeMsg (FudgeMsg msg) {
 	PROTECT (cls);
 	SEXP obj = R_do_new_object (cls);
 	PROTECT (obj);
-	R_do_slot_assign (obj, mkString (R_FUDGEMSG_POINTER), msgptr);
+	SEXP field = mkString (R_FUDGEMSG_POINTER);
+	PROTECT (field);
+	R_do_slot_assign (obj, field, msgptr);
 	R_RegisterCFinalizerEx (msgptr, FudgeMsg_finalizer, TRUE);
-	UNPROTECT (3);
+	UNPROTECT (4);
 	return obj;
 }
 

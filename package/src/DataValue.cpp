@@ -9,6 +9,7 @@
 #include "Errors.h"
 #include "FudgeMsg.h"
 #include "RCallback.h"
+#include "ErrorValue.h"
 #include Client(DataUtil.h)
 
 LOGGING (com.opengamma.pirate.package.DataValue);
@@ -90,8 +91,8 @@ void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_langu
 SEXP CValue::ToSEXP (const com_opengamma_language_Value *pValue) {
 	SEXP result = R_NilValue;
 	if (pValue->_errorValue) {
-		LOGWARN (TEXT ("Error in response"));
-		TODO (TEXT ("Propogate the error out to R for a user-level error"));
+		LOGWARN (TEXT ("Error ") << *pValue->_errorValue << TEXT (" in response"));
+		result = RErrorValue::FromValue (pValue);
 	} else if (pValue->_boolValue) {
 		LOGDEBUG (TEXT ("BOOL value"));
 		result = allocVector (LGLSXP, 1);
