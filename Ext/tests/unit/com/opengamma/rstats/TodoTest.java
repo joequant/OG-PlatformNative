@@ -6,8 +6,8 @@
 
 package com.opengamma.rstats;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
 
 /**
  * Placeholder for compilation to work.
@@ -16,7 +16,7 @@ public class TodoTest {
 
   @Test
   public void todo () {
-    Assert.assertTrue (Todo.placeholder ());
+    assertTrue (Todo.placeholder ());
   }
 
 }
