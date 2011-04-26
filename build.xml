@@ -36,7 +36,9 @@
 	</target>
 
 	<target name="compile" depends="build-suffix.compile">
-		<subant target="compile" buildpath="${basedir}/package" />
+		<subant target="compile" buildpath="${basedir}/package">
+			<property name="module.version" value="${module.version}" />
+		</subant>
 	</target>
 
 	<target name="dist" depends="compile">
