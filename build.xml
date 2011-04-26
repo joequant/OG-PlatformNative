@@ -70,4 +70,6 @@
 		<delete includeemptydirs="true" failonerror="false" dir="${basedir}/${package.name}.Rcheck" />
 	</target>
 
+	<target name="test-batch" />
+
 </project>
