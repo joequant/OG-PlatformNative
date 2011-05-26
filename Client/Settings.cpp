@@ -17,6 +17,6 @@ CSettings::CSettings () : CAbstractSettings () {
 CSettings::~CSettings () {
 }
 
-long CSettings::GetStartupTimeout () {
+long CSettings::GetStartupTimeout () const {
 	return GetStartupTimeout (DEFAULT_STARTUP_TIMEOUT);
 }
