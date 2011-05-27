@@ -9,7 +9,7 @@
 
 LOGGING (com.opengamma.rstats.client.Repositories);
 
-CRepositories::CRepositories (CConnector *poConnector) {
+CRepositories::CRepositories (const CConnector *poConnector) {
 	LOGINFO (TEXT ("Creating function, live data and procedure repositories"));
 	CFunctionQueryAvailable queryFunctions (poConnector);
 	bool bQueryFunctions = queryFunctions.Send ();
@@ -43,19 +43,19 @@ CRepositories::~CRepositories () {
 	if (m_poProcedures) CProcedures::Release (m_poProcedures);
 }
 
-CFunctions *CRepositories::GetFunctions () {
+const CFunctions *CRepositories::GetFunctions () {
 	if (!m_poFunctions) return NULL;
 	m_poFunctions->Retain ();
 	return m_poFunctions;
 }
 
-CLiveData *CRepositories::GetLiveData () {
+const CLiveData *CRepositories::GetLiveData () {
 	if (!m_poLiveData) return NULL;
 	m_poLiveData->Retain ();
 	return m_poLiveData;
 }
 
-CProcedures *CRepositories::GetProcedures () {
+const CProcedures *CRepositories::GetProcedures () {
 	if (!m_poProcedures) return NULL;
 	m_poProcedures->Retain ();
 	return m_poProcedures;

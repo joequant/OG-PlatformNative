@@ -12,17 +12,17 @@
 
 class CLiveDataEntry : public CEntityEntry {
 public:
-	CLiveDataEntry (int nInvocationId, com_opengamma_language_livedata_Definition *pDefinition);
+	CLiveDataEntry (int nInvocationId, const com_opengamma_language_livedata_Definition *pDefinition);
 	~CLiveDataEntry ();
 };
 
 class CLiveData : public CEntities {
 private:
-	CLiveData (CConnector *poConnector, com_opengamma_language_livedata_Available *pAvailable);
+	CLiveData (const CConnector *poConnector, const com_opengamma_language_livedata_Available *pAvailable);
 	~CLiveData ();
 public:
-	static CLiveData *GetAvailable (CLiveDataQueryAvailable *poQuery);
-	CLiveDataEntry *Get (int n) { return (CLiveDataEntry*)GetImpl (n); }
+	static const CLiveData *GetAvailable (CLiveDataQueryAvailable *poQuery);
+	const CLiveDataEntry *Get (int n) { return (const CLiveDataEntry*)GetImpl (n); }
 };
 
 #endif /* ifndef __inc_og_pirate_client_livedata_h */

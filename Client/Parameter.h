@@ -16,10 +16,10 @@ private:
 	char *m_pszName;
 	int m_nFlags;
 public:
-	CParameter (com_opengamma_language_definition_Parameter *pDefinition);
+	CParameter (const com_opengamma_language_definition_Parameter *pDefinition);
 	~CParameter ();
-	const char *GetName () { return m_pszName; }
-	int GetFlags () { return m_nFlags; }
+	const char *GetName () const { return m_pszName; }
+	int GetFlags () const { return m_nFlags; }
 };
 
 #endif /* ifndef __inc_og_pirate_client_parameter_h */

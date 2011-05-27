@@ -14,15 +14,15 @@
 
 class CRepositories {
 private:
-	CFunctions *m_poFunctions;
-	CLiveData *m_poLiveData;
-	CProcedures *m_poProcedures;
+	const CFunctions *m_poFunctions;
+	const CLiveData *m_poLiveData;
+	const CProcedures *m_poProcedures;
 public:
-	CRepositories (CConnector *poConnector);
+	CRepositories (const CConnector *poConnector);
 	~CRepositories ();
-	CFunctions *GetFunctions ();
-	CLiveData *GetLiveData ();
-	CProcedures *GetProcedures ();
+	const CFunctions *GetFunctions ();
+	const CLiveData *GetLiveData ();
+	const CProcedures *GetProcedures ();
 };
 
 #endif /* ifndef __inc_og_pirate_client_repositories_h */

@@ -9,6 +9,6 @@
 
 #include <Connector/Connector.h>
 
-CConnector *ConnectorInstance ();
+const CConnector *ConnectorInstance ();
 
 #endif /* ifndef __inc_og_pirate_client_connector_h */

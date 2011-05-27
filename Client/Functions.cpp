@@ -10,14 +10,14 @@
 
 LOGGING (com.opengamma.rstats.client.Functions);
 
-CFunctionEntry::CFunctionEntry (int nInvocationId, com_opengamma_language_function_Definition *pDefinition)
+CFunctionEntry::CFunctionEntry (int nInvocationId, const com_opengamma_language_function_Definition *pDefinition)
 : CEntityEntry (nInvocationId, &pDefinition->fudgeParent) {
 }
 
 CFunctionEntry::~CFunctionEntry () {
 }
 
-com_opengamma_language_Data *CFunctionEntry::Invoke (CConnector *poConnector, com_opengamma_language_Data **ppArg) {
+com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnector, const com_opengamma_language_Data * const *ppArg) const {
 	LOGDEBUG ("Invoking " << GetName ());
 	CFunctionInvoke invoke (poConnector);
 	invoke.SetInvocationId (GetInvocationId ());
@@ -43,7 +43,7 @@ com_opengamma_language_Data *CFunctionEntry::Invoke (CConnector *poConnector, co
 	return pReturnResult;
 }
 
-CFunctions::CFunctions (CConnector *poConnector, com_opengamma_language_function_Available *pAvailable)
+CFunctions::CFunctions (const CConnector *poConnector, const com_opengamma_language_function_Available *pAvailable)
 : CEntities (poConnector, pAvailable->fudgeCountFunction) {
 	LOGINFO (TEXT ("Creating function repository"));
 	int n, count = pAvailable->fudgeCountFunction;
@@ -56,15 +56,15 @@ CFunctions::~CFunctions () {
 	LOGINFO (TEXT ("Destroying function repository"));
 }
 
-CFunctions *CFunctions::GetAvailable (CFunctionQueryAvailable *poQuery) {
+const CFunctions *CFunctions::GetAvailable (CFunctionQueryAvailable *poQuery) {
 	LOGDEBUG (TEXT ("Waiting for available functions"));
-	com_opengamma_language_function_Available *pAvailable = poQuery->Recv (CRequestBuilder::GetDefaultTimeout ());
+	const com_opengamma_language_function_Available *pAvailable = poQuery->Recv (CRequestBuilder::GetDefaultTimeout ());
 	if (!pAvailable) {
 		LOGWARN (TEXT ("Did not get available function response"));
 		return NULL;
 	}
 	if (pAvailable->fudgeCountFunction > 0) {
-		CConnector *poConnector = poQuery->GetConnector ();
+		const CConnector *poConnector = poQuery->GetConnector ();
 		CFunctions *poFunctions = new CFunctions (poQuery->GetConnector (), pAvailable);
 		CConnector::Release (poConnector);
 		return poFunctions;

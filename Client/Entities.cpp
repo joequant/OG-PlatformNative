@@ -9,11 +9,11 @@
 
 LOGGING (com.opengamma.rstats.client.Entities);
 
-CEntityEntry::CEntityEntry (int nInvocationId, com_opengamma_language_definition_Definition *pDefinition) {
+CEntityEntry::CEntityEntry (int nInvocationId, const com_opengamma_language_definition_Definition *pDefinition) {
 	m_nInvocationId = nInvocationId;
 	m_pszName = _tcsAsciiDup (pDefinition->_name);
 	m_nParameter = pDefinition->fudgeCountParameter;
-	m_ppoParameter = new CParameter*[m_nParameter];
+	m_ppoParameter = new const CParameter*[m_nParameter];
 	int n;
 	for (n = 0; n < m_nParameter; n++) {
 		m_ppoParameter[n] = new CParameter (pDefinition->_parameter[n]);
@@ -29,7 +29,7 @@ CEntityEntry::~CEntityEntry () {
 	delete m_ppoParameter;
 }
 
-CParameter *CEntityEntry::GetParameter (int n) {
+const CParameter *CEntityEntry::GetParameter (int n) const {
 	if ((n < 0) || (n >= m_nParameter)) {
 		LOGWARN (TEXT ("Index ") << n << TEXT (" out of range (") << m_nParameter << TEXT (")"));
 		return NULL;
@@ -37,11 +37,11 @@ CParameter *CEntityEntry::GetParameter (int n) {
 	return m_ppoParameter[n];
 }
 
-CEntities::CEntities (CConnector *poConnector, int nEntity)
+CEntities::CEntities (const CConnector *poConnector, int nEntity)
 : m_oRefCount (1) {
 	LOGINFO (TEXT ("Creating ") << nEntity << TEXT (" entity repository"));
 	m_nEntity = nEntity;
-	m_ppoEntity = new CEntityEntry*[nEntity];
+	m_ppoEntity = new const CEntityEntry*[nEntity];
 	memset (m_ppoEntity, 0, sizeof (CEntityEntry*) * nEntity);
 	poConnector->Retain ();
 	m_poConnector = poConnector;
@@ -56,7 +56,7 @@ CEntities::~CEntities () {
 	delete m_ppoEntity;
 }
 
-CEntityEntry *CEntities::GetImpl (int n) {
+const CEntityEntry *CEntities::GetImpl (int n) const {
 	if ((n < 0) || (n >= m_nEntity)) {
 		LOGWARN (TEXT ("Index ") << n << TEXT (" out of range (") << m_nEntity << TEXT (")"));
 		return NULL;
@@ -64,7 +64,7 @@ CEntityEntry *CEntities::GetImpl (int n) {
 	return m_ppoEntity[n];
 }
 
-void CEntities::SetImpl (int n, CEntityEntry *poEntry) {
+void CEntities::SetImpl (int n, const CEntityEntry *poEntry) {
 	if ((n < 0) || (n >= m_nEntity)) {
 		LOGWARN (TEXT ("Index ") << n << TEXT (" out of range (") << m_nEntity << TEXT (")"));
 		return;
