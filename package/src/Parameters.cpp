@@ -8,7 +8,7 @@
 #include "Parameters.h"
 #include "Errors.h"
 
-LOGGING (com.opengamma.pirate.package.Parameters);
+LOGGING (com.opengamma.rstats.package.Parameters);
 
 CParameters::CParameters (com_opengamma_language_Data **ppArg, int nArg) {
 	m_ppArg = ppArg;

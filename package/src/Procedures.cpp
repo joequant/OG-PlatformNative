@@ -12,31 +12,31 @@
 LOGGING (com.opengamma.rstats.package.Procedures);
 
 SEXP Procedures_count0 () {
-    SEXP count = R_NilValue;
-    if (g_poProcedures) {
-        count = allocVector (INTSXP, 1);
-        *INTEGER (count) = g_poProcedures->Size ();
-    } else {
+	SEXP count = R_NilValue;
+	if (g_poProcedures) {
+		count = allocVector (INTSXP, 1);
+		*INTEGER (count) = g_poProcedures->Size ();
+	} else {
 		LOGERROR (ERR_INITIALISATION);
-    }
-    return count;
+	}
+	return count;
 }
 
 SEXP Procedures_getName1 (SEXP index) {
-    SEXP name = R_NilValue;
-    if (g_poProcedures) {
-        if (isInteger (index)) {
-            CProcedureEntry *poEntry = g_poProcedures->Get (*INTEGER (index));
-            if (poEntry) {
-                name = mkString (poEntry->GetName ());
-            } else {
+	SEXP name = R_NilValue;
+	if (g_poProcedures) {
+		if (isInteger (index)) {
+			const CProcedureEntry *poEntry = g_poProcedures->Get (*INTEGER (index));
+			if (poEntry) {
+				name = mkString (poEntry->GetName ());
+			} else {
 				LOGWARN (ERR_PARAMETER_VALUE);
-            }
-        } else {
+			}
+		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);
-        }
-    } else {
+		}
+	} else {
 		LOGERROR (ERR_INITIALISATION);
-    }
-    return name;
+	}
+	return name;
 }

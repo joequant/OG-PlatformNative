@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_package_errors_h
-#define __inc_og_pirate_package_errors_h
+#ifndef __inc_og_rstats_package_errors_h
+#define __inc_og_rstats_package_errors_h
 
 #define ERR_INITIALISATION		"Not initialised"
 #define ERR_INVOCATION			"Invocation error"
@@ -14,4 +14,4 @@
 #define ERR_MEMORY				"Out of memory"
 #define ERR_INTERNAL			"Internal error"
 
-#endif /* ifndef __inc_og_pirate_package_errors_h */
+#endif /* ifndef __inc_og_rstats_package_errors_h */

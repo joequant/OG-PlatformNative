@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_package_errorvalue_h
-#define __inc_og_pirate_package_errorvalue_h
+#ifndef __inc_og_rstats_package_errorvalue_h
+#define __inc_og_rstats_package_errorvalue_h
 
 #include <Connector/com_opengamma_language_Value.h>
 
@@ -17,4 +17,4 @@ public:
 	static SEXP FromValue (const com_opengamma_language_Value *pValue);
 };
 
-#endif /* ifndef __inc_og_pirate_package_errorvalue_h */
+#endif /* ifndef __inc_og_rstats_package_errorvalue_h */

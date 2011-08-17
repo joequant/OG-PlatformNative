@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_functions_h
-#define __inc_og_pirate_client_functions_h
+#ifndef __inc_og_rstats_client_functions_h
+#define __inc_og_rstats_client_functions_h
 
 #include <Connector/Functions.h>
 #include Client(Entities.h)
@@ -23,8 +23,8 @@ private:
 	~CFunctions ();
 public:
 	static const CFunctions *GetAvailable (CFunctionQueryAvailable *poQuery);
-	const CFunctionEntry *Get (int n) { return (const CFunctionEntry*)GetImpl (n); }
+	const CFunctionEntry *Get (int n) const { return (const CFunctionEntry*)GetImpl (n); }
 	com_opengamma_language_Data *Invoke (const CFunctionEntry *poEntry, const com_opengamma_language_Data * const *ppArg) const { return poEntry->Invoke (GetConnector (), ppArg); }
 };
 
-#endif /* ifndef __inc_og_pirate_client_functions_h */
+#endif /* ifndef __inc_og_rstats_client_functions_h */

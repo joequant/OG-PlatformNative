@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_repositories_h
-#define __inc_og_pirate_client_repositories_h
+#ifndef __inc_og_rstats_client_repositories_h
+#define __inc_og_rstats_client_repositories_h
 
 #include <Connector/Connector.h>
 #include Client(Functions.h)
@@ -25,4 +25,4 @@ public:
 	const CProcedures *GetProcedures ();
 };
 
-#endif /* ifndef __inc_og_pirate_client_repositories_h */
+#endif /* ifndef __inc_og_rstats_client_repositories_h */

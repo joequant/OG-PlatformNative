@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_entities_h
-#define __inc_og_pirate_client_entities_h
+#ifndef __inc_og_rstats_client_entities_h
+#define __inc_og_rstats_client_entities_h
 
 #include <Connector/com_opengamma_language_definition_Definition.h>
 #include <Util/Atomic.h>
@@ -45,4 +45,4 @@ public:
 	int Size () const { return m_nEntity; }
 };
 
-#endif /* ifndef __inc_og_pirate_client_entities_h */
+#endif /* ifndef __inc_og_rstats_client_entities_h */

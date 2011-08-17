@@ -12,31 +12,31 @@
 LOGGING (com.opengamma.rstats.package.LiveData);
 
 SEXP LiveData_count0 () {
-    SEXP count = R_NilValue;
-    if (g_poLiveData) {
-        count = allocVector (INTSXP, 1);
-        *INTEGER (count) = g_poLiveData->Size ();
-    } else {
+	SEXP count = R_NilValue;
+	if (g_poLiveData) {
+		count = allocVector (INTSXP, 1);
+		*INTEGER (count) = g_poLiveData->Size ();
+	} else {
 		LOGERROR (ERR_INITIALISATION);
-    }
-    return count;
+	}
+	return count;
 }
 
 SEXP LiveData_getName1 (SEXP index) {
-    SEXP name = R_NilValue;
-    if (g_poLiveData) {
-        if (isInteger (index)) {
-            CLiveDataEntry *poEntry = g_poLiveData->Get (*INTEGER (index));
-            if (poEntry) {
-                name = mkString (poEntry->GetName ());
-            } else {
+	SEXP name = R_NilValue;
+	if (g_poLiveData) {
+		if (isInteger (index)) {
+			const CLiveDataEntry *poEntry = g_poLiveData->Get (*INTEGER (index));
+			if (poEntry) {
+				name = mkString (poEntry->GetName ());
+			} else {
 				LOGWARN (ERR_PARAMETER_VALUE);
-            }
-        } else {
+			}
+		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);
-        }
-    } else {
+		}
+	} else {
 		LOGERROR (ERR_INITIALISATION);
-    }
-    return name;
+	}
+	return name;
 }

@@ -4,11 +4,11 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_connector_h
-#define __inc_og_pirate_client_connector_h
+#ifndef __inc_og_rstats_client_connector_h
+#define __inc_og_rstats_client_connector_h
 
 #include <Connector/Connector.h>
 
 const CConnector *ConnectorInstance ();
 
-#endif /* ifndef __inc_og_pirate_client_connector_h */
+#endif /* ifndef __inc_og_rstats_client_connector_h */

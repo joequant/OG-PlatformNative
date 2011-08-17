@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_parameter_h
-#define __inc_og_pirate_client_parameter_h
+#ifndef __inc_og_rstats_client_parameter_h
+#define __inc_og_rstats_client_parameter_h
 
 #include <Connector/com_opengamma_language_definition_Parameter.h>
 
@@ -22,4 +22,4 @@ public:
 	int GetFlags () const { return m_nFlags; }
 };
 
-#endif /* ifndef __inc_og_pirate_client_parameter_h */
+#endif /* ifndef __inc_og_rstats_client_parameter_h */

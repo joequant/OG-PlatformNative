@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_dllversioninfo_h
-#define __inc_og_pirate_client_dllversioninfo_h
+#ifndef __inc_og_rstats_client_dllversioninfo_h
+#define __inc_og_rstats_client_dllversioninfo_h
 
 #define DllVersion_FileDescription	"OpenGamma client library for R"
 
@@ -17,4 +17,4 @@
 
 #define DllVersion_ProductName		"OpenGamma/R"
 
-#endif /* ifndef __inc_og_pirate_client_dllversioninfo_h */
+#endif /* ifndef __inc_og_rstats_client_dllversioninfo_h */

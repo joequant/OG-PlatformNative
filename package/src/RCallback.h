@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_package_rcallback_h
-#define __inc_og_pirate_package_rcallback_h
+#ifndef __inc_og_rstats_package_rcallback_h
+#define __inc_og_rstats_package_rcallback_h
 
 class CRCallback {
 private:
@@ -17,4 +17,4 @@ public:
 	static SEXP ToFudgeMsg (SEXP object) { return InvokeGeneric (object, "toFudgeMsg"); }
 };
 
-#endif /* ifndef __inc_og_pirate_package_rcallback_h */
+#endif /* ifndef __inc_og_rstats_package_rcallback_h */

@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_procedures_h
-#define __inc_og_pirate_client_procedures_h
+#ifndef __inc_og_rstats_client_procedures_h
+#define __inc_og_rstats_client_procedures_h
 
 #include <Connector/Procedures.h>
 #include <Connector/com_opengamma_language_Data.h>
@@ -24,8 +24,8 @@ private:
 	~CProcedures ();
 public:
 	static const CProcedures *GetAvailable (CProcedureQueryAvailable *poQuery);
-	const CProcedureEntry *Get (int n) { return (const CProcedureEntry*)GetImpl (n); }
+	const CProcedureEntry *Get (int n) const { return (const CProcedureEntry*)GetImpl (n); }
 	com_opengamma_language_Data *Invoke (const CProcedureEntry *poEntry, const com_opengamma_language_Data * const *ppArg) const { return poEntry->Invoke (GetConnector (), ppArg); }
 };
 
-#endif /* ifndef __inc_og_pirate_client_procedures_h */
+#endif /* ifndef __inc_og_rstats_client_procedures_h */

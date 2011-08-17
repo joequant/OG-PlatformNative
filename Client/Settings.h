@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_settings_h
-#define __inc_og_pirate_client_settings_h
+#ifndef __inc_og_rstats_client_settings_h
+#define __inc_og_rstats_client_settings_h
 
 #define SETTINGS_STARTUP_TIMEOUT	TEXT ("startupTimeout")
 
@@ -24,4 +24,4 @@ public:
 	long GetStartupTimeout () const;
 };
 
-#endif /* ifndef __inc_og_pirate_client_settings_h */
+#endif /* ifndef __inc_og_rstats_client_settings_h */

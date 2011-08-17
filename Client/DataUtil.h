@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_datautil_h
-#define __inc_og_pirate_client_datautil_h
+#ifndef __inc_og_rstats_client_datautil_h
+#define __inc_og_rstats_client_datautil_h
 
 #include <Connector/com_opengamma_language_Data.h>
 
@@ -31,4 +31,4 @@ public:
 	static bool Coerce (int type, com_opengamma_language_Value * const * const *ppValue);
 };
 
-#endif /* ifndef __inc_og_pirate_client_datautil_h */
+#endif /* ifndef __inc_og_rstats_client_datautil_h */

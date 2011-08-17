@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_clienttest_dllversioninfo_h
-#define __inc_og_pirate_clienttest_dllversioninfo_h
+#ifndef __inc_og_rstats_clienttest_dllversioninfo_h
+#define __inc_og_rstats_clienttest_dllversioninfo_h
 
 #define DllVersion_FileDescription	"R integration client test"
 #ifdef _WIN32
@@ -16,4 +16,4 @@
 
 // TODO: need product name ??
 
-#endif /* ifndef __inc_og_pirate_clienttest_dllversioninfo_h */
+#endif /* ifndef __inc_og_rstats_clienttest_dllversioninfo_h */

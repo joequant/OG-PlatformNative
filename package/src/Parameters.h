@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_package_parameters_h
-#define __inc_og_pirate_package_parameters_h
+#ifndef __inc_og_rstats_package_parameters_h
+#define __inc_og_rstats_package_parameters_h
 
 #include "DataValue.h"
 
@@ -21,4 +21,4 @@ public:
 	com_opengamma_language_Data **GetData () { return m_ppArg; }
 };
 
-#endif /* ifndef __inc_og_pirate_package_parameters_h */
+#endif /* ifndef __inc_og_rstats_package_parameters_h */

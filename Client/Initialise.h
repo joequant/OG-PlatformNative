@@ -4,10 +4,10 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_initialise_h
-#define __inc_og_pirate_client_initialise_h
+#ifndef __inc_og_rstats_client_initialise_h
+#define __inc_og_rstats_client_initialise_h
 
 bool Initialise ();
 bool Shutdown ();
 
-#endif /* ifndef __inc_og_pirate_client_initialise_h */
+#endif /* ifndef __inc_og_rstats_client_initialise_h */

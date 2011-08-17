@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_package_livedata_h
-#define __inc_og_pirate_package_livedata_h
+#ifndef __inc_og_rstats_package_livedata_h
+#define __inc_og_rstats_package_livedata_h
 
 extern "C" {
 
@@ -14,4 +14,4 @@ extern "C" {
 
 }
 
-#endif /* ifndef __inc_og_pirate_package_livedata_h */
+#endif /* ifndef __inc_og_rstats_package_livedata_h */

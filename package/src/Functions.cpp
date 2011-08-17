@@ -27,7 +27,7 @@ SEXP RFunctions::GetName (SEXP index) {
 	SEXP name = R_NilValue;
 	if (g_poFunctions) {
 		if (isInteger (index)) {
-			CFunctionEntry *poEntry = g_poFunctions->Get (*INTEGER (index));
+			const CFunctionEntry *poEntry = g_poFunctions->Get (*INTEGER (index));
 			if (poEntry) {
 				name = mkString (poEntry->GetName ());
 			} else {
@@ -43,33 +43,33 @@ SEXP RFunctions::GetName (SEXP index) {
 }
 
 SEXP RFunctions::GetParameterFlags (SEXP index) {
-    SEXP flags = R_NilValue;
-    if (g_poFunctions) {
-        if (isInteger (index)) {
-            CFunctionEntry *poEntry = g_poFunctions->Get (*INTEGER (index));
-            if (poEntry) {
-                flags = allocVector (INTSXP, poEntry->GetParameterCount ());
-                int n;
-                for (n = 0; n < poEntry->GetParameterCount (); n++) {
-                    INTEGER (flags)[n] = poEntry->GetParameter (n)->GetFlags ();
-                }
-            } else {
-                LOGWARN (ERR_PARAMETER_VALUE);
-            }
-        } else {
-            LOGERROR (ERR_PARAMETER_TYPE);
-        }
-    } else {
-        LOGERROR (ERR_INITIALISATION);
-    }
-    return flags;
+	SEXP flags = R_NilValue;
+	if (g_poFunctions) {
+		if (isInteger (index)) {
+			const CFunctionEntry *poEntry = g_poFunctions->Get (*INTEGER (index));
+			if (poEntry) {
+				flags = allocVector (INTSXP, poEntry->GetParameterCount ());
+				int n;
+				for (n = 0; n < poEntry->GetParameterCount (); n++) {
+					INTEGER (flags)[n] = poEntry->GetParameter (n)->GetFlags ();
+				}
+			} else {
+				LOGWARN (ERR_PARAMETER_VALUE);
+			}
+		} else {
+			LOGERROR (ERR_PARAMETER_TYPE);
+		}
+	} else {
+		LOGERROR (ERR_INITIALISATION);
+	}
+	return flags;
 }
 
 SEXP RFunctions::GetParameterNames (SEXP index) {
 	SEXP names = R_NilValue;
 	if (g_poFunctions) {
 		if (isInteger (index)) {
-			CFunctionEntry *poEntry = g_poFunctions->Get (*INTEGER (index));
+			const CFunctionEntry *poEntry = g_poFunctions->Get (*INTEGER (index));
 			if (poEntry) {
 				PROTECT (names = allocVector (STRSXP, poEntry->GetParameterCount ()));
 				int n;
@@ -95,7 +95,7 @@ SEXP RFunctions::Invoke (SEXP index, SEXP args) {
 	SEXP result = R_NilValue;
 	if (g_poFunctions) {
 		if (isInteger (index)) {
-			CFunctionEntry *poEntry = g_poFunctions->Get (*INTEGER (index));
+			const CFunctionEntry *poEntry = g_poFunctions->Get (*INTEGER (index));
 			if (poEntry) {
 				CParameters *poParameters = CParameters::Decode (args);
 				if (poParameters) {

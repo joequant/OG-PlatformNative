@@ -12,7 +12,7 @@
 #include "ErrorValue.h"
 #include Client(DataUtil.h)
 
-LOGGING (com.opengamma.pirate.package.DataValue);
+LOGGING (com.opengamma.rstats.package.DataValue);
 
 static com_opengamma_language_Value *_FudgeMsgValue (FudgeMsg msg) {
 	com_opengamma_language_Value *pValue = new com_opengamma_language_Value;

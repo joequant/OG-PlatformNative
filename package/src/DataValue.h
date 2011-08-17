@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_package_datavalue_h
-#define __inc_og_pirate_package_datavalue_h
+#ifndef __inc_og_rstats_package_datavalue_h
+#define __inc_og_rstats_package_datavalue_h
 
 #include <Connector/com_opengamma_language_Data.h>
 
@@ -30,4 +30,4 @@ public:
 	static void Release (com_opengamma_language_Data *pData) { com_opengamma_language_Data_free (pData); }
 };
 
-#endif /* ifndef __inc_og_pirate_package_datavalue_h */
+#endif /* ifndef __inc_og_rstats_package_datavalue_h */

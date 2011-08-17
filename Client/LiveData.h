@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_client_livedata_h
-#define __inc_og_pirate_client_livedata_h
+#ifndef __inc_og_rstats_client_livedata_h
+#define __inc_og_rstats_client_livedata_h
 
 #include <Connector/LiveData.h>
 #include Client(Entities.h)
@@ -22,7 +22,7 @@ private:
 	~CLiveData ();
 public:
 	static const CLiveData *GetAvailable (CLiveDataQueryAvailable *poQuery);
-	const CLiveDataEntry *Get (int n) { return (const CLiveDataEntry*)GetImpl (n); }
+	const CLiveDataEntry *Get (int n) const { return (const CLiveDataEntry*)GetImpl (n); }
 };
 
-#endif /* ifndef __inc_og_pirate_client_livedata_h */
+#endif /* ifndef __inc_og_rstats_client_livedata_h */

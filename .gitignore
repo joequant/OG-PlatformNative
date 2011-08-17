@@ -19,3 +19,4 @@ MANIFEST.MF
 build.number
 .settings/
 /version.h
+/package/LICENSE

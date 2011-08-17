@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_package_procedures_h
-#define __inc_og_pirate_package_procedures_h
+#ifndef __inc_og_rstats_package_procedures_h
+#define __inc_og_rstats_package_procedures_h
 
 extern "C" {
 
@@ -14,4 +14,4 @@ extern "C" {
 
 }
 
-#endif /* ifndef __inc_og_pirate_package_procedures_h */
+#endif /* ifndef __inc_og_rstats_package_procedures_h */

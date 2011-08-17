@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_pirate_package_functions_h
-#define __inc_og_pirate_package_functions_h
+#ifndef __inc_og_rstats_package_functions_h
+#define __inc_og_rstats_package_functions_h
 
 class RFunctions {
 private:
@@ -45,4 +45,4 @@ extern "C" {
 }
 #endif /* ifdef GLOBALS */
 
-#endif /* ifndef __inc_og_pirate_package_functions_h */
+#endif /* ifndef __inc_og_rstats_package_functions_h */

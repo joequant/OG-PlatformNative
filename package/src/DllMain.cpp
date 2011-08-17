@@ -47,7 +47,7 @@ void LibExport R_init_OpenGamma (DllInfo *pInfo) {
 		LOGERROR (TEXT ("Couldn't initialise DLL, error ") << GetLastError ());
 		return;
 	}
-	CConnector *poConnector = ConnectorInstance ();
+	const CConnector *poConnector = ConnectorInstance ();
 	if (!poConnector) {
 		LOGERROR (TEXT ("No connector"));
 		return;
