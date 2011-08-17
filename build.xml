@@ -47,16 +47,16 @@
   <target name="dist" depends="compile">
     <mkdir dir="${dist.dir}" />
     <mkdir dir="${package.dir}" />
-    <subant target="dist" buildpath="${basedir}/package" inheritall="true">
+    <subant target="dist" buildpath="${basedir}/package">
       <property name="wkspace.dir" value="${wkspace.dir}" />
     </subant>
-    <subant target="dist" buildpathref="java.build.path" antfile="build.parent-invoked.xml" inheritall="true">
+    <subant target="dist" buildpathref="java.build.path" antfile="build.parent-invoked.xml">
       <property name="wkspace.dir" value="${wkspace.dir}" />
     </subant>
-    <subant target="dist" buildpathref="cc.build.path" inheritall="true">
+    <subant target="dist" buildpathref="cc.build.path">
       <property name="wkspace.dir" value="${wkspace.dir}" />
     </subant>
-    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${dist.dir}/package" inheritall="true" />
+    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${dist.dir}/package" />
   </target>
 
   <target name="test-dist" depends="clean-dist,dist" description="--> Tests the R package distribution using 'R CMD check'">
