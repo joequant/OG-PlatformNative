@@ -15,20 +15,20 @@
 LOGGING (com.opengamma.rstats.client.FunctionsTest);
 
 static void QueryAvailable () {
-	CConnector *poConnector = ConnectorInstance ();
+	const CConnector *poConnector = ConnectorInstance ();
 	ASSERT (poConnector);
 	CFunctionQueryAvailable query (poConnector);
 	ASSERT (query.Send ());
-	CFunctions *poFunctions = CFunctions::GetAvailable (&query);
+	const CFunctions *poFunctions = CFunctions::GetAvailable (&query);
 	ASSERT (poFunctions);
 	LOGINFO (TEXT ("Found ") << poFunctions->Size () << TEXT (" functions"));
 	int i, j;
 	for (i = 0; i < poFunctions->Size (); i++) {
-		CFunctionEntry *poFunction = poFunctions->Get (i);
+		const CFunctionEntry *poFunction = poFunctions->Get (i);
 		ASSERT (poFunction);
 		LOGDEBUG ("Function " << i << " = " << poFunction->GetName ());
 		for (j = 0; j < poFunction->GetParameterCount (); j++) {
-			CParameter *poParameter = poFunction->GetParameter (j);
+			const CParameter *poParameter = poFunction->GetParameter (j);
 			ASSERT (poParameter);
 			LOGDEBUG ("Parameter " << j << " = " << poParameter->GetName ());
 		}

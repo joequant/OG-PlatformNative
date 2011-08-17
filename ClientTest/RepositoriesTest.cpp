@@ -12,19 +12,19 @@
 #include "Client/Repositories.h"
 #include "Client/Initialise.h"
 
-LOGGING (com.opengamma.rstats.client.FunctionsTest);
+LOGGING (com.opengamma.rstats.client.RepositoriesTest);
 
 static void Construct () {
-	CConnector *poConnector = ConnectorInstance ();
+	const CConnector *poConnector = ConnectorInstance ();
 	ASSERT (poConnector);
 	CRepositories repositories (poConnector);
-	CFunctions *poFunctions = repositories.GetFunctions ();
+	const CFunctions *poFunctions = repositories.GetFunctions ();
 	ASSERT (poFunctions);
 	CFunctions::Release (poFunctions);
-	CLiveData *poLiveData = repositories.GetLiveData ();
+	const CLiveData *poLiveData = repositories.GetLiveData ();
 	ASSERT (poLiveData);
 	CLiveData::Release (poLiveData);
-	CProcedures *poProcedures = repositories.GetProcedures ();
+	const CProcedures *poProcedures = repositories.GetProcedures ();
 	ASSERT (poProcedures);
 	CProcedures::Release (poProcedures);
 	CConnector::Release (poConnector);
