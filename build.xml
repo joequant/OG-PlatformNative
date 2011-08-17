@@ -1,73 +1,82 @@
 <project name="og-rstats" default="compile">
 
-	<subant antfile="build-prefix.xml" buildpath="${basedir}" target="fetch-og-language-build" />
-	<import file="${basedir}/build-prefix.xml" />
+  <subant antfile="build-prefix.xml" buildpath="${basedir}" target="fetch-og-language-build">
+    <property name="wkspace.dir" value="${wkspace.dir}" />
+  </subant>
+  <import file="${basedir}/build-prefix.xml" />
 
-	<path id="java.build.path">
-		<pathelement path="${basedir}/Ext" />
-	</path>
-	<path id="javatest.build.path">
-		<path refid="java.build.path" />
-	</path>
-	<path id="cc.build.path">
-		<pathelement path="${basedir}/Client" />
-	</path>
-	<path id="cctest.build.path">
-		<pathelement path="${basedir}/ClientTest" />
-	</path>
+  <path id="java.build.path">
+    <pathelement path="${basedir}/Ext" />
+  </path>
+  <path id="javatest.build.path">
+    <path refid="java.build.path" />
+  </path>
+  <path id="cc.build.path">
+    <pathelement path="${basedir}/Client" />
+  </path>
+  <path id="cctest.build.path">
+    <pathelement path="${basedir}/ClientTest" />
+  </path>
 
-	<import file="${og.language.dir}/build-suffix.xml" />
+  <import file="${og.language.dir}/build-suffix.xml" />
 
-	<!-- This pattern should probably be in OG-Language; it will be needed for any child project -->
-	<target name="unpack-resolve" depends="build-suffix.unpack-resolve">
-		<unpack-zip org="com.opengamma" name="og-language" type="include" />
-		<unpack-zip org="com.opengamma" name="og-language" type="lib" />
-		<unpack-zip org="com.opengamma" name="og-language" type="bin" />
-	</target>
+  <!-- This pattern should probably be in OG-Language; it will be needed for any child project -->
+  <target name="unpack-resolve" depends="build-suffix.unpack-resolve">
+    <unpack-zip org="com.opengamma" name="og-language" type="include" />
+    <unpack-zip org="com.opengamma" name="og-language" type="lib" />
+    <unpack-zip org="com.opengamma" name="og-language" type="bin" />
+  </target>
 
-	<target name="deploy-jars" depends="build-suffix.deploy-jars">
-		<move file="${build.dir}/jar/com.opengamma-og-language-og-language-client.jar" tofile="${build.dir}/client.jar" />
-		<copy todir="${build.dir}">
-			<fileset dir="${basedir}/config">
-				<include name="OpenGamma.*" />
-				<include name="logback*.xml" />
-			</fileset>
-		</copy>
-	</target>
+  <target name="deploy-jars" depends="build-suffix.deploy-jars">
+    <move file="${build.dir}/jar/com.opengamma-og-language-og-language-client.jar" tofile="${build.dir}/client.jar" />
+    <copy todir="${build.dir}">
+      <fileset dir="${basedir}/config">
+        <include name="OpenGamma.*" />
+        <include name="logback*.xml" />
+      </fileset>
+    </copy>
+  </target>
 
-	<target name="compile" depends="build-suffix.compile">
-		<subant target="compile" buildpath="${basedir}/package">
-			<property name="module.version" value="${module.version}" />
-		</subant>
-	</target>
+  <target name="compile" depends="build-suffix.compile">
+    <subant target="compile" buildpath="${basedir}/package">
+      <property name="module.version" value="${module.version}" />
+      <property name="wkspace.dir" value="${wkspace.dir}" />
+    </subant>
+  </target>
 
-	<target name="dist" depends="compile">
-		<mkdir dir="${dist.dir}" />
-		<mkdir dir="${package.dir}" />
-		<subant target="dist" buildpath="${basedir}/package" />
-		<subant target="dist" buildpathref="java.build.path" antfile="build.parent-invoked.xml" />
-		<subant target="dist" buildpathref="cc.build.path" />
-		<zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${dist.dir}/package" />
-	</target>
+  <target name="dist" depends="compile">
+    <mkdir dir="${dist.dir}" />
+    <mkdir dir="${package.dir}" />
+    <subant target="dist" buildpath="${basedir}/package" inheritall="true">
+      <property name="wkspace.dir" value="${wkspace.dir}" />
+    </subant>
+    <subant target="dist" buildpathref="java.build.path" antfile="build.parent-invoked.xml" inheritall="true">
+      <property name="wkspace.dir" value="${wkspace.dir}" />
+    </subant>
+    <subant target="dist" buildpathref="cc.build.path" inheritall="true">
+      <property name="wkspace.dir" value="${wkspace.dir}" />
+    </subant>
+    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${dist.dir}/package" inheritall="true" />
+  </target>
 
-	<target name="test-dist" depends="clean-dist,dist" description="--> Tests the R package distribution using 'R CMD check'">
-		<exec executable="R" failonerror="true">
-			<arg value="CMD" />
-			<arg value="check" />
-			<arg value="${package.dir}/${package.name}" />
-		</exec>
-	</target>
+  <target name="test-dist" depends="clean-dist,dist" description="--> Tests the R package distribution using 'R CMD check'">
+    <exec executable="R" failonerror="true">
+      <arg value="CMD" />
+      <arg value="check" />
+      <arg value="${package.dir}/${package.name}" />
+    </exec>
+  </target>
 
-	<target name="install" depends="dist" description="--> Installs the R package using 'R CMD INSTALL'">
-		<exec executable="R" failonerror="true">
-			<arg value="CMD" />
-			<arg value="INSTALL" />
-			<arg value="${package.dir}/${package.name}" />
-		</exec>
-	</target>
+  <target name="install" depends="dist" description="--> Installs the R package using 'R CMD INSTALL'">
+    <exec executable="R" failonerror="true">
+      <arg value="CMD" />
+      <arg value="INSTALL" />
+      <arg value="${package.dir}/${package.name}" />
+    </exec>
+  </target>
 
-	<target name="clean-tests" depends="build-suffix.clean-tests">
-		<delete includeemptydirs="true" failonerror="false" dir="${basedir}/${package.name}.Rcheck" />
-	</target>
+  <target name="clean-tests" depends="build-suffix.clean-tests">
+    <delete includeemptydirs="true" failonerror="false" dir="${basedir}/${package.name}.Rcheck" />
+  </target>
 
 </project>
