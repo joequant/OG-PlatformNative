@@ -1,5 +1,6 @@
 <project name="og-rstats" default="compile">
 
+  <property name="wkspace.dir" value="${basedir}/../.." />
   <subant antfile="build-prefix.xml" buildpath="${basedir}" target="fetch-og-language-build">
     <property name="wkspace.dir" value="${wkspace.dir}" />
   </subant>
