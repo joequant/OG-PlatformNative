@@ -15,6 +15,14 @@
 #include "Procedures.h"
 #include "globals.h"
 
+class CSuppressLoggingWarning {
+public:
+	CSuppressLoggingWarning () {
+		::log4cxx::helpers::LogLog::setQuietMode (true);
+	}
+};
+
+static CSuppressLoggingWarning g_oSetQuietMode;
 LOGGING (com.opengamma.rstats.package.DllMain);
 
 extern "C" {

@@ -6,25 +6,25 @@
 
 # TODO: Migrate the code from here to a Fudge-R project, or change things elsewhere to use that if one already exists
 
-# Asserts the msg parameter is a FudgeMsg instance
-.assert.FudgeMsg <- function (msg) {
-  if (!is.object (msg) || (class (msg) != "FudgeMsg")) {
-    stop ("Cannot apply to non-FudgeMsg", msg)
+# Asserts the parameter is a FudgeMsg instance
+.assert.FudgeMsg <- function (x) {
+  if (!is.object (x) || (class (x) != "FudgeMsg")) {
+    stop ("Cannot apply to non-FudgeMsg", x)
   }
 }
 
 # Get all the fields of a Fudge message
-fields.FudgeMsg <- function (msg) {
-  .assert.FudgeMsg (msg)
-  OpenGammaCall ("FudgeMsg_getAllFields", msg@message)
+fields.FudgeMsg <- function (x) {
+  .assert.FudgeMsg (x)
+  OpenGammaCall ("FudgeMsg_getAllFields", x@message)
 }
 
 # Get a named field of a Fudge message
-field.FudgeMsg <- function (msg, field) {
-  fields <- fields.FudgeMsg (msg)
+field.FudgeMsg <- function (x, field) {
+  fields <- fields.FudgeMsg (x)
   if (length (fields) > 0) {
     if (length (field) > 1) {
-      sapply (field, function (x) { .field.FudgeMsg (fields, x) })
+      sapply (field, function (y) { .field.FudgeMsg (fields, y) })
     } else {
       .field.FudgeMsg (fields, field)
     }
@@ -55,30 +55,30 @@ field.FudgeMsg <- function (msg, field) {
 }
 
 # Test if a value is a Fudge message
-is.FudgeMsg <- function (obj) {
-  is.object (obj) && (class (obj) == "FudgeMsg");
+is.FudgeMsg <- function (x) {
+  is.object (x) && (class (x) == "FudgeMsg");
 }
 
 # Fully expand a Fudge message
-expand.FudgeMsg <- function (msg) {
-  lapply (fields.FudgeMsg (msg), function (x) {
-    value <- x$Value
+expand.FudgeMsg <- function (x) {
+  lapply (fields.FudgeMsg (x), function (y) {
+    value <- y$Value
     if (is.FudgeMsg (value)) {
-      list (Name = x$Name, Ordinal = x$Ordinal, Value = expand.FudgeMsg (value))
+      list (Name = y$Name, Ordinal = y$Ordinal, Value = expand.FudgeMsg (value))
     } else {
-      x
+      y
     }
   })
 }
 
 # Return the fully qualified class names
-classNames.FudgeMsg <- function (msg) {
-  msg[0]
+classNames.FudgeMsg <- function (x) {
+  x[0]
 }
 
 # Return a display name based on the class name
-displayName.FudgeMsg <- function (msg) {
-  classNames <- classNames.FudgeMsg (msg)
+displayName.FudgeMsg <- function (x) {
+  classNames <- classNames.FudgeMsg (x)
   if (length (classNames) > 0) {
     classNames <- strsplit (classNames[[1]], "\\.")
     classNames[[length (classNames)]]
@@ -88,15 +88,15 @@ displayName.FudgeMsg <- function (msg) {
 }
 
 # Return a string representation of the Fudge message
-toString.FudgeMsg <- function (msg) {
-  paste (c ("{", paste (sapply (fields.FudgeMsg (msg), function (x) { paste (x$Name, x$Ordinal, "=", toString (x$Value)) }), collapse = ", "), "}"), collapse = "")
+.toString.FudgeMsg <- function (x) {
+  paste (c ("{", paste (sapply (fields.FudgeMsg (x), function (y) { paste (y$Name, y$Ordinal, "=", toString (y$Value)) }), collapse = ", "), "}"), collapse = "")
 }
 
 setClass ("FudgeMsg", representation (message = "externalptr"))
-setMethod ("[", signature = "FudgeMsg", definition = function (x, i, j, ..., drop) { field.FudgeMsg (x, i) })
+setMethod ("[", signature = "FudgeMsg", definition = function (x, i) { field.FudgeMsg (x, i) })
 setMethod ("$", signature = "FudgeMsg", definition = function (x, name) { field.FudgeMsg (x, name) })
 setMethod ("length", signature = "FudgeMsg", definition = function (x) { length (fields.FudgeMsg (x)) } )
-setMethod ("toString", signature = "FudgeMsg", definition = function (x) { toString.FudgeMsg (x) })
+setMethod ("toString", signature = "FudgeMsg", definition = function (x) { .toString.FudgeMsg (x) })
 toFudgeMsg <- function (x) { NULL }
 setGeneric ("toFudgeMsg");
 setMethod ("toFudgeMsg", signature = "FudgeMsg", definition = function (x) { x })

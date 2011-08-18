@@ -10,9 +10,9 @@ is.ErrorValue <- function (obj) {
 }
 
 # Return a string representation of the error
-toString.OpenGammaErrorValue <- function (obj) {
-  obj$toString
+.toString.OpenGammaErrorValue <- function (err) {
+  err$toString
 }
 
 setClass ("OpenGammaErrorValue", representation (code = "numeric", index = "numeric", message = "character", toString = "character"))
-setMethod ("toString", signature ="OpenGammaErrorValue", definition = function (x) { toString.OpenGammaErrorValue (x) })
+setMethod ("toString", signature ="OpenGammaErrorValue", definition = function (x) { .toString.OpenGammaErrorValue (x) })

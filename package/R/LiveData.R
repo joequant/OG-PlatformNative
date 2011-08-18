@@ -5,9 +5,9 @@
  ##
 
 LiveData_count <- function () {
-  .C ("LiveData_count", result = integer (1)) $result
+  OpenGammaCall ("LiveData_count")
 }
 
 LiveData_getName <- function (index) {
-  .C ("LiveData_getName", as.integer (index), result = character (1)) $result
+  OpenGammaCall ("LiveData_getName", as.integer (index))
 }

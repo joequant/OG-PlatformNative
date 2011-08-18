@@ -20,7 +20,7 @@ Date: ${module.date}
 Title: OpenGamma for R
 Author: OpenGamma Ltd
 Maintainer: OpenGamma Ltd &lt;info@opengamma.com&gt;
-Depends: R (>= 2.11.1)
+Depends: R (>= 2.11.1), methods
 Description: Connects to the OpenGamma platform for access to risk analytics from running views, market data feeds, the time series database, security and portfolio data
 License: file LICENSE
 URL: http://www.opengamma.com/R, http://www.github.com/OpenGamma/OG-RStats

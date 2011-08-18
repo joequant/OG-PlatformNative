@@ -5,9 +5,9 @@
  ##
 
 Procedures_count <- function () {
-  .C ("Procedures_count", result = integer (1)) $result
+  OpenGammaCall ("Procedures_count")
 }
 
 Procedures_getName <- function (index) {
-  .C ("Procedures_getName", as.integer (index), result = character (1)) $result
+  OpenGammaCall ("Procedures_getName", as.integer (index))
 }

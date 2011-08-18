@@ -19,5 +19,6 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
+#include <log4cxx/helpers/loglog.h>
 
 #endif /* ifndef STDAFX_H */
