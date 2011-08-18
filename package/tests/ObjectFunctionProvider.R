@@ -6,18 +6,27 @@
 
 # Tests a family of methods exported from OG-Language/ObjectFunctionProvider
 
-test.objectfunction.expand <- function () {
-  LOGERROR ("Not implemented")
-}
+source ("TestUtil.R")
 
-test.objectfunction.get <- function () {
-  LOGERROR ("Not implemented")
-}
+# Object creation
+LOGDEBUG ("EquitySecurity")
+sec <- EquitySecurity (name = "Foo", exchange = "Exchange", exchangeCode = "EXCH", companyName = "Bar", currency = "USD")
+LOGDEBUG (sec)
+ASSERT (OpenGamma::displayName.FudgeMsg (sec) == "EquitySecurity")
 
-test.objectfunction.set <- function () {
-  LOGERROR ("Not implemented")
-}
+# Attribute get
+LOGDEBUG ("GetEquitySecurityExchange")
+exch <- GetEquitySecurityExchange (sec)
+LOGDEBUG (exch)
+ASSERT (exch == "Exchange")
 
-test.objectfunction.create <- function () {
-  LOGERROR ("Not implemented")
-}
+# Attribute set
+LOGDEBUG ("SetEquitySecurityCurrency")
+sec <- SetEquitySecurityCurrency (sec, "GBP")
+LOGDEBUG (sec)
+ASSERT (GetEquitySecurityCurrency (sec) == "GBP")
+
+# Object expansion
+LOGDEBUG ("ExpandEquitySecurity")
+expand <- ExpandEquitySecurity (sec)
+LOGDEBUG (expand)

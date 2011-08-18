@@ -80,7 +80,7 @@ classNames.FudgeMsg <- function (x) {
 displayName.FudgeMsg <- function (x) {
   classNames <- classNames.FudgeMsg (x)
   if (length (classNames) > 0) {
-    classNames <- strsplit (classNames[[1]], "\\.")
+    classNames <- strsplit (classNames[[1]], "\\.")[[1]]
     classNames[[length (classNames)]]
   } else {
     "FudgeMsg"
