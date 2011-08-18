@@ -14,7 +14,13 @@ getName.LiveData <- function (index) {
   OpenGammaCall ("LiveData_getName", as.integer (index))
 }
 
+# Brings a proxy declaration for a live data definition into scope
+.install.LiveData <- function (index) {
+  LOGFATAL ("Not implemented")
+}
+
 # Brings proxy declarations for all live data definitions into scope
 install.LiveData <- function () {
-  LOGFATAL ("Not implemented")
+  LOGINFO ("Installing live data definitions")
+  for (index in seq (from = 0, to = count.LiveData () - 1)) .install.LiveData (index)
 }
