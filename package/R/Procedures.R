@@ -4,10 +4,17 @@
  # Please see distribution for license.
  ##
 
-Procedures_count <- function () {
+# Returns the number of procedures available
+count.Procedures <- function () {
   OpenGammaCall ("Procedures_count")
 }
 
-Procedures_getName <- function (index) {
+# Returns the name of an available procedure
+getName.Procedures <- function (index) {
   OpenGammaCall ("Procedures_getName", as.integer (index))
+}
+
+# Brings proxy declarations for all available procedures into scope
+install.Procedures <- function (index) {
+  LOGFATAL ("Not implemented")
 }

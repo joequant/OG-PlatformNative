@@ -4,32 +4,38 @@
  # Please see distribution for license.
  ##
 
-Functions_count <- function () {
+# Returns the number of functions available
+count.Functions <- function () {
   OpenGammaCall ("Functions_count")
 }
 
-Functions_getName <- function (index) {
+# Returns the name of a function
+getName.Functions <- function (index) {
   OpenGammaCall ("Functions_getName", as.integer (index))
 }
 
-Functions_getParameterNames <- function (index) {
+# Returns the parameter names for a function
+getParameterNames.Functions <- function (index) {
   OpenGammaCall ("Functions_getParameterNames", as.integer (index))
 }
 
-Functions_getParameterFlags <- function (index) {
+# Returns the parameter flags for a function
+getParameterFlags.Functions <- function (index) {
   OpenGammaCall ("Functions_getParameterFlags", as.integer (index))
 }
 
-Functions_invoke <- function (index, args) {
+# Invokes a function with the given argument array and returns the result
+invoke.Functions <- function (index, args) {
   OpenGammaCall ("Functions_invoke", as.integer (index), args)
 }
 
-Functions_installImpl <- function (index) {
-  name <- Functions_getName (index)
+# Brings a proxy declaration for a function into scope
+.install.Functions <- function (index) {
+  name <- getName.Functions (index)
   if (!is.null (name)) {
     LOGDEBUG (paste ("Found function", name))
-    argNames <- Functions_getParameterNames (index)
-    argFlags <- Functions_getParameterFlags (index)
+    argNames <- getParameterNames.Functions (index)
+    argFlags <- getParameterFlags.Functions (index)
     if (length (argNames) == length (argFlags)) {
       argDecl <- c ()
       validate <- c ()
@@ -57,7 +63,7 @@ Functions_installImpl <- function (index) {
       cmd <- paste (c (
         paste (name, " <<- function (", argDecl, ") {", sep = ""),
         validate,
-        paste ("result <- Functions_invoke (", index, ", list (", argInvoke, "))", sep = ""),
+        paste ("result <- invoke.Functions (", index, ", list (", argInvoke, "))", sep = ""),
         "if (is.ErrorValue (result)) {",
         paste ("if (result@code == 1) stop (paste (\"Parameter '\", switch (result@index + 1, ", argStrings, "), \"' invalid - \", result@message, sep = \"\"))", sep = ""),
         "stop (result@toString)",
@@ -72,7 +78,8 @@ Functions_installImpl <- function (index) {
   }
 }
 
-Functions_install <- function () {
-  LOGINFO ("Installing function")
-  for (index in seq (from = 0, to = Functions_count () - 1)) Functions_installImpl (index)
+# Brings proxy declarations for all available functions into scope
+install.Functions <- function () {
+  LOGINFO ("Installing functions")
+  for (index in seq (from = 0, to = count.Functions () - 1)) .install.Functions (index)
 }

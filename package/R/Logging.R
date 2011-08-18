@@ -10,11 +10,11 @@ LOGLEVEL_WARN <- c(2, "Warn:")
 LOGLEVEL_ERROR <- c(3, "Error:")
 LOGLEVEL_FATAL <- c(4, "Fatal:")
 
-#.logLevel <- 1
-.logLevel <- 0
+#.log.level <- 1
+.log.level <- 0
 
 .log <- function (level, str) {
-  if (level[1] >= .logLevel) print (paste (level[2], str))
+  if (level[1] >= .log.level) print (paste (level[2], str))
 }
 
 LOGDEBUG <- function (str) { .log (LOGLEVEL_DEBUG, str) }
@@ -23,12 +23,12 @@ LOGWARN <- function (str) { .log (LOGLEVEL_WARN, str) }
 LOGERROR <- function (str) { .log (LOGLEVEL_ERROR, str) }
 LOGFATAL <- function (str) { .log (LOGLEVEL_FATAL, str) }
 
-.setLogLevel <- function (level) {
-  .logLevel <<- level[1]
+.set.log.level <- function (level) {
+  .log.level <<- level[1]
 }
 
-setLogLevelDebug <- function () { .setLogLevel (LOGLEVEL_DEBUG) }
-setLogLevelInfo <- function () { .setLogLevel (LOGLEVEL_INFO) }
-setLogLevelWarn <- function () { .setLogLevel (LOGLEVEL_WARN) }
-setLogLevelError <- function () { .setLogLevel (LOGLEVEL_ERROR) }
-setLogLevelFatal <- function () { .setLogLevel (LOGLEVEL_FATAL) }
+debug.log.level <- function () { .set.log.level (LOGLEVEL_DEBUG) }
+info.log.level <- function () { .set.log.level (LOGLEVEL_INFO) }
+warn.log.level <- function () { .set.log.level (LOGLEVEL_WARN) }
+error.log.level <- function () { .set.log.level (LOGLEVEL_ERROR) }
+fatal.log.level <- function () { .set.log.level (LOGLEVEL_FATAL) }

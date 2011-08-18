@@ -7,8 +7,7 @@
 # TODO: Find the OG-Language installation; that will have the INCLUDE and LIB files we need
 
 ifndef CONFIGURATION
-#CONFIGURATION=Release
-CONFIGURATION=Debug
+CONFIGURATION=Release
 endif
 
 ifndef PLATFORM
