@@ -8,7 +8,7 @@
 
 # Asserts the parameter is a FudgeMsg instance
 .assert.FudgeMsg <- function (x) {
-  if (!is.object (x) || (class (x) != "FudgeMsg")) {
+  if (!is.FudgeMsg (x)) {
     stop ("Cannot apply to non-FudgeMsg", x)
   }
 }
@@ -95,8 +95,7 @@ displayName.FudgeMsg <- function (x) {
 setClass ("FudgeMsg", representation (message = "externalptr"))
 setMethod ("[", signature = "FudgeMsg", definition = function (x, i) { field.FudgeMsg (x, i) })
 setMethod ("$", signature = "FudgeMsg", definition = function (x, name) { field.FudgeMsg (x, name) })
-setMethod ("length", signature = "FudgeMsg", definition = function (x) { length (fields.FudgeMsg (x)) } )
-setMethod ("toString", signature = "FudgeMsg", definition = function (x) { .toString.FudgeMsg (x) })
+setMethod ("as.character", signature = "FudgeMsg", definition = function (x, ...) { .toString.FudgeMsg (x) })
 toFudgeMsg <- function (x) { NULL }
 setGeneric ("toFudgeMsg");
 setMethod ("toFudgeMsg", signature = "FudgeMsg", definition = function (x) { x })
