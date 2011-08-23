@@ -20,3 +20,4 @@ build.number
 .settings/
 /version.h
 /package/LICENSE
+/tests/output/
