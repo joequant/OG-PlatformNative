@@ -5,6 +5,32 @@
   <!-- Default XML --> 
   <import resource="classpath:/com/opengamma/language/connector/Client.xml" />
   
-  <!-- R specific extension data -->
+  <!-- Custom contexts -->
+  <bean id="RGlobalContextFactory" class="com.opengamma.language.context.GlobalContextFactoryBean">
+    <property name="extendedFrom" ref="globalContextFactory" />
+  </bean>
+  <bean id="RUserContextFactory" class="com.opengamma.language.context.UserContextFactoryBean">
+    <property name="extendedFrom" ref="userContextFactory" />
+    <property name="globalContextFactory" ref="RGlobalContextFactory" />
+  </bean>
+  <bean id="RSessionContextFactory" class="com.opengamma.language.context.SessionContextFactoryBean">
+    <property name="extendedFrom" ref="sessionContextFactory" />
+    <property name="userContextFactory" ref="RUserContextFactory" />
+  </bean>
+
+  <!-- R type conversion -->
+  <bean class="com.opengamma.language.invoke.Loader">
+    <property name="globalContextFactory" ref="RGlobalContextFactory" />
+    <property name="typeConverterProvider">
+      <bean class="com.opengamma.language.invoke.TypeConverterProviderBean">
+        <property name="converters">
+          <list>
+            <bean class="com.opengamma.rstats.convert.DateTimeConverter" />
+            <bean class="com.opengamma.rstats.convert.LocalDateDoubleTimeSeriesConverter" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
   
 </beans>
