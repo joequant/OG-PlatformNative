@@ -105,9 +105,7 @@ public class LocalDateDoubleTimeSeriesConverter extends AbstractTypeConverter {
         iDate = entry.getKey();
         values[i++] = ValueUtils.of(entry.getValue());
       }
-      final RDataInfo resultInfo = RDataInfo.create();
-      resultInfo.setWrapperClass("interop.TimeSeries");
-      conversionContext.setResult(resultInfo.applyTo(DataUtils.of(values)));
+      conversionContext.setResult(RDataInfo.create().wrapperClass("TimeSeries").applyTo(DataUtils.of(values)));
     }
   }
 

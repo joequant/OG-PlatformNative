@@ -21,9 +21,11 @@
 
 #include <assert.h>
 
+#ifdef __cplusplus
 #include <Connector/Connector.h>
 #include <Util/Logging.h>
 #include <Util/String.h>
+#endif /* ifdef __cplusplus */
 
 #ifndef Client
 #define Client(path) #path

@@ -7,6 +7,8 @@
 #ifndef __inc_og_rstats_package_fudgemsg_h
 #define __inc_og_rstats_package_fudgemsg_h
 
+#include "RCallback.h"
+
 class RFudgeMsg {
 private:
 	RFudgeMsg () { }
@@ -14,7 +16,7 @@ private:
 public:
 	static SEXP GetAllFields (SEXP msg);
 	static SEXP FromFudgeMsg (FudgeMsg msg);
-	static FudgeMsg ToFudgeMsg (SEXP value);
+	static FudgeMsg ToFudgeMsg (const CRCallback *poR, SEXP value);
 };
 
 #ifdef GLOBALS

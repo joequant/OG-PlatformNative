@@ -73,12 +73,20 @@ void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_langu
 	case DATATYPE_DOUBLE :
 		REAL(vector)[index] = *pValue->_doubleValue;
 		break;
-	case DATATYPE_STRING :
-		SET_STRING_ELT (vector, index, mkChar (pValue->_stringValue));
+	case DATATYPE_STRING : {
+		SEXP value = mkChar (pValue->_stringValue);
+		PROTECT (value);
+		SET_STRING_ELT (vector, index, value);
+		UNPROTECT (1);
 		break;
-	case DATATYPE_MESSAGE :
-		SET_VECTOR_ELT (vector, index, RFudgeMsg::FromFudgeMsg (pValue->_messageValue));
+						   }
+	case DATATYPE_MESSAGE : {
+		SEXP value = RFudgeMsg::FromFudgeMsg (pValue->_messageValue);
+		PROTECT (value);
+		SET_VECTOR_ELT (vector, index, value);
+		UNPROTECT (1);
 		break;
+							}
 	case DATATYPE_ERROR :
 		TODO (TEXT ("Store ERROR type in vector"));
 		break;
@@ -112,12 +120,12 @@ SEXP CValue::ToSEXP (const com_opengamma_language_Value *pValue) {
 		LOGDEBUG (TEXT ("STRING value"));
 		result = mkString (pValue->_stringValue);
 	} else {
-		LOGWARN (TEXT ("Invalid value in response"));
+		LOGDEBUG (TEXT ("NULL value in response"));
 	}
 	return result;
 }
 
-com_opengamma_language_Data *CData::FromSEXP (SEXP data) {
+com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) {
 	com_opengamma_language_Data *pData = new com_opengamma_language_Data;
 	if (pData) {
 		memset (pData, 0, sizeof (com_opengamma_language_Data));
@@ -156,14 +164,14 @@ com_opengamma_language_Data *CData::FromSEXP (SEXP data) {
 		} else if (isNull (data)) {
 			LOGDEBUG (TEXT ("NULL"));
 		} else if (isObject (data)) {
-			FudgeMsg msg = RFudgeMsg::ToFudgeMsg (data);
+			FudgeMsg msg = RFudgeMsg::ToFudgeMsg (poR, data);
 			if (msg) {
 				LOGDEBUG (TEXT ("Single FudgeMsg"));
 				pData->_single = _FudgeMsgValue (msg);
 				FudgeMsg_release (msg);
 			} else {
 				LOGDEBUG (TEXT ("Using toString on unknown object type"));
-				pData->_single = CValue::FromSEXP (CRCallback::ToString (data));
+				pData->_single = CValue::FromSEXP (poR->ToString (data));
 			}
 		} else {
 			LOGWARN (ERR_PARAMETER_TYPE);
@@ -181,13 +189,14 @@ static SEXP _LinearToList (const com_opengamma_language_Value * const *ppValue, 
 	PROTECT (result);
 	for (n = 0; n < nCount; n++) {
 		SEXP value = CValue::ToSEXP (ppValue[n]);
+		PROTECT (value);
 		SET_VECTOR_ELT (result, n, value);
 	}
-	UNPROTECT (1);
+	UNPROTECT (1 + nCount);
 	return result;
 }
 
-static SEXPTYPE _DataTypeToSEXPTYPE (int type) {
+static SEXPTYPE _DataTypeToVectorType (int type) {
 	switch (type) {
 	case DATATYPE_BOOLEAN :
 		return LGLSXP;
@@ -195,11 +204,15 @@ static SEXPTYPE _DataTypeToSEXPTYPE (int type) {
 		return INTSXP;
 	case DATATYPE_DOUBLE :
 		return REALSXP;
+	case DATATYPE_STRING :
+		// Force degeneration to list; can't have a vector of strings
+		return 0;
 	case DATATYPE_MESSAGE :
-		// Force degeneration to lists
+		// Force degeneration to list; can't have a vector of lists
 		return 0;
 	case DATATYPE_ERROR :
 		TODO (TEXT ("DATATYPE_ERROR"));
+		// NA?
 		return 0;
 	default :
 		LOGERROR (TEXT ("Unknown type, ") << type);
@@ -210,7 +223,7 @@ static SEXPTYPE _DataTypeToSEXPTYPE (int type) {
 static SEXP _LinearToVector (int type, const com_opengamma_language_Value * const *ppValue, int nCount) {
 	int n;
 	LOGDEBUG (TEXT ("Converting ") << nCount << TEXT (" element result vector"));
-	SEXPTYPE sexptype = _DataTypeToSEXPTYPE (type);
+	SEXPTYPE sexptype = _DataTypeToVectorType (type);
 	if (!sexptype) {
 		return _LinearToList (ppValue, nCount);
 	}
@@ -242,16 +255,18 @@ static SEXP _MatrixToLists (com_opengamma_language_Value * const * const *pppVal
 	SEXP result = allocVector (VECSXP, nRows);
 	PROTECT (result);
 	for (n = 0; n < nRows; n++) {
-		SET_VECTOR_ELT (result, n, _LinearToSEXP (pppValue[n]));
+		SEXP value = _LinearToSEXP (pppValue[n]);
+		PROTECT (value);
+		SET_VECTOR_ELT (result, n, value);
 	}
-	UNPROTECT (1);
+	UNPROTECT (1 + nRows);
 	return result;
 }
 
 static SEXP _MatrixToMatrix (int type, com_opengamma_language_Value * const * const *pppValue, int nRows, int nCols) {
 	int i, j;
 	LOGDEBUG (TEXT ("Converting ") << nRows << TEXT ("x") << nCols << TEXT (" element result matrix"));
-	SEXPTYPE sexptype = _DataTypeToSEXPTYPE (type);
+	SEXPTYPE sexptype = _DataTypeToVectorType (type);
 	if (!sexptype) {
 		return _MatrixToLists (pppValue, nRows);
 	}

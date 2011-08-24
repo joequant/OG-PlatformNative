@@ -38,7 +38,7 @@ static R_CallMethodDef g_aMethods[] = {
 	F (Functions_getName, 1),
 	F (Functions_getParameterFlags, 1),
 	F (Functions_getParameterNames, 1),
-	F (Functions_invoke, 2),
+	F (Functions_invoke, 3),
 	F (LiveData_count, 0),
 	F (LiveData_getName, 1),
 	F (Procedures_count, 0),

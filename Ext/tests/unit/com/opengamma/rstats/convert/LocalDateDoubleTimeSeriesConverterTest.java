@@ -44,9 +44,7 @@ public class LocalDateDoubleTimeSeriesConverterTest extends AbstractConverterTes
 
   public void testToData () {
     final LocalDateDoubleTimeSeriesConverter converter = new LocalDateDoubleTimeSeriesConverter ();
-    final RDataInfo info = RDataInfo.create();
-    info.setWrapperClass("interop.TimeSeries");
-    final Data expectedData = info.applyTo(createData());
+    final Data expectedData = RDataInfo.create().wrapperClass("TimeSeries").applyTo(createData());
     assertValidConversion(converter, createTimeSeries(), JavaTypeInfo.builder(Data.class).get(), expectedData);
   }
 }

@@ -23,7 +23,7 @@ CParameters::~CParameters () {
 	delete m_ppArg;
 }
 
-CParameters *CParameters::Decode (SEXP args) {
+CParameters *CParameters::Decode (const CRCallback *poR, SEXP args) {
 	CParameters *poResult = NULL;
 	if (isVector (args)) {
 		int nArgs = length (args);
@@ -32,7 +32,7 @@ CParameters *CParameters::Decode (SEXP args) {
 		if (ppArg) {
 			int n;
 			for (n = 0; n < nArgs; n++) {
-				ppArg[n] = CData::FromSEXP (VECTOR_ELT (args, n));
+				ppArg[n] = CData::FromSEXP (poR, VECTOR_ELT (args, n));
 			}
 			poResult = new CParameters (ppArg, nArgs);
 		} else {

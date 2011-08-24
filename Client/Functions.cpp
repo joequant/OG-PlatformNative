@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011 - present by OpenGamma Inc. and the OpenGamma group of companies
  *
  * Please see distribution for license.
@@ -10,14 +10,25 @@
 
 LOGGING (com.opengamma.rstats.client.Functions);
 
+/// Creates a new function entry wrapper.
+///
+/// @param nInvocationId[in] invocation ID to include in the Invoke message to the Java stack
+/// @param pDefinition[in] function definition
 CFunctionEntry::CFunctionEntry (int nInvocationId, const com_opengamma_language_function_Definition *pDefinition)
 : CEntityEntry (nInvocationId, &pDefinition->fudgeParent) {
 }
 
+/// Destroys a function entry wrapper.
 CFunctionEntry::~CFunctionEntry () {
 }
 
-com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnector, const com_opengamma_language_Data * const *ppArg) const {
+/// Invokes a function by sending a message to the Java stack and waiting for the corresponding response.
+///
+/// @param poConnector[in] connector instance for communication with the Java stack, never NULL
+/// @param ppArg[in] array of arguments to send to the Java stack. Never NULL, values must never be NULL and there must be a value for each of the expected arguments (as returned by GetParameterCount)
+/// @param ppInfo[out] receives a pointer to any additional information about the result, left unchanged if there is a problem. Callers should set to NULL before calling this method
+/// @return the result, or NULL if there was a problem
+com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnector, const com_opengamma_language_Data * const *ppArg, com_opengamma_rstats_msg_DataInfo **ppInfo) const {
 	LOGDEBUG ("Invoking " << GetName ());
 	CFunctionInvoke invoke (poConnector);
 	invoke.SetInvocationId (GetInvocationId ());
@@ -26,23 +37,31 @@ com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnect
 		LOGWARN (TEXT ("Could not send invocation request"));
 		return NULL;
 	}
-	com_opengamma_language_function_Result *pResult = invoke.Recv (CRequestBuilder::GetDefaultTimeout ());
+	com_opengamma_rstats_msg_FunctionResult *pResult = invoke.Recv (CRequestBuilder::GetDefaultTimeout ());
 	if (!pResult) {
 		LOGWARN (TEXT ("Did not receive invocation response"));
 		return NULL;
 	}
-	if (pResult->fudgeCountResult != 1) {
+	if (pResult->fudgeParent.fudgeCountResult != 1) {
 		// Detect the error case, plus nothing works with >1 at the moment
-		LOGWARN (TEXT ("Invocation response contained ") << pResult->fudgeCountResult << TEXT (" result(s)"));
+		LOGWARN (TEXT ("Invocation response contained ") << pResult->fudgeParent.fudgeCountResult << TEXT (" result(s)"));
 		return NULL;
 	}
-	// Note: we can steal the pointer from the Data structure as long as we NULL it so it won't be
-	// free'd. The caller to Invoke is now responsible for releasing the memory
-	com_opengamma_language_Data *pReturnResult = pResult->_result[0];
-	pResult->_result[0] = NULL;
+	// Note: we can steal the pointers from the Data structure as long as we NULL then so they won't be
+	// free'd. The caller to Invoke is now responsible for releasing the memory.
+	com_opengamma_language_Data *pReturnResult = pResult->fudgeParent._result[0];
+	pResult->fudgeParent._result[0] = NULL;
+	if (pResult->fudgeCountInfo == 1) {
+		*ppInfo = pResult->_info[0];
+		pResult->_info[0] = NULL;
+	}
 	return pReturnResult;
 }
 
+/// Creates a new collection of function entries.
+///
+/// @param poConnector[in] connector instance for communication with the Java stack, never NULL
+/// @param pAvailable[in] the availability message from the Java stack describing the functions available from this collection
 CFunctions::CFunctions (const CConnector *poConnector, const com_opengamma_language_function_Available *pAvailable)
 : CEntities (poConnector, pAvailable->fudgeCountFunction) {
 	LOGINFO (TEXT ("Creating function repository"));
@@ -52,10 +71,15 @@ CFunctions::CFunctions (const CConnector *poConnector, const com_opengamma_langu
 	}
 }
 
+/// Destroys a collection of function entries.
 CFunctions::~CFunctions () {
 	LOGINFO (TEXT ("Destroying function repository"));
 }
 
+/// Creates a function entry collection from a pending query message object.
+///
+/// @param poQuery[in] pending query object
+/// @return a collection instance or NULL if there was a problem
 const CFunctions *CFunctions::GetAvailable (CFunctionQueryAvailable *poQuery) {
 	LOGDEBUG (TEXT ("Waiting for available functions"));
 	const com_opengamma_language_function_Available *pAvailable = poQuery->Recv (CRequestBuilder::GetDefaultTimeout ());

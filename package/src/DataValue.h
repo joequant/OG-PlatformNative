@@ -8,6 +8,7 @@
 #define __inc_og_rstats_package_datavalue_h
 
 #include <Connector/com_opengamma_language_Data.h>
+#include "RCallback.h"
 
 class CValue {
 private:
@@ -25,7 +26,7 @@ private:
 	CData () { }
 	~CData () { }
 public:
-	static com_opengamma_language_Data *FromSEXP (SEXP data);
+	static com_opengamma_language_Data *FromSEXP (const CRCallback *poR, SEXP data);
 	static SEXP ToSEXP (const com_opengamma_language_Data *pData);
 	static void Release (com_opengamma_language_Data *pData) { com_opengamma_language_Data_free (pData); }
 };

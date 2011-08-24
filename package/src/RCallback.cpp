@@ -9,8 +9,34 @@
 
 LOGGING (com.opengamma.rstats.package.RCallback);
 
-SEXP CRCallback::InvokeGeneric (SEXP object, const char *pszGeneric) {
-	TODO ("Invoke " << pszGeneric << " on object");
-	// TODO: Note that this should never fail, but return a R_NilValue if there is a problem
-	return R_NilValue;
+SEXP CRCallback::InvokeMethod (const char *pszMethod, SEXP value) const {
+	LOGINFO ("Invoke " << pszMethod << " on value");
+	SEXP evalExpr;
+	evalExpr = allocList (2);
+	PROTECT (evalExpr);
+	SET_TYPEOF (evalExpr, LANGSXP);
+	SETCAR (evalExpr, install (pszMethod));
+	SETCAR (CDR (evalExpr), value);
+	value = eval (evalExpr, m_envir);
+	UNPROTECT (1);
+	return value;
+}
+
+SEXP CRCallback::InteropConvert (SEXP value, const TCHAR *pszClass) const {
+#ifdef _UNICODE
+	const char *pszClassAscii = WideToAsciiDup (pszClass);
+	if (!pszClassAscii) {
+		LOGFATAL (TEXT ("Out of memory"));
+		return R_NilValue;
+	}
+#else /* ifdef _UNICODE */
+#define pszClassAscii pszClass
+#endif /* ifdef _UNICODE */
+	char szFunction[256];
+	StringCbPrintfA (szFunction, sizeof (szFunction), "interop.%s", pszClassAscii);
+	SEXP result = InvokeMethod (szFunction, value);
+#ifdef _UNICODE
+	free (pszClassAscii);
+#endif /* ifdef _UNICODE */
+	return result;
 }

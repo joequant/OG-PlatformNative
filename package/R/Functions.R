@@ -26,7 +26,7 @@ getParameterFlags.Functions <- function (index) {
 
 # Invokes a function with the given argument array and returns the result
 invoke.Functions <- function (index, args) {
-  OpenGammaCall ("Functions_invoke", as.integer (index), args)
+  OpenGammaCall ("Functions_invoke", as.integer (index), args, parent.frame ())
 }
 
 # Brings a proxy declaration for a function into scope

@@ -16,7 +16,7 @@ public:
 	static SEXP GetName (SEXP index);
 	static SEXP GetParameterFlags (SEXP index);
 	static SEXP GetParameterNames (SEXP index);
-	static SEXP Invoke (SEXP index, SEXP args);
+	static SEXP Invoke (SEXP index, SEXP args, SEXP envir);
 };
 
 #ifdef GLOBALS
@@ -38,8 +38,8 @@ extern "C" {
 		return RFunctions::GetParameterNames (index);
 	}
 
-	SEXP RPROC Functions_invoke2 (SEXP index, SEXP args) {
-		return RFunctions::Invoke (index, args);
+	SEXP RPROC Functions_invoke3 (SEXP index, SEXP args, SEXP envir) {
+		return RFunctions::Invoke (index, args, envir);
 	}
 
 }

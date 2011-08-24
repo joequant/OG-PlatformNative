@@ -93,7 +93,7 @@ static FudgeMsg _GetFudgeMsg (SEXP msgValue) {
 	return msg;
 }
 
-FudgeMsg RFudgeMsg::ToFudgeMsg (SEXP value) {
+FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 	if (isObject (value)) {
 		SEXP cls = getAttrib (value, install ("class"));
 		if (isString (cls)) {
@@ -106,7 +106,7 @@ FudgeMsg RFudgeMsg::ToFudgeMsg (SEXP value) {
 				}
 			} else {
 				LOGDEBUG ("Class " << CHAR (STRING_ELT (cls, 0)) << " not a FudgeMsg");
-				value = CRCallback::ToFudgeMsg (value);
+				value = poR->ToFudgeMsg (value);
 				if (value != R_NilValue) {
 					FudgeMsg msg = _GetFudgeMsg (value);
 					if (msg) {

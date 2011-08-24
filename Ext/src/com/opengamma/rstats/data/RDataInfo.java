@@ -5,11 +5,10 @@
  */
 package com.opengamma.rstats.data;
 
-import org.apache.commons.lang.ObjectUtils;
-
 import com.opengamma.language.Data;
 import com.opengamma.language.DataDecoration;
 import com.opengamma.language.DataDecorator;
+import com.opengamma.rstats.msg.DataInfo;
 
 /**
  * Additional metadata on {@link Data} values for use by the R wrappers.
@@ -23,14 +22,20 @@ public final class RDataInfo extends DataDecoration implements Cloneable {
     }
   };
 
-  private String _wrapperClass;
+  private final DataInfo _info;
 
   private RDataInfo(final DataDecorator<? extends DataDecoration> decorator) {
     super(decorator);
+    _info = new DataInfo();
   }
 
   private RDataInfo(final RDataInfo copyFrom) {
     super(copyFrom.getDecorator());
+    _info = copyFrom.getInfo().clone();
+  }
+
+  private DataInfo getInfo() {
+    return _info;
   }
 
   @Override
@@ -38,29 +43,27 @@ public final class RDataInfo extends DataDecoration implements Cloneable {
     return new RDataInfo(this);
   }
 
-  public static RDataInfo getFor(final Data data) {
-    return s_decorator.get(data);
+  public static DataInfo getFor(final Data data) {
+    final RDataInfo instance = s_decorator.get(data);
+    if (instance != null) {
+      return instance.getInfo();
+    } else {
+      return null;
+    }
   }
 
   public static RDataInfo create() {
     return s_decorator.create();
   }
 
-  public String getWrapperClass() {
-    return _wrapperClass;
-  }
-
-  public void setWrapperClass(final String wrapperClass) {
-    _wrapperClass = wrapperClass;
+  public RDataInfo wrapperClass(final String wrapperClass) {
+    getInfo().setWrapperClass(wrapperClass);
+    return this;
   }
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder();
-    if (getWrapperClass() != null) {
-      sb.append("wrapperClass=").append(getWrapperClass());
-    }
-    return sb.toString();
+    return getInfo().toString();
   }
 
   @Override
@@ -72,13 +75,13 @@ public final class RDataInfo extends DataDecoration implements Cloneable {
       return false;
     }
     final RDataInfo other = (RDataInfo) o;
-    return ObjectUtils.equals(getWrapperClass(), other.getWrapperClass());
+    return getInfo().equals(other.getInfo());
   }
 
   @Override
   public int hashCode() {
     int hc = 1;
-    hc += (hc << 4) + ObjectUtils.hashCode(getWrapperClass());
+    hc += (hc << 4) + getInfo().hashCode();
     return hc;
   }
 

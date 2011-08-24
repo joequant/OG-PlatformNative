@@ -8,6 +8,7 @@
 #define __inc_og_rstats_package_parameters_h
 
 #include "DataValue.h"
+#include "RCallback.h"
 
 class CParameters {
 private:
@@ -16,7 +17,7 @@ private:
 	CParameters (com_opengamma_language_Data **ppArg, int nArg);
 public:
 	~CParameters ();
-	static CParameters *Decode (SEXP args);
+	static CParameters *Decode (const CRCallback *poR, SEXP args);
 	int Count () { return m_nArg; }
 	com_opengamma_language_Data **GetData () { return m_ppArg; }
 };

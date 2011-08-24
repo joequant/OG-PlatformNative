@@ -17,6 +17,22 @@
     <property name="extendedFrom" ref="sessionContextFactory" />
     <property name="userContextFactory" ref="RUserContextFactory" />
   </bean>
+  <bean id="RBaseMessageHandler" factory-bean="clientContextFactory" factory-method="getMessageHandler" />
+  <bean id="RClientContextFactory" class="com.opengamma.language.connector.ClientContextFactoryBean">
+    <constructor-arg ref="clientContextFactory" />
+    <property name="messageHandler">
+      <bean class="com.opengamma.language.connector.UserMessagePayloadHandler">
+        <constructor-arg ref="RBaseMessageHandler" />
+        <property name="functionHandler">
+          <bean class="com.opengamma.rstats.function.Handler">
+            <constructor-arg>
+              <bean factory-bean="RBaseMessageHandler" factory-method="getFunctionHandler" />
+            </constructor-arg>
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
 
   <!-- R type conversion -->
   <bean class="com.opengamma.language.invoke.Loader">
