@@ -45,7 +45,9 @@
     </subant>
   </target>
 
-  <target name="dist" depends="compile">
+  <target name="dist" depends="compile, dist-impl" />
+
+  <target name="dist-impl">
     <mkdir dir="${dist.dir}" />
     <mkdir dir="${package.dir}" />
     <subant target="dist" buildpath="${basedir}/package">
@@ -60,7 +62,7 @@
     <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${dist.dir}/package" />
   </target>
 
-  <target name="test-dist" depends="clean-dist,dist" description="--> Tests the R package distribution using 'R CMD check'">
+  <target name="test-dist" depends="clean-dist,tests,dist-impl" description="--> Tests the R package distribution using 'R CMD check'">
     <exec executable="R" failonerror="true">
       <arg value="CMD" />
       <arg value="check" />
