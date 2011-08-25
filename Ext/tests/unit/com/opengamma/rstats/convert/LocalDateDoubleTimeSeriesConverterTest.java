@@ -6,6 +6,8 @@
 
 package com.opengamma.rstats.convert;
 
+import java.util.Arrays;
+
 import javax.time.calendar.LocalDate;
 
 import org.testng.annotations.Test;
@@ -15,6 +17,8 @@ import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.invoke.TypeConverterProvider;
+import com.opengamma.language.invoke.TypeConverterProviderBean;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.rstats.data.RDataInfo;
 import com.opengamma.util.timeseries.localdate.ArrayLocalDateDoubleTimeSeries;
@@ -47,4 +51,15 @@ public class LocalDateDoubleTimeSeriesConverterTest extends AbstractConverterTes
     final Data expectedData = RDataInfo.create().wrapperClass("TimeSeries").applyTo(createData());
     assertValidConversion(converter, createTimeSeries(), JavaTypeInfo.builder(Data.class).get(), expectedData);
   }
+
+  @Override
+  protected void addTypeConvertersToBean(final TypeConverterProviderBean bean) {
+    bean.setConverters(Arrays.asList(new DateTimeConverter()));
+  }
+
+  @Override
+  protected TypeConverterProvider getTypeConverters() {
+    return useBean();
+  }
+
 }
