@@ -12,8 +12,8 @@ LOGGING (com.opengamma.rstats.client.Functions);
 
 /// Creates a new function entry wrapper.
 ///
-/// @param nInvocationId[in] invocation ID to include in the Invoke message to the Java stack
-/// @param pDefinition[in] function definition
+/// @param[in] nInvocationId invocation ID to include in the Invoke message to the Java stack
+/// @param[in] pDefinition function definition
 CFunctionEntry::CFunctionEntry (int nInvocationId, const com_opengamma_language_function_Definition *pDefinition)
 : CEntityEntry (nInvocationId, &pDefinition->fudgeParent) {
 }
@@ -24,9 +24,9 @@ CFunctionEntry::~CFunctionEntry () {
 
 /// Invokes a function by sending a message to the Java stack and waiting for the corresponding response.
 ///
-/// @param poConnector[in] connector instance for communication with the Java stack, never NULL
-/// @param ppArg[in] array of arguments to send to the Java stack. Never NULL, values must never be NULL and there must be a value for each of the expected arguments (as returned by GetParameterCount)
-/// @param ppInfo[out] receives a pointer to any additional information about the result, left unchanged if there is a problem. Callers should set to NULL before calling this method
+/// @param[in] poConnector connector instance for communication with the Java stack, never NULL
+/// @param[in] ppArg array of arguments to send to the Java stack. Never NULL, values must never be NULL and there must be a value for each of the expected arguments (as returned by GetParameterCount)
+/// @param[out] ppInfo receives a pointer to any additional information about the result, left unchanged if there is a problem. Callers should set to NULL before calling this method
 /// @return the result, or NULL if there was a problem
 com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnector, const com_opengamma_language_Data * const *ppArg, com_opengamma_rstats_msg_DataInfo **ppInfo) const {
 	LOGDEBUG ("Invoking " << GetName ());
@@ -60,8 +60,8 @@ com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnect
 
 /// Creates a new collection of function entries.
 ///
-/// @param poConnector[in] connector instance for communication with the Java stack, never NULL
-/// @param pAvailable[in] the availability message from the Java stack describing the functions available from this collection
+/// @param[in] poConnector connector instance for communication with the Java stack, never NULL
+/// @param[in] pAvailable the availability message from the Java stack describing the functions available from this collection
 CFunctions::CFunctions (const CConnector *poConnector, const com_opengamma_language_function_Available *pAvailable)
 : CEntities (poConnector, pAvailable->fudgeCountFunction) {
 	LOGINFO (TEXT ("Creating function repository"));
@@ -78,7 +78,7 @@ CFunctions::~CFunctions () {
 
 /// Creates a function entry collection from a pending query message object.
 ///
-/// @param poQuery[in] pending query object
+/// @param[in] poQuery pending query object
 /// @return a collection instance or NULL if there was a problem
 const CFunctions *CFunctions::GetAvailable (CFunctionQueryAvailable *poQuery) {
 	LOGDEBUG (TEXT ("Waiting for available functions"));
