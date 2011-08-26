@@ -8,6 +8,10 @@ package com.opengamma.rstats.function;
 import java.util.Collection;
 
 import com.opengamma.language.Data;
+import com.opengamma.language.async.AsynchronousExecution;
+import com.opengamma.language.async.AsynchronousOperation;
+import com.opengamma.language.async.AsynchronousResult;
+import com.opengamma.language.async.ResultListener;
 import com.opengamma.language.connector.UserMessagePayload;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.function.FunctionAdapter;
@@ -29,11 +33,7 @@ public class Handler extends FunctionAdapter<UserMessagePayload, SessionContext>
     super(underlying);
   }
 
-  // FunctionVisitor
-
-  @Override
-  public UserMessagePayload visitInvoke(final Invoke message, final SessionContext data) {
-    final UserMessagePayload rawResult = super.visitInvoke(message, data);
+  private UserMessagePayload decorateResult(final UserMessagePayload rawResult) {
     if (rawResult instanceof Result) {
       final Result result = (Result) rawResult;
       final Collection<Data> resultData = result.getResult();
@@ -59,6 +59,30 @@ public class Handler extends FunctionAdapter<UserMessagePayload, SessionContext>
       }
     }
     return rawResult;
+  }
+
+  // FunctionVisitor
+
+  @Override
+  public UserMessagePayload visitInvoke(final Invoke message, final SessionContext data) throws AsynchronousExecution {
+    UserMessagePayload rawResult;
+    try {
+      rawResult = super.visitInvoke(message, data);
+    } catch (AsynchronousExecution e) {
+      final AsynchronousOperation<UserMessagePayload> asyncReturn = new AsynchronousOperation<UserMessagePayload>();
+      e.setResultListener(new ResultListener<UserMessagePayload>() {
+        @Override
+        public void operationComplete(final AsynchronousResult<UserMessagePayload> result) {
+          try {
+            asyncReturn.getCallback().setResult(decorateResult(result.getResult()));
+          } catch (RuntimeException e) {
+            asyncReturn.getCallback().setException(e);
+          }
+        }
+      });
+      return asyncReturn.getResult();
+    }
+    return decorateResult(rawResult);
   }
 
 }
