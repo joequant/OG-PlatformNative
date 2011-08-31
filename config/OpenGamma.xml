@@ -48,6 +48,21 @@
           <list>
             <bean class="com.opengamma.rstats.convert.DateTimeConverter" />
             <bean class="com.opengamma.rstats.convert.LocalDateDoubleTimeSeriesConverter" />
+            <!-- <bean class="com.opengamma.rstats.convert.UserViewClientConverter" /> -->
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <!-- R procedures -->
+  <bean class="com.opengamma.language.procedure.Loader">
+    <property name="globalContextFactory" ref="RGlobalContextFactory" />
+    <property name="procedureProvider">
+      <bean class="com.opengamma.language.procedure.ProcedureProviderBean">
+        <property name="procedures">
+          <list>
+            <bean class="com.opengamma.rstats.convert.UserViewClientConverter.Destructor" />
           </list>
         </property>
       </bean>
