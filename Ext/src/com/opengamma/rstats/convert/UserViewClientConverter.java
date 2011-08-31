@@ -84,7 +84,7 @@ public class UserViewClientConverter extends AbstractTypeConverter {
         detached = viewClient.detachAndUnlock(conversionContext.getSessionContext());
       } else if (value instanceof DetachedViewClientHandle) {
         final DetachedViewClientHandle viewClient = (DetachedViewClientHandle) value;
-        detached = viewClient.detachAndUnlock(conversionContext.getSessionContext());
+        detached = viewClient.detachAndUnlock();
       } else {
         conversionContext.setFail();
         return;
