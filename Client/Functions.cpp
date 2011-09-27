@@ -26,7 +26,7 @@ CFunctionEntry::~CFunctionEntry () {
 ///
 /// @param[in] poConnector connector instance for communication with the Java stack, never NULL
 /// @param[in] ppArg array of arguments to send to the Java stack. Never NULL, values must never be NULL and there must be a value for each of the expected arguments (as returned by GetParameterCount)
-/// @param[out] ppInfo receives a pointer to any additional information about the result, left unchanged if there is a problem. Callers should set to NULL before calling this method
+/// @param[out] ppInfo receives a pointer to any additional information about the result, left unchanged if there is a problem. Can be NULL if the caller does not require the additional information.
 /// @return the result, or NULL if there was a problem
 com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnector, const com_opengamma_language_Data * const *ppArg, com_opengamma_rstats_msg_DataInfo **ppInfo) const {
 	LOGDEBUG ("Invoking " << GetName ());
@@ -51,9 +51,13 @@ com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnect
 	// free'd. The caller to Invoke is now responsible for releasing the memory.
 	com_opengamma_language_Data *pReturnResult = pResult->fudgeParent._result[0];
 	pResult->fudgeParent._result[0] = NULL;
-	if (pResult->fudgeCountInfo == 1) {
-		*ppInfo = pResult->_info[0];
-		pResult->_info[0] = NULL;
+	if (ppInfo) {
+		if (pResult->fudgeCountInfo == 1) {
+			*ppInfo = pResult->_info[0];
+			pResult->_info[0] = NULL;
+		} else {
+			*ppInfo = NULL;
+		}
 	}
 	return pReturnResult;
 }

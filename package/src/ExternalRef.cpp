@@ -34,17 +34,15 @@ static void RPROC ExternalRef_finalizer (SEXP externalref) {
 				const CProcedureEntry *poEntry = g_poProcedures->Get (pszDestructor);
 				if (poEntry) {
 					const Data *apArgs[1] = { &data };
-					Data *pResult = g_poProcedures->Invoke (poEntry, apArgs);
-					if (pResult) {
-						Data_free (pResult);
-					}
+					LOGINFO ("Invoke " << poEntry->GetName ());
+					g_poProcedures->Invoke (poEntry, apArgs, NULL, NULL);
 				} else {
 					LOGERROR (ERR_PARAMETER_VALUE);
 				}
 			} else {
 				LOGERROR (ERR_INITIALISATION);
 			}
-			Value_free (data._single);
+			CValue::Release (data._single);
 		} else {
 			LOGERROR (ERR_PARAMETER_VALUE);
 		}

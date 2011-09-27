@@ -20,6 +20,7 @@
       <arg value="-p${og.language.client.jar}" />
       <arg value="${src.dir}/com/opengamma/rstats/msg/DataInfo.proto" />
       <arg value="${src.dir}/com/opengamma/rstats/msg/FunctionResult.proto" />
+      <arg value="${src.dir}/com/opengamma/rstats/msg/ProcedureResult.proto" />
     </java>
   </target>
 

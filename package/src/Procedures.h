@@ -7,29 +7,45 @@
 #ifndef __inc_og_rstats_package_procedures_h
 #define __inc_og_rstats_package_procedures_h
 
-class RProcedures {
-private:
-	RProcedures () { }
-	~RProcedures () { }
+#include "Entities.h"
+#include Client(Procedures.h)
+#include "globals.h"
+
+/// R method helper for procedures
+class RProcedures : public REntities {
+protected:
+	const CEntityEntry *GetEntryImpl (int index) const;
 public:
-	static SEXP Count ();
-	static SEXP GetName (SEXP index);
-	static SEXP Invoke (SEXP index, SEXP args, SEXP envir);
+	RProcedures () : REntities (g_poProcedures) { }
+	SEXP Invoke (SEXP index, SEXP args, SEXP envir) const;
 };
 
 #ifdef GLOBALS
 extern "C" {
 
 	SEXP RPROC Procedures_count0 () {
-		return RProcedures::Count ();
+		RProcedures oP;
+		return oP.Count ();
 	}
 
 	SEXP RPROC Procedures_getName1 (SEXP index) {
-		return RProcedures::GetName (index);
+		RProcedures oP;
+		return oP.GetName (index);
+	}
+
+	SEXP RPROC Procedures_getParameterFlags1 (SEXP index) {
+		RProcedures oP;
+		return oP.GetParameterFlags (index);
+	}
+
+	SEXP RPROC Procedures_getParameterNames1 (SEXP index) {
+		RProcedures oP;
+		return oP.GetParameterNames (index);
 	}
 
 	SEXP RPROC Procedures_invoke3 (SEXP index, SEXP args, SEXP envir) {
-		return RProcedures::Invoke (index, args, envir);
+		RProcedures oP;
+		return oP.Invoke (index, args, envir);
 	}
 
 }

@@ -10,11 +10,11 @@
 #include Client(Repositories.h)
 #define GLOBALS
 #include "FudgeMsg.h"
+#include "globals.h"
 #include "Functions.h"
 #include "ExternalRef.h"
 #include "LiveData.h"
 #include "Procedures.h"
-#include "globals.h"
 #include "Errors.h"
 
 class CSuppressLoggingWarning {
@@ -47,6 +47,8 @@ static R_CallMethodDef g_aMethods[] = {
 	F (LiveData_getName, 1),
 	F (Procedures_count, 0),
 	F (Procedures_getName, 1),
+	F (Procedures_getParameterFlags, 1),
+	F (Procedures_getParameterNames, 1),
 	F (Procedures_invoke, 3),
 	{ NULL, NULL, 0 }
 };

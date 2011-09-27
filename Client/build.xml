@@ -8,9 +8,11 @@
     <copy todir="${basedir}">
       <fileset dir="${lib.dir}/include/Connector">
         <include name="com_opengamma_language_connector_Function.h" />
+        <include name="com_opengamma_language_connector_Procedure.h" />
         <include name="com_opengamma_language_connector_UserMessagePayload.h" />
         <include name="com_opengamma_language_Data.h" />
         <include name="com_opengamma_language_function_Result.h" />
+        <include name="com_opengamma_language_procedure_Result.h" />
         <include name="com_opengamma_language_Value.h" />
       </fileset>
     </copy>

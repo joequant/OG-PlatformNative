@@ -6,17 +6,12 @@
 
 # Creates a view client wrapper
 interop.ViewClient <- function (uniqueId) {
-  new ("ViewClient", uniqueId = as.Intern (uniqueId, "OpenGamma:::destroy.ViewClient"))
+  new ("ViewClient", uniqueId = as.ExternalRef (uniqueId, "destroy.ViewClient"))
 }
 
 # Returns the unique identifier as a string representation of the view client
 .toString.ViewClient <- function (vc) {
-  from.Intern (vc@uniqueId)
-}
-
-# Destroys the view client wrapper
-destroy.ViewClient <- function (uniqueId) {
-  LOGERROR (paste ("Invoke destroy.ViewClient for", uniqueId))
+  from.ExternalRef (vc@uniqueId)
 }
 
 setClass ("ViewClient", representation (uniqueId = "externalptr"))

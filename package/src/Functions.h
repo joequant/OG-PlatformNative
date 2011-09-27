@@ -7,39 +7,45 @@
 #ifndef __inc_og_rstats_package_functions_h
 #define __inc_og_rstats_package_functions_h
 
-class RFunctions {
-private:
-	RFunctions () { }
-	~RFunctions () { }
+#include "Entities.h"
+#include Client(Functions.h)
+#include "globals.h"
+
+/// R method helper for functions.
+class RFunctions : public REntities {
+protected:
+	const CEntityEntry *GetEntryImpl (int index) const;
 public:
-	static SEXP Count ();
-	static SEXP GetName (SEXP index);
-	static SEXP GetParameterFlags (SEXP index);
-	static SEXP GetParameterNames (SEXP index);
-	static SEXP Invoke (SEXP index, SEXP args, SEXP envir);
+	RFunctions () : REntities (g_poFunctions) { }
+	SEXP Invoke (SEXP index, SEXP args, SEXP envir) const;
 };
 
 #ifdef GLOBALS
 extern "C" {
 
 	SEXP RPROC Functions_count0 () {
-		return RFunctions::Count ();
+		RFunctions oF;
+		return oF.Count ();
 	}
 
 	SEXP RPROC Functions_getName1 (SEXP index) {
-		return RFunctions::GetName (index);
+		RFunctions oF;
+		return oF.GetName (index);
 	}
 
 	SEXP RPROC Functions_getParameterFlags1 (SEXP index) {
-		return RFunctions::GetParameterFlags (index);
+		RFunctions oF;
+		return oF.GetParameterFlags (index);
 	}
 
 	SEXP RPROC Functions_getParameterNames1 (SEXP index) {
-		return RFunctions::GetParameterNames (index);
+		RFunctions oF;
+		return oF.GetParameterNames (index);
 	}
 
 	SEXP RPROC Functions_invoke3 (SEXP index, SEXP args, SEXP envir) {
-		return RFunctions::Invoke (index, args, envir);
+		RFunctions oF;
+		return oF.Invoke (index, args, envir);
 	}
 
 }
