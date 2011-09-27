@@ -39,7 +39,7 @@ CParameters *CParameters::Decode (const CRCallback *poR, SEXP args) {
 			LOGFATAL (ERR_MEMORY);
 		}
 	} else {
-		LOGWARN (ERR_PARAMETER_TYPE);
+		LOGERROR (ERR_PARAMETER_TYPE);
 	}
 	return poResult;
 }

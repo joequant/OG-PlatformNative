@@ -37,6 +37,7 @@ protected:
 	CEntities (const CConnector *poConnector, int nEntity);
 	virtual ~CEntities ();
 	const CEntityEntry *GetImpl (int n) const;
+	const CEntityEntry *GetImpl (const char *pszName) const;
 	void SetImpl (int n, const CEntityEntry *poEntity);
 	const CConnector *GetConnector () const { return m_poConnector; } // Does not increment the refcount
 public:

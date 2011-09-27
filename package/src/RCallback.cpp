@@ -26,7 +26,7 @@ SEXP CRCallback::InteropConvert (SEXP value, const TCHAR *pszClass) const {
 #ifdef _UNICODE
 	const char *pszClassAscii = WideToAsciiDup (pszClass);
 	if (!pszClassAscii) {
-		LOGFATAL (TEXT ("Out of memory"));
+		LOGFATAL (ERR_MEMORY);
 		return R_NilValue;
 	}
 #else /* ifdef _UNICODE */

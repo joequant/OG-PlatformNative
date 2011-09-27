@@ -64,6 +64,22 @@ const CEntityEntry *CEntities::GetImpl (int n) const {
 	return m_ppoEntity[n];
 }
 
+/// Fetches an entry by name. Note that this is currently implemented as a linear search and could therefore
+/// be quite a costly operation on large entity repositories.
+///
+/// @param[in] pszName name to match
+/// @return the entity found, or NULL if none
+const CEntityEntry *CEntities::GetImpl (const char *pszName) const {
+	int n;
+	for (n = 0; n < m_nEntity; n++) {
+		if (!strcmp (m_ppoEntity[n]->GetName (), pszName)) {
+			return m_ppoEntity[n];
+		}
+	}
+	LOGWARN ("No entity found for '" << pszName << "'");
+	return NULL;
+}
+
 void CEntities::SetImpl (int n, const CEntityEntry *poEntry) {
 	if ((n < 0) || (n >= m_nEntity)) {
 		LOGWARN (TEXT ("Index ") << n << TEXT (" out of range (") << m_nEntity << TEXT (")"));

@@ -19,32 +19,38 @@ LOGGING (com.opengamma.rstats.package.FudgeMsg);
 #define R_FUDGEINDICATOR		"indicator"
 
 static SEXP _CreateByteArray (const fudge_byte *bytes, int elements) {
-	TODO (TEXT ("byte[") << elements << TEXT ("] array"));
+	LOGWARN (TEXT ("byte[") << elements << TEXT ("] array"));
+	// TODO
 	return R_NilValue;
 }
 
 static SEXP _CreateShortArray (const fudge_byte *bytes, int elements) {
-	TODO (TEXT ("short[") << elements << TEXT ("] array"));
+	LOGWARN (TEXT ("short[") << elements << TEXT ("] array"));
+	// TODO
 	return R_NilValue;
 }
 
 static SEXP _CreateIntArray (const fudge_byte *bytes, int elements) {
-	TODO (TEXT ("int[") << elements << TEXT ("] array"));
+	LOGWARN (TEXT ("int[") << elements << TEXT ("] array"));
+	// TODO
 	return R_NilValue;
 }
 
 static SEXP _CreateLongArray (const fudge_byte *bytes, int elements) {
-	TODO (TEXT ("long[") << elements << TEXT ("] array"));
+	LOGWARN (TEXT ("long[") << elements << TEXT ("] array"));
+	// TODO
 	return R_NilValue;
 }
 
 static SEXP _CreateFloatArray (const fudge_byte *bytes, int elements) {
-	TODO (TEXT ("float[") << elements << TEXT ("] array"));
+	LOGWARN (TEXT ("float[") << elements << TEXT ("] array"));
+	// TODO
 	return R_NilValue;
 }
 
 static SEXP _CreateDoubleArray (const fudge_byte *bytes, int elements) {
-	TODO (TEXT ("double[") << elements << TEXT ("] array"));
+	LOGWARN (TEXT ("double[") << elements << TEXT ("] array"));
+	// TODO
 	return R_NilValue;
 }
 
@@ -56,10 +62,10 @@ static void RPROC FudgeMsg_finalizer (SEXP msgptr) {
 			LOGDEBUG (TEXT ("Message pointer released"));
 			R_ClearExternalPtr (msgptr);
 		} else {
-			LOGWARN (TEXT ("Couldn't release message pointer"));
+			LOGERROR (ERR_INTERNAL);
 		}
 	} else {
-		LOGWARN (TEXT ("Finalization of non-external pointer"));
+		LOGERROR (ERR_PARAMETER_VALUE);
 	}
 }
 
@@ -74,7 +80,7 @@ SEXP RFudgeMsg::FromFudgeMsg (FudgeMsg msg) {
 	SEXP field = mkString (R_FUDGEMSG_POINTER);
 	PROTECT (field);
 	R_do_slot_assign (obj, field, msgptr);
-	R_RegisterCFinalizerEx (msgptr, FudgeMsg_finalizer, TRUE);
+	R_RegisterCFinalizerEx (msgptr, FudgeMsg_finalizer, FALSE);
 	UNPROTECT (4);
 	return obj;
 }
@@ -102,7 +108,7 @@ FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 				if (msg) {
 					return msg;
 				} else {
-					LOGERROR (TEXT ("FudgeMsg object does not have message pointer"));
+					LOGERROR (ERR_PARAMETER_VALUE);
 				}
 			} else {
 				LOGDEBUG ("Class " << CHAR (STRING_ELT (cls, 0)) << " not a FudgeMsg");
@@ -112,17 +118,17 @@ FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 					if (msg) {
 						return msg;
 					} else {
-						LOGERROR (TEXT ("toFudgeMsg conversion does not have message pointer"));
+						LOGERROR (ERR_PARAMETER_VALUE);
 					}
 				} else {
-					LOGWARN (TEXT ("Object can't be converted to FudgeMsg"))
+					LOGERROR (ERR_PARAMETER_VALUE);
 				}
 			}
 		} else {
-			LOGWARN (TEXT ("Class attribute not a string"));
+			LOGERROR (ERR_PARAMETER_VALUE);
 		}
 	} else {
-		LOGDEBUG (TEXT ("Not an object"));
+		LOGERROR (ERR_PARAMETER_VALUE);
 	}
 	return NULL;
 }
@@ -274,7 +280,7 @@ SEXP RFudgeMsg::GetAllFields (SEXP message) {
 			LOGFATAL (ERR_MEMORY);
 		}
 	} else {
-		LOGWARN (ERR_PARAMETER_VALUE);
+		LOGERROR (ERR_PARAMETER_VALUE);
 	}
 	return result;
 }

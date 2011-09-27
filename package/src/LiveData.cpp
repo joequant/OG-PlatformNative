@@ -30,7 +30,7 @@ SEXP LiveData_getName1 (SEXP index) {
 			if (poEntry) {
 				name = mkString (poEntry->GetName ());
 			} else {
-				LOGWARN (ERR_PARAMETER_VALUE);
+				LOGERROR (ERR_PARAMETER_VALUE);
 			}
 		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);

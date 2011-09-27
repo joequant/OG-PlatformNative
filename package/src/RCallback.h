@@ -10,13 +10,13 @@
 class CRCallback {
 private:
 	SEXP m_envir;
-	SEXP InvokeMethod (const char *pszMethod, SEXP param) const;
 public:
 	CRCallback (SEXP envir) { m_envir = envir; }
 	~CRCallback () { }
 	SEXP ToString (SEXP object) const { return InvokeMethod ("toString", object); }
 	SEXP ToFudgeMsg (SEXP object) const { return InvokeMethod ("toFudgeMsg", object); }
 	SEXP InteropConvert (SEXP value, const TCHAR *pszClass) const;
+	SEXP InvokeMethod (const char *pszMethod, SEXP param) const;
 };
 
 #endif /* ifndef __inc_og_rstats_package_rcallback_h */

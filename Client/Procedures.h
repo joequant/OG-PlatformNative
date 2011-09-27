@@ -25,6 +25,7 @@ private:
 public:
 	static const CProcedures *GetAvailable (CProcedureQueryAvailable *poQuery);
 	const CProcedureEntry *Get (int n) const { return (const CProcedureEntry*)GetImpl (n); }
+	const CProcedureEntry *Get (const char *pszName) const { return (const CProcedureEntry*)GetImpl (pszName); }
 	com_opengamma_language_Data *Invoke (const CProcedureEntry *poEntry, const com_opengamma_language_Data * const *ppArg) const { return poEntry->Invoke (GetConnector (), ppArg); }
 };
 

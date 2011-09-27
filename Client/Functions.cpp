@@ -37,7 +37,7 @@ com_opengamma_language_Data *CFunctionEntry::Invoke (const CConnector *poConnect
 		LOGWARN (TEXT ("Could not send invocation request"));
 		return NULL;
 	}
-	com_opengamma_rstats_msg_FunctionResult *pResult = invoke.Recv (CRequestBuilder::GetDefaultTimeout ());
+	com_opengamma_rstats_msg_FunctionResult *pResult = invoke.Recv (0x7FFFFFFF);
 	if (!pResult) {
 		LOGWARN (TEXT ("Did not receive invocation response"));
 		return NULL;

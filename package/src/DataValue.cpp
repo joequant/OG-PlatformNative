@@ -53,7 +53,7 @@ com_opengamma_language_Value *CValue::FromSEXP (SEXP value, int index) {
 				pValue->_stringValue = Ascii_tcsDup (CHAR (STRING_ELT (value, index)));
 				break;
 			default :
-				LOGERROR (TEXT ("Invalid value, type ") << TYPEOF (value));
+				LOGERROR (ERR_PARAMETER_TYPE);
 				break;
 		}
 	} else {
@@ -88,10 +88,11 @@ void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_langu
 		break;
 							}
 	case DATATYPE_ERROR :
-		TODO (TEXT ("Store ERROR type in vector"));
+		LOGWARN (TEXT ("TODO: store ERROR type in vector"));
+		LOGFATAL (ERR_INTERNAL);
 		break;
 	default :
-		LOGWARN (TEXT ("Invalid type, ") << type);
+		LOGERROR (ERR_RESULT_TYPE);
 		break;
 	}
 }
@@ -174,7 +175,7 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 				pData->_single = CValue::FromSEXP (poR->ToString (data));
 			}
 		} else {
-			LOGWARN (ERR_PARAMETER_TYPE);
+			LOGERROR (ERR_PARAMETER_TYPE);
 		}
 	} else {
 		LOGFATAL (ERR_MEMORY);
@@ -211,11 +212,12 @@ static SEXPTYPE _DataTypeToVectorType (int type) {
 		// Force degeneration to list; can't have a vector of lists
 		return 0;
 	case DATATYPE_ERROR :
-		TODO (TEXT ("DATATYPE_ERROR"));
+		LOGWARN (TEXT ("TODO: convert ERROR to SEXP"));
+		LOGFATAL (ERR_INTERNAL);
 		// NA?
 		return 0;
 	default :
-		LOGERROR (TEXT ("Unknown type, ") << type);
+		LOGERROR (ERR_RESULT_TYPE);
 		return 0;
 	}
 }

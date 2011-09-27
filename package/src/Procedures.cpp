@@ -6,12 +6,13 @@
 
 #include "stdafx.h"
 #include "Procedures.h"
+#include "RCallback.h"
 #include "globals.h"
 #include "Errors.h"
 
 LOGGING (com.opengamma.rstats.package.Procedures);
 
-SEXP Procedures_count0 () {
+SEXP RProcedures::Count () {
 	SEXP count = R_NilValue;
 	if (g_poProcedures) {
 		count = allocVector (INTSXP, 1);
@@ -22,7 +23,7 @@ SEXP Procedures_count0 () {
 	return count;
 }
 
-SEXP Procedures_getName1 (SEXP index) {
+SEXP RProcedures::GetName (SEXP index) {
 	SEXP name = R_NilValue;
 	if (g_poProcedures) {
 		if (isInteger (index)) {
@@ -30,7 +31,7 @@ SEXP Procedures_getName1 (SEXP index) {
 			if (poEntry) {
 				name = mkString (poEntry->GetName ());
 			} else {
-				LOGWARN (ERR_PARAMETER_VALUE);
+				LOGERROR (ERR_PARAMETER_VALUE);
 			}
 		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);
@@ -39,4 +40,15 @@ SEXP Procedures_getName1 (SEXP index) {
 		LOGERROR (ERR_INITIALISATION);
 	}
 	return name;
+}
+
+SEXP RProcedures::Invoke (SEXP index, SEXP args, SEXP envir) {
+	CRCallback oR (envir);
+	if (g_poProcedures) {
+		LOGWARN (TEXT ("Invoke procedure"));
+		LOGFATAL (ERR_INTERNAL);
+	} else {
+		LOGERROR (ERR_INITIALISATION);
+	}
+	return R_NilValue;
 }

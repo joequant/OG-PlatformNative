@@ -11,9 +11,11 @@
 #define GLOBALS
 #include "FudgeMsg.h"
 #include "Functions.h"
+#include "ExternalRef.h"
 #include "LiveData.h"
 #include "Procedures.h"
 #include "globals.h"
+#include "Errors.h"
 
 class CSuppressLoggingWarning {
 public:
@@ -33,6 +35,8 @@ extern "C" {
 #define F(name, args) { #name, (DL_FUNC)&name##args, args }
 
 static R_CallMethodDef g_aMethods[] = {
+	F (ExternalRef_create, 2),
+	F (ExternalRef_fetch, 1),
 	F (FudgeMsg_getAllFields, 1),
 	F (Functions_count, 0),
 	F (Functions_getName, 1),
@@ -43,6 +47,7 @@ static R_CallMethodDef g_aMethods[] = {
 	F (LiveData_getName, 1),
 	F (Procedures_count, 0),
 	F (Procedures_getName, 1),
+	F (Procedures_invoke, 3),
 	{ NULL, NULL, 0 }
 };
 
@@ -52,12 +57,13 @@ void LibExport R_init_OpenGamma (DllInfo *pInfo) {
 	g_poLiveData = NULL;
 	g_poProcedures = NULL;
 	if (!Initialise ()) {
-		LOGERROR (TEXT ("Couldn't initialise DLL, error ") << GetLastError ());
+		LOGWARN (TEXT ("Couldn't initialise DLL, error ") << GetLastError ());
+		LOGERROR (ERR_INITIALISATION);
 		return;
 	}
 	const CConnector *poConnector = ConnectorInstance ();
 	if (!poConnector) {
-		LOGERROR (TEXT ("No connector"));
+		LOGERROR (ERR_INITIALISATION);
 		return;
 	}
 	CRepositories repositories (poConnector);
@@ -83,7 +89,8 @@ void LibExport R_unload_OpenGamma (DllInfo *pInfo) {
 		g_poProcedures = NULL;
 	}
 	if (!Shutdown ()) {
-		LOGERROR (TEXT ("Couldn't shutdown DLL, error ") << GetLastError ());
+		LOGWARN (TEXT ("Couldn't shutdown DLL, error ") << GetLastError ());
+		LOGERROR (ERR_INITIALISATION);
 		return;
 	}
 }

@@ -32,7 +32,7 @@ SEXP RFunctions::GetName (SEXP index) {
 			if (poEntry) {
 				name = mkString (poEntry->GetName ());
 			} else {
-				LOGWARN (ERR_PARAMETER_VALUE);
+				LOGERROR (ERR_PARAMETER_VALUE);
 			}
 		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);
@@ -55,7 +55,7 @@ SEXP RFunctions::GetParameterFlags (SEXP index) {
 					INTEGER (flags)[n] = poEntry->GetParameter (n)->GetFlags ();
 				}
 			} else {
-				LOGWARN (ERR_PARAMETER_VALUE);
+				LOGERROR (ERR_PARAMETER_VALUE);
 			}
 		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);
@@ -81,7 +81,7 @@ SEXP RFunctions::GetParameterNames (SEXP index) {
 				}
 				UNPROTECT (1 + poEntry->GetParameterCount ());
 			} else {
-				LOGWARN (ERR_PARAMETER_VALUE);
+				LOGERROR (ERR_PARAMETER_VALUE);
 			}
 		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);
@@ -118,14 +118,14 @@ SEXP RFunctions::Invoke (SEXP index, SEXP args, SEXP envir) {
 							LOGERROR (ERR_INVOCATION);
 						}
 					} else {
-						LOGWARN (ERR_PARAMETER_VALUE);
+						LOGERROR (ERR_PARAMETER_VALUE);
 					}
 					delete poParameters;
 				} else {
-					LOGWARN (ERR_PARAMETER_VALUE);
+					LOGERROR (ERR_PARAMETER_VALUE);
 				}
 			} else {
-				LOGWARN (ERR_PARAMETER_VALUE);
+				LOGERROR (ERR_PARAMETER_VALUE);
 			}
 		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);
