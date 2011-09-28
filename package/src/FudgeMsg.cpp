@@ -118,10 +118,8 @@ FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 					if (msg) {
 						return msg;
 					} else {
-						LOGERROR (ERR_PARAMETER_VALUE);
+						LOGERROR (ERR_INTERNAL);
 					}
-				} else {
-					LOGERROR (ERR_PARAMETER_VALUE);
 				}
 			}
 		} else {
