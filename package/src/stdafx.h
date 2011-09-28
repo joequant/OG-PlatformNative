@@ -22,5 +22,6 @@
 #ifdef __cplusplus
 #include <log4cxx/helpers/loglog.h>
 #endif /* ifdef __cplusplus */
+#include <apr-1/apr_hash.h>
 
 #endif /* ifndef STDAFX_H */

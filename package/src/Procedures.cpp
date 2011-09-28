@@ -29,13 +29,10 @@ SEXP RProcedures::Invoke (SEXP index, SEXP args, SEXP envir) const {
 				com_opengamma_rstats_msg_DataInfo *pInfo;
 				com_opengamma_language_Data *pResult;
 				if (g_poProcedures->Invoke (poEntry, poParameters->GetData (), &pResult, &pInfo)) {
-					result = CData::ToSEXP (pResult);
-					PROTECT (result);
+					result = ProcessResult (&oR, pResult, pInfo);
 					if (pInfo) {
-						result = CDataInfo::Apply (&oR, result, pInfo);
 						CDataInfo::Release (pInfo);
 					}
-					UNPROTECT (1);
 					CData::Release (pResult);
 				} else {
 					LOGERROR (ERR_INVOCATION);

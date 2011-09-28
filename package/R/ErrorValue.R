@@ -4,15 +4,9 @@
  # Please see distribution for license.
  ##
 
-# Test if a value is an error code
-is.ErrorValue <- function (obj) {
-  is.object (obj) && (class (obj) == "OpenGammaErrorValue")
+# Brings declarations for ErrorValue into scope
+Install.ErrorValue <- function () {
+  Install.Object ("ErrorValue", representation (code = "numeric", index = "numeric", message = "character", toString = "character"))
+  setClass ("ErrorValue", representation (code = "numeric", index = "numeric", message = "character", toString = "character"))
+  setMethod ("as.character", signature = "ErrorValue", definition = function (x, ...) { x$toString })
 }
-
-# Return a string representation of the error
-.toString.OpenGammaErrorValue <- function (x) {
-  x$toString
-}
-
-setClass ("OpenGammaErrorValue", representation (code = "numeric", index = "numeric", message = "character", toString = "character"))
-setMethod ("as.character", signature = "OpenGammaErrorValue", definition = function (x, ...) { .toString.OpenGammaErrorValue (x) })

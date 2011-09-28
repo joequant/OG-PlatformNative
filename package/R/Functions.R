@@ -30,7 +30,7 @@ invoke.Functions <- function (index, args) {
 }
 
 # Brings a proxy declaration for a function into scope
-.install.Functions <- function (index) {
+.installByIndex.Functions <- function (index) {
   name <- getName.Functions (index)
   if (!is.null (name)) {
     LOGDEBUG (paste ("Found function", name))
@@ -79,7 +79,7 @@ invoke.Functions <- function (index, args) {
 }
 
 # Brings proxy declarations for all available functions into scope
-install.Functions <- function () {
+Install.Functions <- function () {
   LOGINFO ("Installing functions")
-  for (index in seq (from = 0, to = count.Functions () - 1)) .install.Functions (index)
+  for (index in seq (from = 0, to = count.Functions () - 1)) .installByIndex.Functions (index)
 }

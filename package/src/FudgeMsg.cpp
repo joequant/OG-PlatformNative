@@ -11,6 +11,7 @@
 
 LOGGING (com.opengamma.rstats.package.FudgeMsg);
 
+#define R_CLASS					"class"
 #define R_FUDGEMSG_CLASS		"FudgeMsg"
 #define R_FUDGEMSG_POINTER		"message"
 #define R_FUDGEFIELD_VALUE		"Value"
@@ -19,39 +20,62 @@ LOGGING (com.opengamma.rstats.package.FudgeMsg);
 #define R_FUDGEINDICATOR		"indicator"
 
 static SEXP _CreateByteArray (const fudge_byte *bytes, int elements) {
-	LOGWARN (TEXT ("byte[") << elements << TEXT ("] array"));
-	// TODO
-	return R_NilValue;
+	SEXP vector = allocVector (INTSXP, elements);
+	int n;
+	for (n = 0; n < elements; n++) {
+		INTEGER (vector)[n] = (unsigned char)bytes[n];
+	}
+	return vector;
 }
 
 static SEXP _CreateShortArray (const fudge_byte *bytes, int elements) {
-	LOGWARN (TEXT ("short[") << elements << TEXT ("] array"));
-	// TODO
-	return R_NilValue;
+	const fudge_i16 *pValues = (const fudge_i16*)bytes;
+	SEXP vector = allocVector (INTSXP, elements);
+	int n;
+	for (n = 0; n < elements; n++) {
+		INTEGER (vector)[n] = pValues[n];
+	}
+	return vector;
 }
 
 static SEXP _CreateIntArray (const fudge_byte *bytes, int elements) {
-	LOGWARN (TEXT ("int[") << elements << TEXT ("] array"));
-	// TODO
-	return R_NilValue;
+	const fudge_i32 *pValues = (const fudge_i32*)bytes;
+	SEXP vector = allocVector (INTSXP, elements);
+	int n;
+	for (n = 0; n < elements; n++) {
+		INTEGER (vector)[n] = pValues[n];
+	}
+	return vector;
 }
 
 static SEXP _CreateLongArray (const fudge_byte *bytes, int elements) {
-	LOGWARN (TEXT ("long[") << elements << TEXT ("] array"));
-	// TODO
-	return R_NilValue;
+	const fudge_i64 *pValues = (const fudge_i64*)bytes;
+	SEXP vector = allocVector (REALSXP, elements);
+	int n;
+	for (n = 0; n < elements; n++) {
+		REAL (vector)[n] = pValues[n];
+	}
+	return vector;
 }
 
 static SEXP _CreateFloatArray (const fudge_byte *bytes, int elements) {
-	LOGWARN (TEXT ("float[") << elements << TEXT ("] array"));
-	// TODO
-	return R_NilValue;
+	const fudge_f32 *pValues = (const fudge_f32*)bytes;
+	SEXP vector = allocVector (REALSXP, elements);
+	int n;
+	for (n = 0; n < elements; n++) {
+		REAL (vector)[n] = pValues[n];
+	}
+	return vector;
 }
 
 static SEXP _CreateDoubleArray (const fudge_byte *bytes, int elements) {
-	LOGWARN (TEXT ("double[") << elements << TEXT ("] array"));
-	// TODO
-	return R_NilValue;
+	const fudge_f64 *pValues = (const fudge_f64*)bytes;
+	SEXP vector = allocVector (REALSXP, elements);
+	int n;
+	for (n = 0; n < elements; n++) {
+		REAL (vector)[n] = pValues[n];
+	}
+	return vector;
 }
 
 static void RPROC FudgeMsg_finalizer (SEXP msgptr) {
@@ -101,7 +125,7 @@ static FudgeMsg _GetFudgeMsg (SEXP msgValue) {
 
 FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 	if (isObject (value)) {
-		SEXP cls = getAttrib (value, install ("class"));
+		SEXP cls = getAttrib (value, install (R_CLASS));
 		if (isString (cls)) {
 			if (!strcmp (CHAR (STRING_ELT (cls, 0)), R_FUDGEMSG_CLASS)) {
 				FudgeMsg msg = _GetFudgeMsg (value);
@@ -254,11 +278,11 @@ SEXP RFudgeMsg::GetAllFields (SEXP message) {
 						elem = mkString (sz);
 						break;
 					case FUDGE_TYPE_TIME :
-						StringCbPrintfA (sz, sizeof (sz), "%d.%d", aFields[n].data.datetime.time.seconds, aFields[n].data.datetime.time.nanoseconds);
+						StringCbPrintfA (sz, sizeof (sz), "%d:%02d:%02d.%09d", aFields[n].data.datetime.time.seconds / 3600, (aFields[n].data.datetime.time.seconds / 60) % 60, aFields[n].data.datetime.time.seconds % 60, aFields[n].data.datetime.time.nanoseconds);
 						elem = mkString (sz);
 						break;
 					case FUDGE_TYPE_DATETIME :
-						StringCbPrintfA (sz, sizeof (sz), "%04d-%02d-%02d %d.%d", aFields[n].data.datetime.date.year, aFields[n].data.datetime.date.month, aFields[n].data.datetime.date.day, aFields[n].data.datetime.time.seconds, aFields[n].data.datetime.time.nanoseconds);
+						StringCbPrintfA (sz, sizeof (sz), "%04d-%02d-%02d %d:%02d:%02d.%09d", aFields[n].data.datetime.date.year, aFields[n].data.datetime.date.month, aFields[n].data.datetime.date.day, aFields[n].data.datetime.time.seconds / 3600, (aFields[n].data.datetime.time.seconds / 60) % 60, aFields[n].data.datetime.time.seconds % 60, aFields[n].data.datetime.time.nanoseconds);
 						elem = mkString (sz);
 						break;
 					default :

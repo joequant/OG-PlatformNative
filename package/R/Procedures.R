@@ -30,7 +30,7 @@ invoke.Procedures <- function (index, args) {
 }
 
 # Brings a proxy declaration for a procedure into scope
-.install.Procedures <- function (index) {
+.installByIndex.Procedures <- function (index) {
   name <- getName.Procedures (index)
   if (!is.null (name)) {
     LOGDEBUG (paste ("Found procedure", name))
@@ -79,7 +79,7 @@ invoke.Procedures <- function (index, args) {
 }
 
 # Brings proxy declarations for all available procedures into scope
-install.Procedures <- function () {
+Install.Procedures <- function () {
   LOGINFO ("Installing procedures")
-  for (index in seq (from = 0, to = count.Procedures () - 1)) .install.Procedures (index)
+  for (index in seq (from = 0, to = count.Procedures () - 1)) .installByIndex.Procedures (index)
 }

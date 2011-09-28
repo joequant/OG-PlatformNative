@@ -36,6 +36,38 @@ const CEntityEntry *REntities::GetEntry (SEXP index) const {
 	}
 }
 
+/// Converts a Data result value to the R SEXP result, applying additional information from the metadata object.
+///
+/// @param[in] pResult result value, may be NULL
+/// @param[in] pInfo result metadata, may be NULL
+/// @return the SEXP result
+SEXP REntities::ProcessResult (CRCallback *poR, com_opengamma_language_Data *pResult, com_opengamma_rstats_msg_DataInfo *pInfo) {
+	if (pResult) {
+		SEXP result = CData::ToSEXP (pResult);
+		PROTECT (result);
+		int unprotectCount = 1;
+		if (pResult->_single && pResult->_single->_messageValue && (!pInfo || !pInfo->_wrapperClass)) {
+			// Result is a message and there is no class wrapper
+			FudgeField field;
+			if ((FudgeMsg_getFieldByOrdinal (&field, pResult->_single->_messageValue, 0) == FUDGE_OK) && (field.type == FUDGE_TYPE_STRING)) {
+				SEXP newResult = poR->FromFudgeMsg (field.data.string, result);
+				if (newResult != R_NilValue) {
+					PROTECT (newResult);
+					result = newResult;
+					unprotectCount++;
+				}
+			}
+		}
+		if (pInfo) {
+			result = CDataInfo::Apply (poR, result, pInfo);
+		}
+		UNPROTECT (unprotectCount);
+		return result;
+	} else {
+		return R_NilValue;
+	}
+}
+
 SEXP REntities::Count () const {
 	if (m_poEntities) {
 		SEXP count = allocVector (INTSXP, 1);

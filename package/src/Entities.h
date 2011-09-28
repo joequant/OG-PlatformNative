@@ -8,6 +8,9 @@
 #define __inc_og_rstats_package_entities_h
 
 #include Client(Entities.h)
+#include "RCallback.h"
+#include "DataValue.h"
+#include "DataInfo.h"
 
 /// R method helper for querying CEntities objects. Note that this does not increment the reference
 /// count of the object; it should typically be used on a single stack frame.
@@ -26,6 +29,7 @@ protected:
 	virtual const CEntityEntry *GetEntryImpl (int index) const = 0;
 
 	const CEntityEntry *GetEntry (SEXP index) const;
+	static SEXP ProcessResult (CRCallback *poR, com_opengamma_language_Data *pResult, com_opengamma_rstats_msg_DataInfo *pInfo);
 public:
 
 	/// Creates a new helper instance.

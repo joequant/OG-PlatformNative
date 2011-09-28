@@ -7,9 +7,15 @@
 # Loads the OpenGamma native code package and brings the functions defined in the Java stack into scope
 .onLoad <- function (libname, pkgname) {
   library.dynam ("OpenGamma", pkgname)
-  install.Functions ()
-  install.LiveData ()
-  install.Procedures ()
+  LOGINFO ("Installing core objects")
+  Install.ErrorValue ()
+  Install.FudgeMsg ()
+  Install.Functions ()
+  Install.LiveData ()
+  Install.Procedures ()
+  LOGINFO ("Installing local data bindings")
+  Install.ViewClient ()
+  Install.ViewComputationResultModel ()
 }
 
 # Makes a call into the native code package

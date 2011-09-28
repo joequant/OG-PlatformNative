@@ -6,13 +6,6 @@
 
 # TODO: Migrate the code from here to a Fudge-R project, or change things elsewhere to use that if one already exists
 
-# Asserts the parameter is a FudgeMsg instance
-.assert.FudgeMsg <- function (x) {
-  if (!is.FudgeMsg (x)) {
-    stop ("Cannot apply to non-FudgeMsg", x)
-  }
-}
-
 # Get all the fields of a Fudge message
 fields.FudgeMsg <- function (x) {
   .assert.FudgeMsg (x)
@@ -54,11 +47,6 @@ field.FudgeMsg <- function (x, field) {
   }
 }
 
-# Test if a value is a Fudge message
-is.FudgeMsg <- function (x) {
-  is.object (x) && (class (x) == "FudgeMsg");
-}
-
 # Fully expand a Fudge message
 expand.FudgeMsg <- function (x) {
   lapply (fields.FudgeMsg (x), function (y) {
@@ -92,10 +80,47 @@ displayName.FudgeMsg <- function (x) {
   paste (c ("{", paste (sapply (fields.FudgeMsg (x), function (y) { paste (y$Name, y$Ordinal, "=", toString (y$Value)) }), collapse = ", "), "}"), collapse = "")
 }
 
-setClass ("FudgeMsg", representation (message = "externalptr"))
-setMethod ("[", signature = "FudgeMsg", definition = function (x, i) { field.FudgeMsg (x, i) })
-setMethod ("$", signature = "FudgeMsg", definition = function (x, name) { field.FudgeMsg (x, name) })
-setMethod ("as.character", signature = "FudgeMsg", definition = function (x, ...) { .toString.FudgeMsg (x) })
-toFudgeMsg <- function (x) { NULL }
-setGeneric ("toFudgeMsg");
-setMethod ("toFudgeMsg", signature = "FudgeMsg", definition = function (x) { x })
+# Declares a FudgeMsg based object
+object.FudgeMsg <- function (className) {
+  LOGDEBUG (paste ("Declare FudgeMsg", className))
+  Install.Object (className, representation (msg = "FudgeMsg"))
+  setMethod ("toFudgeMsg", signature = className, definition = function (x) { x@msg })
+  fromFudgeMsg <- paste ("fromFudgeMsg", className, sep = ".")
+  field <- paste (".field", className, sep = ".")
+  cmd <- paste (fromFudgeMsg, " <<- function (msg) { new (\"", className, "\", msg = msg) }", sep = "")
+  eval (parse (text = cmd))
+  cmd <- paste (field, " <<- function (name, fn = NULL) { .objectField.FudgeMsg (\"", className, "\", name, fn) }", sep = "")
+  eval (parse (text = cmd))
+}
+
+# Declares a field within a FudgeMsg based object
+.objectField.FudgeMsg <- function (className, fieldName, fn) {
+  assert <- paste (".assert", className, sep = ".")
+  field <- paste (fieldName, className, sep = ".")
+  value <- paste ("x@msg", fieldName, sep = ".")
+  if (!is.null (fn)) {
+    value <- paste (fn, " (", value, ")", sep = "")
+  }
+  cmd <- paste (
+    paste (field, " <<- function (x) {", sep = ""),
+    paste (assert, " (x)", sep = ""),
+    value,
+    "}",
+    sep = "\n")
+  eval (parse (text = cmd))
+}
+
+# Skeleton generic; returns NULL if not provided for an object
+toFudgeMsg <- function (x) {
+  NULL
+}
+
+# Brings declarations for FudgeMsg into scope
+Install.FudgeMsg <- function () {
+  Install.Object ("FudgeMsg", representation (message = "externalptr"))
+  setMethod ("[", signature = "FudgeMsg", definition = function (x, i) { field.FudgeMsg (x, i) })
+  setMethod ("$", signature = "FudgeMsg", definition = function (x, name) { field.FudgeMsg (x, name) })
+  setMethod ("as.character", signature = "FudgeMsg", definition = function (x, ...) { .toString.FudgeMsg (x) })
+  setGeneric ("toFudgeMsg");
+  setMethod ("toFudgeMsg", signature = "FudgeMsg", definition = function (x) { x })
+}
