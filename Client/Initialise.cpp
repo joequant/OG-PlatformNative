@@ -102,7 +102,6 @@ bool Shutdown () {
 const CConnector *ConnectorInstance () {
 	if (!g_poConnector) {
 		LOGFATAL (TEXT ("ConnectorInstance called on uninitialised library"));
-		assert (0);
 		return NULL;
 	}
 	g_poConnector->Retain ();

@@ -1,0 +1,54 @@
+##
+ # Copyright (C) 2011 - present by OpenGamma Inc. and the OpenGamma group of companies
+ #
+ # Please see distribution for license.
+ ##
+
+# TODO: Find the OG-Language installation; that will have the INCLUDE and LIB files we need
+
+ifndef CONFIGURATION
+CONFIGURATION=Release
+endif
+
+ifeq "$(WIN)" "64"
+PLATFORM=x64
+else
+PLATFORM=Win32
+endif
+
+SOLUTION_DIR=..\..\..\..
+OG_LANGUAGE_INCLUDE_DIR=$(SOLUTION_DIR)\lib\include
+OG_LANGUAGE_LIB_DIR=$(SOLUTION_DIR)\lib\lib\$(CONFIGURATION)$(PLATFORM)
+
+PKG_CPPFLAGS=/I$(OG_LANGUAGE_INCLUDE_DIR) /I$(SOLUTION_DIR)
+PKG_LIBS=/LIBPATH:$(OG_LANGUAGE_LIB_DIR) Connector.lib Service.lib Util.lib libfudgec.lib log4cxx.lib
+
+OBJECTS=Client_DataUtil.obj \
+	Client_Entities.obj \
+	Client_Functions.obj \
+	Client_Initialise.obj \
+	Client_LiveData.obj \
+	Client_Parameter.obj \
+	Client_Procedures.obj \
+	Client_Repositories.obj \
+	Client_Settings.obj \
+	com_opengamma_rstats_msg_DataInfo.obj \
+	com_opengamma_rstats_msg_FunctionResult.obj \
+	com_opengamma_rstats_msg_ProcedureResult.obj \
+	DataInfo.obj \
+	DllMain.obj \
+	Entities.obj \
+	ErrorValue.obj \
+	ExternalRef.obj \
+	FudgeMsg.obj \
+	Functions.obj \
+	LiveData.obj \
+	Parameters.obj \
+	Procedures.obj \
+	RCallback.obj
+
+all:	Client_stdafx.obj \
+	$(SHLIB)
+
+Client_stdafx.obj : Client_stdafx.cpp
+	$(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) /c Client_stdafx.cpp /FoClient_stdafx.obj /Ycstdafx.h

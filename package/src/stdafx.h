@@ -7,8 +7,8 @@
 #ifndef STDAFX_H
 #define STDAFX_H
 
-#define _T(str)			#str
-#define Client(path)	_T(Client_##path)
+#include <Util/Quote.h>
+#define Client(path)	QUOTE_(Client_##path)
 
 #undef STDAFX_H
 #include Client(stdafx.h)
@@ -21,7 +21,11 @@
 #include <R_ext/Rdynload.h>
 #ifdef __cplusplus
 #include <log4cxx/helpers/loglog.h>
-#endif /* ifdef __cplusplus */
+#ifdef _WIN32
+#include <hash_map>
+#else /* ifdef _WIN32 */
 #include <apr-1/apr_hash.h>
+#endif /* ifdef _WIN32 */
+#endif /* ifdef __cplusplus */
 
 #endif /* ifndef STDAFX_H */
