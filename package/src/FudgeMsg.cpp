@@ -276,14 +276,17 @@ SEXP RFudgeMsg::GetAllFields (SEXP message) {
 					case FUDGE_TYPE_DATE :
 						StringCbPrintfA (sz, sizeof (sz), "%04d-%02d-%02d", aFields[n].data.datetime.date.year, aFields[n].data.datetime.date.month, aFields[n].data.datetime.date.day);
 						elem = mkString (sz);
+						// TODO: return a proper R date object
 						break;
 					case FUDGE_TYPE_TIME :
 						StringCbPrintfA (sz, sizeof (sz), "%d:%02d:%02d.%09d", aFields[n].data.datetime.time.seconds / 3600, (aFields[n].data.datetime.time.seconds / 60) % 60, aFields[n].data.datetime.time.seconds % 60, aFields[n].data.datetime.time.nanoseconds);
 						elem = mkString (sz);
+						// TODO: return a proper R time object
 						break;
 					case FUDGE_TYPE_DATETIME :
 						StringCbPrintfA (sz, sizeof (sz), "%04d-%02d-%02d %d:%02d:%02d.%09d", aFields[n].data.datetime.date.year, aFields[n].data.datetime.date.month, aFields[n].data.datetime.date.day, aFields[n].data.datetime.time.seconds / 3600, (aFields[n].data.datetime.time.seconds / 60) % 60, aFields[n].data.datetime.time.seconds % 60, aFields[n].data.datetime.time.nanoseconds);
 						elem = mkString (sz);
+						// TODO: return a proper R datetime object
 						break;
 					default :
 						StringCbPrintfA (sz, sizeof (sz), "Unknown Fudge type %d", aFields[n].type);

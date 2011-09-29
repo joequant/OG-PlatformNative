@@ -85,6 +85,7 @@ object.FudgeMsg <- function (className) {
   LOGDEBUG (paste ("Declare FudgeMsg", className))
   Install.Object (className, representation (msg = "FudgeMsg"))
   setMethod ("toFudgeMsg", signature = className, definition = function (x) { x@msg })
+  setMethod ("as.character", signature = className, definition = function (x) { toString (x@msg) })
   fromFudgeMsg <- paste ("fromFudgeMsg", className, sep = ".")
   field <- paste (".field", className, sep = ".")
   cmd <- paste (fromFudgeMsg, " <<- function (msg) { new (\"", className, "\", msg = msg) }", sep = "")
@@ -97,7 +98,7 @@ object.FudgeMsg <- function (className) {
 .objectField.FudgeMsg <- function (className, fieldName, fn) {
   assert <- paste (".assert", className, sep = ".")
   field <- paste (fieldName, className, sep = ".")
-  value <- paste ("x@msg", fieldName, sep = ".")
+  value <- paste ("x@msg", fieldName, sep = "$")
   if (!is.null (fn)) {
     value <- paste (fn, " (", value, ")", sep = "")
   }

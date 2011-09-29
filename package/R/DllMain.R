@@ -14,6 +14,7 @@
   Install.LiveData ()
   Install.Procedures ()
   LOGINFO ("Installing local data bindings")
+  Install.ValueProperties ()
   Install.ViewClient ()
   Install.ViewComputationResultModel ()
 }
