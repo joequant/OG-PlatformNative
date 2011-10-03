@@ -45,7 +45,19 @@
     </subant>
   </target>
 
-  <target name="dist" depends="compile, dist-impl" />
+  <target name="dist" depends="compile, dist-impl">
+    <exec executable="R" failonerror="true">
+      <arg value="CMD" />
+      <arg value="build" />
+      <arg value="--binary" />
+      <arg value="${package.dir}/${package.name}" />
+    </exec>
+    <move todir="${package.dir}">
+      <fileset dir="${basedir}">
+        <include name="${package.name}_*.zip" />
+      </fileset>
+    </move>
+  </target>
 
   <target name="dist-impl">
     <mkdir dir="${dist.dir}" />
@@ -70,7 +82,7 @@
     </exec>
   </target>
 
-  <target name="install" depends="dist" description="Installs the R package using 'R CMD INSTALL'">
+  <target name="install" depends="compile, dist-impl" description="Installs the R package using 'R CMD INSTALL'">
     <exec executable="R" failonerror="true">
       <arg value="CMD" />
       <arg value="INSTALL" />

@@ -22,6 +22,7 @@
 
 #include <assert.h>
 
+#include <Util/Fudge.h>
 #ifdef __cplusplus
 #include <Connector/Connector.h>
 #include <Util/Logging.h>

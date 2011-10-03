@@ -8,6 +8,7 @@
 #include "ErrorValue.h"
 #include <Connector/Errors.h>
 #include "RCallback.h"
+#include "Errors.h"
 
 LOGGING (com.opengamma.rstats.package.ErrorValue);
 
@@ -49,7 +50,17 @@ SEXP RErrorValue::FromValue (const com_opengamma_language_Value *pValue) {
 	}
 	if (pValue->_stringValue) {
 		LOGDEBUG (TEXT ("String ") << pValue->_stringValue);
+#ifdef _UNICODE
+		char *pszStringValue = WideToAsciiDup (pValue->_stringValue);
+		if (pszStringValue) {
+			v = mkString (pszStringValue);
+			free (pszStringValue);
+		} else {
+			LOGFATAL (ERR_MEMORY);
+		}
+#else /* ifdef _UNICODE */
 		v = mkString (pValue->_stringValue);
+#endif /* ifdef _UNICODE */
 		PROTECT (v);
 		f = mkString (R_ERRORVALUE_STRING);
 		PROTECT (f);
@@ -58,7 +69,17 @@ SEXP RErrorValue::FromValue (const com_opengamma_language_Value *pValue) {
 	}
 	TCHAR *psz = CError::ToString (pValue);
 	LOGDEBUG (TEXT ("toString ") << psz);
+#ifdef _UNICODE
+	char *pszAscii = WideToAsciiDup (psz);
+	if (pszAscii) {
+		v = mkString (pszAscii);
+		free (pszAscii);
+	} else {
+		LOGFATAL (ERR_MEMORY);
+	}
+#else /* ifdef _UNICODE */
 	v = mkString (psz);
+#endif /* ifdef _UNICODE */
 	PROTECT (v);
 	delete psz;
 	f = mkString (R_ERRORVALUE_TOSTRING);

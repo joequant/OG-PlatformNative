@@ -4,7 +4,12 @@
  # Please see distribution for license.
  ##
 
-# TODO: Find the OG-Language installation; that will have the INCLUDE and LIB files we need
+# TODO: Find the OG-Language installation; that will have the INCLUDE, LIB, DLL and BUILD files we need
+
+# Note that we can only build either a Release or Debug configuration. If CONFIGURATION isn't specified
+# this will be Release. The target platform is determined by the CL.EXE instance being used. I.e. use
+# the 32-bit MSVC tools for a Win32, and 64-bit for x64. Note that the R installation must be configured
+# to work with Visual Studio and not the GNUWIN32 toolchain.
 
 ifndef CONFIGURATION
 CONFIGURATION=Release
@@ -16,14 +21,30 @@ else
 PLATFORM=Win32
 endif
 
+APR_RUNTIME=apr.dll
+APR_UTIL_RUNTIME=aprutil.dll
+ifeq "$(CONFIGURATION)" "Release"
+FUDGE_RUNTIME=libfudgec.dll
+else
+FUDGE_RUNTIME=libfudgecd.dll
+endif
+LOG4CXX_RUNTIME=log4cxx.dll
+
 SOLUTION_DIR=..\..\..\..
 OG_LANGUAGE_INCLUDE_DIR=$(SOLUTION_DIR)\lib\include
+OG_LANGUAGE_BUILD_DIR=$(SOLUTION_DIR)\build\og-language
 OG_LANGUAGE_LIB_DIR=$(SOLUTION_DIR)\lib\lib\$(CONFIGURATION)$(PLATFORM)
+OG_LANGUAGE_DLL_DIR=$(SOLUTION_DIR)\lib\dll\$(CONFIGURATION)$(PLATFORM)
 
-PKG_CPPFLAGS=/I$(OG_LANGUAGE_INCLUDE_DIR) /I$(SOLUTION_DIR)
-PKG_LIBS=/LIBPATH:$(OG_LANGUAGE_LIB_DIR) Connector.lib Service.lib Util.lib libfudgec.lib log4cxx.lib
+PKG_CPPFLAGS=/I$(OG_LANGUAGE_INCLUDE_DIR) /I$(SOLUTION_DIR) /UNICODE /D_UNICODE /DUNICODE
+PKG_RCFLAGS=/I$(OG_LANGUAGE_BUILD_DIR) /I$(SOLUTION_DIR) /I$(OG_LANGUAGE_INCLUDE_DIR)
+LANGUAGE_LIBS=Connector.lib Service.lib Util.lib
+REPOSITORY_LIBS=libfudgec.lib log4cxx.lib
+WINDOWS_LIBS=shell32.lib version.lib user32.lib advapi32.lib psapi.lib
+PKG_LIBS=/LIBPATH:$(OG_LANGUAGE_LIB_DIR) $(LANGUAGE_LIBS) $(REPOSITORY_LIBS) $(WINDOWS_LIBS)
 
-OBJECTS=Client_DataUtil.obj \
+OBJECTS=Package.res \
+	Client_DataUtil.obj \
 	Client_Entities.obj \
 	Client_Functions.obj \
 	Client_Initialise.obj \
@@ -36,6 +57,7 @@ OBJECTS=Client_DataUtil.obj \
 	com_opengamma_rstats_msg_FunctionResult.obj \
 	com_opengamma_rstats_msg_ProcedureResult.obj \
 	DataInfo.obj \
+	DataValue.obj \
 	DllMain.obj \
 	Entities.obj \
 	ErrorValue.obj \
@@ -49,6 +71,10 @@ OBJECTS=Client_DataUtil.obj \
 
 all:	Client_stdafx.obj \
 	$(SHLIB)
+	$(CP) $(OG_LANGUAGE_DLL_DIR)\$(FUDGE_RUNTIME) $(FUDGE_RUNTIME)
+	$(CP) $(OG_LANGUAGE_DLL_DIR)\$(LOG4CXX_RUNTIME) $(LOG4CXX_RUNTIME)
+	$(CP) $(OG_LANGUAGE_DLL_DIR)\$(APR_RUNTIME) $(APR_RUNTIME)
+	$(CP) $(OG_LANGUAGE_DLL_DIR)\$(APR_UTIL_RUNTIME) $(APR_UTIL_RUNTIME)
 
 Client_stdafx.obj : Client_stdafx.cpp
 	$(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) /c Client_stdafx.cpp /FoClient_stdafx.obj /Ycstdafx.h

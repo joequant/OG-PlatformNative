@@ -256,7 +256,7 @@ SEXP CRCallback::InvokeMethod (const char *pszMethod, SEXP value) const {
 /// @return the converted value
 SEXP CRCallback::InteropConvert (SEXP value, const TCHAR *pszClass) const {
 #ifdef _UNICODE
-	const char *pszClassAscii = WideToAsciiDup (pszClass);
+	char *pszClassAscii = WideToAsciiDup (pszClass);
 	if (!pszClassAscii) {
 		LOGFATAL (ERR_MEMORY);
 		return R_NilValue;

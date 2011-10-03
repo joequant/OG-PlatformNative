@@ -6,6 +6,9 @@
 
 # TODO: Find the OG-Language installation; that will have the INCLUDE and LIB files we need
 
+# Note that we can only build either a Release or Debug configuration. If CONFIGURATION isn't specified
+# this will be Release.
+
 ifndef CONFIGURATION
 CONFIGURATION=Release
 endif

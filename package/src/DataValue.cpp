@@ -74,7 +74,19 @@ void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_langu
 		REAL(vector)[index] = *pValue->_doubleValue;
 		break;
 	case DATATYPE_STRING : {
+#ifdef _UNICODE
+		char *pszStringValue = WideToAsciiDup (pValue->_stringValue);
+		SEXP value;
+		if (pszStringValue) {
+			value = mkChar (pszStringValue);
+			free (pszStringValue);
+		} else {
+			LOGFATAL (ERR_MEMORY);
+			value = R_NilValue;
+		}
+#else /* ifdef _UNICODE */
 		SEXP value = mkChar (pValue->_stringValue);
+#endif /* ifdef _UNICODE */
 		PROTECT (value);
 		SET_STRING_ELT (vector, index, value);
 		UNPROTECT (1);
@@ -119,7 +131,17 @@ SEXP CValue::ToSEXP (const com_opengamma_language_Value *pValue) {
 		result = RFudgeMsg::FromFudgeMsg (pValue->_messageValue);
 	} else if (pValue->_stringValue) {
 		LOGDEBUG (TEXT ("STRING value"));
+#ifdef _UNICODE
+		char *pszStringValue = WideToAsciiDup (pValue->_stringValue);
+		if (pszStringValue) {
+			result = mkString (pszStringValue);
+			free (pszStringValue);
+		} else {
+			LOGFATAL (ERR_MEMORY);
+		}
+#else
 		result = mkString (pValue->_stringValue);
+#endif /* ifdef _UNICODE */
 	} else {
 		LOGDEBUG (TEXT ("NULL value in response"));
 	}
