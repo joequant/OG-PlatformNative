@@ -30,12 +30,13 @@
 
   <target name="deploy-jars" depends="build-suffix.deploy-jars">
     <move file="${build.dir}/jar/com.opengamma-og-language-og-language-client.jar" tofile="${build.dir}/client.jar" />
-    <copy todir="${build.dir}">
-      <fileset dir="${basedir}/config">
-        <include name="OpenGamma.*" />
-        <include name="logback*.xml" />
-      </fileset>
+    <copy todir="${build.dir}" file="${basedir}/config/logback.xml" failonerror="false" />
+    <copy todir="${build.dir}" file="${basedir}/config/OpenGamma.properties" />
+    <mkdir dir="${build.dir}/ext" />
+    <copy todir="${build.dir}/ext">
+      <fileset dir="${og.language.dir}/ext" />
     </copy>
+    <copy todir="${build.dir}/ext" file="${basedir}/config/R.xml" />
   </target>
 
   <target name="compile" depends="build-suffix.compile">
