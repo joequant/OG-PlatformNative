@@ -45,7 +45,7 @@
     </subant>
   </target>
 
-  <target name="dist" depends="compile, dist-impl">
+  <target name="dist" depends="compile, dist-impl" description="Creates a binary and source R package distribution">
     <exec executable="R" failonerror="true">
       <arg value="CMD" />
       <arg value="build" />
@@ -55,6 +55,7 @@
     <move todir="${package.dir}">
       <fileset dir="${basedir}">
         <include name="${package.name}_*.zip" />
+        <include name="${package.name}_*.tar.gz" />
       </fileset>
     </move>
   </target>
@@ -71,7 +72,8 @@
     <subant target="dist" buildpathref="cc.build.path">
       <property name="wkspace.dir" value="${wkspace.dir}" />
     </subant>
-    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${dist.dir}/package" />
+    <copy todir="${package.dir}/${package.name}/src" file="version.h" />
+    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${package.dir}" />
   </target>
 
   <target name="test-dist" depends="clean-dist,tests,dist-impl" description="Tests the R package distribution using 'R CMD check'">

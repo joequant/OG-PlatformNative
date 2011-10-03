@@ -1,13 +1,14 @@
 <project name="ext-impl">
 
-	<property file="${basedir}/build.properties"/>
-	<import file="${common.dir}/common.xml"/>
+  <property file="${basedir}/build.properties"/>
+  <import file="${common.dir}/common.xml"/>
 
-	<target name="deploy" depends="jar,proto-c" />
+  <target name="deploy" depends="jar,proto-c" />
 
-	<target name="dist">
-		<copy file="${build.dir}/ext.jar" tofile="${dist.dir}/og-rstats-ext.jar" />
-	</target>
+  <target name="dist">
+    <copy file="${build.dir}/ext.jar" tofile="${dist.dir}/og-rstats-ext.jar" />
+    <copy file="${build.dir}/OpenGamma.xml" tofile="${dist.dir}/og-rstats-ext.xml" />
+  </target>
 
   <available property="og.language.client.jar" value="${build.dir}/jar/com.opengamma-og-language-og-language.jar" file="${build.dir}/jar/com.opengamma-og-language-og-language.jar" />
   <available property="og.language.client.jar" value="${build.dir}/client.jar" file="${build.dir}/client.jar" />

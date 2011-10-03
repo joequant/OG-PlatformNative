@@ -4,10 +4,9 @@
  # Please see distribution for license.
  ##
 
-# TODO: Find the OG-Language installation; that will have the INCLUDE and LIB files we need
-
 # Note that we can only build either a Release or Debug configuration. If CONFIGURATION isn't specified
-# this will be Release.
+# this will be Release. The system must have Fudge-C and log4cxx installed, but these are pre-requisites
+# for OG-Language.
 
 ifndef CONFIGURATION
 CONFIGURATION=Release
@@ -19,9 +18,37 @@ else
 DEBUG_FLAG=_NDEBUG
 endif
 
-SOLUTION_DIR=../../../..
-OG_LANGUAGE_INCLUDE_DIR=$(SOLUTION_DIR)/lib/include
-OG_LANGUAGE_LIB_DIR=$(SOLUTION_DIR)/lib/lib/$(CONFIGURATION)
+# If build from the OG-RStats project, SOLUTION_DIR will be valid and the ANT build system will make
+# the LIB and INCLUDE files available. The build environment should provide the correct path to the
+# ServiceRunner in the build folder and set log configuration appropriately. For a production release,
+# the package installer must:
+#    invoke "R CMD install OpenGamma" with OG_LANGUAGE_HOME set
+#    place the client extension JAR and configuration documents in $(OG_LANGUAGE_HOME)/ext
+#    write log configuration and path to the service runner into to /etc/OpenGammaLtd/OpenGammaR
 
-PKG_CPPFLAGS=-I$(OG_LANGUAGE_INCLUDE_DIR) -I$(SOLUTION_DIR) -D$(DEBUG_FLAG) -DHAVE_PTHREAD=1
+SOLUTION_DIR=../../../..
+
+ifndef OG_LANGUAGE_INCLUDE_DIR
+ifdef OG_LANGUAGE_HOME
+OG_LANGUAGE_INCLUDE_DIR=$(OG_LANGUAGE_HOME)/include
+else
+OG_LANGUAGE_INCLUDE_DIR=$(SOLUTION_DIR)/lib/include
+endif
+endif
+
+ifndef OG_LANGUAGE_LIB_DIR
+ifdef OG_LANGUAGE_HOME
+OG_LANGUAGE_LIB_DIR=$(OG_LANGUAGE_HOME)/lib
+else
+OG_LANGUAGE_LIB_DIR=$(SOLUTION_DIR)/lib/lib/$(CONFIGURATION)
+endif
+endif
+
+ifndef OG_LANGUAGE_EXT_DIR
+ifdef OG_LANGUAGE_HOME
+OG_LANGUAGE_EXT_DIR=$(OG_LANGUAGE_HOME)/ext
+endif
+endif
+
+PKG_CPPFLAGS=-I$(OG_LANGUAGE_INCLUDE_DIR) -I. -D$(DEBUG_FLAG) -DHAVE_PTHREAD=1
 PKG_LIBS=-L$(OG_LANGUAGE_LIB_DIR) -lConnector -lService -lUtil -lfudgec -llog4cxx -lrt
