@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011 - present by OpenGamma Inc. and the OpenGamma group of companies
  *
  * Please see distribution for license.
@@ -68,6 +68,9 @@ SEXP REntities::ProcessResult (CRCallback *poR, com_opengamma_language_Data *pRe
 	}
 }
 
+/// Returns the number of entities.
+///
+/// @return the number of entities
 SEXP REntities::Count () const {
 	if (m_poEntities) {
 		SEXP count = allocVector (INTSXP, 1);
@@ -79,21 +82,36 @@ SEXP REntities::Count () const {
 	}
 }
 
+/// Returns the name of the indexed entity.
+///
+/// @param[in] index zero based index of the entity
+/// @return the name
 SEXP REntities::GetName (SEXP index) const {
 	REntityEntry oE (GetEntry (index));
 	return oE.GetName ();
 }
 
+/// Returns the parameter flags of the indexed entity.
+///
+/// @param[in] index zero based index of the entity
+/// @return the parameter flags
 SEXP REntities::GetParameterFlags (SEXP index) const {
 	REntityEntry oE (GetEntry (index));
 	return oE.GetParameterFlags ();
 }
 
+/// Returns the parameter names of the indexed entity.
+///
+/// @param[in] index zero based index of the entity
+/// @return the parameter names
 SEXP REntities::GetParameterNames (SEXP index) const {
 	REntityEntry oE (GetEntry (index));
 	return oE.GetParameterNames ();
 }
 
+/// Returns the name of the entity.
+///
+/// @return the name
 SEXP REntityEntry::GetName () const {
 	if (m_poEntry) {
 		return mkString (m_poEntry->GetName ());
@@ -102,6 +120,9 @@ SEXP REntityEntry::GetName () const {
 	}
 }
 
+/// Returns the parameter flags of the entity.
+///
+/// @return the parameter flags
 SEXP REntityEntry::GetParameterFlags () const {
 	if (m_poEntry) {
 		SEXP flags = allocVector (INTSXP, m_poEntry->GetParameterCount ());
@@ -115,6 +136,9 @@ SEXP REntityEntry::GetParameterFlags () const {
 	}
 }
 
+/// Returns the parameter names of the entity
+///
+/// @return the parameter flags
 SEXP REntityEntry::GetParameterNames () const {
 	if (m_poEntry) {
 		SEXP names = allocVector (STRSXP, m_poEntry->GetParameterCount ());
