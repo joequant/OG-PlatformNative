@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011 - present by OpenGamma Inc. and the OpenGamma group of companies
  *
  * Please see distribution for license.
@@ -14,6 +14,10 @@
 
 LOGGING (com.opengamma.rstats.package.DataValue);
 
+/// Creates a Value instance describing the FudgeMsg.
+///
+/// @param[in] msg Fudge message to describe
+/// @return the Value instance
 static com_opengamma_language_Value *_FudgeMsgValue (FudgeMsg msg) {
 	com_opengamma_language_Value *pValue = new com_opengamma_language_Value;
 	if (pValue) {
@@ -26,6 +30,12 @@ static com_opengamma_language_Value *_FudgeMsgValue (FudgeMsg msg) {
 	return pValue;
 }
 
+/// Creates a Value instance representing the SEXP type. Only basic vectors can be represented as Values;
+/// any lists or multiple element vectors will need to be converted to Data instance.
+///
+/// @param[in] value value to convert
+/// @param[in] index element index to convert from a vector value
+/// @return the Value instance or NULL if there was a problem (e.g. invalid type)
 com_opengamma_language_Value *CValue::FromSEXP (SEXP value, int index) {
 	if (TYPEOF (value) == VECSXP) {
 		return FromSEXP (VECTOR_ELT (value, index));
@@ -62,6 +72,12 @@ com_opengamma_language_Value *CValue::FromSEXP (SEXP value, int index) {
 	return pValue;
 }
 
+/// Converts a Value instance into a SEXP vector element.
+///
+/// @param[in] type type of the value element
+/// @param[in] vector vector to populate
+/// @param[in] index index of the vector element to update
+/// @param[in] pValue value instance to convert
 void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_language_Value *pValue) {
 	switch (type) {
 	case DATATYPE_BOOLEAN :
@@ -109,6 +125,10 @@ void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_langu
 	}
 }
 
+/// Converts a value instance to an R SEXP representation.
+/// 
+/// @param[in] pValue value to convert
+/// @return the SEXP encoding, or R_NilValue if there is a problem
 SEXP CValue::ToSEXP (const com_opengamma_language_Value *pValue) {
 	SEXP result = R_NilValue;
 	if (pValue->_errorValue) {
@@ -148,6 +168,12 @@ SEXP CValue::ToSEXP (const com_opengamma_language_Value *pValue) {
 	return result;
 }
 
+/// Converts an R SEXP representation to a Data instance. Native R objects that cannot be represented
+/// as Value instances are converted via their toFudgeMsg or toString generic methods if possible.
+///
+/// @param[in] poR callback object representing the original caller's environment
+/// @param[in] data data to convert
+/// @return the data instance, or NULL if there is a problem
 com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) {
 	com_opengamma_language_Data *pData = new com_opengamma_language_Data;
 	if (pData) {
@@ -205,6 +231,11 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 	return pData;
 }
 
+/// Converts a linear Data object to an R list.
+///
+/// @param[in] ppValue list of values to convert
+/// @param[in] nCount number of values in the list
+/// @return the R list
 static SEXP _LinearToList (const com_opengamma_language_Value * const *ppValue, int nCount) {
 	int n;
 	LOGDEBUG (TEXT ("Converting ") << nCount << TEXT (" element result list"));
@@ -219,6 +250,10 @@ static SEXP _LinearToList (const com_opengamma_language_Value * const *ppValue, 
 	return result;
 }
 
+/// Converts a Value type token to the equivalent R type token.
+///
+/// @param[in] type Value type token
+/// @return R type token
 static SEXPTYPE _DataTypeToVectorType (int type) {
 	switch (type) {
 	case DATATYPE_BOOLEAN :
@@ -244,6 +279,12 @@ static SEXPTYPE _DataTypeToVectorType (int type) {
 	}
 }
 
+/// Converts a linear Data object to an R vector.
+///
+/// @param[in] type Value type token of elements
+/// @param[in] ppValue values to convert
+/// @param[in] nCount number of values
+/// @return the R vector
 static SEXP _LinearToVector (int type, const com_opengamma_language_Value * const *ppValue, int nCount) {
 	int n;
 	LOGDEBUG (TEXT ("Converting ") << nCount << TEXT (" element result vector"));
@@ -260,6 +301,11 @@ static SEXP _LinearToVector (int type, const com_opengamma_language_Value * cons
 	return result;
 }
 
+/// Converts a linear Data object to an R SEXP value; either a vector or a list depending on the underlying
+/// data.
+///
+/// @param[in] ppValue values to convert
+/// @return the SEXP - either a vector or list
 static SEXP _LinearToSEXP (com_opengamma_language_Value * const *ppValue) {
 	int nCount;
 	int type = CDataUtil::TypeOf (ppValue, &nCount);
@@ -273,6 +319,11 @@ static SEXP _LinearToSEXP (com_opengamma_language_Value * const *ppValue) {
 	}
 }
 
+/// Converts a matrix Data object to an R list of lists or list of vectors.
+///
+/// @param[in] pppValue matrix data
+/// @param[in] nRows number of rows in the matrix
+/// @return the R list of lists or list of vectors
 static SEXP _MatrixToLists (com_opengamma_language_Value * const * const *pppValue, int nRows) {
 	int n;
 	LOGDEBUG (TEXT ("Converting ") << nRows << TEXT (" element result list"));
@@ -287,6 +338,13 @@ static SEXP _MatrixToLists (com_opengamma_language_Value * const * const *pppVal
 	return result;
 }
 
+/// Converts a matrix Data object to an R matrix.
+///
+/// @param[in] type Value type token of elements
+/// @param[in] pppValue matrix elements
+/// @param[in] nRows number of rows in the matrix
+/// @param[in] nCols number of columns in the matrix
+/// @return the R matrix
 static SEXP _MatrixToMatrix (int type, com_opengamma_language_Value * const * const *pppValue, int nRows, int nCols) {
 	int i, j;
 	LOGDEBUG (TEXT ("Converting ") << nRows << TEXT ("x") << nCols << TEXT (" element result matrix"));
@@ -305,6 +363,11 @@ static SEXP _MatrixToMatrix (int type, com_opengamma_language_Value * const * co
 	return result;
 }
 
+/// Converts a matrix Data object to an R SEXP value. This may be a matrix, a list of lists, or a list of
+/// vectors depending on the underlying type.
+///
+/// @param[in] pppValue matrix values
+/// @return the R SEXP value
 static SEXP _MatrixToSEXP (com_opengamma_language_Value * const * const *pppValue) {
 	int nRows, nCols;
 	int type = CDataUtil::TypeOf (pppValue, &nRows, &nCols);
@@ -318,6 +381,10 @@ static SEXP _MatrixToSEXP (com_opengamma_language_Value * const * const *pppValu
 	}
 }
 
+/// Converts a Data object to an R representation.
+///
+/// @param[in] pData data value to convert
+/// @return the R representation
 SEXP CData::ToSEXP (const com_opengamma_language_Data *pData) {
 	SEXP result = R_NilValue;;
 	if (pData->_single) {
