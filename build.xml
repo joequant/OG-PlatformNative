@@ -34,7 +34,9 @@
     <copy todir="${build.dir}" file="${basedir}/config/OpenGamma.properties" />
     <mkdir dir="${build.dir}/ext" />
     <copy todir="${build.dir}/ext">
-      <fileset dir="${og.language.dir}/ext" />
+      <fileset dir="${og.language.dir}/config">
+        <include name="0og-language.xml" />
+      </fileset>
     </copy>
     <copy todir="${build.dir}/ext" file="${basedir}/config/R.xml" />
   </target>
@@ -46,7 +48,13 @@
     </subant>
   </target>
 
-  <target name="dist" depends="compile, dist-impl" description="Creates a binary and source R package distribution">
+  <target name="dist" depends="compile,dist-impl,dist-binary" description="Creates a binary and source R package distribution" />
+  
+  <target name="dist-binary" depends="dist-binary-none,dist-binary-impl" />
+  <target name="dist-binary-none" unless="r.env.ok">
+    <echo>R or dependent libraries not installed - cannot build a binary distribution</echo>
+  </target>
+  <target name="dist-binary-impl" if="r.env.ok">
     <exec executable="R" failonerror="true">
       <arg value="CMD" />
       <arg value="build" />
@@ -75,9 +83,29 @@
     </subant>
     <copy todir="${package.dir}/${package.name}/src" file="version.h" />
     <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${package.dir}" />
+    <exec executable="R" failifexecutionfails="false" failonerror="true" resultproperty="r.installed.result">
+      <arg value="--version" />
+    </exec>
+    <condition property="r.env.ok">
+      <and>
+        <equals arg1="${r.installed.result}" arg2="0" />
+        <or>
+          <available file="${build.dir}/Debug/libClient.a" />
+          <available file="${build.dir}/Release/libClient.a" />
+          <available file="${build.dir}/DebugWin32/Client.lib" />
+          <available file="${build.dir}/ReleaseWin32/Client.lib" />
+          <available file="${build.dir}/Debugx64/Client.lib" />
+          <available file="${build.dir}/Releasex64/Client.lib" />
+        </or>
+      </and>
+    </condition>
   </target>
 
-  <target name="test-dist" depends="clean-dist,tests,dist-impl" description="Tests the R package distribution using 'R CMD check'">
+  <target name="test-dist" depends="clean-dist,tests,dist-impl,test-dist-none,test-dist-impl" description="Tests the R package distribution using 'R CMD check'" />
+  <target name="test-dist-none" unless="r.env.ok">
+    <echo>R or dependent libraries not installed - cannot test the distribution package</echo>
+  </target>
+  <target name="test-dist-impl" if="r.env.ok">
     <exec executable="R" failonerror="true">
       <arg value="CMD" />
       <arg value="check" />
@@ -85,7 +113,11 @@
     </exec>
   </target>
 
-  <target name="install" depends="compile, dist-impl" description="Installs the R package using 'R CMD INSTALL'">
+  <target name="install" depends="compile,dist-impl,install-none,install-impl" description="Installs the R package using 'R CMD INSTALL'" />
+  <target name="install-none" unless="r.env.ok">
+    <echo>R or dependent libraries not installed - cannot install the extension locally</echo>
+  </target>
+  <target name="install-impl" if="r.env.ok">
     <exec executable="R" failonerror="true">
       <arg value="CMD" />
       <arg value="INSTALL" />
