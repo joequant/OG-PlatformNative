@@ -54,8 +54,10 @@
   results <- msg[2]
   result <- list ()
   if (is.list (configurations)) {
-    for (index in seq (from = 1, to = length (configurations))) {
-      result[[configurations[[index]]]] <- .configurationResults.ViewComputationResultModel (results[[index]])
+    if (length (configurations) > 0) {
+      for (index in seq (from = 1, to = length (configurations))) {
+        result[[configurations[[index]]]] <- .configurationResults.ViewComputationResultModel (results[[index]])
+      }
     }
   } else {
     result[[configurations]] <- .configurationResults.ViewComputationResultModel (results)
