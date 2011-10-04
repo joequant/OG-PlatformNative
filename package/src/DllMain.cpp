@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011 - present by OpenGamma Inc. and the OpenGamma group of companies
  *
  * Please see distribution for license.
@@ -17,14 +17,18 @@
 #include "Procedures.h"
 #include "Errors.h"
 
+/// Try and suppress the error message written to stderr to avoid R CMD check from failing.
 class CSuppressLoggingWarning {
 public:
+	/// Sets the quiet mode to TRUE.
 	CSuppressLoggingWarning () {
 		::log4cxx::helpers::LogLog::setQuietMode (true);
 	}
 };
 
+/// Try and spress the error message written to stderr to avoid R CMD check from failing.
 static CSuppressLoggingWarning g_oSetQuietMode;
+
 LOGGING (com.opengamma.rstats.package.DllMain);
 
 extern "C" {
@@ -34,6 +38,9 @@ extern "C" {
 
 #define F(name, args) { #name, (DL_FUNC)&name##args, args }
 
+/// Methods exported to R. The methods are constructed from a macro to append the number of parameters
+/// and force a small amount of validation rather than stack explosions if the number of arguments
+/// changes in the future.
 static R_CallMethodDef g_aMethods[] = {
 	F (ExternalRef_create, 2),
 	F (ExternalRef_fetch, 1),
@@ -53,6 +60,10 @@ static R_CallMethodDef g_aMethods[] = {
 	{ NULL, NULL, 0 }
 };
 
+/// Initialise the OpenGamma package. A connection is established to the Java stack and the repositories
+/// of functions, procedures and livedata sources creates for use by R.
+///
+/// @param[in] pInfo see R documentation
 void LibExport R_init_OpenGamma (DllInfo *pInfo) {
 	LOGDEBUG (TEXT ("Initialising Dll"));
 	g_poFunctions = NULL;
@@ -76,6 +87,10 @@ void LibExport R_init_OpenGamma (DllInfo *pInfo) {
 	R_registerRoutines (pInfo, NULL, g_aMethods, NULL, NULL);
 }
 
+/// Shuts down the OpenGamma package. The connection to the Java stack is released and any allocated
+/// memory freed.
+///
+/// @param[in] pInfo see R documentation
 void LibExport R_unload_OpenGamma (DllInfo *pInfo) {
 	LOGINFO (TEXT ("Unloading DLL"));
 	if (g_poFunctions) {
