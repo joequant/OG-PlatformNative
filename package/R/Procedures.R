@@ -49,9 +49,9 @@ invoke.Procedures <- function (index, args) {
             flagOptional <- TRUE
           }
           if (flagOptional) {
-            argDecls <- append (argDecl, paste (argNames[i], "= NULL"))
+            argDecl <- append (argDecl, paste (argNames[i], "= NULL"))
           } else {
-            argDecls <- append (argDecl, argNames[i])
+            argDecl <- append (argDecl, argNames[i])
             validate <- append (validate, paste ("if (is.null (", argNames[i], ")) stop (\"Parameter '", argNames[i], "' may not be null\")", sep = ""))
           }
           argStrings <- append (argStrings, paste ("\"", argNames[i], "\"", sep = ""))

@@ -11,10 +11,21 @@
 
 # Creates the string representation of a ValueProperties message
 .toString.ValueProperties <- function (msg) {
-  x <- msg$without
-  if (length (x) > 0) {
+  with <- NULL
+  without <- NULL
+  for (field in fields.FudgeMsg (msg)) {
+    fieldName <- field$Name
+    if (fieldName == "without") {
+      without <- field$Value
+    } else {
+      if (fieldName == "with") {
+        with <- field$Value
+      }
+    }
+  }
+  if (!is.null (without)) {
     properties <- c ()
-    for (field in fields.FudgeMsg (x)) {
+    for (field in fields.FudgeMsg (without)) {
       properties <- append (properties, .escape.ValueProperties (field$Value))
     }
     if (length (properties) > 0) {
@@ -23,16 +34,16 @@
       "INFINITE"
     }
   } else {
-    x <- msg$with
-    if (length (x) > 0) {
+    if (!is.null (with)) {
       str <- c ()
-      for (field in fields.FudgeMsg (x)) {
+      for (field in fields.FudgeMsg (with)) {
+        fieldValue <- field$Value
         property <- c (.escape.ValueProperties (field$Name), "=")
-        if (is.FudgeMsg (field$Value)) {
+        if (is.FudgeMsg (fieldValue)) {
           optional <- FALSE
           property <- append (property, "[")
           values <- c ()
-          for (value in fields.FudgeMsg (field$Value)) {
+          for (value in fields.FudgeMsg (fieldValue)) {
             if (value$Name == "optional") {
               optional <- TRUE
             } else {
@@ -44,10 +55,10 @@
             property <- append (property, "?")
           }
         } else {
-          if (field$Value == "indicator") {
+          if (fieldValue == "indicator") {
             property <- append (property, "[]")
           } else {
-            property <- append (property, .escape.ValueProperties (field$Value))
+            property <- append (property, .escape.ValueProperties (fieldValue))
           }
         }
         str <- append (str, paste (property, collapse = ""))
