@@ -72,7 +72,7 @@ public class DateTimeConverter extends AbstractTypeConverter {
       if (value instanceof LocalDate) {
         conversionContext.setResult(ValueUtils.of(((LocalDate) value).toString()));
       } else if (value instanceof Instant) {
-        conversionContext.setResult(ValueUtils.of((double) ((Instant) value).toEpochMillisLong() / 1000d));
+        conversionContext.setResult(ValueUtils.of((double) ((Instant) value).getEpochSeconds()));
       } else {
         conversionContext.setFail();
       }

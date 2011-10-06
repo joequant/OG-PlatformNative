@@ -10,15 +10,45 @@
   computationTargetIdentifier <- c ()
   values <- list ()
   for (field in fields.FudgeMsg (msg)) {
-    specification <- field$Value$specification
-    v <- specification$computationTargetIdentifier
-    i <- which (computationTargetIdentifier == v)
+    specificationName <- NULL
+    specificationIdentifier <- NULL
+    specificationType <- NULL
+    specificationProperties <- NULL
+    value <- NULL
+    for (x in fields.FudgeMsg (field$Value)) {
+      name <- x$Name
+      if (name == "specification") {
+        for (y in fields.FudgeMsg (x$Value)) {
+          name <- y$Name
+          if (name == "computationTargetIdentifier") {
+            specificationIdentifier <- y$Value
+          } else {
+            if (name == "computationTargetType") {
+              specificationType <- y$Value
+            } else {
+              if (name == "properties") {
+                specificationProperties <- .toString.ValueProperties (y$Value)
+              } else {
+                if (name == "valueName") {
+                  specificationName <- y$Value
+                }
+              }
+            }
+          }
+        }
+      } else {
+        if (name == "value") {
+          value <- x$Value
+        }
+      }
+    }
+    i <- which (computationTargetIdentifier == specificationIdentifier)
     if (length (i) == 0) {
-      computationTargetIdentifier <- append (computationTargetIdentifier, v)
-      computationTargetType <- append (computationTargetType, specification$computationTargetType)
+      computationTargetIdentifier <- append (computationTargetIdentifier, specificationIdentifier)
+      computationTargetType <- append (computationTargetType, specificationType)
       i <- length (computationTargetIdentifier)
     }
-    valueName <- paste (specification$valueName, "{", toString (fromFudgeMsg.ValueProperties (specification$properties)), "}", sep = "")
+    valueName <- paste (specificationName, "{", specificationProperties, "}", sep = "")
     column <- values[[valueName]]
     if (is.null (column)) {
       column <- c ()
@@ -26,11 +56,10 @@
     while (length (column) < i) {
       column <- append (column, NA)
     }
-    v <- field$Value$value
-    if (is.FudgeMsg (v)) {
-      v <- "FudgeMsg"
+    if (is.FudgeMsg (value)) {
+      value <- "FudgeMsg"
     }
-    column[[i]] <- v
+    column[[i]] <- value
     values[[valueName]] <- column
   }
   values <- lapply (values, function (x) {

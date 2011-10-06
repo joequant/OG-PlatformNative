@@ -1,1 +1,2 @@
-Views	Iterates through the views available, runs a cycle and displays the results
+Historical	Iterates a view over historical market data to produce timeseries for the portfolio
+Views		Iterates through the views available, runs a cycle and displays the results
