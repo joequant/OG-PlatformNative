@@ -54,5 +54,5 @@ while (!is.null (result)) {
   result <- GetViewResult (viewClient, timeout, viewCycleId.ViewComputationResultModel (result))
 }
 
-pv01 <- ts (data = pv01, start = startTime)
-print (pv01)
+pv01.ts <- ts (data = pv01)
+print (pv01.ts)
