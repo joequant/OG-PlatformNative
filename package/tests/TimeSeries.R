@@ -20,3 +20,7 @@ timeSeries <- FetchTimeSeries (identifier = "BLOOMBERG_BUID~IX653295-0", dataPro
 LOGDEBUG (timeSeries)
 ASSERT (is.ts (timeSeries))
 
+LOGDEBUG ("FetchTimeSeries with default resolution")
+timeSeries <- FetchTimeSeries (identifier = "BLOOMBERG_TICKER~USSW1 Curncy", dataField = "PX_LAST")
+LOGDEBUG (timeSeries)
+ASSERT (is.ts (timeSeries))

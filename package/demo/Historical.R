@@ -19,7 +19,7 @@ viewClientDescriptor <- HistoricalMarketDataViewClient (viewIdentifier, startTim
 viewClient <- ViewClient (viewClientDescriptor, FALSE)
 
 # Build the result into these vectors
-pv01 <- c ()
+presentValue <- c ()
 
 # Iterate through the results, blocking on the first but waiting no longer than 10s for each subsequent one
 timeout <- 10000
@@ -31,28 +31,28 @@ while (!is.null (result)) {
   # Get the data from the "Default" configuration in the view
   data <- results.ViewComputationResultModel (result)$Default
   print (paste(length (data), "row(s) of data"))
-  # Identify the PV01 column(s)
+  # Identify the PV column(s)
   columns <- colnames (data)
-  columns.pv01 <- columns[which (substr (columns, 1, 5) == "PV01.")]
+  columns.presentValue <- columns[which (substr (columns, 1, 14) == "Present.Value.")]
   # Identify the row with the portfolio values (its the only portfolio node row in our example view)
   portfolio <- data[which (data$type == "PORTFOLIO_NODE"),]
-  # Get the PV01 for this iteration
-  if (length (columns.pv01) > 0) {
-    columns.pv01 <- head (columns.pv01[sapply (columns.pv01, function (x) { !is.na (portfolio[[x]]) })], 1)
-    if (length (columns.pv01) > 0) {
-      value.pv01 <- portfolio[[columns.pv01]]
+  # Get the PV for this iteration
+  if (length (columns.presentValue) > 0) {
+    columns.presentValue <- head (columns.presentValue[sapply (columns.presentValue, function (x) { !is.na (portfolio[[x]]) })], 1)
+    if (length (columns.presentValue) > 0) {
+      value.presentValue <- portfolio[[columns.presentValue]]
     } else {
-      value.pv01 <- NA
+      value.presentValue <- NA
     }
   } else {
-    value.pv01 <- NA
+    value.presentValue <- NA
   }
-  print (paste ("PV01 for", valuationTime.ViewComputationResultModel (result), "=", value.pv01))
-  pv01 <- append (pv01, value.pv01)
+  print (paste ("PV for", valuationTime.ViewComputationResultModel (result), "=", value.presentValue))
+  presentValue <- append (presentValue, value.presentValue)
   # Next iteration
   print (paste ("Waiting for next cycle"))
   result <- GetViewResult (viewClient, timeout, viewCycleId.ViewComputationResultModel (result))
 }
 
-pv01.ts <- ts (data = pv01)
-print (pv01.ts)
+presentValue.ts <- ts (data = presentValue)
+print (presentValue.ts)

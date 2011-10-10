@@ -1,2 +1,3 @@
-Historical	Iterates a view over historical market data to produce timeseries for the portfolio
+Historical	Iterates a view over historical market data to produce time-series for the portfolio
+TimeSeries	Loads a time-series from the database
 Views		Iterates through the views available, runs a cycle and displays the results
