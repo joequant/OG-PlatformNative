@@ -66,6 +66,7 @@ invoke.Functions <- function (index, args) {
         paste ("result <- invoke.Functions (", index, ", list (", argInvoke, "))", sep = ""),
         "if (is.ErrorValue (result)) {",
         paste ("if (result@code == 1) stop (paste (\"Parameter '\", switch (result@index + 1, ", argStrings, "), \"' invalid - \", result@message, sep = \"\"))", sep = ""),
+        paste ("if (result@code == 3) stop (paste (\"Parameter '\", switch (result@index + 1, ", argStrings, "), \"' invalid - \", result@message, sep = \"\"))", sep = ""),
         "stop (result@toString)",
         "} else result",
         "}"), sep = "\n")

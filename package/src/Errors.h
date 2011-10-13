@@ -14,6 +14,7 @@
 #define ERR_RESULT_TYPE			"Bad result type"
 #define ERR_MEMORY				"Out of memory"
 #define ERR_INTERNAL			"Internal error"
+#define ERR_R_FUNCTION			"R system call failed"
 
 #undef LOGERROR
 #define LOGERROR(e) { \

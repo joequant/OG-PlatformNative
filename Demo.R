@@ -1,6 +1,10 @@
 # Demonstration scripts
 source ("DemoInternal.R")
 
+# Note that these scripts were an initial draft of how using OpenGamma with R might look. They do not match the
+# actual implementation. They are retained as they give a feel as to how connecting R written functions to the
+# engine might look - something which hasn't been attempted yet.
+
 
 # 1. Shift the points on the USD yield curve used by 0.05 points
 
