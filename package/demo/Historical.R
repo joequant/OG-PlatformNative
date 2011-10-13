@@ -17,11 +17,16 @@ endTime <- Sys.time ()
 startTime <- endTime - (365 * 86400)
 viewClientDescriptor <- HistoricalMarketDataViewClient (viewIdentifier, startTime, endTime)
 viewClient <- ViewClient (viewClientDescriptor, FALSE)
+# Start the first cycle (historical clients start "halted" so that additional parameters can be applied
+# to further peturb the historical data)
+TriggerViewCycle (viewClient)
 
 # Build the result into these vectors
 presentValue <- c ()
 
-# Iterate through the results, blocking on the first but waiting no longer than 10s for each subsequent one
+# Iterate through the results, blocking on the first but waiting no longer than 10s for each subsequent one.
+# The timeout is arbitrary to demonstrate how the functions can be used to fail rather than block
+# indefinately which may (or may not) be desirable in some systems.
 timeout <- 10000
 result <- GetViewResult (viewClient, -1)
 while (!is.null (result)) {
