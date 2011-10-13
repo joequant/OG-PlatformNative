@@ -64,6 +64,30 @@ classNames.FudgeMsg <- function (x) {
   x[0]
 }
 
+# Convert a Fudge message encoding of a map to a data frame
+mapToDataFrame.FudgeMsg <- function (x, keyFun = NULL, valueFun = NULL) {
+  fields <- fields.FudgeMsg (x)
+  fn <- keyFun
+  if (is.null (fn)) {
+    fn <- function (x) { x }
+  }
+  keys <- sapply (.field.FudgeMsg (fields, 1), fn)
+  if (is.list (keys)) {
+    x
+  } else {
+    fn <- valueFun
+    if (is.null (fn)) {
+      fn <- function (x) { x }
+    }
+    values <- sapply (.field.FudgeMsg (fields, 2), fn)
+    if (is.list (values)) {
+      x
+    } else {
+      data.frame (Key = keys, Value = values, row.names = "Key")
+    }
+  }
+}
+
 # Return a display name based on the class name
 displayName.FudgeMsg <- function (x) {
   classNames <- classNames.FudgeMsg (x)

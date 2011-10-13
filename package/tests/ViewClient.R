@@ -15,9 +15,15 @@ LOGDEBUG (views)
 viewIdentifier <- views[[1]][[1]]
 ASSERT (views[[1]][[2]] == "Equity Option Test View 1")
 
+# Create a "run a single cycle" view client descriptor
+LOGDEBUG ("StaticMarketDataViewClient")
+viewDescriptor <- StaticMarketDataViewClient (viewIdentifier);
+LOGDEBUG (viewDescriptor)
+ASSERT (is.string (viewDescriptor))
+
 # Create a view client
 LOGDEBUG ("ViewClient")
-viewClient <- ViewClient (viewIdentifier)
+viewClient <- ViewClient (viewDescriptor)
 LOGDEBUG (viewClient)
 ASSERT (is.ViewClient (viewClient))
 

@@ -94,6 +94,16 @@
   result
 }
 
+# Converts the live data Fudge message payload to a data.frame object
+.liveData.ViewComputationResultModel <- function (msg) {
+  liveData <- msg[1]
+  specification <- sapply (liveData, function (x) { x$specification })
+  value <- sapply (liveData, function (x) { x$value})
+  valueName <- sapply (specification, function (x) { x$valueName })
+  identifier <- sapply (specification, function (x) { x$computationTargetIdentifier })
+  data.frame (ValueName = valueName, Identifier = identifier, Value = value)
+}
+
 # Brings declarations for ViewComputationResultModel into scope
 Install.ViewComputationResultModel <- function () {
   object.FudgeMsg ("ViewComputationResultModel")
@@ -104,5 +114,5 @@ Install.ViewComputationResultModel <- function () {
   .field.ViewComputationResultModel ("calculationDuration")
   .field.ViewComputationResultModel ("versionCorrection")
   .field.ViewComputationResultModel ("results", ".results.ViewComputationResultModel")
-  .field.ViewComputationResultModel ("liveData")
+  .field.ViewComputationResultModel ("liveData", ".liveData.ViewComputationResultModel")
 }
