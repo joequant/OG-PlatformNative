@@ -25,7 +25,8 @@ static void RPROC ExternalRef_finalizer (SEXP externalref) {
 #else /* ifdef _WIN32 */
 		memset (&data, 0, sizeof (data));
 #endif /* ifdef _WIN32 */
-		data._single = CValue::FromSEXP (value);
+		CRCallback oR (R_GlobalEnv);
+		data._single = CValue::FromSEXP (&oR, value);
 		UNPROTECT (1);
 		R_ClearExternalPtr (externalref);
 		if (data._single) {

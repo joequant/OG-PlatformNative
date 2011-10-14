@@ -25,7 +25,7 @@ public:
 	/// Releases the memory associated with a Value instance
 	static void Release (com_opengamma_language_Value *pValue) { com_opengamma_language_Value_free (pValue); }
 
-	static com_opengamma_language_Value *FromSEXP (SEXP value, int index = 0);
+	static com_opengamma_language_Value *FromSEXP (const CRCallback *poR, SEXP value, int index = 0);
 	static SEXP ToSEXP (const com_opengamma_language_Value *pValue);
 	static void ToSEXP (int type, SEXP vector, int index, const com_opengamma_language_Value *pValue);
 };

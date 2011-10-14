@@ -82,6 +82,8 @@
       <property name="wkspace.dir" value="${wkspace.dir}" />
     </subant>
     <copy todir="${package.dir}/${package.name}/src" file="version.h" />
+    <!-- This is a source R dist, but only on a clean environment; otherwise it may contain
+         binaries from an earlier build -->
     <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${package.dir}" />
     <exec executable="R" failifexecutionfails="false" failonerror="true" resultproperty="r.installed.result">
       <arg value="--version" />

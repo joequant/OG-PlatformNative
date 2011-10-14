@@ -30,46 +30,83 @@ static com_opengamma_language_Value *_FudgeMsgValue (FudgeMsg msg) {
 	return pValue;
 }
 
+/// Creates a Value instance descriping the object (either its toFudgeMsg or toString).
+///
+/// @param[in] poR callback object representing the original caller's environment
+/// @param[in] obj object to convert
+/// @return the Value instance
+static com_opengamma_language_Value *_ObjectValue (const CRCallback *poR, SEXP obj) {
+	com_opengamma_language_Value *pValue;
+	FudgeMsg msg = RFudgeMsg::ToFudgeMsg (poR, obj);
+	if (msg) {
+		pValue = _FudgeMsgValue (msg);
+		FudgeMsg_release (msg);
+	} else {
+		LOGDEBUG (TEXT ("Using toString on unknown object type"));
+		SEXP str = poR->ToString (obj);
+		if (isObject (str)) {
+			// Avoid the infinite recursion case should toString give us an object
+			LOGERROR (ERR_PARAMETER_TYPE);
+			return NULL;
+		}
+		PROTECT (str);
+		pValue = CValue::FromSEXP (poR, str);
+		UNPROTECT (1);
+	}
+	return pValue;
+}
+
 /// Creates a Value instance representing the SEXP type. Only basic vectors can be represented as Values;
 /// any lists or multiple element vectors will need to be converted to Data instance.
 ///
+/// @param[in] poR callback object representing the original caller's environment
 /// @param[in] value value to convert
 /// @param[in] index element index to convert from a vector value
 /// @return the Value instance or NULL if there was a problem (e.g. invalid type)
-com_opengamma_language_Value *CValue::FromSEXP (SEXP value, int index) {
-	if (TYPEOF (value) == VECSXP) {
-		return FromSEXP (VECTOR_ELT (value, index));
-	}
-	com_opengamma_language_Value *pValue = new com_opengamma_language_Value;
-	if (pValue) {
-		memset (pValue, 0, sizeof (com_opengamma_language_Value));
-		switch (TYPEOF (value)) {
-			case INTSXP :
-				pValue->_intValue = (fudge_i32*)malloc (sizeof (fudge_i32));
-				if (pValue->_intValue) *pValue->_intValue = INTEGER (value)[index];
-				break;
-			case LGLSXP :
-				pValue->_boolValue = (fudge_bool*)malloc (sizeof (fudge_bool));
-				if (pValue->_boolValue) *pValue->_boolValue = INTEGER (value)[index] ? FUDGE_TRUE : FUDGE_FALSE;
-				break;
-			case NILSXP :
-				LOGDEBUG (TEXT ("NULL value"));
-				break;
-			case REALSXP :
-				pValue->_doubleValue = (fudge_f64*)malloc (sizeof (fudge_f64));
-				if (pValue->_doubleValue) *pValue->_doubleValue = REAL (value)[index];
-				break;
-			case STRSXP :
-				pValue->_stringValue = Ascii_tcsDup (CHAR (STRING_ELT (value, index)));
-				break;
-			default :
-				LOGERROR (ERR_PARAMETER_TYPE);
-				break;
-		}
-	} else {
-		LOGFATAL (ERR_MEMORY);
+com_opengamma_language_Value *CValue::FromSEXP (const CRCallback *poR, SEXP value, int index) {
+#define ALLOC_PVALUE \
+    pValue = new com_opengamma_language_Value; \
+    if (!pValue) { \
+        LOGFATAL (ERR_MEMORY); \
+        return NULL; \
+    } \
+    memset (pValue, 0, sizeof (com_opengamma_language_Value));
+	com_opengamma_language_Value *pValue;
+	switch (TYPEOF (value)) {
+		case INTSXP :
+			ALLOC_PVALUE
+			pValue->_intValue = (fudge_i32*)malloc (sizeof (fudge_i32));
+			if (pValue->_intValue) *pValue->_intValue = INTEGER (value)[index];
+			break;
+		case LGLSXP :
+			ALLOC_PVALUE
+			pValue->_boolValue = (fudge_bool*)malloc (sizeof (fudge_bool));
+			if (pValue->_boolValue) *pValue->_boolValue = INTEGER (value)[index] ? FUDGE_TRUE : FUDGE_FALSE;
+			break;
+		case NILSXP :
+			LOGDEBUG (TEXT ("NULL value"));
+			pValue = NULL;
+			break;
+		case REALSXP :
+			ALLOC_PVALUE
+			pValue->_doubleValue = (fudge_f64*)malloc (sizeof (fudge_f64));
+			if (pValue->_doubleValue) *pValue->_doubleValue = REAL (value)[index];
+			break;
+		case S4SXP :
+			return _ObjectValue (poR, value);
+		case STRSXP :
+			ALLOC_PVALUE
+			pValue->_stringValue = Ascii_tcsDup (CHAR (STRING_ELT (value, index)));
+			break;
+		case VECSXP :
+			return FromSEXP (poR, VECTOR_ELT (value, index));
+		default :
+			LOGERROR (ERR_PARAMETER_TYPE);
+			pValue = NULL;
+			break;
 	}
 	return pValue;
+#undef ALLOC_PVALUE
 }
 
 /// Converts a Value instance into a SEXP vector element.
@@ -186,7 +223,7 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 			for (i = 0; i < rows; i++) {
 				pData->_matrix[i] = new com_opengamma_language_Value*[cols + 1];
 				for (j = 0; j < cols; j++) {
-					pData->_matrix[i][j] = CValue::FromSEXP (data, (j * rows) + i);
+					pData->_matrix[i][j] = CValue::FromSEXP (poR, data, (j * rows) + i);
 				}
 				pData->_matrix[i][cols] = NULL;
 			}
@@ -198,7 +235,7 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 				if (pData->_linear) {
 					int n;
 					for (n = 0; n < length (data); n++) {
-						pData->_linear[n] = CValue::FromSEXP (data, n);
+						pData->_linear[n] = CValue::FromSEXP (poR, data, n);
 					}
 					pData->_linear[length (data)] = NULL;
 				} else {
@@ -206,22 +243,14 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 				}
 			} else if (length (data) == 1) {
 				LOGDEBUG (TEXT ("Primitive"));
-				pData->_single = CValue::FromSEXP (data);
+				pData->_single = CValue::FromSEXP (poR, data);
 			} else {
 				LOGDEBUG (TEXT ("Empty vector"));
 			}
 		} else if (isNull (data)) {
 			LOGDEBUG (TEXT ("NULL"));
 		} else if (isObject (data)) {
-			FudgeMsg msg = RFudgeMsg::ToFudgeMsg (poR, data);
-			if (msg) {
-				LOGDEBUG (TEXT ("Single FudgeMsg"));
-				pData->_single = _FudgeMsgValue (msg);
-				FudgeMsg_release (msg);
-			} else {
-				LOGDEBUG (TEXT ("Using toString on unknown object type"));
-				pData->_single = CValue::FromSEXP (poR->ToString (data));
-			}
+			pData->_single = _ObjectValue (poR, data);
 		} else {
 			LOGERROR (ERR_PARAMETER_TYPE);
 		}
