@@ -19,7 +19,7 @@ ASSERT (views[[1]][[2]] == "Equity Option Test View 1")
 LOGDEBUG ("StaticMarketDataViewClient")
 viewDescriptor <- StaticMarketDataViewClient (viewIdentifier);
 LOGDEBUG (viewDescriptor)
-ASSERT (is.string (viewDescriptor))
+ASSERT (is.character (viewDescriptor))
 
 # Create a view client
 LOGDEBUG ("ViewClient")

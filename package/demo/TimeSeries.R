@@ -4,5 +4,6 @@
  # Please see distribution for license.
  ##
 
-# Load a time-series from the database using a Bloomberg ticker
+# Loads a time-series from the database using a Bloomberg ticker
+
 ts <- FetchTimeSeries (dataField = "PX_LAST", identifier = "BLOOMBERG_TICKER~US0001M Index")

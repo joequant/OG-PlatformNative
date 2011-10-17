@@ -29,6 +29,11 @@ LazyLoad: true</echo>
   </target>
 
   <target name="compile" depends="description">
+    <exec executable="${basedir}/demo/00Index.pl"
+          output="${basedir}/demo/00Index"
+          dir="${basedir}/demo"
+          failonerror="true"
+          failifexecutionfails="false" />
   </target>
 
   <target name="dist">
@@ -38,6 +43,7 @@ LazyLoad: true</echo>
         <exclude name=".gitignore" />
         <exclude name="build.properties" />
         <exclude name="build.xml" />
+        <exclude name="demo/00Index.pl" />
       </fileset>
     </copy>
   </target>
