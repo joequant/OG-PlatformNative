@@ -10,8 +10,15 @@ LOGLEVEL_WARN <- c(2, "Warn:")
 LOGLEVEL_ERROR <- c(3, "Error:")
 LOGLEVEL_FATAL <- c(4, "Fatal:")
 
-#.log.level <- 1
-.log.level <- 0
+.default.log.level <- function () {
+  log.level <- Sys.getenv ("OPENGAMMA_R_LOGLEVEL")
+  if (log.level == "") {
+    LOGLEVEL_INFO[1]
+  } else {
+    log.level
+  }
+}
+.log.level <- .default.log.level ()
 
 .log <- function (level, ...) {
   if (level[1] >= .log.level) print (paste (level[2], paste (...)))
