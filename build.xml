@@ -61,7 +61,7 @@
       <arg value="--binary" />
       <arg value="${package.dir}/${package.name}" />
     </exec>
-    <move todir="${package.dir}">
+    <move todir="${dist.dir}">
       <fileset dir="${basedir}">
         <include name="${package.name}_*.zip" />
         <include name="${package.name}_*.tar.gz" />
