@@ -9,7 +9,7 @@
 
 # Find a view identifier
 viewName <- "Simple Swap Test View"
-viewIdentifier <- Views (viewName)[[1]][[1]]
+viewIdentifier <- Views (viewName)[1,1]
 
 # Set up the view client descriptor to sample a historic period (a month ending last week). This
 # will be used over each of our "shift" samples.
