@@ -13,15 +13,15 @@ LOGLEVEL_FATAL <- c(4, "Fatal:")
 #.log.level <- 1
 .log.level <- 0
 
-.log <- function (level, str) {
-  if (level[1] >= .log.level) print (paste (level[2], str))
+.log <- function (level, ...) {
+  if (level[1] >= .log.level) print (paste (level[2], paste (...)))
 }
 
-LOGDEBUG <- function (str) { .log (LOGLEVEL_DEBUG, str) }
-LOGINFO <- function (str) { .log (LOGLEVEL_INFO, str) }
-LOGWARN <- function (str) { .log (LOGLEVEL_WARN, str) }
-LOGERROR <- function (str) { .log (LOGLEVEL_ERROR, str) }
-LOGFATAL <- function (str) { .log (LOGLEVEL_FATAL, str) }
+LOGDEBUG <- function (...) { .log (LOGLEVEL_DEBUG, ...) }
+LOGINFO <- function (...) { .log (LOGLEVEL_INFO, ...) }
+LOGWARN <- function (...) { .log (LOGLEVEL_WARN, ...) }
+LOGERROR <- function (...) { .log (LOGLEVEL_ERROR, ...) }
+LOGFATAL <- function (...) { .log (LOGLEVEL_FATAL, ...) }
 
 .set.log.level <- function (level) {
   .log.level <<- level[1]

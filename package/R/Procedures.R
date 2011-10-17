@@ -33,7 +33,7 @@ invoke.Procedures <- function (index, args) {
 .installByIndex.Procedures <- function (index) {
   name <- getName.Procedures (index)
   if (!is.null (name)) {
-    LOGDEBUG (paste ("Found procedure", name))
+    LOGDEBUG ("Found procedure", name)
     argNames <- getParameterNames.Procedures (index)
     argFlags <- getParameterFlags.Procedures (index)
     if (length (argNames) == length (argFlags)) {
@@ -72,10 +72,10 @@ invoke.Procedures <- function (index, args) {
         "}"), sep = "\n")
       eval (parse (text = cmd))
     } else {
-      LOGERROR (paste ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags))
+      LOGERROR ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags)
     }
   } else {
-    LOGWARN (paste ("Invalid index", index))
+    LOGWARN ("Invalid index", index)
   }
 }
 

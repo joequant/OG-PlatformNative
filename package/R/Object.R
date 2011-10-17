@@ -6,7 +6,7 @@
 
 # Declares an object
 Install.Object <- function (className, rep) {
-  LOGDEBUG (paste ("Declare object", className))
+  LOGDEBUG ("Declare object", className)
   setClass (className, rep)
   is <- paste ("is", className, sep = ".")
   assert <- paste (".assert", className, sep = ".")

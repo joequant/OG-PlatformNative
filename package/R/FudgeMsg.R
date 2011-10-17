@@ -106,7 +106,7 @@ displayName.FudgeMsg <- function (x) {
 
 # Declares a FudgeMsg based object
 object.FudgeMsg <- function (className) {
-  LOGDEBUG (paste ("Declare FudgeMsg", className))
+  LOGDEBUG ("Declare FudgeMsg", className)
   Install.Object (className, representation (msg = "FudgeMsg"))
   setMethod ("toFudgeMsg", signature = className, definition = function (x) { x@msg })
   setMethod ("as.character", signature = className, definition = function (x) { toString (x@msg) })

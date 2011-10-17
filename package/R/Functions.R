@@ -33,7 +33,7 @@ invoke.Functions <- function (index, args) {
 .installByIndex.Functions <- function (index) {
   name <- getName.Functions (index)
   if (!is.null (name)) {
-    LOGDEBUG (paste ("Found function", name))
+    LOGDEBUG ("Found function", name)
     argNames <- getParameterNames.Functions (index)
     argFlags <- getParameterFlags.Functions (index)
     if (length (argNames) == length (argFlags)) {
@@ -72,10 +72,10 @@ invoke.Functions <- function (index, args) {
         "}"), sep = "\n")
       eval (parse (text = cmd))
     } else {
-      LOGERROR (paste ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags))
+      LOGERROR ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags)
     }
   } else {
-    LOGWARN (paste ("Invalid index", index))
+    LOGWARN ("Invalid index", index)
   }
 }
 

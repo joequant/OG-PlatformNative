@@ -16,7 +16,7 @@ from.ExternalRef <- function (ref) {
 
 # Declares an external reference based object
 object.ExternalRef <- function (className) {
-  LOGDEBUG (paste ("Declare ExternalRef", className))
+  LOGDEBUG ("Declare ExternalRef", className)
   Install.Object (className, representation (ref = "externalptr"))
   setMethod ("as.character", signature = className, definition = function (x, ...) { toString (from.ExternalRef (x@ref)) })
   interop <- paste ("Interop", className, sep = ".")
