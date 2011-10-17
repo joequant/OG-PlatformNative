@@ -14,7 +14,9 @@
   Install.LiveData ()
   Install.Procedures ()
   LOGINFO ("Installing local data bindings")
+  Install.MarketDataRequirementNames ()
   Install.ValueProperties ()
+  Install.ValueRequirementNames ()
   Install.ViewClient ()
   Install.ViewComputationResultModel ()
 }
