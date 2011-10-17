@@ -118,45 +118,77 @@ com_opengamma_language_Value *CValue::FromSEXP (const CRCallback *poR, SEXP valu
 void CValue::ToSEXP (int type, SEXP vector, int index, const com_opengamma_language_Value *pValue) {
 	switch (type) {
 	case DATATYPE_BOOLEAN :
-		INTEGER(vector)[index] = *pValue->_boolValue;
+		if (pValue->_boolValue) {
+			LOGDEBUG (TEXT ("BOOL value ") << *pValue->_boolValue);
+			INTEGER(vector)[index] = *pValue->_boolValue;
+		} else {
+			LOGDEBUG (TEXT ("BOOL value N/A"));
+			INTEGER(vector)[index] = NA_LOGICAL;
+		}
 		break;
 	case DATATYPE_INTEGER :
-		INTEGER(vector)[index] = *pValue->_intValue;
+		if (pValue->_intValue) {
+			LOGDEBUG (TEXT ("INTEGER value ") << *pValue->_intValue);
+			INTEGER(vector)[index] = *pValue->_intValue;
+		} else {
+			LOGDEBUG (TEXT ("INTEGER value N/A"));
+			INTEGER(vector)[index] = NA_INTEGER;
+		}
 		break;
 	case DATATYPE_DOUBLE :
-		REAL(vector)[index] = *pValue->_doubleValue;
+		if (pValue->_doubleValue) {
+			LOGDEBUG (TEXT ("DOUBLE value ") << *pValue->_doubleValue);
+			REAL(vector)[index] = *pValue->_doubleValue;
+		} else {
+			LOGDEBUG (TEXT ("DOUBLE value N/A"));
+			REAL(vector)[index] = NA_REAL;
+		}
 		break;
 	case DATATYPE_STRING : {
+		if (pValue->_stringValue) {
+			LOGDEBUG (TEXT ("STRING value ") << pValue->_stringValue);
 #ifdef _UNICODE
-		char *pszStringValue = WideToAsciiDup (pValue->_stringValue);
-		SEXP value;
-		if (pszStringValue) {
-			value = mkChar (pszStringValue);
-			free (pszStringValue);
-		} else {
-			LOGFATAL (ERR_MEMORY);
-			value = R_NilValue;
-		}
+			char *pszStringValue = WideToAsciiDup (pValue->_stringValue);
+			SEXP value;
+			if (pszStringValue) {
+				value = mkChar (pszStringValue);
+				free (pszStringValue);
+			} else {
+				LOGFATAL (ERR_MEMORY);
+				value = R_NilValue;
+			}
 #else /* ifdef _UNICODE */
-		SEXP value = mkChar (pValue->_stringValue);
+			SEXP value = mkChar (pValue->_stringValue);
 #endif /* ifdef _UNICODE */
-		PROTECT (value);
-		SET_STRING_ELT (vector, index, value);
-		UNPROTECT (1);
+			PROTECT (value);
+			SET_STRING_ELT (vector, index, value);
+			UNPROTECT (1);
+		} else {
+			LOGDEBUG (TEXT ("STRING value N/A"));
+			SET_STRING_ELT (vector, index, NA_STRING);
+		}
 		break;
 						   }
 	case DATATYPE_MESSAGE : {
-		SEXP value = RFudgeMsg::FromFudgeMsg (pValue->_messageValue);
-		PROTECT (value);
-		SET_VECTOR_ELT (vector, index, value);
-		UNPROTECT (1);
+		if (pValue->_messageValue) {
+			LOGDEBUG (TEXT ("MESSAGE value"));
+			SEXP value = RFudgeMsg::FromFudgeMsg (pValue->_messageValue);
+			PROTECT (value);
+			SET_VECTOR_ELT (vector, index, value);
+			UNPROTECT (1);
+		} else {
+			LOGDEBUG (TEXT ("MESSAGE value N/A"));
+			// Omit a value, or is there a NA_ equivalent?
+		}
 		break;
 							}
 	case DATATYPE_ERROR :
+		LOGDEBUG (TEXT ("ERROR value"));
 		LOGWARN (TEXT ("TODO: store ERROR type in vector"));
 		LOGFATAL (ERR_INTERNAL);
 		break;
 	default :
+		LOGDEBUG (TEXT ("Unknown type ") << type);
 		LOGERROR (ERR_RESULT_TYPE);
 		break;
 	}
