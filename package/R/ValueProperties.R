@@ -70,6 +70,24 @@
   }
 }
 
+# Tests if one value property set can "satisfy" another
+satisfiedBy.ValueProperties <- function (a, b) {
+  # TODO: implement this properly
+  TRUE
+}
+
+# The "empty" property set
+empty.ValueProperties <- "EMPTY"
+
+# The "infinite" property set
+infinite.ValueProperties <- "INFINITE"
+
+# Parse a string representation into a ValueProperties object
+parse.ValueProperties <- function (propertyString) {
+  # TODO
+  propertyString
+}
+
 # Brings declarations for ValueProperties into scope
 Install.ValueProperties <- function () {
   object.FudgeMsg ("ValueProperties")

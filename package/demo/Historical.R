@@ -36,24 +36,14 @@ while (!is.null (result)) {
   # Get the data from the "Default" configuration in the view
   data <- results.ViewComputationResultModel (result)$Default
   print (paste(length (data), "row(s) of data"))
-  # Identify the PV column(s)
-  columns <- colnames (data)
-  columns.presentValue <- columns[which (substr (columns, 1, 14) == "Present.Value.")]
-  # Identify the row with the portfolio values (its the only portfolio node row in our example view)
+  # Identify the row with the portfolio values (it's the only portfolio node row in our example view)
   portfolio <- data[which (data$type == "PORTFOLIO_NODE"),]
-  # Get the PV for this iteration
-  if (length (columns.presentValue) > 0) {
-    columns.presentValue <- head (columns.presentValue[sapply (columns.presentValue, function (x) { !is.na (portfolio[[x]]) })], 1)
-    if (length (columns.presentValue) > 0) {
-      value.presentValue <- portfolio[[columns.presentValue]]
-    } else {
-      value.presentValue <- NA
-    }
-  } else {
-    value.presentValue <- NA
-  }
-  print (paste ("PV for", valuationTime.ViewComputationResultModel (result), "=", value.presentValue))
-  presentValue <- append (presentValue, value.presentValue)
+  # Identify the PV column(s)
+  columns.pv <- columns.ViewComputationResultModel (data, ValueRequirementNames.Present.Value)
+  # Get the PV for the portfolio
+  value.pv <- firstValue.ViewComputationResultModel (portfolio, columns.pv)
+  print (paste ("PV for", valuationTime.ViewComputationResultModel (result), "=", value.pv))
+  presentValue <- append (presentValue, value.pv)
   # Next iteration
   print (paste ("Waiting for next cycle"))
   result <- GetViewResult (viewClient, timeout, viewCycleId.ViewComputationResultModel (result))

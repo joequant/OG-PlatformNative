@@ -48,7 +48,7 @@
       computationTargetType <- append (computationTargetType, specificationType)
       i <- length (computationTargetIdentifier)
     }
-    valueName <- paste (specificationName, "{", specificationProperties, "}", sep = "")
+    valueName <- new.ValueRequirement (specificationName, specificationProperties)
     column <- values[[valueName]]
     if (is.null (column)) {
       column <- c ()
@@ -72,7 +72,7 @@
   cmd <- append (cmd, sapply (names (values), function (valueName) {
     paste ("`", valueName, "` = values[[\"", gsub ("(\"|\\\\)", "\\\\\\1", valueName), "\"]]", sep = "")
   }))
-  cmd <- append (cmd, "row.names = \"identifier\")")
+  cmd <- append (cmd, "row.names = \"identifier\", check.names=FALSE)")
   cmd <- paste (cmd, collapse = ", ")
   eval (parse (text = cmd))
 }
@@ -92,6 +92,40 @@
     result[[configurations]] <- .configurationResults.ViewComputationResultModel (results)
   }
   result
+}
+
+# Find the column names that satisfy a given value requirement name (and properties)
+columns.ViewComputationResultModel <- function (data, valueRequirement) {
+  name <- name.ValueRequirement (valueRequirement)
+  properties <- properties.ValueRequirement (valueRequirement)
+  columns <- colnames (data)
+  columns[sapply (columns, function (x) {
+    x.name <- name.ValueRequirement (x)
+    if (name == x.name) {
+      x.properties <- properties.ValueRequirement (x)
+      if (satisfiedBy.ValueProperties (properties, x.properties)) {
+        TRUE
+      } else {
+        FALSE
+      }
+    } else {
+      FALSE
+    }
+  })]
+}
+
+# Find the first non-NA value from a data frame row
+firstValue.ViewComputationResultModel <- function (row, columns) {
+  if (length (columns) > 0) {
+    a.columns <-  columns[sapply (columns, function (x) { !is.na (row[[x]]) })]
+    if (length (a.columns) > 0) {
+      row[[a.columns[[1]]]]
+    } else {
+      NA
+    }
+  } else {
+    NA
+  }
 }
 
 # Converts the live data Fudge message payload to a data.frame object

@@ -27,7 +27,7 @@ results <- lapply (shiftAmounts, function (shift) {
   # Create the view client and configure. Note that we need to give the client's a unique name
   # or we will get the same one back each time as the descriptor matches.
   viewClient <- ViewClient (viewClientDescriptor, useSharedProcess = FALSE, clientName = toString (shift))
-  ConfigureViewClient (viewClient, lapply (shiftTickers, function (ticker) { MarketDataOverride (value = shift, valueName = "Market_Value", identifier = ticker, operation = "MULTIPLY") }))
+  ConfigureViewClient (viewClient, lapply (shiftTickers, function (ticker) { MarketDataOverride (value = shift, valueName = MarketDataRequirementNames.Market.Value, identifier = ticker, operation = "MULTIPLY") }))
 
   # Build the PV into this vector
   presentValue <- c ()
@@ -44,21 +44,11 @@ results <- lapply (shiftAmounts, function (shift) {
     print (paste ("Got cycle", viewCycleId.ViewComputationResultModel (result)))
     data <- results.ViewComputationResultModel (result)$Default
     print (paste (length (data), "row(s) of data"))
-    columns <- colnames (data)
-    columns.presentValue <- columns[which (substr (columns, 1, 14) == "Present.Value.")]
     portfolio <- data[which (data$type == "PORTFOLIO_NODE"),]
-    if (length (columns.presentValue) > 0) {
-      columns.presentValue <- head (columns.presentValue[sapply (columns.presentValue, function (x) { !is.na (portfolio[[x]]) })], 1)
-      if (length (columns.presentValue) > 0) {
-        value.presentValue <- portfolio[[columns.presentValue]]
-      } else {
-        value.presentValue <- NA
-      }
-    } else {
-      value.presentValue <- NA
-    }
-    print (paste ("PV for", valuationTime.ViewComputationResultModel (result), "with", shift, "=", value.presentValue))
-    presentValue <- append (presentValue, value.presentValue)
+    columns.pv <- columns.ViewComputationResultModel (data, ValueRequirementNames.Present.Value)
+    value.pv <- firstValue.ViewComputationResultModel (portfolio, columns.pv)
+    print (paste ("PV for", valuationTime.ViewComputationResultModel (result), "with", shift, "=", value.pv))
+    presentValue <- append (presentValue, value.pv)
 
     # Get the next iteration
     print (paste ("Waiting for next cycle"))
