@@ -292,8 +292,7 @@ static SEXPTYPE _DataTypeToVectorType (int type) {
 	case DATATYPE_DOUBLE :
 		return REALSXP;
 	case DATATYPE_STRING :
-		// Force degeneration to list; can't have a vector of strings
-		return 0;
+		return STRSXP;
 	case DATATYPE_MESSAGE :
 		// Force degeneration to list; can't have a vector of lists
 		return 0;
