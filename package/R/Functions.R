@@ -52,7 +52,7 @@ invoke.Functions <- function (index, args) {
             argDecl <- append (argDecl, paste (argNames[i], "= NULL"))
           } else {
             argDecl <- append (argDecl, argNames[i])
-            validate <- append (validate, paste ("if (is.null (", argNames[i], ")) stop (\"Parameter '", argNames[i], "' may not be null\")", sep = ""))
+            validate <- append (validate, paste ("if (missing (", argNames[i], ") || is.null (", argNames[i], ")) stop (\"Parameter '", argNames[i], "' may not be null\")", sep = ""))
           }
           argStrings <- append (argStrings, paste ("\"", argNames[i], "\"", sep = ""))
         }
