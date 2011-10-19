@@ -15,6 +15,7 @@
   Install.Procedures ()
   LOGINFO ("Installing local data bindings")
   Install.MarketDataRequirementNames ()
+  Install.MarketDataSnapshot ()
   Install.ValueProperties ()
   Install.ValueRequirementNames ()
   Install.ViewClient ()
