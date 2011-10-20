@@ -10,9 +10,9 @@ viewSearchPattern <- "Equity Option Test View 1"
 
 # Iterates through the views available, runs a cycle and displays the output
 views <- Views (viewSearchPattern)
-discard <- lapply (views, function (view) {
-  viewIdentifier <- view[1,1]
-  viewName <- view[1,2]
+for (i in seq (from = 1, to = length (views[,1]))) {
+  viewIdentifier <- views[i, 1]
+  viewName <- views[i, 2]
   viewClient <- ViewClient (viewIdentifier)
   print (paste ("Waiting for result from", viewName))
   viewResultModel <- GetViewResult (viewClient, 30000)
@@ -31,5 +31,4 @@ discard <- lapply (views, function (view) {
   } else {
     warning (paste ("No results from view", viewName, "produced in 30s"))
   }
-})
-
+}

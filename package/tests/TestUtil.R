@@ -4,24 +4,24 @@
  # Please see distribution for license.
  ##
 
-LOGDEBUG <- function (x) {
-  OpenGamma:::LOGDEBUG (x)
+LOGDEBUG <- function (...) {
+  OpenGamma:::LOGDEBUG (...)
 }
 
-LOGINFO <- function (x) {
-  OpenGamma:::LOGINFO (x)
+LOGINFO <- function (...) {
+  OpenGamma:::LOGINFO (...)
 }
 
-LOGWARN <- function (x) {
-  OpenGamma:::LOGWARN (x)
+LOGWARN <- function (...) {
+  OpenGamma:::LOGWARN (...)
 }
 
-LOGERROR <- function (x) {
-  OpenGamma:::LOGERROR (x)
+LOGERROR <- function (...) {
+  OpenGamma:::LOGERROR (...)
 }
 
-LOGFATAL <- function (x) {
-  OpenGamma:::LOGFATAL (x)
+LOGFATAL <- function (...) {
+  OpenGamma:::LOGFATAL (...)
 }
 
 ASSERT <- function (expr) {

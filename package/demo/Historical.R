@@ -13,7 +13,7 @@ viewName <- "Simple Swap Test View"
 viewIdentifier <- Views (viewName)[1,1]
 
 # Create a client (private process) for sampling a historic period (past 365 days in this example)
-endTime <- Sys.time ()
+endTime <- Sys.time () - (14 * 86400)
 startTime <- endTime - (365 * 86400)
 viewClientDescriptor <- HistoricalMarketDataViewClient (viewIdentifier, startTime, endTime)
 viewClient <- ViewClient (viewClientDescriptor, FALSE)

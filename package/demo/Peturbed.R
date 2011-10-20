@@ -13,8 +13,8 @@ viewIdentifier <- Views (viewName)[1,1]
 
 # Set up the view client descriptor to sample a historic period (a month ending last week). This
 # will be used over each of our "shift" samples.
-endTime <- Sys.time () - (7 * 86400)
-startTime <- endTime - (30 * 86400)
+endTime <- Sys.time () - (14 * 86400)
+startTime <- endTime - (90 * 86400)
 viewClientDescriptor <- HistoricalMarketDataViewClient (viewIdentifier, startTime, endTime)
 
 # Our shifts (-25%, -15%, 0, +15%, +25%) applied to some tickers

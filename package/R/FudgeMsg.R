@@ -88,12 +88,24 @@ mapToDataFrame.FudgeMsg <- function (x, keyFun = NULL, valueFun = NULL) {
   }
 }
 
+# Produce an R representation from an arbitrary message
+toObject.FudgeMsg <- function (x, fallbackConstructor = toString) {
+  className <- displayName.FudgeMsg (x)
+  constructor <- paste ("fromFudgeMsg", className, sep = ".")
+  if (existsFunction (constructor)) {
+    getFunction (constructor)(x)
+  } else {
+    LOGWARN ("No constructor", constructor)
+    fallbackConstructor (x)
+  }
+}
+
 # Return a display name based on the class name
 displayName.FudgeMsg <- function (x) {
   classNames <- classNames.FudgeMsg (x)
   if (length (classNames) > 0) {
     classNames <- strsplit (classNames[[1]], "\\.")[[1]]
-    classNames[[length (classNames)]]
+    make.names (classNames[[length (classNames)]])
   } else {
     "FudgeMsg"
   }
