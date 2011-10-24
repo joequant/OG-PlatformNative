@@ -27,9 +27,13 @@ uniqueId <- uniqueId.MarketDataSnapshot (snapshot)
 LOGDEBUG (uniqueId)
 ASSERT (uniqueId == snapshotIdentifier)
 
-# Test the other methods
+# Test the R local vs full Java invocation
 LOGDEBUG ("name.MarketDataSnapshot")
 print (name.MarketDataSnapshot (snapshot))
+print (GetSnapshotName (snapshot))
+ASSERT (name.MarketDataSnapshot (snapshot) == GetSnapshotName (snapshot))
+
+# Run through the "pretty-printing" methods
 LOGDEBUG ("globalValues.MarketDataSnapshot")
 print (globalValues.MarketDataSnapshot (snapshot))
 LOGDEBUG ("yieldCurves.MarketDataSnapshot")
@@ -38,3 +42,8 @@ LOGDEBUG ("volatilityCubes.MarketDataSnapshot")
 print (volatilityCubes.MarketDataSnapshot (snapshot))
 LOGDEBUG ("volatilitySurfaces.MarketDataSnapshot")
 print (volatilitySurfaces.MarketDataSnapshot (snapshot))
+
+# Modify a snapshot
+snapshot <- SetSnapshotName (snapshot, "New name")
+LOGDEBUG (snapshot)
+ASSERT (name.MarketDataSnapshot (snapshot) == "New name")
