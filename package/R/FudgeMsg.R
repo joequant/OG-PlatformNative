@@ -116,6 +116,33 @@ displayName.FudgeMsg <- function (x) {
   paste (c ("{", paste (sapply (fields.FudgeMsg (x), function (y) { paste (y$Name, y$Ordinal, "=", toString (y$Value)) }), collapse = ", "), "}"), collapse = "")
 }
 
+# Prints out a Fudge message with indentation to preserve the structure
+.print.FudgeMsg <- function (x, indent) {
+  sapply (fields.FudgeMsg (x), function (y) {
+    name <- y$Name
+    ordinal <- y$Ordinal
+    value <- y$Value
+    if (length (ordinal) > 0) {
+      if (length (name) > 0) {
+        ordinal <- paste ("(", ordinal, ")", sep = "")
+      }
+    }
+    if (class (value) == "FudgeMsg") {
+      print (paste (indent, name, ordinal, " = {", sep = ""))
+      .print.FudgeMsg (value, paste (indent, "  ", sep = ""))
+      print (paste (indent, "}", sep = ""))
+    } else {
+      print (paste (indent, name, ordinal, " = ", toString (value), sep = ""))
+    }
+  })
+  invisible (x)
+}
+
+# Prints out a Fudge message with indentation to preserve the structure
+print.FudgeMsg <- function (x, ...) {
+  .print.FudgeMsg (x, "")
+}
+
 # Declares a FudgeMsg based object
 object.FudgeMsg <- function (className) {
   LOGDEBUG ("Declare FudgeMsg", className)
