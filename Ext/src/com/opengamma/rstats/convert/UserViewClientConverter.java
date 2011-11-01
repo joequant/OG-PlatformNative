@@ -18,6 +18,7 @@ import com.opengamma.language.DataUtils;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.TypeMap;
 import com.opengamma.language.convert.ValueConversionContext;
+import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
 import com.opengamma.language.invoke.AbstractTypeConverter;
@@ -46,7 +47,7 @@ public class UserViewClientConverter extends AbstractTypeConverter {
     public MetaProcedure getMetaProcedure() {
       final MetaParameter arg = new MetaParameter("identifier", JavaTypeInfo.builder(UniqueId.class).get());
       final List<MetaParameter> args = Arrays.asList(arg);
-      return new MetaProcedure("destroy." + R_CLASS, args, new AbstractProcedureInvoker.NoResult(args) {
+      return new MetaProcedure(Categories.VIEW, "destroy." + R_CLASS, args, new AbstractProcedureInvoker.NoResult(args) {
         @Override
         protected void invokeImpl(final SessionContext sessionContext, final Object[] parameters) {
           final UniqueId identifier = (UniqueId) parameters[0];
