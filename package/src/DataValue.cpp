@@ -369,6 +369,9 @@ static SEXP _LinearToVector (int type, const com_opengamma_language_Value * cons
 static SEXP _LinearToSEXP (com_opengamma_language_Value * const *ppValue) {
 	int nCount;
 	int type = CDataUtil::TypeOf (ppValue, &nCount);
+	if (nCount == 0) {
+		return allocVector (INTSXP, 0);
+	}
 	int stype = CDataUtil::SingleType (type);
 	if ((stype == type) || (CDataUtil::CanCoerce (type, stype) && CDataUtil::Coerce (stype, ppValue))) {
 		// Have a pure (or coerced) typed linear result; convert to a typed-vector
