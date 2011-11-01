@@ -20,6 +20,9 @@
   Install.ValueRequirementNames ()
   Install.ViewClient ()
   Install.ViewComputationResultModel ()
+  Install.VolatilityCubeSnapshot ()
+  Install.VolatilitySurfaceSnapshot ()
+  Install.YieldCurveSnapshot ()
 }
 
 # Makes a call into the native code package
