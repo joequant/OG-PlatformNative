@@ -29,6 +29,6 @@ Install.VolatilitySurfaceSnapshot <- function () {
 }
 
 # Default conversion to data frame
-as.data.frame.VolatilitySurfaceSnapshot <- function (x) {
+as.data.frame.VolatilitySurfaceSnapshot <- function (x, row.names, optional, ...) {
   values.VolatilitySurfaceSnapshot (x)
 }

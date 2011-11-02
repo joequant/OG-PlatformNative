@@ -22,6 +22,6 @@ Install.YieldCurveSnapshot <- function () {
 }
 
 # Default conversion to data frame
-as.data.frame.YieldCurveSnapshot <- function (x) {
+as.data.frame.YieldCurveSnapshot <- function (x, row.names, optional, ...) {
   values.YieldCurveSnapshot (x)
 }
