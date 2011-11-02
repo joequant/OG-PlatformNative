@@ -70,10 +70,15 @@ public class LocalDateDoubleTimeSeriesConverter extends AbstractTypeConverter {
       int skip = 0;
       for (int i = 1; i < values.length; i++) {
         if (!ValueUtils.isNull(values[i])) {
-          iDate = iDate.plusDays(skip);
-          timeSeriesDates.add(iDate);
-          timeSeriesValues.add(ValueUtils.toDouble(values[i]));
-          skip = 1;
+          final Double v = ValueUtils.toDouble(values[i]);
+          if (!Double.isNaN(v)) {
+            iDate = iDate.plusDays(skip);
+            timeSeriesDates.add(iDate);
+            timeSeriesValues.add(v);
+            skip = 1;
+          } else {
+            skip++;
+          }
         } else {
           skip++;
         }

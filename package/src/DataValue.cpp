@@ -260,6 +260,19 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 				pData->_matrix[i][cols] = NULL;
 			}
 			pData->_matrix[rows] = NULL;
+		} else if (isTs (data)) {
+			LOGDEBUG (TEXT ("TimeSeries with ") << length (data) << TEXT (" samples"));
+			pData->_linear = new com_opengamma_language_Value*[length (data) + 2];
+			if (pData->_linear) {
+				int n;
+				pData->_linear[n] = CValue::FromSEXP (poR, poR->InteropConvert (data, "TimeSeriesStart"));
+				for (n = 0; n < length (data); n++) {
+					pData->_linear[n + 1] = CValue::FromSEXP (poR, data, n);
+				}
+				pData->_linear[n + 1] = NULL;
+			} else {
+				LOGFATAL (ERR_MEMORY);
+			}
 		} else if (isVector (data) || isList (data)) {
 			if (length (data) > 1) {
 				LOGDEBUG (TEXT ("Vector with ") << length (data) << TEXT (" elements"));
@@ -269,7 +282,7 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 					for (n = 0; n < length (data); n++) {
 						pData->_linear[n] = CValue::FromSEXP (poR, data, n);
 					}
-					pData->_linear[length (data)] = NULL;
+					pData->_linear[n] = NULL;
 				} else {
 					LOGFATAL (ERR_MEMORY);
 				}

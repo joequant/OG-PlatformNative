@@ -49,5 +49,8 @@ while (!is.null (result)) {
   result <- GetViewResult (viewClient, timeout, viewCycleId.ViewComputationResultModel (result))
 }
 
-presentValue.ts <- ts (data = presentValue)
+presentValue.ts <- ts (data = presentValue, start = as.Date (startTime))
 print (presentValue.ts)
+
+# Store this time series into the database (the name of the portfolio and portfolio identifier should be resolved programatically)
+# StoreTimeSeries (presentValue.ts, name = "Present Value on Swap Portfolio", identifier = "DbPrt~1303", dataField = ValueRequirementNames.Present.Value, dataSource = "OPENGAMMA", dataProvider = "OPENGAMMA", observationTime = "LONDON_CLOSE", master = "GLOBAL")
