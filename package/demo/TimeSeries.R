@@ -6,4 +6,8 @@
 
 # Loads a time-series from the database using a Bloomberg ticker
 
-ts <- FetchTimeSeries (dataField = "PX_LAST", identifier = "BLOOMBERG_TICKER~US0001M Index")
+# Fetch a timeseries
+ticker.ts <- FetchTimeSeries (dataField = "PX_LAST", identifier = "BLOOMBERG_TICKER~US0001M Index")
+
+# Convert the timeseries to an XTS object (requires XTS to already be loaded)
+ticker.xts <- as.xts.TimeSeries (ticker.ts)

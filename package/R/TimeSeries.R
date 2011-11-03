@@ -15,3 +15,19 @@ Interop.TimeSeries <- function (data) {
 Interop.TimeSeriesStart <- function (data) {
   toString (as.Date (start (data)[1], origin = "1970-01-01"))
 }
+
+# Converts the R time-series representation used by OpenGamma to an XTS form
+as.xts.TimeSeries <- function (data) {
+  if (existsFunction ("xts")) {
+    v <- as.double (data)
+    i <- index (data)
+    w <- !is.na (v)
+    xts (v[w], order.by = as.Date (i[w], origin = "1970-01-01"))
+  } else {
+    if (require ("xts")) {
+      as.xts.TimeSeries (data)
+    } else {
+      NA
+    }
+  }
+}
