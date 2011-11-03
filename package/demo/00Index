@@ -2,4 +2,5 @@ View	Select one or more views to run; this might be a wild-card search string li
 MarketDataSnapshot	Demonstrates manipulating a market data snapshot programmatically.
 Historical	Iterates a view over historical market data to produce timeseries for the portfolio. This demonstrates the functions used to perform the historical iteration; the choice of view and handling the data is arbitrary.
 Peturbed	Iterates a view over some historical market data that is peturbed slightly. This demonstrates injecting values into the engine.
+YieldCurve	Loads the time-series for yield curve data points to construct a 3D "curve over time" graph.
 TimeSeries	Loads a time-series from the database using a Bloomberg ticker

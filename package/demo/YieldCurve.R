@@ -1,0 +1,49 @@
+##
+ # Copyright (C) 2011 - present by OpenGamma Inc. and the OpenGamma group of companies
+ #
+ # Please see distribution for license.
+ ##
+
+# Loads the time-series for yield curve data points to construct a 3D "curve over time" graph.
+
+# Curve tickers
+tickers <- c ("US00O/N Index", "US0001W Index", "US0002W Index", "US0001M Index", "US0002M Index", "US0003M Index", "USSW2 Curncy", "USSW3 Curncy", "USSW4 Curncy", "USSW5 Curncy", "USSW6 Curncy", "USSW7 Curncy", "USSW8 Curncy", "USSW9 Curncy", "USSW10 Curncy", "USSW15 Curncy", "USSW20 Curncy", "USSW25 Curncy", "USSW30 Curncy")
+# TODO: should query the curve definitions in the system to get these tickers
+
+# Fetch timeseries
+timeseries <- lapply (tickers, function (x) { FetchTimeSeries (dataField = "PX_LAST", identifier = paste ("BLOOMBERG_TICKER", x, sep = "~")) })
+# TODO: should use the range truncated form to just get a couple of years of data
+
+# Extend start of shorter timeseries so curve starts in same place
+timeseries.start <- min (sapply (timeseries, function (x) { start (x)[1] }))
+timeseries <- lapply (timeseries, function (x) {
+  s <- start (x)[1]
+  if (s > timeseries.start) {
+    c (rep (NA, times = s - timeseries.start), as.double (x))
+  } else {
+    as.double (x)
+  }
+})
+timeseries.length <- max (sapply (timeseries, length))
+
+# HACK to truncate the timeseries to 365 pts (1 year)
+if (timeseries.length > 365) {
+  timeseries.start <- timeseries.start + (timeseries.length - 365)
+  timeseries.length <- 365
+}
+
+# Convert to a matrix - time is in rows, each column is a time-series
+timeseries <- sapply (timeseries, function (x) {
+  l <- length (x)
+  if (l < timeseries.length) {
+    c (x, rep (NA, times = timeseries.length - l))
+  } else {
+    # HACK to truncate the timeseries
+    tail (x, timeseries.length)
+  }
+})
+
+# Convert to XTS timeseries
+timeseries.dates <- as.Date (sapply (index (timeseries), function (x) { x + timeseries.start }), origin = "1970-01-01")
+timeseries <- xts (timeseries, order.by = timeseries.dates)
+colnames (timeseries) <- tickers

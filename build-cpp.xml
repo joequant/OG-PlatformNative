@@ -6,7 +6,7 @@
 	<import file="${og.language.dir}/build-cpp.xml" />
 
 	<target name="compile-after" depends="build-cpp.compile-after">
-		<copy todir="${build.dir}/${compile.type}">
+		<copy todir="${build.dir}/${compile.type}" failonerror="false">
 			<fileset dir="${lib.dir}/bin/${compile.type}">
 				<include name="ServiceRunner*" />
 			</fileset>
