@@ -41,12 +41,13 @@
     <copy todir="${build.dir}/ext" file="${basedir}/config/R.xml" />
   </target>
 
-  <target name="compile" depends="build-suffix.compile">
+  <target name="compile-package">
     <subant target="compile" buildpath="${basedir}/package">
       <property name="module.version" value="${module.version}" />
       <property name="wkspace.dir" value="${wkspace.dir}" />
     </subant>
   </target>
+  <target name="compile" depends="build-suffix.compile,compile-package" />
 
   <target name="dist" depends="compile,dist-impl,dist-binary" description="Creates a binary and source R package distribution" />
   
@@ -103,7 +104,7 @@
     </condition>
   </target>
 
-  <target name="test-dist" depends="clean-dist,tests,dist-impl,test-dist-none,test-dist-impl" description="Tests the R package distribution using 'R CMD check'" />
+  <target name="test-dist" depends="clean-dist,tests,compile-package,dist-impl,test-dist-none,test-dist-impl" description="Tests the R package distribution using 'R CMD check'" />
   <target name="test-dist-none" unless="r.env.ok">
     <echo>R or dependent libraries not installed - cannot test the distribution package</echo>
   </target>
