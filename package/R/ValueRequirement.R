@@ -20,7 +20,7 @@ properties.ValueRequirement <- function (requirement) {
   if (bracket < 0) {
     empty.ValueProperties
   } else {
-    parse.ValueProperties (substr (requirement, bracket + 1, length (requirement) - 1))
+    parse.ValueProperties (substr (requirement, bracket + 1, nchar (requirement) - 1))
   }
 }
 

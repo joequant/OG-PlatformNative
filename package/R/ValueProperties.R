@@ -72,7 +72,7 @@
 
 # Tests if one value property set can "satisfy" another
 satisfiedBy.ValueProperties <- function (a, b) {
-  # TODO: implement this properly
+  # [RSTAT-24] implement this
   TRUE
 }
 
@@ -84,8 +84,13 @@ infinite.ValueProperties <- "INFINITE"
 
 # Parse a string representation into a ValueProperties object
 parse.ValueProperties <- function (propertyString) {
-  # TODO
-  propertyString
+  # [RSTAT-23] this implementation is broken; implement properly
+  properties <- list ()
+  for (property in strsplit (propertyString, ",")[[1]]) {
+    property.a <- strsplit (property, "=")[[1]]
+    properties[property.a[1]] <- property.a[2]
+  }
+  properties
 }
 
 # Brings declarations for ValueProperties into scope

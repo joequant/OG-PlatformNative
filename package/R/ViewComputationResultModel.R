@@ -70,7 +70,8 @@
   })
   cmd <- c ("data.frame (identifier = computationTargetIdentifier, type = computationTargetType")
   cmd <- append (cmd, sapply (names (values), function (valueName) {
-    paste ("`", valueName, "` = values[[\"", gsub ("(\"|\\\\)", "\\\\\\1", valueName), "\"]]", sep = "")
+    escaped <- gsub ("(\"|\\\\)", "\\\\\\1", valueName)
+    paste ("`", escaped, "` = values[[\"", escaped, "\"]]", sep = "")
   }))
   cmd <- append (cmd, "row.names = \"identifier\", check.names=FALSE)")
   cmd <- paste (cmd, collapse = ", ")
@@ -125,6 +126,71 @@ firstValue.ViewComputationResultModel <- function (row, columns) {
     }
   } else {
     NA
+  }
+}
+
+# Extract a direct column list from a configuration result
+.column.ViewComputationResultModel <- function (data, col) {
+  values <- list ()
+  for (field in fields.FudgeMsg (data)) {
+    computationTargetIdentifier <- NULL
+    specificationProperties <- NULL
+    specificationName <- NULL
+    value <- NULL
+    for (x in fields.FudgeMsg (field$Value)) {
+      name <- x$Name
+      if (name == "specification") {
+        for (y in fields.FudgeMsg (x$Value)) {
+          name <- y$Name
+          if (name == "properties") {
+            specificationProperties <- .toString.ValueProperties (y$Value)
+          } else {
+            if (name == "valueName") {
+              specificationName <- y$Value
+            } else {
+              if (name == "computationTargetIdentifier") {
+                computationTargetIdentifier <- y$Value
+              }
+            }
+          }
+        }
+      } else {
+        if (name == "value") {
+          value <- x$Value
+        }
+      }
+    }
+    valueReq <- new.ValueRequirement (specificationName, specificationProperties)
+    if (valueReq == col) {
+      values[[computationTargetIdentifier]] <- value
+    }
+  }
+  values
+}
+
+# Extract a direct column list from a result
+column.ViewComputationResultModel <- function (data, config, col) {
+  results <- data@msg$results
+  configs <- results[1]
+  results <- results[2]
+  if (is.list (configs)) {
+    if (length (configs) > 0) {
+      result <- NA
+      for (index in seq (from = 1, to = length (configs))) {
+        if (configs[index] == config) {
+          result <- .column.ViewComputationResultModel (results[index], col)
+        }
+      }
+      result
+    } else {
+      NA
+    }
+  } else {
+    if (configs == config) {
+      .column.ViewComputationResultModel (results, col)
+    } else {
+      NA
+    }
   }
 }
 
