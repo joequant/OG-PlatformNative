@@ -28,10 +28,9 @@
     <unpack-zip org="com.opengamma" name="og-language" type="bin" />
   </target>
 
-  <target name="deploy-jars" depends="build-suffix.deploy-jars">
+  <target name="deploy-jars" depends="build-suffix.deploy-jars,build-suffix.make-config">
     <move file="${build.dir}/jar/com.opengamma-og-language-og-language-client.jar" tofile="${build.dir}/client.jar" />
     <copy todir="${build.dir}" file="${basedir}/config/logback.xml" failonerror="false" />
-    <copy todir="${build.dir}" file="${basedir}/config/OpenGamma.properties" />
     <mkdir dir="${build.dir}/ext" />
     <copy todir="${build.dir}/ext">
       <fileset dir="${og.language.dir}/config">
