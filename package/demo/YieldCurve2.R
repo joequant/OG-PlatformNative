@@ -20,7 +20,7 @@ view.client.descriptor <- HistoricalMarketDataViewClient (view.identifier, start
 view.client <- ViewClient (view.client.descriptor, FALSE)
 TriggerViewCycle (view.client)
 
-# Build the result into this - a list of lists, each sub-list contains X/Y/Date values for a curve
+# Build the result into this - a list of lists, each sub-list contains Curve/Date values for a curve
 curves <- list ()
 result <- GetViewResult (view.client, -1)
 while (!is.null (result)) {
@@ -42,17 +42,15 @@ while (!is.null (result)) {
           # The label is the identifier; e.g. CurrencyISO~GBP so lose the scheme
           curve.currency <- substring (curve.identifiers[j], 13)
           # The curve data is a FudgeMsg (com.opengamma.financial.model.interestrate.curve.YieldCurve)
-          curve.data <- curve.values[[j]]$curve
-          curve.data.x <- curve.data$`x data`
-          curve.data.y <- curve.data$`y data`
+          curve.object <- curve.values[[j]]$curve
           # Append this iteration's curve data into the list
           curve.label <- paste (curve.name, curve.currency, sep = "_")
           curve.data <- curves[[curve.label]]
           if (is.null (curve.data)) {
-            curve.data <- list (Date = c(), XY = list ())
+            curve.data <- list (Date = c(), Curve = list ())
           }
           curve.data$Date <- append (curve.data$Date, valuationTime.ViewComputationResultModel (result))
-          curve.data$XY[[length (curve.data$XY) + 1]] <- list (x = curve.data.x, y = curve.data.y)
+          curve.data$Curve[[length (curve.data$Curve) + 1]] <- curve.object
           curves[[curve.label]] <- curve.data
           print (paste ("Got curve", curve.name, "on", curve.currency))
         }
@@ -70,12 +68,12 @@ while (!is.null (result)) {
 # For each curve, prepare it for plotting by running the interpolator to get consistently positioned values
 curves <- lapply (curves, function (a) {
   # Get the earliest and latest point & generate a spread of 30 points between them
-  x.min <- min (sapply (a$XY, function (b) { min (b$x) }))
-  x.max <- max (sapply (a$XY, function (b) { max (b$x) }))
+  x.min <- min (sapply (a$Curve, function (b) { min (b$`x data`) }))
+  x.max <- max (sapply (a$Curve, function (b) { max (b$`x data`) }))
   x.points <- seq (from = x.min, to = x.max, length.out = 30)
-  # Apply an interpolator function to adjust the raw points for plotting and give a matrix where each
-  # row is a yield curve, and each column corresponds to the interpolated points
-  y.points <- matrix (sapply (a$XY, function (b) { spline (b, xout = x.points)$y }), nc = length (x.points), byrow = TRUE)
+  # Apply the curve's interpolator function to adjust the raw nodal points to get values suitable for plotting
+  # by creating a matrix where each row is a yield curve, and each column corresponds to the interpolated points
+  y.points <- matrix (sapply (a$Curve, function (b) { GetCurveYValues (b, x.points) }), nc = length (x.points), byrow = TRUE)
   # Create an XTS time series that can be plotted (note the multiply to give us bigger values to plot)
   curve.dates <- as.Date (a$Date)
   curve.xts <- xts (y.points * 100, order.by = as.Date (a$Date))
