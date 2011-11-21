@@ -14,6 +14,8 @@ name.ValueRequirement <- function (requirement) {
   }
 }
 
+name.ValueSpecification <- name.ValueRequirement
+
 # Extract the properties from a value requirement string
 properties.ValueRequirement <- function (requirement) {
   bracket <- regexpr ("{", requirement, fixed = TRUE)
@@ -24,6 +26,8 @@ properties.ValueRequirement <- function (requirement) {
   }
 }
 
+properties.ValueSpecification <- properties.ValueRequirement
+
 # Create a value requirement string from a value name and properties
 new.ValueRequirement <- function (name, properties) {
   propertyString <- toString (properties)
@@ -33,3 +37,5 @@ new.ValueRequirement <- function (name, properties) {
     paste (name, "{", propertyString, "}", sep = "")
   }
 }
+
+new.ValueSpecification <- new.ValueRequirement
