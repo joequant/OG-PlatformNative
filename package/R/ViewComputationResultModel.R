@@ -197,6 +197,9 @@ column.ViewComputationResultModel <- function (data, config, col) {
 # Converts the live data Fudge message payload to a data.frame object
 .liveData.ViewComputationResultModel <- function (msg) {
   liveData <- msg[1]
+  if (!is.list (liveData)) {
+    liveData <- list (liveData)
+  }
   specification <- sapply (liveData, function (x) { x$specification })
   value <- sapply (liveData, function (x) { x$value})
   valueName <- sapply (specification, function (x) { x$valueName })

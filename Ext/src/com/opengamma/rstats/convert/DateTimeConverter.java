@@ -10,8 +10,13 @@ import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 
 import java.util.Map;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
+import javax.time.InstantProvider;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZonedDateTime;
 
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
@@ -30,6 +35,7 @@ import com.opengamma.language.invoke.AbstractTypeConverter;
  * The following are represented as doubles (seconds since 1970-01-01 epoch):
  * <ul>
  *  <li>Instant
+ *  <li>ZonedDateTime
  * </ul>
  */
 public class DateTimeConverter extends AbstractTypeConverter {
@@ -40,9 +46,11 @@ public class DateTimeConverter extends AbstractTypeConverter {
   private static final JavaTypeInfo<Instant> INSTANT_ALLOW_NULL = JavaTypeInfo.builder(Instant.class).allowNull().get();
   private static final JavaTypeInfo<LocalDate> LOCAL_DATE = JavaTypeInfo.builder(LocalDate.class).get();
   private static final JavaTypeInfo<LocalDate> LOCAL_DATE_ALLOW_NULL = JavaTypeInfo.builder(LocalDate.class).allowNull().get();
+  private static final JavaTypeInfo<ZonedDateTime> ZONED_DATE_TIME = JavaTypeInfo.builder(ZonedDateTime.class).get();
+  private static final JavaTypeInfo<ZonedDateTime> ZONED_DATE_TIME_ALLOW_NULL = JavaTypeInfo.builder(ZonedDateTime.class).allowNull().get();
 
-  private static final TypeMap TO_VALUE = TypeMap.of(ZERO_LOSS, INSTANT, LOCAL_DATE);
-  private static final TypeMap TO_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, INSTANT_ALLOW_NULL, LOCAL_DATE_ALLOW_NULL);
+  private static final TypeMap TO_VALUE = TypeMap.of(ZERO_LOSS, INSTANT, LOCAL_DATE).with(MINOR_LOSS, ZONED_DATE_TIME);
+  private static final TypeMap TO_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, INSTANT_ALLOW_NULL, LOCAL_DATE_ALLOW_NULL).with(MINOR_LOSS, ZONED_DATE_TIME_ALLOW_NULL);
   private static final TypeMap FROM_VALUE = TypeMap.of(MINOR_LOSS, VALUE);
   private static final TypeMap FROM_VALUE_ALLOW_NULL = TypeMap.of(MINOR_LOSS, VALUE_ALLOW_NULL);
 
@@ -71,15 +79,19 @@ public class DateTimeConverter extends AbstractTypeConverter {
     if (clazz == Value.class) {
       if (value instanceof LocalDate) {
         conversionContext.setResult(ValueUtils.of(((LocalDate) value).toString()));
-      } else if (value instanceof Instant) {
-        conversionContext.setResult(ValueUtils.of((double) ((Instant) value).getEpochSeconds()));
+      } else if (value instanceof InstantProvider) {
+        conversionContext.setResult(ValueUtils.of((double) ((InstantProvider) value).toInstant().getEpochSeconds()));
       } else {
         conversionContext.setFail();
       }
     } else if (clazz == LocalDate.class) {
       final String str = ((Value) value).getStringValue();
       if (str != null) {
-        conversionContext.setResult(LocalDate.parse(str));
+        try {
+          conversionContext.setResult(LocalDate.parse(str));
+        } catch (CalendricalException e) {
+          conversionContext.setFail();
+        }
       } else {
         conversionContext.setFail();
       }
@@ -89,6 +101,31 @@ public class DateTimeConverter extends AbstractTypeConverter {
         conversionContext.setResult(Instant.ofEpochSeconds(epochSeconds.longValue()));
       } else {
         conversionContext.setFail();
+      }
+    } else if (clazz == ZonedDateTime.class) {
+      final Value v = (Value) value;
+      final Double epochSeconds = v.getDoubleValue();
+      if (epochSeconds != null) {
+        conversionContext.setResult(ZonedDateTime.ofEpochSeconds(epochSeconds.longValue(), TimeZone.UTC));
+      } else {
+        final String dateTime = v.getStringValue();
+        if (dateTime != null) {
+          try {
+            conversionContext.setResult(ZonedDateTime.parse(dateTime));
+            return;
+          } catch (CalendricalException e) {
+            // Ignore
+          }
+          try {
+            conversionContext.setResult(ZonedDateTime.of(LocalDate.parse(dateTime), LocalTime.MIDDAY, TimeZone.UTC));
+            return;
+          } catch (CalendricalException e) {
+            // Ignore
+          }
+          conversionContext.setFail();
+        } else {
+          conversionContext.setFail();
+        }
       }
     } else {
       conversionContext.setFail();

@@ -47,6 +47,14 @@
     </property>
   </bean>
   
+  <!-- R functions -->
+  <bean class="com.opengamma.language.function.Loader">
+    <property name="globalContextFactory" ref="RGlobalContextFactory" />
+    <property name="definitionFilter">
+      <bean class="com.opengamma.rstats.function.RFunctionDefinitionFilter" />
+    </property>
+  </bean>
+  
   <!-- R procedures -->
   <bean class="com.opengamma.language.procedure.Loader">
     <property name="globalContextFactory" ref="RGlobalContextFactory" />
