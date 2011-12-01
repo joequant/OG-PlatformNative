@@ -5,6 +5,7 @@
  */
 package com.opengamma.rstats.convert;
 
+import static com.opengamma.language.convert.TypeMap.MAJOR_LOSS;
 import static com.opengamma.language.convert.TypeMap.MINOR_LOSS;
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 
@@ -24,6 +25,7 @@ import com.opengamma.language.convert.TypeMap;
 import com.opengamma.language.convert.ValueConversionContext;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.invoke.AbstractTypeConverter;
+import com.opengamma.util.time.Expiry;
 
 /**
  * Converts dates and times to an R representation.
@@ -34,9 +36,12 @@ import com.opengamma.language.invoke.AbstractTypeConverter;
  * </ul>
  * The following are represented as doubles (seconds since 1970-01-01 epoch):
  * <ul>
+ *  <li>Expiry*
  *  <li>Instant
- *  <li>ZonedDateTime
+ *  <li>ZonedDateTime*
  * </ul>
+ * * although sent to R as a double, they can also be received as strings
+ * 
  */
 public class DateTimeConverter extends AbstractTypeConverter {
 
@@ -48,9 +53,11 @@ public class DateTimeConverter extends AbstractTypeConverter {
   private static final JavaTypeInfo<LocalDate> LOCAL_DATE_ALLOW_NULL = JavaTypeInfo.builder(LocalDate.class).allowNull().get();
   private static final JavaTypeInfo<ZonedDateTime> ZONED_DATE_TIME = JavaTypeInfo.builder(ZonedDateTime.class).get();
   private static final JavaTypeInfo<ZonedDateTime> ZONED_DATE_TIME_ALLOW_NULL = JavaTypeInfo.builder(ZonedDateTime.class).allowNull().get();
+  private static final JavaTypeInfo<Expiry> EXPIRY = JavaTypeInfo.builder(Expiry.class).get();
+  private static final JavaTypeInfo<Expiry> EXPIRY_ALLOW_NULL = JavaTypeInfo.builder(Expiry.class).allowNull().get();
 
-  private static final TypeMap TO_VALUE = TypeMap.of(ZERO_LOSS, INSTANT, LOCAL_DATE).with(MINOR_LOSS, ZONED_DATE_TIME);
-  private static final TypeMap TO_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, INSTANT_ALLOW_NULL, LOCAL_DATE_ALLOW_NULL).with(MINOR_LOSS, ZONED_DATE_TIME_ALLOW_NULL);
+  private static final TypeMap TO_VALUE = TypeMap.of(ZERO_LOSS, INSTANT, LOCAL_DATE).with(MINOR_LOSS, ZONED_DATE_TIME).with(MAJOR_LOSS, EXPIRY);
+  private static final TypeMap TO_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, INSTANT_ALLOW_NULL, LOCAL_DATE_ALLOW_NULL).with(MINOR_LOSS, ZONED_DATE_TIME_ALLOW_NULL).with(MAJOR_LOSS, EXPIRY_ALLOW_NULL);
   private static final TypeMap FROM_VALUE = TypeMap.of(MINOR_LOSS, VALUE);
   private static final TypeMap FROM_VALUE_ALLOW_NULL = TypeMap.of(MINOR_LOSS, VALUE_ALLOW_NULL);
 
@@ -103,33 +110,44 @@ public class DateTimeConverter extends AbstractTypeConverter {
         conversionContext.setFail();
       }
     } else if (clazz == ZonedDateTime.class) {
-      final Value v = (Value) value;
-      final Double epochSeconds = v.getDoubleValue();
-      if (epochSeconds != null) {
-        conversionContext.setResult(ZonedDateTime.ofEpochSeconds(epochSeconds.longValue(), TimeZone.UTC));
+      final ZonedDateTime zdt = valueToZonedDateTime((Value) value);
+      if (zdt != null) {
+        conversionContext.setResult(zdt);
       } else {
-        final String dateTime = v.getStringValue();
-        if (dateTime != null) {
-          try {
-            conversionContext.setResult(ZonedDateTime.parse(dateTime));
-            return;
-          } catch (CalendricalException e) {
-            // Ignore
-          }
-          try {
-            conversionContext.setResult(ZonedDateTime.of(LocalDate.parse(dateTime), LocalTime.MIDDAY, TimeZone.UTC));
-            return;
-          } catch (CalendricalException e) {
-            // Ignore
-          }
-          conversionContext.setFail();
-        } else {
-          conversionContext.setFail();
-        }
+        conversionContext.setFail();
+      }
+    } else if (clazz == Expiry.class) {
+      final ZonedDateTime zdt = valueToZonedDateTime((Value) value);
+      if (zdt != null) {
+        conversionContext.setResult(new Expiry(zdt));
+      } else {
+        conversionContext.setFail();
       }
     } else {
       conversionContext.setFail();
     }
+  }
+
+  private static ZonedDateTime valueToZonedDateTime(final Value v) {
+    final Double epochSeconds = v.getDoubleValue();
+    if (epochSeconds != null) {
+      return ZonedDateTime.ofEpochSeconds(epochSeconds.longValue(), TimeZone.UTC);
+    } else {
+      final String dateTime = v.getStringValue();
+      if (dateTime != null) {
+        try {
+          return ZonedDateTime.parse(dateTime);
+        } catch (CalendricalException e) {
+          // Ignore
+        }
+        try {
+          return ZonedDateTime.of(LocalDate.parse(dateTime), LocalTime.MIDDAY, TimeZone.UTC);
+        } catch (CalendricalException e) {
+          // Ignore
+        }
+      }
+    }
+    return null;
   }
 
   @Override
