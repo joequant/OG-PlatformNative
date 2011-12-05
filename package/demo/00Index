@@ -1,9 +1,10 @@
-Curves	Demonstrates specifying curve names at the position level.
-YieldCurve2	Iterates a view over historical data, extracting the fitted curve from each cycle to produce a dataset for a 3D "fitted curve over time" chart. This uses the code within the main OpenGamma engine and analytics library compared to YieldCurve.R which simply fetches the raw time-series used to construct the curve.
 Analytics	Demonstrates the full use of the system for performing calculations by creating a security, a suitable view, a market data snapshot from the view, and then executing the view with peturbations on the market data snapshot.
-View	Select one or more views to run; this might be a wild-card search string like "*" to run all views (not currently supported in OG-Language)
-MarketDataSnapshot	Demonstrates manipulating a market data snapshot programmatically.
+Analytics2	Demonstrates the full use of the system for performing calculations by creating a security, a suitable view, a market data snapshot from the view, and then executing the view with peturbations on the security.
+Curves	Demonstrates specifying curve names at the position level.
 Historical	Iterates a view over historical market data to produce timeseries for the portfolio. This demonstrates the functions used to perform the historical iteration; the choice of view and handling the data is arbitrary.
+MarketDataSnapshot	Demonstrates manipulating a market data snapshot programmatically.
 Peturbed	Iterates a view over some historical market data that is peturbed slightly. This demonstrates injecting values into the engine.
-YieldCurve	Loads the time-series for yield curve data points to construct a 3D "curve over time" graph.
 TimeSeries	Loads a time-series from the database using a Bloomberg ticker
+View	Select one or more views to run; this might be a wild-card search string like "*" to run all views (not currently supported in OG-Language)
+YieldCurve	Loads the time-series for yield curve data points to construct a 3D "curve over time" graph.
+YieldCurve2	Iterates a view over historical data, extracting the fitted curve from each cycle to produce a dataset for a 3D "fitted curve over time" chart. This uses the code within the main OpenGamma engine and analytics library compared to YieldCurve.R which simply fetches the raw time-series used to construct the curve.

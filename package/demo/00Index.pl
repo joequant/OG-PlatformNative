@@ -8,7 +8,12 @@
 # Reads the demo scripts and creates an 00Index file automatically.
 
 opendir (DIR, ".") || die $!;
+my @files = ();
 while (my $file = readdir (DIR)) {
+  push (@files, $file);
+}
+closedir (DIR);
+foreach my $file (sort (@files)) {
   next if ($file !~ /^(.*)\.R$/);
   my $buffer = $1;
   open (FILE, $file) || die $!;
@@ -35,4 +40,3 @@ while (my $file = readdir (DIR)) {
   close (FILE);
   print "$buffer\n";
 }
-closedir (DIR);
