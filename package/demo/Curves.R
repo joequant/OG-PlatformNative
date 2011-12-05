@@ -8,23 +8,36 @@
 
 # Create the security
 print ("Creating security")
-security <- FXOptionSecurity (
-  name = "FX vanilla option, put EUR 1.5M, receive USD 1M, maturity 1/6/2014",
-  putCurrency = "EUR",
-  putAmount = 1500000,
-  callCurrency = "USD",
-  callAmount = 1000000,
-  expiry = "2014-01-06",
-  settlementDate = "2014-01-06",
-  long = TRUE,
-  exerciseType = AmericanExerciseType ())
+security <- SwapSecurity (
+  name = "IR Swap USD 40,326,000 2021-08-08 - USD LIBOR 3m / 2.709%",
+  tradeDate = "2011-08-08",
+  effectiveDate = "2011-08-08",
+  maturityDate = "2021-08-08",
+  counterparty = "CParty",
+  payLeg = FloatingInterestRateLeg (
+    dayCount = "Actual/360",
+    frequency = "Quarterly",
+    regionId = "FINANCIAL_REGION~US+GB",
+    businessDayConvention = "Modified Following",
+    notional = InterestRateNotional ("USD", 40326000),
+    eom = FALSE,
+    floatingReferenceRateId = "BLOOMBERG_TICKER~US0003M Index",
+    floatingRateType = "IBOR"),
+  receiveLeg = FixedInterestRateLeg (
+    dayCount = "30U/360",
+    frequency = "Semi-annual",
+    regionId = "FINANCIAL_REGION~US+GB",
+    businessDayConvention = "Modified Following",
+    notional = InterestRateNotional ("USD", 40326000),
+    eom = FALSE,
+    rate = 0.027))
 security.id <- StoreSecurity (security)
 
 # Create a portfolio containing two positions in this security
 print ("Creating portfolio")
-position.default <- PortfolioPosition (security.id, 1)
-position.override <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "FUNDING")
-node <- PortfolioNode (name = "Example", positions = list (position.default, position.override))
+position.forward <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "FORWARD_3M")
+position.funding <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "FUNDING")
+node <- PortfolioNode (name = "Example", positions = list (position.forward, position.funding))
 portfolio <- Portfolio ("Example Portfolio", node)
 portfolio.id <- StorePortfolio (portfolio)
 
@@ -42,4 +55,4 @@ TriggerViewCycle (view.client)
 view.result <- GetViewResult (view.client, -1)
 
 # Format a data frame with the results
-view.result.frame <- results.ViewComputationResultModel (view.result.raw)$Default
+view.result.frame <- results.ViewComputationResultModel (view.result)$Default
