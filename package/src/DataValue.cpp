@@ -265,7 +265,7 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 			pData->_linear = new com_opengamma_language_Value*[length (data) + 2];
 			if (pData->_linear) {
 				int n;
-				pData->_linear[n] = CValue::FromSEXP (poR, poR->InteropConvert (data, "TimeSeriesStart"));
+				pData->_linear[n] = CValue::FromSEXP (poR, poR->InteropConvert (data, TEXT ("TimeSeriesStart")));
 				for (n = 0; n < length (data); n++) {
 					pData->_linear[n + 1] = CValue::FromSEXP (poR, data, n);
 				}
