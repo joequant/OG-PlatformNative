@@ -58,3 +58,9 @@ for (volatilitySurfaceToModify in GetSnapshotVolatilitySurface (snapshot2)) {
 newIdentifier <- StoreSnapshot (snapshot2)
 
 print (paste ("Modified snapshot written as", newIdentifier))
+
+# Set a single point on a named surface
+surfaceName <- "CurrencyISO~USD_DEFAULT_IR_FUTURE_OPTION"
+surface <- GetSnapshotVolatilitySurface (snapshot, surfaceName)
+surface <- SetVolatilitySurfacePoint (surface, "10", "98.75", 1000)
+snapshot2 <- SetSnapshotVolatilitySurface (snapshot, surfaceName, surface)
