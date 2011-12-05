@@ -17,6 +17,7 @@ for (i in seq (from = 1, to = length (views[,1]))) {
   print (paste ("Waiting for result from", viewName))
   viewResultModel <- GetViewResult (viewClient, 30000)
   if (is.ViewComputationResultModel (viewResultModel)) {
+    print (paste ("Calculation took", calculationDuration.ViewComputationResultModel (viewResultModel), "seconds"))
     viewResult <- results.ViewComputationResultModel (viewResultModel)
     lapply (names (viewResult), function (calcConfig) {
       result <- viewResult[[calcConfig]]

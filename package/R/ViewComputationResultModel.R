@@ -4,6 +4,11 @@
  # Please see distribution for license.
  ##
 
+# Converts the duration sub-message to a real (number of seconds)
+.calculationDuration.ViewComputationResultModel <- function (msg) {
+  msg$seconds + msg$nanos / 1000000000
+}
+
 # Converts the results from a configuration into a data.frame object
 .configurationResults.ViewComputationResultModel <- function (msg) {
   computationTargetType <- c ()
@@ -214,7 +219,7 @@ Install.ViewComputationResultModel <- function () {
   .field.ViewComputationResultModel ("viewCycleId")
   .field.ViewComputationResultModel ("valuationTime")
   .field.ViewComputationResultModel ("calculationTime")
-  .field.ViewComputationResultModel ("calculationDuration")
+  .field.ViewComputationResultModel ("calculationDuration", ".calculationDuration.ViewComputationResultModel")
   .field.ViewComputationResultModel ("versionCorrection")
   .field.ViewComputationResultModel ("results", ".results.ViewComputationResultModel")
   .field.ViewComputationResultModel ("liveData", ".liveData.ViewComputationResultModel")
