@@ -11,6 +11,11 @@
 				<include name="ServiceRunner*" />
 			</fileset>
 		</copy>
+    <copy todir="${build.dir}/${compile.type}" failonerror="false">
+      <fileset dir="${lib.dir}/dll/${compile.type}">
+        <include name="*.dll" />
+      </fileset>
+    </copy>
 		<chmod perm="+x" dir="${build.dir}/${compile.type}" includes="ServiceRunner" />
 	</target>
 

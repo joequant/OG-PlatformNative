@@ -22,9 +22,17 @@ endif
 APR_RUNTIME=apr.dll
 APR_UTIL_RUNTIME=aprutil.dll
 ifeq "$(CONFIGURATION)" "Release"
+ifeq "$(WIN)" "64"
+FUDGE_RUNTIME=libfudgecX64.dll
+else
 FUDGE_RUNTIME=libfudgec.dll
+endif
+else
+ifeq "$(WIN)" "64"
+FUDGE_RUNTIME=libfudgecX64d.dll
 else
 FUDGE_RUNTIME=libfudgecd.dll
+endif
 endif
 LOG4CXX_RUNTIME=log4cxx.dll
 
