@@ -131,23 +131,15 @@
     <delete includeemptydirs="true" failonerror="false" dir="${basedir}/${package.name}.Rcheck" />
   </target>
 
-  <target name="windows-installer" depends="dist,windows-installer-check,windows-installer-none,windows-installer-impl" description="Builds the windows installation packages" />
-  <target name="windows-installer-check">
-    <exec executable="AdvancedInstaller.com" outputproperty="ai.present" failifexecutionfails="false">
-      <arg value="/?" />
-    </exec>
-  </target>
+  <target name="windows-installer" description="Builds the windows installation packages (requires a dist-binary and Advanced Installer)" />
   <target name="windows-installer-impl" if="ai.present">
     <exec executable="AdvancedInstaller.com" failifexecutionfails="true">
-      <arg line="/edit Installer\setup.aip /SetVersion ${module.version}" />
+      <arg line="/edit Installer\setup.aip /SetVersion ${module.version}.${build.number}" />
     </exec>
     <copy file="${dist.dir}/${package.name}_${module.version}.zip" tofile="${dist.dir}/${package.name}.zip" />
     <exec executable="AdvancedInstaller.com" failifexecutionfails="true">
       <arg line="/build Installer\setup.aip" />
     </exec>
-  </target>
-  <target name="windows-installer-none" unless="ai.present">
-    <echo>Advanced Installer not installed - cannot build installation package</echo>
   </target>
 
 </project>
