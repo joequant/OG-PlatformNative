@@ -17,6 +17,9 @@
       </fileset>
     </copy>
 		<chmod perm="+x" dir="${build.dir}/${compile.type}" includes="ServiceRunner" />
+    <delete file="${build.dir}/.FudgeBuilderFor" failonerror="false" />
+    <delete file="${build.dir}/.FudgeSecondaryType" failonerror="false" />
+    <delete file="${build.dir}/.GenericFudgeBuilderFor" failonerror="false" />
 	</target>
 
 	<target name="dist">
