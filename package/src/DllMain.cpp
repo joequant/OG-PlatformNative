@@ -18,22 +18,33 @@
 #include "Errors.h"
 
 /// Try and suppress the error message written to stderr to avoid R CMD check from failing.
-class CSuppressLoggingWarning {
-public:
-	/// Sets the quiet mode to TRUE.
-	CSuppressLoggingWarning () {
-		::log4cxx::helpers::LogLog::setQuietMode (true);
-	}
-};
-
-/// Try and spress the error message written to stderr to avoid R CMD check from failing.
 static CSuppressLoggingWarning g_oSetQuietMode;
 
 LOGGING (com.opengamma.rstats.package.DllMain);
 
 extern "C" {
+
 	void LibExport R_init_OpenGamma (DllInfo *pInfo);
 	void LibExport R_unload_OpenGamma (DllInfo *pInfo);
+
+	/// Tests if the library is "happy" or not. I.e. did the call to R_init_OpenGamma do
+	/// as it should have done.
+	SEXP RPROC DllMain_check0 () {
+		SEXP result = allocVector (LGLSXP, 1);
+		if (result != R_NilValue) {
+			if (g_poFunctions && g_poLiveData && g_poProcedures) {
+				LOGINFO (TEXT ("Library initialised ok"));
+				INTEGER (result)[0] = 1;
+			} else {
+				LOGWARN (TEXT ("Library failed to initialise"));
+				INTEGER (result)[0] = 0;
+			}
+		} else {
+			LOGFATAL (ERR_R_FUNCTION);
+		}
+		return result;
+	}
+
 }
 
 #define F(name, args) { #name, (DL_FUNC)&name##args, args }
@@ -42,6 +53,7 @@ extern "C" {
 /// and force a small amount of validation rather than stack explosions if the number of arguments
 /// changes in the future.
 static R_CallMethodDef g_aMethods[] = {
+	F (DllMain_check, 0),
 	F (ExternalRef_create, 2),
 	F (ExternalRef_fetch, 1),
 	F (FudgeMsg_getAllFields, 1),
@@ -69,21 +81,21 @@ void LibExport R_init_OpenGamma (DllInfo *pInfo) {
 	g_poFunctions = NULL;
 	g_poLiveData = NULL;
 	g_poProcedures = NULL;
-	if (!Initialise ()) {
+	if (Initialise ()) {
+		const CConnector *poConnector = ConnectorInstance ();
+		if (poConnector) {
+			CRepositories repositories (poConnector);
+			g_poFunctions = repositories.GetFunctions ();
+			g_poLiveData = repositories.GetLiveData ();
+			g_poProcedures = repositories.GetProcedures ();
+			CConnector::Release (poConnector);
+		} else {
+			LOGERROR (ERR_INITIALISATION);
+		}
+	} else {
 		LOGWARN (TEXT ("Couldn't initialise DLL, error ") << GetLastError ());
 		LOGERROR (ERR_INITIALISATION);
-		return;
 	}
-	const CConnector *poConnector = ConnectorInstance ();
-	if (!poConnector) {
-		LOGERROR (ERR_INITIALISATION);
-		return;
-	}
-	CRepositories repositories (poConnector);
-	g_poFunctions = repositories.GetFunctions ();
-	g_poLiveData = repositories.GetLiveData ();
-	g_poProcedures = repositories.GetProcedures ();
-	CConnector::Release (poConnector);
 	R_registerRoutines (pInfo, NULL, g_aMethods, NULL, NULL);
 }
 

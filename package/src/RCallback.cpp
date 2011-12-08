@@ -86,7 +86,7 @@ private:
 	static void *Copy (const void *pData, size_t cbData) {
 		void *p = new BYTE[cbData];
 		if (!p) {
-			LOGFATAL (TEXT ("Out of memory"));
+			LOGFATAL (ERR_MEMORY);
 			return NULL;
 		} else {
 			memcpy (p, pData, cbData);

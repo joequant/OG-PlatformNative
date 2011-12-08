@@ -7,22 +7,26 @@
 # Loads the OpenGamma native code package and brings the functions defined in the Java stack into scope
 .onLoad <- function (libname, pkgname) {
   library.dynam ("OpenGamma", pkgname)
-  LOGINFO ("Installing core objects")
-  Install.ErrorValue ()
-  Install.FudgeMsg ()
-  Install.Functions ()
-  Install.LiveData ()
-  Install.Procedures ()
-  LOGINFO ("Installing local data bindings")
-  Install.MarketDataRequirementNames ()
-  Install.MarketDataSnapshot ()
-  Install.ValueProperties ()
-  Install.ValueRequirementNames ()
-  Install.ViewClient ()
-  Install.ViewComputationResultModel ()
-  Install.VolatilityCubeSnapshot ()
-  Install.VolatilitySurfaceSnapshot ()
-  Install.YieldCurveSnapshot ()
+  if (OpenGammaCall ("DllMain_check")) {
+    LOGINFO ("Installing core objects")
+    Install.ErrorValue ()
+    Install.FudgeMsg ()
+    Install.Functions ()
+    Install.LiveData ()
+    Install.Procedures ()
+    LOGINFO ("Installing local data bindings")
+    Install.MarketDataRequirementNames ()
+    Install.MarketDataSnapshot ()
+    Install.ValueProperties ()
+    Install.ValueRequirementNames ()
+    Install.ViewClient ()
+    Install.ViewComputationResultModel ()
+    Install.VolatilityCubeSnapshot ()
+    Install.VolatilitySurfaceSnapshot ()
+    Install.YieldCurveSnapshot ()
+  } else {
+    LOGFATAL ("Could not initialise the OpenGamma R plugin. Is the service running? Is the back-end OpenGamma server available?")
+  }
 }
 
 # Makes a call into the native code package

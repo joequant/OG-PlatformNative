@@ -206,15 +206,33 @@ SEXP CValue::ToSEXP (const com_opengamma_language_Value *pValue) {
 	} else if (pValue->_boolValue) {
 		LOGDEBUG (TEXT ("BOOL value"));
 		result = allocVector (LGLSXP, 1);
-		ToSEXP (DATATYPE_BOOLEAN, result, 0, pValue);
+		if (result != R_NilValue) {
+			PROTECT (result);
+			ToSEXP (DATATYPE_BOOLEAN, result, 0, pValue);
+			UNPROTECT (1);
+		} else {
+			LOGFATAL (ERR_R_FUNCTION);
+		}
 	} else if (pValue->_doubleValue) {
 		LOGDEBUG (TEXT ("DOUBLE value"));
 		result = allocVector (REALSXP, 1);
-		ToSEXP (DATATYPE_DOUBLE, result, 0, pValue);
+		if (result != R_NilValue) {
+			PROTECT (result);
+			ToSEXP (DATATYPE_DOUBLE, result, 0, pValue);
+			UNPROTECT (1);
+		} else {
+			LOGFATAL (ERR_R_FUNCTION);
+		}
 	} else if (pValue->_intValue) {
 		LOGDEBUG (TEXT ("INTEGER value"));
 		result = allocVector (INTSXP, 1);
-		ToSEXP (DATATYPE_INTEGER, result, 0, pValue);
+		if (result != R_NilValue) {
+			PROTECT (result);
+			ToSEXP (DATATYPE_INTEGER, result, 0, pValue);
+			UNPROTECT (1);
+		} else {
+			LOGFATAL (ERR_R_FUNCTION);
+		}
 	} else if (pValue->_messageValue) {
 		LOGDEBUG (TEXT ("MESSAGE value"));
 		result = RFudgeMsg::FromFudgeMsg (pValue->_messageValue);
