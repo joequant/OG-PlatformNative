@@ -131,7 +131,7 @@
     <delete includeemptydirs="true" failonerror="false" dir="${basedir}/${package.name}.Rcheck" />
   </target>
 
-  <target name="windows-installer" description="Builds the windows installation packages (requires a dist-binary and Advanced Installer)">
+  <target name="windows-installer" depends="set-version" description="Builds the windows installation packages (requires a dist-binary and Advanced Installer)">
     <exec executable="AdvancedInstaller.com" failifexecutionfails="true">
       <arg line="/edit Installer\setup.aip /SetVersion ${module.version}.${build.number}" />
     </exec>
