@@ -58,6 +58,7 @@ PKG_LIBS=/LIBPATH:$(OG_LANGUAGE_LIB_DIR) $(LANGUAGE_LIBS) $(REPOSITORY_LIBS) $(W
 OBJECTS=Package.res \
 	Client_DataUtil.obj \
 	Client_Entities.obj \
+	Client_FudgeMsgMap.obj \
 	Client_Functions.obj \
 	Client_Initialise.obj \
 	Client_LiveData.obj \
