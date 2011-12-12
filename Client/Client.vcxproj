@@ -88,6 +88,7 @@
     <ClInclude Include="DataUtil.h" />
     <ClInclude Include="DllVersionInfo.h" />
     <ClInclude Include="Entities.h" />
+    <ClInclude Include="FudgeMsgMap.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="Initialise.h" />
     <ClInclude Include="LiveData.h" />
@@ -103,6 +104,7 @@
     <ClCompile Include="com_opengamma_rstats_msg_ProcedureResult.c"><CompileAs>CompileAsCpp</CompileAs></ClCompile>
     <ClCompile Include="DataUtil.cpp" />
     <ClCompile Include="Entities.cpp" />
+    <ClCompile Include="FudgeMsgMap.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="Initialise.cpp" />
     <ClCompile Include="LiveData.cpp" />

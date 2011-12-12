@@ -27,6 +27,11 @@
 #include <Connector/Connector.h>
 #include <Util/Logging.h>
 #include <Util/String.h>
+#ifdef _WIN32
+#include <hash_map>
+#else /* ifdef _WIN32 */
+#include <apr-1/apr_hash.h>
+#endif /* ifdef _WIN32 */
 #endif /* ifdef __cplusplus */
 
 #ifndef Client

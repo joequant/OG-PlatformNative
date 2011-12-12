@@ -99,6 +99,7 @@
   <ItemGroup>
     <ClCompile Include="DataUtilTest.cpp" />
     <ClCompile Include="FunctionsTest.cpp" />
+    <ClCompile Include="FudgeMsgMapTest.cpp" />
     <ClCompile Include="InitialiseTest.cpp" />
     <ClCompile Include="RepositoriesTest.cpp" />
     <ClCompile Include="stdafx.cpp">

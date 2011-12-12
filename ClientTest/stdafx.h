@@ -23,6 +23,7 @@
 #include <assert.h>
 
 #include <Util/AbstractTest.h>
+#include <Util/Fudge.h>
 
 #define Client(path) #path
 
