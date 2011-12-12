@@ -8,6 +8,13 @@
 
 // Test the objects and functions in Client/FudgeMsgMap.cpp
 
+#ifdef _WIN32
+#ifdef _UNICODE
+#define GetMessage	GetMessageW
+#else /* ifdef _UNICODE */
+#define GetMessage	GetMessageA
+#endif /* ifdef _UNICODE */
+#endif /* ifdef _WIN32 */
 #include "Client/FudgeMsgMap.h"
 
 LOGGING (com.opengamma.rstats.client.FudgeMsgMapTest);
