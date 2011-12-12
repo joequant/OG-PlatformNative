@@ -8,6 +8,7 @@
 #include "FudgeMsg.h"
 #include "Errors.h"
 #include "RCallback.h"
+#include Client("FudgeMsgMap.h")
 
 LOGGING (com.opengamma.rstats.package.FudgeMsg);
 
@@ -18,6 +19,12 @@ LOGGING (com.opengamma.rstats.package.FudgeMsg);
 #define R_FUDGEFIELD_ORDINAL	"Ordinal"
 #define R_FUDGEFIELD_NAME		"Name"
 #define R_FUDGEINDICATOR		"indicator"
+
+/// Flag to indicate whether the Fudge message objects sent to R should support
+/// serialisation (i.e. allow a workspace to be persisted). This is the default
+/// but is slower. If saving a workspace isn't needed, you can run faster with
+/// serialisation mode off.
+static bool g_bSerialise = true;
 
 static SEXP _CreateByteArray (const fudge_byte *bytes, int elements) {
 	SEXP vector = allocVector (INTSXP, elements);
@@ -79,33 +86,55 @@ static SEXP _CreateDoubleArray (const fudge_byte *bytes, int elements) {
 }
 
 static void RPROC FudgeMsg_finalizer (SEXP msgptr) {
-	void *ptr = R_ExternalPtrAddr (msgptr);
-	if (ptr) {
-		FudgeMsg msg = (FudgeMsg)ptr;
-		if (FudgeMsg_release (msg) == FUDGE_OK) {
-			LOGDEBUG (TEXT ("Message pointer released"));
-			R_ClearExternalPtr (msgptr);
-		} else {
-			LOGERROR (ERR_INTERNAL);
+	FudgeMsg msg = (FudgeMsg)R_ExternalPtrAddr (msgptr);
+	if (msg) {
+		CFudgeMsgInfo *poMsg = CFudgeMsgInfo::GetMessage (msg);
+		if (poMsg) {
+			// Release twice; once for the return here, and once deferred from when we set the pointer
+			CFudgeMsgInfo::Release (poMsg);
+			CFudgeMsgInfo::Release (poMsg);
 		}
-	} else {
-		LOGERROR (ERR_PARAMETER_VALUE);
+		FudgeMsg_release (msg);
+		R_ClearExternalPtr (msgptr);
 	}
 }
 
 SEXP RFudgeMsg::FromFudgeMsg (FudgeMsg msg) {
 	FudgeMsg_retain (msg);
-	SEXP msgptr = R_MakeExternalPtr (msg, R_NilValue, R_NilValue);
+	SEXP msgtag = R_NilValue;
+	int prot = 0;
+	if (g_bSerialise) {
+		CFudgeMsgInfo *poMsg = CFudgeMsgInfo::GetMessage (msg);
+		if (poMsg) {
+			msgtag = allocVector (RAWSXP, poMsg->GetLength ());
+			if (msgtag != R_NilValue) {
+				PROTECT (msgtag);
+				prot++;
+				memcpy (RAW (msgtag), poMsg->GetData (), poMsg->GetLength ());
+				// Don't release the pointer; R will need the reference
+			} else {
+				LOGERROR (ERR_R_FUNCTION);
+				CFudgeMsgInfo::Release (poMsg);
+			}
+		} else {
+			LOGERROR (ERR_INTERNAL);
+		}
+	}
+	SEXP msgptr = R_MakeExternalPtr (msg, R_NilValue, msgtag);
 	PROTECT (msgptr);
+	prot++;
 	SEXP cls = R_getClassDef (R_FUDGEMSG_CLASS);
 	PROTECT (cls);
+	prot++;
 	SEXP obj = R_do_new_object (cls);
 	PROTECT (obj);
+	prot++;
 	SEXP field = mkString (R_FUDGEMSG_POINTER);
 	PROTECT (field);
+	prot++;
 	R_do_slot_assign (obj, field, msgptr);
 	R_RegisterCFinalizerEx (msgptr, FudgeMsg_finalizer, FALSE);
-	UNPROTECT (4);
+	UNPROTECT (prot);
 	return obj;
 }
 
@@ -116,6 +145,19 @@ static FudgeMsg _GetFudgeMsg (SEXP msgValue) {
 	if (R_has_slot (msgValue, slot)) {
 		SEXP msgPointer = R_do_slot (msgValue, slot);
 		msg = (FudgeMsg)R_ExternalPtrAddr (msgPointer);
+		if (!msg) {
+			SEXP msgEncoded = R_ExternalPtrProtected (msgPointer);
+			if (msgEncoded != R_NilValue) {
+				PROTECT (msgEncoded);
+				CFudgeMsgInfo *poMsg = CFudgeMsgInfo::GetMessage (RAW (msgEncoded), LENGTH (msgEncoded));
+				if (poMsg) {
+					msg = poMsg->GetMessage ();
+					R_SetExternalPtrAddr (msgPointer, msg);
+					// Don't release the pointer; R will need the reference counted
+				}
+				UNPROTECT (1);
+			}
+		}
 		// Safe to pass NULL to FudgeMsg_retain
 		FudgeMsg_retain (msg);
 	}
@@ -310,3 +352,12 @@ SEXP RFudgeMsg::GetAllFields (SEXP message) {
 	return result;
 }
 
+SEXP RFudgeMsg::SetSerialiseMode (SEXP on) {
+	if (isLogical (on)) {
+		g_bSerialise = *INTEGER (on);
+		// TODO: if serialisation has been turned on, then scanning through for existing objects that don't have tags would be good
+	} else {
+		LOGERROR (ERR_PARAMETER_TYPE);
+	}
+	return R_NilValue;
+}

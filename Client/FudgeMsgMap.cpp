@@ -365,7 +365,7 @@ void CFudgeMsgInfo::Release (CFudgeMsgInfo *poMessage) {
 /// Creates a binary encoding of a Fudge message.
 ///
 /// @param[in] msg the message to encode
-/// @param[in] pcbData receives the length of the allocated encoding
+/// @param[out] pcbData receives the length of the allocated encoding
 /// @return the encoded form
 static void *_EncodeFudgeMsg (FudgeMsg msg, size_t *pcbData) {
 	FudgeStatus status;
@@ -384,6 +384,24 @@ static void *_EncodeFudgeMsg (FudgeMsg msg, size_t *pcbData) {
 	}
 	*pcbData = cbData;
 	return pData;
+}
+
+/// Creates a Fudge message from a binary encoding.
+///
+/// @param[in] pData the encoded message data
+/// @param[in] cbData the length of the encoded data in bytes
+/// @return the message, or NULL if there is a problem
+static FudgeMsg _DecodeFudgeMsg (const void *pData, size_t cbData) {
+	FudgeMsgEnvelope env;
+	FudgeMsg msg = NULL;
+	if (FudgeCodec_decodeMsg (&env, (fudge_byte*)pData, cbData) == FUDGE_OK) {
+		msg = FudgeMsgEnvelope_getMessage (env);
+		FudgeMsg_retain (msg);
+		FudgeMsgEnvelope_release (env);
+	} else {
+		LOGWARN (TEXT ("Couldn't decode Fudge message"));
+	}
+	return msg;
 }
 
 /// Finds an existing message entry in the map, or creates a new entry if none is found.
@@ -422,13 +440,61 @@ CFudgeMsgInfo *CFudgeMsgInfo::GetMessage (FudgeMsg msg) {
 	}
 #endif /* ifdef _WIN32 */
 	poMessage = new CFudgeMsgInfo (msg, pData, cbData);
-	if (!poMessage) {
-		g_oMap.LeaveMutex ();
+	if (poMessage) {
+		g_oMap.Put (poMessage);
+	} else {
 		LOGFATAL (TEXT ("Out of memory"));
 		free (pData);
-		return NULL;
 	}
-	g_oMap.Put (poMessage);
 	g_oMap.LeaveMutex ();
+	return poMessage;
+}
+
+/// Finds an existing message entry in the map, or creates a new entry if none is found.
+/// The message is returned with an incremented reference count - the caller should call
+/// Release when finished with it (unless the reference is offloaded to R).
+///
+/// @param[in] pData the binary encoding of the message to lock up
+/// @param[in] cbData the length of the binary encoding in bytes
+CFudgeMsgInfo *CFudgeMsgInfo::GetMessage (const void *pData, size_t cbData) {
+	g_oMap.EnterMutex ();
+	FudgeMsg msg = NULL;
+	CFudgeMsgInfo *poMessage = NULL;
+	void *pDataCopy = NULL;
+	do {
+#ifdef _WIN32
+		msg = _DecodeFudgeMsg (pData, cbData);
+		if (!msg) {
+			break;
+		}
+		poMessage = g_oMap.Get (msg);
+#else /* ifdef _WIN32 */
+		poMessage = g_oMap.Get (pData, cbData);
+#endif /* ifdef _WIN32 */
+		if (poMessage) {
+			poMessage->m_nRefCount++;
+			break;
+		}
+		pDataCopy = malloc (cbData);
+		if (!pDataCopy) {
+			LOGFATAL (TEXT ("Out of memory"));
+			break;
+		}
+		memcpy (pDataCopy, pData, cbData);
+#ifndef _WIN32
+		msg = _DecodeFudgeMsg (pDataCopy, cbData);
+		if (!msg) {
+			break;
+		}
+#endif /* ifndef _WIN32 */
+		poMessage = new CFudgeMsgInfo (msg, pDataCopy, cbData);
+		if (!poMessage) {
+			LOGFATAL (TEXT ("Out of memory"));
+		}
+		pDataCopy = NULL;
+	} while (false);
+	g_oMap.LeaveMutex ();
+	if (msg) FudgeMsg_release (msg);
+	if (pDataCopy) free (pDataCopy);
 	return poMessage;
 }

@@ -32,7 +32,7 @@ public:
 	/// Returns the normalized message encoding.
 	///
 	/// @return the message
-	FudgeMsg GetMessage () const { return m_msg; }
+	FudgeMsg GetMessage () const { FudgeMsg_retain (m_msg); return m_msg; }
 
 	/// Returns the binary encoding of the message.
 	///
@@ -47,6 +47,7 @@ public:
 	void Retain ();
 	static void Release (CFudgeMsgInfo *poMessage);
 	static CFudgeMsgInfo *GetMessage (FudgeMsg msg);
+	static CFudgeMsgInfo *GetMessage (const void *pData, size_t cbData);
 };
 
 #endif /* ifndef __inc_og_rstats_client_fudgemsgmap_h */

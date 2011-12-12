@@ -17,6 +17,7 @@ public:
 	static SEXP GetAllFields (SEXP msg);
 	static SEXP FromFudgeMsg (FudgeMsg msg);
 	static FudgeMsg ToFudgeMsg (const CRCallback *poR, SEXP value);
+	static SEXP SetSerialiseMode (SEXP on);
 };
 
 #ifdef GLOBALS
@@ -24,6 +25,10 @@ extern "C" {
 
 	SEXP RPROC FudgeMsg_getAllFields1 (SEXP msg) {
 		return RFudgeMsg::GetAllFields (msg);
+	}
+
+	SEXP RPROC FudgeMsg_setSerialiseMode1 (SEXP on) {
+		return RFudgeMsg::setSerialiseMode (on);
 	}
 
 }
