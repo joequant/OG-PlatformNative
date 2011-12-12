@@ -301,6 +301,7 @@ public:
 
 	/// Stores a message in the map. The caller must hold the mutex.
 	void Put (CFudgeMsgInfo *poMessage) {
+		LOGDEBUG (TEXT ("Adding message to map"));
 #ifdef _WIN32
 		m_oMap.insert (TFudgeMsgMap::value_type (poMessage->GetMessage (), poMessage));
 #else /* ifdef _WIN32 */
@@ -310,6 +311,7 @@ public:
 
 	/// Removes a message from the map. The caller must hold the mutex.
 	void Remove (CFudgeMsgInfo *poMessage) {
+		LOGDEBUG (TEXT ("Removing message from map"));
 #ifdef _WIN32
 		TFudgeMsgMap::iterator itr = m_oMap.find (poMessage->GetMessage ());
 		if (itr != m_oMap.end ()) {
@@ -355,6 +357,7 @@ void CFudgeMsgInfo::Retain () {
 /// Decrements the R reference count, destroying the object when the count reaches zero.
 void CFudgeMsgInfo::Release (CFudgeMsgInfo *poMessage) {
 	g_oMap.EnterMutex ();
+	LOGDEBUG (TEXT ("Releasing CFudgeMsgInfo, rc=") << poMessage->m_nRefCount);
 	if (--poMessage->m_nRefCount == 0) {
 		g_oMap.Remove (poMessage);
 		delete poMessage;

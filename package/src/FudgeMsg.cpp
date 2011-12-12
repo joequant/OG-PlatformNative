@@ -8,7 +8,7 @@
 #include "FudgeMsg.h"
 #include "Errors.h"
 #include "RCallback.h"
-#include Client("FudgeMsgMap.h")
+#include Client(FudgeMsgMap.h)
 
 LOGGING (com.opengamma.rstats.package.FudgeMsg);
 
@@ -93,9 +93,13 @@ static void RPROC FudgeMsg_finalizer (SEXP msgptr) {
 			// Release twice; once for the return here, and once deferred from when we set the pointer
 			CFudgeMsgInfo::Release (poMsg);
 			CFudgeMsgInfo::Release (poMsg);
+		} else {
+			LOGWARN (ERR_INTERNAL);
 		}
 		FudgeMsg_release (msg);
 		R_ClearExternalPtr (msgptr);
+	} else {
+		LOGDEBUG (TEXT ("No message pointer attached"));
 	}
 }
 
@@ -111,6 +115,8 @@ SEXP RFudgeMsg::FromFudgeMsg (FudgeMsg msg) {
 				PROTECT (msgtag);
 				prot++;
 				memcpy (RAW (msgtag), poMsg->GetData (), poMsg->GetLength ());
+				FudgeMsg_release (msg);
+				msg = poMsg->GetMessage ();
 				// Don't release the pointer; R will need the reference
 			} else {
 				LOGERROR (ERR_R_FUNCTION);
@@ -138,28 +144,33 @@ SEXP RFudgeMsg::FromFudgeMsg (FudgeMsg msg) {
 	return obj;
 }
 
-static FudgeMsg _GetFudgeMsg (SEXP msgValue) {
+static FudgeMsg _GetFudgeMsgFromPointer (SEXP msgPointer) {
+	FudgeMsg msg = (FudgeMsg)R_ExternalPtrAddr (msgPointer);
+	if (!msg) {
+		SEXP msgEncoded = R_ExternalPtrProtected (msgPointer);
+		if (msgEncoded != R_NilValue) {
+			PROTECT (msgEncoded);
+			CFudgeMsgInfo *poMsg = CFudgeMsgInfo::GetMessage (RAW (msgEncoded), LENGTH (msgEncoded));
+			if (poMsg) {
+				msg = poMsg->GetMessage ();
+				R_SetExternalPtrAddr (msgPointer, msg);
+				// Don't release the pointer; R will need the reference counted
+			}
+			UNPROTECT (1);
+		}
+	}
+	// Safe to pass NULL to FudgeMsg_retain
+	FudgeMsg_retain (msg);
+	return msg;
+}
+
+static FudgeMsg _GetFudgeMsgFromObject (SEXP msgValue) {
 	FudgeMsg msg = NULL;
 	SEXP slot = mkString (R_FUDGEMSG_POINTER);
 	PROTECT (slot);
 	if (R_has_slot (msgValue, slot)) {
 		SEXP msgPointer = R_do_slot (msgValue, slot);
-		msg = (FudgeMsg)R_ExternalPtrAddr (msgPointer);
-		if (!msg) {
-			SEXP msgEncoded = R_ExternalPtrProtected (msgPointer);
-			if (msgEncoded != R_NilValue) {
-				PROTECT (msgEncoded);
-				CFudgeMsgInfo *poMsg = CFudgeMsgInfo::GetMessage (RAW (msgEncoded), LENGTH (msgEncoded));
-				if (poMsg) {
-					msg = poMsg->GetMessage ();
-					R_SetExternalPtrAddr (msgPointer, msg);
-					// Don't release the pointer; R will need the reference counted
-				}
-				UNPROTECT (1);
-			}
-		}
-		// Safe to pass NULL to FudgeMsg_retain
-		FudgeMsg_retain (msg);
+		msg = _GetFudgeMsgFromPointer (msgPointer);
 	}
 	UNPROTECT (1);
 	return msg;
@@ -170,7 +181,7 @@ FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 		SEXP cls = getAttrib (value, install (R_CLASS));
 		if (isString (cls)) {
 			if (!strcmp (CHAR (STRING_ELT (cls, 0)), R_FUDGEMSG_CLASS)) {
-				FudgeMsg msg = _GetFudgeMsg (value);
+				FudgeMsg msg = _GetFudgeMsgFromObject (value);
 				if (msg) {
 					return msg;
 				} else {
@@ -180,7 +191,7 @@ FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 				LOGDEBUG ("Class " << CHAR (STRING_ELT (cls, 0)) << " not a FudgeMsg");
 				value = poR->ToFudgeMsg (value);
 				if (value != R_NilValue) {
-					FudgeMsg msg = _GetFudgeMsg (value);
+					FudgeMsg msg = _GetFudgeMsgFromObject (value);
 					if (msg) {
 						return msg;
 					} else {
@@ -199,7 +210,7 @@ FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 
 SEXP RFudgeMsg::GetAllFields (SEXP message) {
 	SEXP result = R_NilValue;
-	FudgeMsg msg = (FudgeMsg)R_ExternalPtrAddr (message);
+	FudgeMsg msg = _GetFudgeMsgFromPointer (message);
 	if (msg) {
 		int nFields = FudgeMsg_numFields (msg);
 		FudgeField *aFields = new FudgeField[nFields];

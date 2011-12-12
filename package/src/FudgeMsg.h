@@ -28,7 +28,7 @@ extern "C" {
 	}
 
 	SEXP RPROC FudgeMsg_setSerialiseMode1 (SEXP on) {
-		return RFudgeMsg::setSerialiseMode (on);
+		return RFudgeMsg::SetSerialiseMode (on);
 	}
 
 }
