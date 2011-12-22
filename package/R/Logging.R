@@ -29,13 +29,3 @@ LOGINFO <- function (...) { .log (LOGLEVEL_INFO, ...) }
 LOGWARN <- function (...) { .log (LOGLEVEL_WARN, ...) }
 LOGERROR <- function (...) { .log (LOGLEVEL_ERROR, ...) }
 LOGFATAL <- function (...) { .log (LOGLEVEL_FATAL, ...) }
-
-.set.log.level <- function (level) {
-  .log.level <<- level[1]
-}
-
-debug.log.level <- function () { .set.log.level (LOGLEVEL_DEBUG) }
-info.log.level <- function () { .set.log.level (LOGLEVEL_INFO) }
-warn.log.level <- function () { .set.log.level (LOGLEVEL_WARN) }
-error.log.level <- function () { .set.log.level (LOGLEVEL_ERROR) }
-fatal.log.level <- function () { .set.log.level (LOGLEVEL_FATAL) }

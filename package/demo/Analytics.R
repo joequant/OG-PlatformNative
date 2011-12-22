@@ -89,7 +89,7 @@ for (shift in shifts) {
 
   # Modify the snapshot by tweaking the USD forward curve
   print (paste ("Modifying snapshot", snapshot.id, "by", shift))
-  snapshot <- SetSnapshotYieldCurve (snapshot, "FUNDING_USD", modify.curve (GetSnapshotYieldCurve (snapshot, "FUNDING_USD"), shift))
+  snapshot <- SetSnapshotYieldCurve (snapshot, "USD_FUNDING", modify.curve (GetSnapshotYieldCurve (snapshot, "USD_FUNDING"), shift))
 
   # Write the snapshot back
   print (paste ("Updating snapshot"))
