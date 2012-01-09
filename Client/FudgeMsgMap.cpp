@@ -13,188 +13,6 @@ LOGGING (com.opengamma.rstats.client.FudgeMsgMap);
 
 /// Hashes a FudgeMsg
 class FudgeMsg_hasher : public stdext::hash_compare<FudgeMsg> {
-private:
-
-	/// Hashes an arbitrary block of memory
-	///
-	/// @param[in] pData data to hash
-	/// @param[in] cbData length of data to hash in bytes
-	/// @return the hashed value
-	static size_t hash (const void *pData, size_t cbData) {
-		size_t hc = 1;
-		const char *ptr = (const char*)pData;
-		while (cbData-- > 0) {
-			hc += (hc << 4) + *(ptr++);
-		}
-		return hc;
-	}
-
-	/// Hashes a Fudge string
-	///
-	/// @param[in] string string to hash
-	/// @return the hashed value
-	static size_t hash (FudgeString string) {
-		return hash (FudgeString_getData (string), FudgeString_getSize (string));
-	}
-
-	/// Hashes the message
-	///
-	/// @param[in] msg the message to hash
-	/// @return the hashed value
-	static size_t hash (const FudgeMsg msg) {
-		size_t hc = 1;
-		int n = 0;
-		FudgeField field;
-		while (FudgeMsg_getFieldAtIndex (&field, msg, n++) == FUDGE_OK) {
-			hc += (hc << 4) + field.ordinal;
-			if (field.name) {
-				hc += hash (field.name);
-			}
-			switch (field.type) {
-				case FUDGE_TYPE_INDICATOR :
-					hc++;
-					break;
-				case FUDGE_TYPE_BOOLEAN :
-					hc += field.data.boolean ? 1 : 0;
-					break;
-				case FUDGE_TYPE_BYTE :
-					hc += field.data.byte;
-					break;
-				case FUDGE_TYPE_SHORT :
-					hc += field.data.i16;
-					break;
-				case FUDGE_TYPE_INT :
-					hc += field.data.i32;
-					break;
-				case FUDGE_TYPE_LONG :
-					hc += (size_t)field.data.i64;
-					break;
-				case FUDGE_TYPE_FLOAT :
-					hc += (size_t)field.data.f32;
-					break;
-				case FUDGE_TYPE_DOUBLE :
-					hc += (size_t)field.data.f64;
-					break;
-				case FUDGE_TYPE_DATE :
-					hc += hash (&field.data.datetime.date, sizeof (FudgeDate));
-					break;
-				case FUDGE_TYPE_TIME :
-					hc += hash (&field.data.datetime.time, sizeof (FudgeTime));
-					break;
-				case FUDGE_TYPE_DATETIME :
-					hc += hash (&field.data.datetime, sizeof (FudgeDateTime));
-					break;
-				case FUDGE_TYPE_STRING :
-					hc += hash (field.data.string);
-					break;
-				case FUDGE_TYPE_FUDGE_MSG :
-					hc += hash (field.data.message);
-					break;
-				default :
-					hc += hash (field.data.bytes, field.numbytes);
-					break;
-			}
-		}
-		return hc;
-	}
-
-	/// Compares two Fudge message
-	///
-	/// @param[in] a first message
-	/// @param[in] b second message
-	/// @return negative if the first message is less, positive if greater, 0 if equal
-	static int compare (const FudgeMsg a, const FudgeMsg b) {
-		int n = 0, c;
-		FudgeField fA, fB;
-		c = FudgeMsg_numFields (a) - FudgeMsg_numFields (b);
-		if (c) return c;
-		while ((FudgeMsg_getFieldAtIndex (&fA, a, n) == FUDGE_OK)
-			&& (FudgeMsg_getFieldAtIndex (&fB, b, n) == FUDGE_OK)) {
-			if (fA.type < fB.type) return -1;
-			if (fA.type > fB.type) return 1;
-			if (fA.ordinal < fB.ordinal) return -1;
-			if (fA.ordinal > fB.ordinal) return 1;
-			if (fA.name) {
-				if (fB.name) {
-					c = FudgeString_compare (fA.name, fB.name);
-					if (c) return c;
-				} else {
-					return -1;
-				}
-			} else {
-				if (fB.name) return 1;
-			}
-			switch (fA.type) {
-				case FUDGE_TYPE_INDICATOR :
-					c = 0;
-					break;
-				case FUDGE_TYPE_BOOLEAN :
-					c = fA.data.boolean - fB.data.boolean;
-					break;
-				case FUDGE_TYPE_BYTE :
-					c = fA.data.byte - fB.data.byte;
-					break;
-				case FUDGE_TYPE_SHORT :
-					c = fA.data.i16 - fB.data.i16;
-					break;
-				case FUDGE_TYPE_INT :
-					c = fA.data.i32 - fB.data.i32;
-					break;
-				case FUDGE_TYPE_LONG :
-					if (fA.data.i64 < fB.data.i64) {
-						c = -1;
-					} else if (fA.data.i64 > fB.data.i64) {
-						c = 1;
-					} else {
-						c = 0;
-					}
-					break;
-				case FUDGE_TYPE_FLOAT :
-					if (fA.data.f32 < fB.data.f32) {
-						c = -1;
-					} else if (fA.data.f32 > fB.data.f32) {
-						c = 1;
-					} else {
-						c = 0;
-					}
-					break;
-				case FUDGE_TYPE_DOUBLE :
-					if (fA.data.f64 < fB.data.f64) {
-						c = -1;
-					} else if (fA.data.f64 > fB.data.f64) {
-						c = 1;
-					} else {
-						c = 0;
-					}
-					break;
-				case FUDGE_TYPE_DATE :
-					c = memcmp (&fA.data.datetime.date, &fB.data.datetime.date, sizeof (FudgeDate));
-					break;
-				case FUDGE_TYPE_TIME :
-					c = memcmp (&fA.data.datetime.time, &fB.data.datetime.time, sizeof (FudgeTime));
-					break;
-				case FUDGE_TYPE_DATETIME :
-					c = memcmp (&fA.data.datetime, &fB.data.datetime, sizeof (FudgeDateTime));
-					break;
-				case FUDGE_TYPE_STRING :
-					c = FudgeString_compare (fA.data.string, fB.data.string);
-					break;
-				case FUDGE_TYPE_FUDGE_MSG :
-					c = compare (fA.data.message, fB.data.message);
-					break;
-				default :
-					c = fA.numbytes - fB.numbytes;
-					if (!c) {
-						c = memcmp (fA.data.bytes, fB.data.bytes, fA.numbytes);
-					}
-					break;
-			}
-			if (c) return c;
-			n++;
-		}
-		return 0;
-	}
-
 public:
 
 	/// Hashes the message
@@ -202,7 +20,7 @@ public:
 	/// @param[in] msg the message to hash
 	/// @return the hashed value
 	size_t operator () (const FudgeMsg &msg) const {
-		return hash (msg);
+		return FudgeMsg_hash (msg);
 	}
 
 	/// Compares two Fudge messages
@@ -211,7 +29,7 @@ public:
 	/// @param[in] b second message
 	/// @return true if the first message is strictly less than the second
 	bool operator () (const FudgeMsg &a, const FudgeMsg &b) const {
-		return compare (a, b) < 0;
+		return FudgeMsg_compare (a, b) < 0;
 	}
 
 };
