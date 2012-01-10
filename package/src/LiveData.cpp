@@ -8,35 +8,45 @@
 #include "LiveData.h"
 #include "globals.h"
 #include "Errors.h"
+#include "Parameters.h"
+#include "DataInfo.h"
 
 LOGGING (com.opengamma.rstats.package.LiveData);
 
-SEXP LiveData_count0 () {
-	SEXP count = R_NilValue;
-	if (g_poLiveData) {
-		count = allocVector (INTSXP, 1);
-		*INTEGER (count) = g_poLiveData->Size ();
-	} else {
-		LOGERROR (ERR_INITIALISATION);
-	}
-	return count;
+// Note that the live data implementation is incomplete. It connects to a component, blocks
+// for the first value and returns that.
+
+const CEntityEntry *RLiveData::GetEntryImpl (int index) const {
+	return g_poLiveData->Get (index);
 }
 
-SEXP LiveData_getName1 (SEXP index) {
-	SEXP name = R_NilValue;
-	if (g_poLiveData) {
-		if (isInteger (index)) {
-			const CLiveDataEntry *poEntry = g_poLiveData->Get (*INTEGER (index));
-			if (poEntry) {
-				name = mkString (poEntry->GetName ());
+SEXP RLiveData::Invoke (SEXP index, SEXP args, SEXP envir) const {
+	const CLiveDataEntry *poEntry = (const CLiveDataEntry*)GetEntry (index);
+	SEXP result = R_NilValue;
+	if (poEntry) {
+		CRCallback oR (envir);
+		CParameters *poParameters = CParameters::Decode (&oR, args);
+		if (poParameters) {
+			if (poParameters->Count () == poEntry->GetParameterCount ()) {
+				LOGINFO ("Connect " << poEntry->GetName ());
+				com_opengamma_rstats_msg_DataInfo *pInfo;
+				com_opengamma_language_Data *pResult = g_poLiveData->Invoke (poEntry, poParameters->GetData (), &pInfo);
+				if (pResult) {
+					result = ProcessResult (&oR, pResult, pInfo);
+					if (pInfo) {
+						CDataInfo::Release (pInfo);
+					}
+					CData::Release (pResult);
+				} else {
+					LOGERROR (ERR_INVOCATION);
+				}
 			} else {
 				LOGERROR (ERR_PARAMETER_VALUE);
 			}
+			delete poParameters;
 		} else {
-			LOGERROR (ERR_PARAMETER_TYPE);
+			LOGERROR (ERR_PARAMETER_VALUE);
 		}
-	} else {
-		LOGERROR (ERR_INITIALISATION);
 	}
-	return name;
+	return result;
 }
