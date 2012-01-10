@@ -68,6 +68,7 @@ OBJECTS=Package.res \
 	Client_Settings.obj \
 	com_opengamma_rstats_msg_DataInfo.obj \
 	com_opengamma_rstats_msg_FunctionResult.obj \
+	com_opengamma_rstats_msg_LiveDataResult.obj \
 	com_opengamma_rstats_msg_ProcedureResult.obj \
 	DataInfo.obj \
 	DataValue.obj \

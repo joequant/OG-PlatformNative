@@ -32,7 +32,7 @@ invoke.LiveData <- function (index, args) {
 # Brings a proxy declaration for a live data definition into scope
 .installByIndex.LiveData <- function (index) {
   name <- getName.LiveData (index)
-  if (!s.null (name)) {
+  if (!is.null (name)) {
     LOGDEBUG ("Found live data", name)
     argNames <- getParameterNames.LiveData (index)
     argFlags <- getParameterFlags.LiveData (index)
