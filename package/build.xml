@@ -27,6 +27,7 @@ License: file LICENSE
 URL: http://www.opengamma.com/R, http://www.github.com/OpenGamma/OG-RStats
 BugReports: http://jira.opengamma.com/browse/RSTAT
 LazyLoad: true</echo>
+    <replaceregexp file="${basedir}/DESCRIPTION" match="(Version: \d+\.\d+\.\d+)\w*" replace="\1" flags="m" />
   </target>
 
   <target name="compile" depends="description">
