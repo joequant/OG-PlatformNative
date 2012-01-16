@@ -31,7 +31,7 @@ fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
   curveSnapshots <- lapply (x, function (y) { .values.YieldCurveSnapshot (y$values) })
   x <- field.FudgeMsg (msg, 1)
   if (!is.list (x)) x <- list (x)
-  names (curveSnapshots) <- sapply (x, function (y) { paste (y$name, y$currency, sep = "_") })
+  names (curveSnapshots) <- sapply (x, function (y) { paste (y$currency, y$name, sep = "_") })
   curveSnapshots
 }
 
@@ -42,7 +42,7 @@ fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
   cubeSnapshots <- lapply (x, function (y) { .dataFrames.VolatilityCubeSnapshot (y) })
   x <- field.FudgeMsg (msg, 1)
   if (!is.list (x)) x <- list (x)
-  names (cubeSnapshots) <- sapply (x, function (y) { paste (y$name, y$currency, sep = "_") })
+  names (cubeSnapshots) <- sapply (x, function (y) { paste (y$currency, y$name, sep = "_") })
   cubeSnapshots
 }
 
