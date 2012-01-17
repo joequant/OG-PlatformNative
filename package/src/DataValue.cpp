@@ -14,6 +14,8 @@
 
 LOGGING (com.opengamma.rstats.package.DataValue);
 
+#define R_ENCODE_ARRAY		".encode.Array"
+
 /// Creates a Value instance describing the FudgeMsg.
 ///
 /// @param[in] msg Fudge message to describe
@@ -310,6 +312,25 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 			} else {
 				LOGDEBUG (TEXT ("Empty vector"));
 			}
+		} else if (isArray (data)) {
+			SEXP encoded = poR->InvokeMethod (R_ENCODE_ARRAY, data);
+			if (isVector (encoded)) {
+				LOGDEBUG (TEXT ("Vectoring encoding of N-dimensional array"));
+				PROTECT (encoded);
+				pData->_linear = new com_opengamma_language_Value*[length (data) + 1];
+				if (pData->_linear) {
+					int n;
+					for (n = 0; n < length (data); n++) {
+						pData->_linear[n] = CValue::FromSEXP (poR, data, n);
+					}
+					pData->_linear[n] = NULL;
+				} else {
+					LOGFATAL (ERR_MEMORY);
+				}
+				UNPROTECT (1);
+			} else {
+				LOGERROR (ERR_PARAMETER_TYPE);
+			}
 		} else if (isNull (data)) {
 			LOGDEBUG (TEXT ("NULL"));
 		} else if (isObject (data)) {
@@ -348,6 +369,8 @@ static SEXP _LinearToList (const com_opengamma_language_Value * const *ppValue, 
 /// @return R type token
 static SEXPTYPE _DataTypeToVectorType (int type) {
 	switch (type) {
+	case 0 :
+		return 0;
 	case DATATYPE_BOOLEAN :
 		return LGLSXP;
 	case DATATYPE_INTEGER :

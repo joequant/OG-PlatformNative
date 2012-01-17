@@ -38,6 +38,7 @@
       <bean class="com.opengamma.language.invoke.TypeConverterProviderBean">
         <property name="converters">
           <list>
+            <bean class="com.opengamma.rstats.convert.CubeConverter" />
             <bean class="com.opengamma.rstats.convert.DateTimeConverter" />
             <bean class="com.opengamma.rstats.convert.LocalDateDoubleTimeSeriesConverter" />
             <bean class="com.opengamma.rstats.convert.UserViewClientConverter" />
