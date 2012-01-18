@@ -127,6 +127,18 @@
     </exec>
   </target>
 
+  <target name="manual" depends="compile,dist-impl,manual-none,manual-impl" description="Generates default R documentation using 'R CMD Rd2pdf'" />
+  <target name="manual-none" unless="r.env.ok">
+    <echo>R or dependent libraries not installed - cannot build the manual locally</echo>
+  </target>
+  <target name="manual-impl" if="r.env.ok">
+    <exec executable="R" failonerror="true">
+      <arg value="CMD" />
+      <arg value="Rd2pdf" />
+      <arg value="${package.dir}/${package.name}" />
+    </exec>
+  </target>
+
   <target name="clean-tests" depends="build-suffix.clean-tests">
     <delete includeemptydirs="true" failonerror="false" dir="${basedir}/${package.name}.Rcheck" />
   </target>
