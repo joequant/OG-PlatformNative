@@ -44,6 +44,9 @@
     <ROW File="og_rstats_ext.jar" Component_="og_rstats_ext.jar" FileName="og-rst~1.jar|og-rstats-ext.jar" Attributes="0" SourcePath="..\dist\og-rstats-ext.jar" SelfReg="false" NextFile="OpenGamma.zip"/>
     <ROW File="og_rstats_ext.xml" Component_="og_rstats_ext.xml" FileName="og-rst~1.xml|og-rstats-ext.xml" Attributes="0" SourcePath="..\dist\og-rstats-ext.xml" SelfReg="false" NextFile="og_rstats_ext.jar"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.AiRemoveFileComponent">
+    <ROW RemoveFile="log4cxx.properties" Options="1"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="Build" BuildName="MSI_64" BuildOrder="2" BuildType="1" PackageFolder="." PackageFileName="OG-RStats-[|ProductVersion]-64-bit" Languages="en" InstallationType="4" CompressCabs="false" MsiPackageType="x64"/>
     <ROW BuildKey="MSI_32" BuildName="MSI_32" BuildOrder="1" BuildType="1" PackageFolder="." PackageFileName="OG-RStats-[|ProductVersion]-32-bit" Languages="en" InstallationType="4"/>
@@ -63,6 +66,11 @@
     <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
+    <ROW Action="AI_AiRemoveFilesCommit" Description="Executing file removal operations" Template="Executing file removal: [1]" DescriptionLocId="ActionText.Description.AI_AiRemoveFilesCommit" TemplateLocId="ActionText.Template.AI_AiRemoveFilesCommit"/>
+    <ROW Action="AI_AiRemoveFilesDeferred_Permanent" Description="Preparing files for removal" Template="Preparing file: [1]" DescriptionLocId="ActionText.Description.AI_AiRemoveFilesDeferred_Permanent" TemplateLocId="ActionText.Template.AI_AiRemoveFilesDeferred_Permanent"/>
+    <ROW Action="AI_AiRemoveFilesDeferred_Undoable" Description="Preparing files for removal" Template="Preparing file: [1]" DescriptionLocId="ActionText.Description.AI_AiRemoveFilesDeferred_Undoable" TemplateLocId="ActionText.Template.AI_AiRemoveFilesDeferred_Undoable"/>
+    <ROW Action="AI_AiRemoveFilesImmediate" Description="Preparing files for removal" Template="Preparing file: [1]" DescriptionLocId="ActionText.Description.AI_AiRemoveFilesImmediate" TemplateLocId="ActionText.Template.AI_AiRemoveFilesImmediate"/>
+    <ROW Action="AI_AiRemoveFilesRollback" Description="Restoring removed files" Template="Restoring file: [1]" DescriptionLocId="ActionText.Description.AI_AiRemoveFilesRollback" TemplateLocId="ActionText.Template.AI_AiRemoveFilesRollback"/>
     <ROW Action="AI_TxtUpdaterCommit" Description="Commit text file changes. " Template="Commit text file changes." DescriptionLocId="ActionText.Description.AI_TxtUpdaterCommit" TemplateLocId="ActionText.Template.AI_TxtUpdaterCommit"/>
     <ROW Action="AI_TxtUpdaterConfig" Description="Executing text file updates" Template="Updating text file: &quot;[1]&quot;" DescriptionLocId="ActionText.Description.AI_TxtUpdaterConfig" TemplateLocId="ActionText.Template.AI_TxtUpdaterConfig"/>
     <ROW Action="AI_TxtUpdaterInstall" Description="Generating actions to configure text files updates" DescriptionLocId="ActionText.Description.AI_TxtUpdaterInstall"/>
@@ -74,6 +82,7 @@
     <ROW Property="OG_LANGUAGE_PATH" Signature_="AppSearchSign_2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="ResourceCleaner.dll" SourcePath="&lt;AI_CUSTACTS&gt;ResourceCleaner.dll"/>
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="opengamma_banner.bmp" SourcePath="opengamma-banner.bmp"/>
@@ -103,6 +112,11 @@
     <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_AiRemoveFilesCommit" Type="11777" Source="ResourceCleaner.dll" Target="OnAiRemoveFilesCommit" WithoutSeq="true"/>
+    <ROW Action="AI_AiRemoveFilesDeferred_Permanent" Type="11265" Source="ResourceCleaner.dll" Target="OnAiRemoveFilesPermanent" WithoutSeq="true"/>
+    <ROW Action="AI_AiRemoveFilesDeferred_Undoable" Type="11265" Source="ResourceCleaner.dll" Target="OnAiRemoveFilesUndoable" WithoutSeq="true"/>
+    <ROW Action="AI_AiRemoveFilesImmediate" Type="1" Source="ResourceCleaner.dll" Target="OnAiRemoveFilesImmediate"/>
+    <ROW Action="AI_AiRemoveFilesRollback" Type="11521" Source="ResourceCleaner.dll" Target="OnAiUndoRemoveFiles"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
     <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
@@ -145,6 +159,8 @@
     <ROW Action="RInstall64" Condition="NOT Installed AND R64_PATH" Sequence="5935"/>
     <ROW Action="RRemove32_1" Condition="R32_PATH AND NOT R64_PATH AND REMOVE=&quot;ALL&quot;" Sequence="1652"/>
     <ROW Action="RRemove64_1" Condition="R64_PATH AND REMOVE=&quot;ALL&quot;" Sequence="1651"/>
+    <ROW Action="AI_AiRemoveFilesImmediate" Sequence="3499"/>
+    <ROW Action="AI_AiRemoveFilesRollback" Sequence="3099"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
@@ -172,6 +188,9 @@
     <ROW Registry="connectorLogConfiguration" Root="-1" Key="Software\OpenGammaLtd\[ProductKey32]" Name="connectorLogConfiguration" Value="[APPDIR]log4cxx.properties" Component_="settings_32"/>
     <ROW Registry="connectorLogConfiguration_1" Root="-1" Key="Software\OpenGammaLtd\[ProductKey64]" Name="connectorLogConfiguration" Value="[APPDIR]log4cxx.properties" Component_="settings_64"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRemoveFileComponent">
+    <ROW FileKey="log4cxx.properties" Component_="OpenGamma.zip" FileName="log4cxx.properties" DirProperty="APPDIR" InstallMode="2"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
     <ROW ServiceControl="ServiceName" Name="OpenGammaLanguageAPI" Event="34" Wait="1" Component_="og_rstats_ext.jar"/>
   </COMPONENT>
@@ -184,7 +203,8 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
     <ROW Name="Append/Create" TxtUpdateSet="log4cxx.properties" FindPattern="log4j.rootLogger=INFO, A1&#13;&#10;log4j.appender.A1=org.apache.log4j.RollingFileAppender&#13;&#10;log4j.appender.A1.maxFileSize=1MB&#13;&#10;log4j.appender.A1.maxBackupIndex=3&#13;&#10;log4j.appender.A1.layout=org.apache.log4j.PatternLayout&#13;&#10;log4j.appender.A1.file=[TempFolder]\OG-RStats.log&#13;&#10;log4j.appender.A1.layout.ConversionPattern=%d [\[]%t[\]] %-5p %c:%L - %m%n" Options="32" Order="0" FileEncoding="0"/>
-    <ROW Name="Replace" TxtUpdateSet="log4cxx.properties" FindPattern="\" ReplacePattern="\\" Options="2" Order="1" FileEncoding="7"/>
+    <ROW Name="escape" TxtUpdateSet="log4cxx.properties" FindPattern="\" ReplacePattern="\\" Options="2" Order="2" FileEncoding="7"/>
+    <ROW Name="unescape" TxtUpdateSet="log4cxx.properties" FindPattern="\\" ReplacePattern="\" Options="2" Order="1" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
     <ROW Key="log4cxx.properties" Component="OpenGamma.zip" FileName="log4cxx.properties" Directory="APPDIR" Options="17"/>
