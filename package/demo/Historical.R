@@ -8,6 +8,8 @@
 # demonstrates the functions used to perform the historical iteration; the choice of view
 # and handling the data is arbitrary.
 
+Init ()
+
 # Find a view identifier
 viewName <- "Simple Swap Test View"
 viewIdentifier <- Views (viewName)[1,1]

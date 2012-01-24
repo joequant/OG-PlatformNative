@@ -11,6 +11,7 @@ LOGGING (com.opengamma.rstats.client.Parameter);
 
 CParameter::CParameter (const com_opengamma_language_definition_Parameter *pDefinition) {
 	m_pszName = _tcsAsciiDup (pDefinition->_name);
+	m_pszDescription = pDefinition->_description ? _tcsAsciiDup (pDefinition->_description) : NULL;
 	m_nFlags = 0;
 	if (!pDefinition->_required) {
 		m_nFlags |= PARAMETER_FLAG_OPTIONAL;
@@ -19,5 +20,6 @@ CParameter::CParameter (const com_opengamma_language_definition_Parameter *pDefi
 
 CParameter::~CParameter () {
 	delete m_pszName;
+	delete m_pszDescription;
 }
 

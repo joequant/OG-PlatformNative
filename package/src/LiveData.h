@@ -28,6 +28,16 @@ extern "C" {
 		return oL.Count ();
 	}
 
+	SEXP RPROC LiveData_getCategory1 (SEXP index) {
+		RLiveData oL;
+		return oL.GetCategory (index);
+	}
+
+	SEXP RPROC LiveData_getDescription1 (SEXP index) {
+		RLiveData oL;
+		return oL.GetCategory (index);
+	}
+
 	SEXP RPROC LiveData_getName1 (SEXP index) {
 		RLiveData oL;
 		return oL.GetName (index);
@@ -41,6 +51,11 @@ extern "C" {
 	SEXP RPROC LiveData_getParameterNames1 (SEXP index) {
 		RLiveData oL;
 		return oL.GetParameterNames (index);
+	}
+
+	SEXP RPROC LiveData_getParameterDescriptions1 (SEXP index) {
+		RLiveData oL;
+		return oL.GetParameterDescriptions (index);
 	}
 
 	SEXP RPROC LiveData_invoke3 (SEXP index, SEXP args, SEXP envir) {

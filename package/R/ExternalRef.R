@@ -15,12 +15,10 @@ from.ExternalRef <- function (ref) {
 }
 
 # Declares an external reference based object
-object.ExternalRef <- function (className) {
+object.ExternalRef <- function (stub.ExternalRef) {
+  className <- stub.ExternalRef$module
   LOGDEBUG ("Declare ExternalRef", className)
-  Install.Object (className, representation (ref = "externalptr"))
-  setMethod ("as.character", signature = className, definition = function (x, ...) { toString (from.ExternalRef (x@ref)) })
-  interop <- paste ("Interop", className, sep = ".")
-  destroy <- paste ("destroy", className, sep = ".")
-  cmd <- paste (interop, " <<- function (ref) { new (\"", className, "\", ref = as.ExternalRef (ref, \"", destroy, "\")) }", sep = "")
-  eval (parse (text = cmd))
+  Install.Object (stub.ExternalRef, representation (ref = "externalptr"))
+  stub.ExternalRef$setMethod ("as.character", "function (x, ...) { toString (from.ExternalRef (x@ref)) }")
+  stub.ExternalRef$interop (paste ("new (\"", className, "\", ref = as.ExternalRef (data, \"destroy.", className, "\"))", sep = ""))
 }

@@ -28,6 +28,16 @@ extern "C" {
 		return oP.Count ();
 	}
 
+	SEXP RPROC Procedures_getCategory1 (SEXP index) {
+		RProcedures oP;
+		return oP.GetCategory (index);
+	}
+
+	SEXP RPROC Procedures_getDescription1 (SEXP index) {
+		RProcedures oP;
+		return oP.GetDescription (index);
+	}
+
 	SEXP RPROC Procedures_getName1 (SEXP index) {
 		RProcedures oP;
 		return oP.GetName (index);
@@ -41,6 +51,11 @@ extern "C" {
 	SEXP RPROC Procedures_getParameterNames1 (SEXP index) {
 		RProcedures oP;
 		return oP.GetParameterNames (index);
+	}
+
+	SEXP RPROC Procedures_getParameterDescriptions1 (SEXP index) {
+		RProcedures oP;
+		return oP.GetParameterDescriptions (index);
 	}
 
 	SEXP RPROC Procedures_invoke3 (SEXP index, SEXP args, SEXP envir) {

@@ -4,24 +4,18 @@
  # Please see distribution for license.
  ##
 
-# Wraps a ManageableYieldCurveSnapshot instance to a YieldCurveSnapshot
-fromFudgeMsg.ManageableYieldCurveSnapshot <- function (x) {
-  fromFudgeMsg.YieldCurveSnapshot (x)
-}
-
 # Unpack the curve values to a data frame
 .values.YieldCurveSnapshot <- function (x) {
   fromFudgeMsg.UnstructuredMarketDataSnapshot (x)
 }
 
 # Brings declarations for YieldCurveSnapshot into scope
-Install.YieldCurveSnapshot <- function () {
-  object.FudgeMsg ("YieldCurveSnapshot")
-  .field.YieldCurveSnapshot ("valuationTime")
-  .field.YieldCurveSnapshot ("values", ".values.YieldCurveSnapshot")
-}
-
-# Default conversion to data frame
-as.data.frame.YieldCurveSnapshot <- function (x, row.names, optional, ...) {
-  values.YieldCurveSnapshot (x)
+Install.YieldCurveSnapshot <- function (stub) {
+  stub.YieldCurveSnapshot <- stub$begin ("YieldCurveSnapshot")
+  .object.FudgeMsg (stub.YieldCurveSnapshot)
+  .field.object.FudgeMsg (stub.YieldCurveSnapshot, "valuationTime")
+  .field.object.FudgeMsg (stub.YieldCurveSnapshot, "values", ".values.YieldCurveSnapshot")
+  stub.YieldCurveSnapshot$asDataFrame ("values.YieldCurveSnapshot (x)")
+  stub.YieldCurveSnapshot$fromFudgeMsg ("fromFudgeMsg.YieldCurveSnapshot (msg)", "ManageableYieldCurveSnapshot")
+  stub.YieldCurveSnapshot$end ()
 }

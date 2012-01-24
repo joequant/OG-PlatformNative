@@ -7,6 +7,8 @@
 # Iterates a view over some historical market data that is peturbed slightly. This demonstrates
 # injecting values into the engine.
 
+Init ()
+
 # Find a view identifier
 viewName <- "Simple Swap Test View"
 viewIdentifier <- Views (viewName)[1,1]

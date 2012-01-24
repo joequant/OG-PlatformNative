@@ -9,6 +9,8 @@
 # engine and analytics library compared to YieldCurve.R which simply fetches the raw time-series
 # used to construct the curve.
 
+Init ()
+
 # Find a view identifier (the view must contain at least one yield curve primitive output)
 view.name <- "Multi-Currency Swap Test View"
 view.identifier <- Views (view.name)[1,1]

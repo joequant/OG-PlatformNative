@@ -6,6 +6,8 @@
 
 # Demonstrates specifying curve names at the position level.
 
+Init ()
+
 # Create the security
 print ("Creating security")
 security <- SwapSecurity (

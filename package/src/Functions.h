@@ -28,6 +28,16 @@ extern "C" {
 		return oF.Count ();
 	}
 
+	SEXP RPROC Functions_getCategory1 (SEXP index) {
+		RFunctions oF;
+		return oF.GetCategory (index);
+	}
+
+	SEXP RPROC Functions_getDescription1 (SEXP index) {
+		RFunctions oF;
+		return oF.GetDescription (index);
+	}
+
 	SEXP RPROC Functions_getName1 (SEXP index) {
 		RFunctions oF;
 		return oF.GetName (index);
@@ -41,6 +51,11 @@ extern "C" {
 	SEXP RPROC Functions_getParameterNames1 (SEXP index) {
 		RFunctions oF;
 		return oF.GetParameterNames (index);
+	}
+
+	SEXP RPROC Functions_getParameterDescriptions1 (SEXP index) {
+		RFunctions oF;
+		return oF.GetParameterDescriptions (index);
 	}
 
 	SEXP RPROC Functions_invoke3 (SEXP index, SEXP args, SEXP envir) {

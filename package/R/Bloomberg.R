@@ -4,7 +4,9 @@
  # Please see distribution for license.
  ##
 
-# Converts a Fudge representation of FXVolQuoteType to R
-fromFudgeMsg.BloombergFXOptionVolatilitySurfaceInstrumentProvider.FXVolQuoteType <- function (x) {
-  x[1]
+# Brings Bloomberg related definitions into scope
+Install.Bloomberg <- function (stub) {
+  stub.Bloomberg <- stub$begin ("Bloomberg")
+  stub.Bloomberg$fromFudgeMsg ("msg[1]", "BloombergFXOptionVolatilitySurfaceInstrumentProvider.FXVolQuoteType")
+  stub.Bloomberg$end ()
 }

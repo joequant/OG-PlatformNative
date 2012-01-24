@@ -4,7 +4,9 @@
  # Please see distribution for license.
  ##
 
-# Convert a Fudge message representation of a Tenor to a string
-fromFudgeMsg.Tenor <- function (x) {
-  x$tenor
+# Brings Tenor definitions into scope
+Install.Tenor <- function (stub) {
+  stub.Tenor <- stub$begin ("Tenor")
+  stub.Tenor$fromFudgeMsg ("msg$tenor")
+  stub.Tenor$end ()
 }

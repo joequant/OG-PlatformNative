@@ -14,7 +14,7 @@
 
 LOGGING (com.opengamma.rstats.package.DataValue);
 
-#define R_ENCODE_ARRAY		".encode.Array"
+#define R_ENCODE_ARRAY		"Encode.Array"
 
 /// Creates a Value instance describing the FudgeMsg.
 ///

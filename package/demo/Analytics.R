@@ -7,6 +7,8 @@
 # Demonstrates the full use of the system for performing calculations by creating a security, a suitable view,
 # a market data snapshot from the view, and then executing the view with peturbations on the market data snapshot.
 
+Init ()
+
 # Helper function to get a value from a view result (assumes the only node is the root node)
 get.result <- function (view.result, value.requirement.name, calc.config = "Default") {
   data <- results.ViewComputationResultModel (view.result)[[calc.config]]

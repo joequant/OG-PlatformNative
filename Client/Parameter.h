@@ -14,11 +14,13 @@
 class CParameter {
 private:
 	char *m_pszName;
+	char *m_pszDescription;
 	int m_nFlags;
 public:
 	CParameter (const com_opengamma_language_definition_Parameter *pDefinition);
 	~CParameter ();
 	const char *GetName () const { return m_pszName; }
+	const char *GetDescription () const { return m_pszDescription; }
 	int GetFlags () const { return m_nFlags; }
 };
 

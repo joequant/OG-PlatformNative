@@ -6,6 +6,8 @@
 
 # Loads the time-series for yield curve data points to construct a 3D "curve over time" graph.
 
+Init ()
+
 # Curve tickers
 tickers <- c ("US00O/N Index", "US0001W Index", "US0002W Index", "US0001M Index", "US0002M Index", "US0003M Index", "USSW2 Curncy", "USSW3 Curncy", "USSW4 Curncy", "USSW5 Curncy", "USSW6 Curncy", "USSW7 Curncy", "USSW8 Curncy", "USSW9 Curncy", "USSW10 Curncy", "USSW15 Curncy", "USSW20 Curncy", "USSW25 Curncy", "USSW30 Curncy")
 # TODO: should query the curve definitions in the system to get these tickers

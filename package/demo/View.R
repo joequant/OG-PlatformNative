@@ -8,6 +8,8 @@
 # run all views (not currently supported in OG-Language)
 viewSearchPattern <- "Equity Option Test View 1"
 
+Init ()
+
 # Iterates through the views available, runs a cycle and displays the output
 views <- Views (viewSearchPattern)
 for (i in seq (from = 1, to = length (views[,1]))) {
@@ -19,12 +21,12 @@ for (i in seq (from = 1, to = length (views[,1]))) {
   if (is.ViewComputationResultModel (viewResultModel)) {
     print (paste ("Calculation took", calculationDuration.ViewComputationResultModel (viewResultModel), "seconds"))
     viewResult <- results.ViewComputationResultModel (viewResultModel)
-    lapply (names (viewResult), function (calcConfig) {
+    for (calcConfig in names (viewResult)) {
       result <- viewResult[[calcConfig]]
       print (paste ("Result from", viewName, "calculation config", calcConfig));
       print (result)
       print ("")
-    })
+    }
     liveData <- liveData.ViewComputationResultModel (viewResultModel)
     print (paste ("Live data from", viewName))
     print (liveData)

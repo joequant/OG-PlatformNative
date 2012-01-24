@@ -4,11 +4,6 @@
  # Please see distribution for license.
  ##
 
-# Wraps a ManageableMarketDataSnapshot instance to a MarketDataSnapshot
-fromFudgeMsg.ManageableMarketDataSnapshot <- function (x) {
-  fromFudgeMsg.MarketDataSnapshot (x)
-}
-
 # Decodes a Fudge representation of a market data snapshot to a data frame
 fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
   if (length (msg) == 0) {
@@ -80,13 +75,17 @@ fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
 }
 
 # Brings declarations for MarketDataSnapshot into scope
-Install.MarketDataSnapshot <- function () {
-  object.FudgeMsg ("MarketDataSnapshot")
-  .field.MarketDataSnapshot ("uniqueId")
-  .field.MarketDataSnapshot ("name")
-  .field.MarketDataSnapshot ("basisViewName")
-  .field.MarketDataSnapshot ("globalValues", ".globalValues.MarketDataSnapshot")
-  .field.MarketDataSnapshot ("yieldCurves", ".yieldCurves.MarketDataSnapshot")
-  .field.MarketDataSnapshot ("volatilityCubes", ".volatilityCubes.MarketDataSnapshot")
-  .field.MarketDataSnapshot ("volatilitySurfaces", ".volatilitySurfaces.MarketDataSnapshot")
+Install.MarketDataSnapshot <- function (stub) {
+  stub.MarketDataSnapshot <- stub$begin ("MarketDataSnapshot")
+  .object.FudgeMsg (stub.MarketDataSnapshot)
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "uniqueId")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "name")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "basisViewName")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "globalValues", ".globalValues.MarketDataSnapshot")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "yieldCurves", ".yieldCurves.MarketDataSnapshot")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "volatilityCubes", ".volatilityCubes.MarketDataSnapshot")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "volatilitySurfaces", ".volatilitySurfaces.MarketDataSnapshot")
+  stub.MarketDataSnapshot$fromFudgeMsg ("fromFudgeMsg.MarketDataSnapshot (msg)", "ManageableMarketDataSnapshot")
+  stub.MarketDataSnapshot$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.UnstructuredMarketDataSnapshot (msg)", "UnstructuredMarketDataSnapshot")
+  stub.MarketDataSnapshot$end ()
 }

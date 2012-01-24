@@ -11,6 +11,8 @@ LOGGING (com.opengamma.rstats.client.Entities);
 
 CEntityEntry::CEntityEntry (int nInvocationId, const com_opengamma_language_definition_Definition *pDefinition) {
 	m_nInvocationId = nInvocationId;
+	m_pszCategory = pDefinition->_category ? _tcsAsciiDup (pDefinition->_category) : NULL;
+	m_pszDescription = pDefinition->_description ? _tcsAsciiDup (pDefinition->_description) : NULL;
 	m_pszName = _tcsAsciiDup (pDefinition->_name);
 	m_nParameter = pDefinition->fudgeCountParameter;
 	m_ppoParameter = new const CParameter*[m_nParameter];
@@ -21,7 +23,9 @@ CEntityEntry::CEntityEntry (int nInvocationId, const com_opengamma_language_defi
 }
 
 CEntityEntry::~CEntityEntry () {
-	free (m_pszName);
+	delete m_pszCategory;
+	delete m_pszDescription;
+	delete m_pszName;
 	int n;
 	for (n = 0; n < m_nParameter; n++) {
 		delete m_ppoParameter[n];

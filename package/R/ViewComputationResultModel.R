@@ -213,14 +213,37 @@ column.ViewComputationResultModel <- function (data, config, col) {
 }
 
 # Brings declarations for ViewComputationResultModel into scope
-Install.ViewComputationResultModel <- function () {
-  object.FudgeMsg ("ViewComputationResultModel")
-  .field.ViewComputationResultModel ("viewProcessId")
-  .field.ViewComputationResultModel ("viewCycleId")
-  .field.ViewComputationResultModel ("valuationTime")
-  .field.ViewComputationResultModel ("calculationTime")
-  .field.ViewComputationResultModel ("calculationDuration", ".calculationDuration.ViewComputationResultModel")
-  .field.ViewComputationResultModel ("versionCorrection")
-  .field.ViewComputationResultModel ("results", ".results.ViewComputationResultModel")
-  .field.ViewComputationResultModel ("liveData", ".liveData.ViewComputationResultModel")
+Install.ViewComputationResultModel <- function (stub) {
+  stub.ViewComputationResultModel <- stub$begin ("ViewComputationResultModel")
+  .object.FudgeMsg (stub.ViewComputationResultModel)
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "viewProcessId")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "viewCycleId")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "valuationTime")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "calculationTime")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "calculationDuration", ".calculationDuration.ViewComputationResultModel")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "versionCorrection")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "results", ".results.ViewComputationResultModel")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "liveData", ".liveData.ViewComputationResultModel")
+  stub.ViewComputationResultModel$func (
+    "column",
+    "Find column from a data result",
+    "Finds a column with a given value specification from a named configuration within a result object. A list is returned with the column values and labels corresponding to the computation target identifiers from each value",
+    list (data = "The result object to process",
+          config = "The name of the configuration to process",
+          col = "The value specification to extract - e.g. as returned from columns.ViewComputationResultModel"),
+    "OpenGamma:::column.ViewComputationResultModel (data, config, col)")
+  stub.ViewComputationResultModel$func (
+    "columns",
+    "Find a set of satisfying columns from a data frame",
+    "Finds the column names from a data frame that match the named value and can satisfy any constraints on the requirement.",
+    list (data = "The data frame to search the columns of",
+          valueRequirement = "The value requirement string to match"),
+    "OpenGamma:::columns.ViewComputationResultModel (data, valueRequirement)")
+  stub.ViewComputationResultModel$func (
+    "firstValue",
+    "Get the first non-NA value from a data frame row",
+    "Returns the first non-NA value from the row. Typically the columns requested are a subset that can satisfy a given value requirement. This will then return the first usable value found. Values appear in multiple columns because a column is created in the data frame for each value name/properties pair. Differences in, for example, the function identifier may mean that there is not a single column containing all of the desired values requested in a view definition.",
+    list (row = "The data frame row", columns = "Vector of column names to look in"),
+    "OpenGamma:::firstValue.ViewComputationResultModel")
+  stub.ViewComputationResultModel$end ()
 }

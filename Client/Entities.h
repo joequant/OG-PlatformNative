@@ -14,6 +14,8 @@
 class CEntityEntry {
 private:
 	int m_nInvocationId;
+	char *m_pszCategory;
+	char *m_pszDescription;
 	char *m_pszName;
 	int m_nParameter;
 	const CParameter **m_ppoParameter;
@@ -22,6 +24,8 @@ protected:
 	int GetInvocationId () const { return m_nInvocationId; }
 public:
 	virtual ~CEntityEntry ();
+	const char *GetCategory () const { return m_pszCategory; }
+	const char *GetDescription () const { return m_pszDescription; }
 	const char *GetName () const { return m_pszName; }
 	int GetParameterCount () const { return m_nParameter; }
 	const CParameter *GetParameter (int n) const;

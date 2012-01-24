@@ -4,11 +4,6 @@
  # Please see distribution for license.
  ##
 
-# Wraps a ManageableVolatilitySurfaceSnapshot instance to a VolatilitySurfaceSnapshot
-fromFudgeMsg.ManageableVolatilitySurfaceSnapshot <- function (x) {
-  fromFudgeMsg.VolatilitySurfaceSnapshot (x)
-}
-
 # Unpack the values from the surface as a data frame
 .values.VolatilitySurfaceSnapshot <- function (msg) {
   k <- msg[1]
@@ -23,12 +18,11 @@ fromFudgeMsg.ManageableVolatilitySurfaceSnapshot <- function (x) {
 }
 
 # Brings declarations for VolatilitySurfaceSnapshot into scope
-Install.VolatilitySurfaceSnapshot <- function () {
-  object.FudgeMsg ("VolatilitySurfaceSnapshot")
-  .field.VolatilitySurfaceSnapshot ("values", ".values.VolatilitySurfaceSnapshot")
-}
-
-# Default conversion to data frame
-as.data.frame.VolatilitySurfaceSnapshot <- function (x, row.names, optional, ...) {
-  values.VolatilitySurfaceSnapshot (x)
+Install.VolatilitySurfaceSnapshot <- function (stub) {
+  stub.VolatilitySurfaceSnapshot <- stub$begin ("VolatilitySurfaceSnapshot")
+  .object.FudgeMsg (stub.VolatilitySurfaceSnapshot)
+  .field.object.FudgeMsg (stub.VolatilitySurfaceSnapshot, "values", ".values.VolatilitySurfaceSnapshot")
+  stub.VolatilitySurfaceSnapshot$asDataFrame ("values.volatilitySurfaceSnapshot (x)")
+  stub.VolatilitySurfaceSnapshot$fromFudgeMsg ("fromFudgeMsg.VolatilitySurfaceSnapshot (msg)", "ManageableVolatilitySurfaceSnapshot")
+  stub.VolatilitySurfaceSnapshot$end ()
 }

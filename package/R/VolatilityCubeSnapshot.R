@@ -4,11 +4,6 @@
  # Please see distribution for license.
  ##
 
-# Wraps a ManageableVolatilityCubeSnapshot instance to a VolatilityCubeSnapshot
-fromFudgeMsg.ManageableVolatilityCubeSnapshot <- function (x) {
-  fromFudgeMsg.VolatilityCubeSnapshot (x)
-}
-
 # Unpack the values from the cube into data frames
 .dataFrames.VolatilityCubeSnapshot <- function (msg) {
   values <- NULL
@@ -66,9 +61,12 @@ fromFudgeMsg.ManageableVolatilityCubeSnapshot <- function (x) {
 }
 
 # Brings declarations for VolatilityCubeSnapshot into scope
-Install.VolatilityCubeSnapshot <- function () {
-  object.FudgeMsg ("VolatilityCubeSnapshot")
-  .field.VolatilityCubeSnapshot ("otherValues", ".otherValues.VolatilityCubeSnapshot")
-  .field.VolatilityCubeSnapshot ("strikes", ".strikes.VolatilityCubeSnapshot")
-  .field.VolatilityCubeSnapshot ("values", ".values.VolatilityCubeSnapshot")
+Install.VolatilityCubeSnapshot <- function (stub) {
+  stub.VolatilityCubeSnapshot <- stub$begin ("VolatilityCubeSnapshot")
+  .object.FudgeMsg (stub.VolatilityCubeSnapshot)
+  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "otherValues", ".otherValues.VolatilityCubeSnapshot")
+  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "strikes", ".strikes.VolatilityCubeSnapshot")
+  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "values", ".values.VolatilityCubeSnapshot")
+  stub.VolatilityCubeSnapshot$fromFudgeMsg ("fromFudgeMsg.VolatilityCubeSnapshot (msg)", "ManageableVolatilityCubeSnapshot")
+  stub.VolatilityCubeSnapshot$end ()
 }

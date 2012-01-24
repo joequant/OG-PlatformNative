@@ -6,6 +6,8 @@
 
 # Loads a time-series from the database using a Bloomberg ticker
 
+Init ()
+
 # Fetch a timeseries
 ticker.ts <- FetchTimeSeries (dataField = "PX_LAST", identifier = "BLOOMBERG_TICKER~US0001M Index")
 

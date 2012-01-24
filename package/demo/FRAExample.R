@@ -6,6 +6,8 @@
 
 # Demonstrates constructing a FRA security, specifying all of the market data required and pricing it using the engine.
 
+Init ()
+
 # Create the security as an R object
 OpenGamma:::LOGDEBUG ("Creating security")
 fra.security <- FRASecurity (
@@ -76,13 +78,13 @@ tickers <- list (
   "BLOOMBERG_TICKER~USSW8 Curncy" = 0.01875,
   "BLOOMBERG_TICKER~USSW9 Curncy" = 0.020015)
 curve.forward.3m <- SnapshotYieldCurve ()
-lapply (labels (tickers), function (ticker) {
-  curve.forward.3m <<- SetYieldCurvePoint (
+for (ticker in tickers) {
+  curve.forward.3m <- SetYieldCurvePoint (
     snapshot = curve.forward.3m,
     valueName = MarketDataRequirementNames.Market.Value,
     identifier = ticker,
     marketValue = tickers[[ticker]])
-})
+}
 market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_FORWARD_3M", yieldCurve = curve.forward.3m)
 tickers <- list (
   "BLOOMBERG_TICKER~USDR2T Curncy" = 0.0027,
@@ -100,13 +102,13 @@ tickers <- list (
   "BLOOMBERG_TICKER~USSOF Curncy" = 0.001022,
   "BLOOMBERG_TICKER~USSOI Curncy" = 0.00112)
 curve.funding <- SnapshotYieldCurve ()
-lapply (labels (tickers), function (ticker) {
-  curve.funding <<- SetYieldCurvePoint (
+for (ticker in tickers) {
+  curve.funding <- SetYieldCurvePoint (
     snapshot = curve.funding,
     valueName = MarketDataRequirementNames.Market.Value,
     identifier = ticker,
     marketValue = tickers[[ticker]])
-})
+}
 market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_FUNDING", yieldCurve = curve.funding)
 market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
 OpenGamma:::LOGINFO ("Snapshot updated to", market.data.id)

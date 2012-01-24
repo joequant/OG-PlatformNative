@@ -9,6 +9,16 @@ count.Functions <- function () {
   OpenGammaCall ("Functions_count")
 }
 
+# Returns the category of a function
+getCategory.Functions <- function (index) {
+  OpenGammaCall ("Functions_getCategory", as.integer (index))
+}
+
+# Returns the description of a function
+getDescription.Functions <- function (index) {
+  OpenGammaCall ("Functions_getDescription", as.integer (index))
+}
+
 # Returns the name of a function
 getName.Functions <- function (index) {
   OpenGammaCall ("Functions_getName", as.integer (index))
@@ -24,24 +34,56 @@ getParameterFlags.Functions <- function (index) {
   OpenGammaCall ("Functions_getParameterFlags", as.integer (index))
 }
 
+# Returns the parameter descriptions for a function
+getParameterDescriptions.Functions <- function (index) {
+  OpenGammaCall ("Functions_getParameterDescriptions", as.integer (index))
+}
+
 # Invokes a function with the given argument array and returns the result
 invoke.Functions <- function (index, args) {
   OpenGammaCall ("Functions_invoke", as.integer (index), args, parent.frame ())
 }
 
+# Looks up a function index by name
+find.Functions <- function (name) {
+  count <- count.Functions ()
+  result <- -1
+  for (i in seq (from = 0, to = count - 1)) {
+    n <- getName.Functions (i)
+    if (n == name) {
+      result <- i
+      break
+    }
+  }
+  result
+}
+
 # Brings a proxy declaration for a function into scope
-.installByIndex.Functions <- function (index) {
+.installByIndex.Functions <- function (stub.Functions, index) {
   name <- getName.Functions (index)
   if (!is.null (name)) {
     LOGDEBUG ("Found function", name)
+    cat <- getCategory.Functions (index)
+    if (is.null (cat)) {
+      cat <- ""
+    }
+    description <- getDescription.Functions (index)
+    if (is.null (description)) {
+      description <- paste ("The", name, "function.")
+    }
     argNames <- getParameterNames.Functions (index)
     argFlags <- getParameterFlags.Functions (index)
-    if (length (argNames) == length (argFlags)) {
-      argDecl <- c ()
-      validate <- c ()
+    argDescriptions <- getParameterDescriptions.Functions (index)
+    if ((length (argNames) == length (argFlags)) && (length (argNames) == length (argDescriptions))) {
+      params <- list ()
       argStrings <- c ()
+      body <- c ()
       if (length (argNames) > 0) {
         for (i in seq (from = 1, to = length (argNames))) {
+          argDescription <- argDescriptions[i]
+          if (is.na (argDescription)) {
+            argDescription <- paste ("Parameter", i)
+          }
           flagOptional <- FALSE
           flags <- argFlags[i]
           if (flags >= PARAMETER_FLAG_OPTIONAL) {
@@ -49,28 +91,30 @@ invoke.Functions <- function (index, args) {
             flagOptional <- TRUE
           }
           if (flagOptional) {
-            argDecl <- append (argDecl, paste (argNames[i], "= NULL"))
+            params[[argNames[i]]] <- paste ("?", argDescription, sep = "")
           } else {
-            argDecl <- append (argDecl, argNames[i])
-            validate <- append (validate, paste ("if (missing (", argNames[i], ") || is.null (", argNames[i], ")) stop (\"Parameter '", argNames[i], "' may not be null\")", sep = ""))
+            params[[argNames[i]]] <- argDescription
+            body <- append (body, paste ("if (missing (", argNames[i], ") || is.null (", argNames[i], ")) stop (paste (\"Parameter '\", ", paste (".args", name, sep = "."), " (", i, "), \"' may not be null\", sep = \"\"))", sep = ""))
           }
           argStrings <- append (argStrings, paste ("\"", argNames[i], "\"", sep = ""))
         }
       }
-      argDecl <- paste (argDecl, collapse = ", ")
-      argInvoke <- paste (argNames, collapse = ", ")
-      argStrings <- paste (argStrings, collapse = ", ")
-      cmd <- paste (c (
-        paste (name, " <<- function (", argDecl, ") {", sep = ""),
-        validate,
-        paste ("result <- invoke.Functions (", index, ", list (", argInvoke, "))", sep = ""),
-        "if (is.ErrorValue (result)) {",
-        paste ("if (result@code == 1) stop (paste (\"Parameter '\", switch (result@index + 1, ", argStrings, "), \"' invalid - \", result@message, sep = \"\"))", sep = ""),
-        paste ("if (result@code == 3) stop (paste (\"Parameter '\", switch (result@index + 1, ", argStrings, "), \"' invalid - \", result@message, sep = \"\"))", sep = ""),
-        "stop (result@toString)",
-        "} else result",
-        "}"), sep = "\n")
-      eval (parse (text = cmd))
+      body <- append (body, paste ("result <- OpenGamma:::invoke.Functions (", index, ", list (", paste (argNames, collapse = ", "), "))", sep = ""))
+      body <- append (body, paste ("if (OpenGamma:::is.ErrorValue (result)) { stop (.message.ErrorValue (result@code, .args.", name, ")) } else { result }", sep = ""))
+      stub.Functions$func (
+        paste (".args", name, sep = "."),
+        paste (name, "argument names"),
+        "Returns the text name for the argument.",
+        list (i = "The argument index"),
+        paste ("switch (i, ", paste (argStrings, collapse = ", "), ")", sep = ""),
+        FALSE)
+      stub.Functions$func (
+        name,
+        paste (cat, "function"),
+        description,
+        params,
+        paste (body, collapse = "\n"),
+        FALSE)
     } else {
       LOGERROR ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags)
     }
@@ -80,7 +124,10 @@ invoke.Functions <- function (index, args) {
 }
 
 # Brings proxy declarations for all available functions into scope
-Install.Functions <- function () {
-  LOGINFO ("Installing functions")
-  for (index in seq (from = 0, to = count.Functions () - 1)) .installByIndex.Functions (index)
+Install.Functions <- function (stub) {
+  count <- count.Functions ()
+  LOGINFO ("Declaring", count, " functions")
+  stub.Functions <- stub$begin ("Functions")
+  for (index in seq (from = 0, to = count - 1)) .installByIndex.Functions (stub.Functions, index)
+  stub.Functions$end ()
 }

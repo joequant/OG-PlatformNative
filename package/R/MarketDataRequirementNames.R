@@ -5,12 +5,22 @@
  ##
 
 # Brings market data requirement names from the Java stack into scope
-Install.MarketDataRequirementNames <- function () {
-  names <- MarketDataRequirementNames ()
-  lapply (names, function (name) {
-    cmd <- paste ("MarketDataRequirementNames.", make.names (gsub ("_", ".", name)), " <<- \"", gsub ("(\"|\\\\)", "\\\\\\1", name), "\"", sep = "")
-    eval (parse (text = cmd))
-    0
-  })
-  LOGDEBUG (length (names), "MarketDataRequirementNames imported")
+Install.MarketDataRequirementNames <- function (stub) {
+  func <- find.Functions ("MarketDataRequirementNames")
+  if (func >= 0) {
+    stub.MarketDataRequirementNames <- stub$begin ("MarketDataRequirementNames")
+    names <- invoke.Functions (func, list ())
+    for (name in names) {
+      stub.MarketDataRequirementNames$const (
+        make.names (gsub ("_", ".", name)),
+        paste (name, "constant"),
+        "The symbolic constant used within the analytics library to specify market data requirements.",
+        paste ("\"", gsub ("(\"|\\\\)", "\\\\\\1", name), "\"", sep = ""),
+        TRUE)
+    }
+    LOGDEBUG (length (names), "MarketDataRequirementNames imported")
+    stub.MarketDataRequirementNames$end ()
+  } else {
+    LOGDEBUG ("MarketDataRequirementNames not available")
+  }
 }

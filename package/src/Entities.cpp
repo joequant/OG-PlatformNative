@@ -82,6 +82,24 @@ SEXP REntities::Count () const {
 	}
 }
 
+/// Returns the category of the indexed entity.
+///
+/// @param[in] index zero based index of the entity
+/// @return the category
+SEXP REntities::GetCategory (SEXP index) const {
+	REntityEntry oE (GetEntry (index));
+	return oE.GetCategory ();
+}
+
+/// Returns the description of the indexed entity.
+///
+/// @param[in] index zero based index of the entity
+/// @return the description
+SEXP REntities::GetDescription (SEXP index) const {
+	REntityEntry oE (GetEntry (index));
+	return oE.GetDescription ();
+}
+
 /// Returns the name of the indexed entity.
 ///
 /// @param[in] index zero based index of the entity
@@ -107,6 +125,39 @@ SEXP REntities::GetParameterFlags (SEXP index) const {
 SEXP REntities::GetParameterNames (SEXP index) const {
 	REntityEntry oE (GetEntry (index));
 	return oE.GetParameterNames ();
+}
+
+/// Returns the parameter descriptions of the indexed entity.
+///
+/// @param[in] index zero based index of the entity
+/// @return the parameter descriptions
+SEXP REntities::GetParameterDescriptions (SEXP index) const {
+	REntityEntry oE (GetEntry (index));
+	return oE.GetParameterDescriptions ();
+}
+
+/// Returns the category of the entiry.
+///
+/// @return the category
+SEXP REntityEntry::GetCategory () const {
+	if (m_poEntry) {
+		const char *pszCategory = m_poEntry->GetCategory ();
+		return pszCategory ? mkString (pszCategory) : R_NilValue;
+	} else {
+		return R_NilValue;
+	}
+}
+
+/// Returns the description of the entity.
+///
+/// @return the description
+SEXP REntityEntry::GetDescription () const {
+	if (m_poEntry) {
+		const char *pszDescription = m_poEntry->GetDescription ();
+		return pszDescription ? mkString (pszDescription) : R_NilValue;
+	} else {
+		return R_NilValue;
+	}
 }
 
 /// Returns the name of the entity.
@@ -146,6 +197,27 @@ SEXP REntityEntry::GetParameterNames () const {
 		int n;
 		for (n = 0; n < m_poEntry->GetParameterCount (); n++) {
 			SEXP name = mkChar (m_poEntry->GetParameter (n)->GetName ());
+			PROTECT (name);
+			SET_STRING_ELT (names, n, name);
+		}
+		UNPROTECT (1 + n);
+		return names;
+	} else {
+		return R_NilValue;
+	}
+}
+
+/// Returns the parameter descriptions of the entity
+///
+/// @return the parameter descriptions
+SEXP REntityEntry::GetParameterDescriptions () const {
+	if (m_poEntry) {
+		SEXP names = allocVector (STRSXP, m_poEntry->GetParameterCount ());
+		PROTECT (names);
+		int n;
+		for (n = 0; n < m_poEntry->GetParameterCount (); n++) {
+			const char *pszDescription = m_poEntry->GetParameter (n)->GetDescription ();
+			SEXP name = pszDescription ? mkChar (pszDescription) : R_NaString;
 			PROTECT (name);
 			SET_STRING_ELT (names, n, name);
 		}

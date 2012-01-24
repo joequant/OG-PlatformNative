@@ -76,10 +76,10 @@ satisfiedBy.ValueProperties <- function (a, b) {
   TRUE
 }
 
-# The "empty" property set
+# The empty property set
 empty.ValueProperties <- "EMPTY"
 
-# The "infinite" property set
+# The infinite property set
 infinite.ValueProperties <- "INFINITE"
 
 # Parse a string representation into a ValueProperties object
@@ -94,7 +94,23 @@ parse.ValueProperties <- function (propertyString) {
 }
 
 # Brings declarations for ValueProperties into scope
-Install.ValueProperties <- function () {
-  object.FudgeMsg ("ValueProperties")
-  setMethod ("as.character", signature = "ValueProperties", definition = function (x) { .toString.ValueProperties (x@msg) })
+Install.ValueProperties <- function (stub) {
+  stub.ValueProperties <- stub$begin ("ValueProperties")
+  .object.FudgeMsg (stub.ValueProperties)
+  stub.ValueProperties$setMethod ("as.character", "function (x) { OpenGamma:::.toString.ValueProperties (x@msg) }")
+  stub.ValueProperties$const ("empty", "The \"empty\" value property set", "The empty value property set can be satisfied by any properties, and can satisfy none (other than the empty set).", "OpenGamma:::empty.ValueProperties")
+  stub.ValueProperties$const ("infinite", "The \"infinite\" value property set", "The infinite value property set can satisfy any property constraints, and can only be satisfied by the infinite set.", "OpenGamma:::infinite.ValueProperties")
+  stub.ValueProperties$func (
+    "satisfiedBy",
+    "Test the satisfied-by relationship between two value property sets",
+    "Tests if one set of value properties can satisfy the constraints described yb another. Returns TRUE if A is satisfied by B (or equally worded as if B satisfies A) and FALSE otherwise. A and B may be either strung representations of value properties or instances of the ValueProperties object type.",
+    list (a = "The constaints to test satisfaction of", b = "The properties satisfy the constraints with"),
+    "OpenGamma:::satisfiedBy.ValueProperties (a, b)")
+  stub.ValueProperties$func (
+    "parse",
+    "Create a ValueProperties object from a string representation",
+    "Parses the string representation and returns the equivalent ValueProperties object.",
+    list (propertyString = "The string to parse"),
+    "OpenGamma:::parse.ValueProperties (propertyString)")
+  stub.ValueProperties$end ()
 }

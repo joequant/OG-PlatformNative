@@ -28,3 +28,10 @@ fromFudgeMsg.ObjectsPair <- function (x) {
   }
   list (first, second)
 }
+
+# Brings objects pair definitions into scope
+Install.ObjectsPair <- function (stub) {
+  stub.ObjectsPair <- stub$begin ("ObjectsPair")
+  stub.ObjectsPair$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.ObjectsPair (msg)")
+  stub.ObjectsPair$end ()
+}

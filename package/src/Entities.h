@@ -38,9 +38,12 @@ public:
 	REntities (const CEntities *poEntities) { m_poEntities = poEntities; }
 
 	SEXP Count () const;
+	SEXP GetCategory (SEXP index) const;
+	SEXP GetDescription (SEXP index) const;
 	SEXP GetName (SEXP index) const;
 	SEXP GetParameterFlags (SEXP index) const;
 	SEXP GetParameterNames (SEXP index) const;
+	SEXP GetParameterDescriptions (SEXP index) const;
 };
 
 /// R method helper for querying CEntityEntry objects. Note that the paremt entities object reference
@@ -58,9 +61,12 @@ public:
 	/// @param[in] poEntry the entry object
 	REntityEntry (const CEntityEntry *poEntry) { m_poEntry = poEntry; }
 
+	SEXP GetCategory () const;
+	SEXP GetDescription () const;
 	SEXP GetName () const;
 	SEXP GetParameterFlags () const;
 	SEXP GetParameterNames () const;
+	SEXP GetParameterDescriptions () const;
 };
 
 #endif /* ifndef __inc_og_rstats_package_entities_h */

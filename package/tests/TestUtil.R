@@ -32,3 +32,5 @@ ASSERT <- function (expr) {
     stop ("Assertion failed")
   }
 }
+
+OpenGamma::Init ()

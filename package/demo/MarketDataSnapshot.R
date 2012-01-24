@@ -6,6 +6,8 @@
 
 # Demonstrates manipulating a market data snapshot programmatically.
 
+Init ()
+
 # Shifts every value in the curve by an amount by manipulating direct points
 shiftCurveByPoint <- function (curve, amount) {
   data <- values.YieldCurveSnapshot (curve)
