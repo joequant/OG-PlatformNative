@@ -27,6 +27,10 @@ viewClient <- ViewClient (viewDescriptor)
 LOGDEBUG (viewClient)
 ASSERT (is.ViewClient (viewClient))
 
+# Trigger a cycle
+LOGDEBUG ("TriggerViewCycle")
+TriggerViewCycle (viewClient)
+
 # Get a calculation result
 LOGDEBUG ("GetViewResult")
 viewResult <- GetViewResult (viewClient, 30000)
