@@ -78,7 +78,7 @@ tickers <- list (
   "BLOOMBERG_TICKER~USSW8 Curncy" = 0.01875,
   "BLOOMBERG_TICKER~USSW9 Curncy" = 0.020015)
 curve.forward.3m <- SnapshotYieldCurve ()
-for (ticker in tickers) {
+for (ticker in names (tickers)) {
   curve.forward.3m <- SetYieldCurvePoint (
     snapshot = curve.forward.3m,
     valueName = MarketDataRequirementNames.Market.Value,
@@ -102,7 +102,7 @@ tickers <- list (
   "BLOOMBERG_TICKER~USSOF Curncy" = 0.001022,
   "BLOOMBERG_TICKER~USSOI Curncy" = 0.00112)
 curve.funding <- SnapshotYieldCurve ()
-for (ticker in tickers) {
+for (ticker in names (tickers)) {
   curve.funding <- SetYieldCurvePoint (
     snapshot = curve.funding,
     valueName = MarketDataRequirementNames.Market.Value,
