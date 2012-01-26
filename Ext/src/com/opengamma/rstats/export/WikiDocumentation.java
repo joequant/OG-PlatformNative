@@ -9,8 +9,10 @@ package com.opengamma.rstats.export;
 import com.opengamma.language.connector.AbstractMain;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.export.CategorizingDefinitionExporter;
+import com.opengamma.language.export.CategorizingDefinitionExporter.Entry;
 import com.opengamma.language.export.WikiDocumentationExporter;
 import com.opengamma.language.export.WikiExporter;
+import com.opengamma.language.export.WikiPageExporter;
 
 /**
  * Produce Wiki documentation for the R functions.
@@ -20,6 +22,8 @@ public class WikiDocumentation extends WikiExporter {
   public WikiDocumentation(final SessionContext sessionContext) {
     super(sessionContext);
   }
+
+  // TODO: pull data from the Rd files too so that they end up in the wiki
 
   @Override
   protected WikiDocumentationExporter getDocumentationExporter(final CategorizingDefinitionExporter underlying) {
@@ -37,6 +41,33 @@ public class WikiDocumentation extends WikiExporter {
         return new RProcedure(this, base);
       }
 
+      @Override
+      protected String[] getWikiDocFolders() {
+        return new String[] {"./wikiDoc", "../OG-Language/wikiDoc" };
+      }
+
+    };
+  }
+
+  @Override
+  protected WikiPageExporter getPageExporter(final CategorizingDefinitionExporter underlying) {
+    return new WikiPageExporter(underlying) {
+
+      @Override
+      protected String pageAddressCategory(final String category) {
+        return "R " + prettyPrintCategory(category) + " Functions";
+      }
+
+      @Override
+      protected String createPageName(final String category, final String page) {
+        return "R " + prettyPrintCategory(category) + " Functions - " + page;
+      }
+
+      @Override
+      protected String createPageName(final Entry entry) {
+        return "R Function - " + entry.getName();
+      }
+
     };
   }
 
@@ -50,7 +81,7 @@ public class WikiDocumentation extends WikiExporter {
         return true;
       }
     }).runMain("R", args);
-    // TODO: change runMain so that it doesn't exit - we may want to do other things
+    System.exit(0);
   }
 
 }
