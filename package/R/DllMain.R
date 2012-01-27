@@ -232,7 +232,7 @@
   if (!is.na (test)) {
     Sys.unsetenv ("R_TESTS")
   }
-  install.packages (pkgs = tmp, repos = NULL)
+  install.packages (pkgs = tmp, repos = NULL, type = "source")
   if (!is.na (test)) {
     Sys.setenv ("R_TESTS" = test)
   }
