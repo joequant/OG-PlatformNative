@@ -126,7 +126,7 @@ find.Functions <- function (name) {
 # Brings proxy declarations for all available functions into scope
 Install.Functions <- function (stub) {
   count <- count.Functions ()
-  LOGINFO ("Declaring", count, " functions")
+  LOGINFO ("Declaring", count, "functions")
   stub.Functions <- stub$begin ("Functions")
   for (index in seq (from = 0, to = count - 1)) .installByIndex.Functions (stub.Functions, index)
   stub.Functions$end ()
