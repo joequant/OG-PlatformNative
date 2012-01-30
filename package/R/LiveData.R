@@ -90,7 +90,7 @@ invoke.LiveData <- function (index, args) {
         }
       }
       body <- append (body, paste ("result <- OpenGamma:::invoke.LiveData (", index, ", list (", paste (argNames, collapse = ", "), "))", sep = ""))
-      body <- append (body, paste ("if (OpenGamma:::is.ErrorValue (result)) { stop (OpenGamma:::.message.ErrorValue (result@code, .args.", name, ")) } else { result }", sep = ""))
+      body <- append (body, paste ("if (OpenGamma:::is.ErrorValue (result)) { stop (OpenGamma:::.message.ErrorValue (result, .args.", name, ")) } else { result }", sep = ""))
       stub.LiveData$func (
         paste (".args", name, sep = "."),
         paste (name, "argument names"),

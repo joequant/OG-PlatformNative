@@ -11,7 +11,7 @@
 
 # Asserts that a value is an instance of the named class
 .assert.Object <- function (x, className) {
-  if (!.is.Object (x, className)) { stop (paste ("Can't apply to non", className), x) }
+  if (!.is.Object (x, className)) { stop (paste ("Can't apply to non", className, x)) }
   invisible (0)
 }
 

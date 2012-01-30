@@ -86,7 +86,7 @@ invoke.Procedures <- function (index, args) {
         }
       }
       body <- append (body, paste ("result <- OpenGamma:::invoke.Procedures (", index, ", list (", paste (argNames, collapse = ", "), "))", sep = ""))
-      body <- append (body, paste ("if (OpenGamma:::is.ErrorValue (result)) { stop (OpenGamma:::.message.ErrorValue (result@code, .args.", name, ")) } else { invisible (result) }", sep = ""))
+      body <- append (body, paste ("if (OpenGamma:::is.ErrorValue (result)) { stop (OpenGamma:::.message.ErrorValue (result, .args.", name, ")) } else { invisible (result) }", sep = ""))
       stub.Procedures$func (
         paste (".args", name, sep = "."),
         paste (name, "argument names"),
