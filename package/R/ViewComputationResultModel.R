@@ -88,14 +88,14 @@
   configurations <- msg[1]
   results <- msg[2]
   result <- list ()
-  if (is.list (configurations)) {
-    if (length (configurations) > 0) {
+  if (length (configurations) > 0) {
+    if (length (configurations) > 1) {
       for (index in seq (from = 1, to = length (configurations))) {
-        result[[configurations[[index]]]] <- .configurationResults.ViewComputationResultModel (results[[index]])
+        result[[configurations[index]]] <- .configurationResults.ViewComputationResultModel (results[[index]])
       }
+    } else {
+      result[[configurations]] <- .configurationResults.ViewComputationResultModel (results)
     }
-  } else {
-    result[[configurations]] <- .configurationResults.ViewComputationResultModel (results)
   }
   result
 }

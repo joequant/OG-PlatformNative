@@ -10,7 +10,7 @@ source ("TestUtil.R")
 
 LOGDEBUG ("as.Intern")
 foo <- OpenGamma:::as.ExternalRef ("Foo", "destroy.Foo")
-ASSERT (OpenGamma:::from.ExternalRef (foo) == "Foo")
+ASSERT_EQUAL (OpenGamma:::from.ExternalRef (foo), "Foo")
 LOGDEBUG ("destroy")
 foo <- 0
 gc ()

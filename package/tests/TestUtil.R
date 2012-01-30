@@ -33,4 +33,15 @@ ASSERT <- function (expr) {
   }
 }
 
+ASSERT_EQUAL <- function (actual, expected) {
+  if ((length (actual) == length (expected)) && (actual == expected)) {
+    LOGDEBUG ("Assertion passed")
+  } else {
+    LOGFATAL ("Assertion failed")
+    LOGERROR ("Expected", expected)
+    LOGERROR ("Actual", actual)
+    stop ("Assertion failed")
+  }
+}
+
 OpenGamma::Init ()

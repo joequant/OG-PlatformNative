@@ -12,19 +12,19 @@ source ("TestUtil.R")
 LOGDEBUG ("EquitySecurity")
 sec <- EquitySecurity (name = "Foo", exchange = "Exchange", exchangeCode = "EXCH", companyName = "Bar", currency = "USD")
 LOGDEBUG (sec)
-ASSERT (OpenGamma::displayName.FudgeMsg (sec) == "EquitySecurity")
+ASSERT_EQUAL (OpenGamma::displayName.FudgeMsg (sec), "EquitySecurity")
 
 # Attribute get
 LOGDEBUG ("GetEquitySecurityExchange")
 exch <- GetEquitySecurityExchange (sec)
 LOGDEBUG (exch)
-ASSERT (exch == "Exchange")
+ASSERT_EQUAL (exch, "Exchange")
 
 # Attribute set
 LOGDEBUG ("SetEquitySecurityCurrency")
 sec <- SetEquitySecurityCurrency (sec, "GBP")
 LOGDEBUG (sec)
-ASSERT (GetEquitySecurityCurrency (sec) == "GBP")
+ASSERT_EQUAL (GetEquitySecurityCurrency (sec), "GBP")
 
 # Object expansion
 LOGDEBUG ("ExpandEquitySecurity")
