@@ -10,8 +10,8 @@
 
 Init ()
 
-# Find a view identifier
-viewName <- "Simple Swap Test View"
+# Find a view identifier (omit the view name to graph the first view)
+viewName <- "Demo Swap Portfolio View"
 viewIdentifier <- Views (viewName)[1,1]
 
 # Create a client (private process) for sampling a historic period (past 365 days in this example)

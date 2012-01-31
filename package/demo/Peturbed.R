@@ -9,8 +9,8 @@
 
 Init ()
 
-# Find a view identifier
-viewName <- "Simple Swap Test View"
+# Find a view identifier (omit view name for arbitrary view)
+viewName <- "Demo Swap Portfolio View"
 viewIdentifier <- Views (viewName)[1,1]
 
 # Set up the view client descriptor to sample a historic period (a month ending last week). This
@@ -21,7 +21,7 @@ viewClientDescriptor <- HistoricalMarketDataViewClient (viewIdentifier, startTim
 
 # Our shifts (-25%, -15%, 0, +15%, +25%) applied to some tickers
 shiftAmounts <- c (0.75, 0.85, 1, 1.15, 1.25)
-shiftTickers <- c ("BLOOMBERG_TICKER~US0002M Index", "BLOOMBERG_TICKER~US0003M Index", "BLOOMBERG_TICKER~USSw5 Curncy", "BLOOMBERG_TICKER~USSW10 Curncy")
+shiftTickers <- c ("OG_SYNTHETIC_TICKER~USDCASHP2M", "OG_SYNTHETIC_TICKER~USDCASHP3M", "OG_SYNTHETIC_TICKER~USDSWAPP5Y", "OG_SYNTHETIC_TICKER~USDSWAPP10Y")
 
 # Iterate over the shifts
 results <- lapply (shiftAmounts, function (shift) {

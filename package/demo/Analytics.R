@@ -32,16 +32,29 @@ modify.curve <- function (curve, shift) {
 
 # Create the security
 print ("Creating security")
-security <- FXOptionSecurity (
-  name = "FX vanilla option, put EUR 1.5M, receive USD 1M, maturity 1/6/2014",
-  putCurrency = "EUR",
-  putAmount = 1500000,
-  callCurrency = "USD",
-  callAmount = 1000000,
-  expiry = "2014-01-06",
-  settlementDate = "2014-01-06",
-  long = TRUE,
-  exerciseType = AmericanExerciseType ())
+security <- SwapSecurity (
+  name = "IR Swap USD 40,326,000 2021-08-08 - USD LIBOR 3m / 2.709%",
+  tradeDate = "2011-08-08",
+  effectiveDate = "2011-08-08",
+  maturityDate = "2021-08-08",
+  counterparty = "CParty",
+  payLeg = FloatingInterestRateLeg (
+    dayCount = "Actual/360",
+    frequency = "Quarterly",
+    regionId = "FINANCIAL_REGION~US+GB",
+    businessDayConvention = "Modified Following",
+    notional = InterestRateNotional ("USD", 40326000),
+    eom = FALSE,
+    floatingReferenceRateId = "Reference Rate Simple Name~USD LIBOR 3m",
+    floatingRateType = "IBOR"),
+  receiveLeg = FixedInterestRateLeg (
+    dayCount = "30U/360",
+    frequency = "Semi-annual",
+    regionId = "FINANCIAL_REGION~US+GB",
+    businessDayConvention = "Modified Following",
+    notional = InterestRateNotional ("USD", 40326000),
+    eom = FALSE,
+    rate = 0.027))
 security.id <- StoreSecurity (security)
 
 # Create a portfolio containing a position in this security
@@ -89,9 +102,9 @@ shifts <- sapply (head (randu$x, 10), function (x) { x / 100 })
 # Iterate through them
 for (shift in shifts) {
 
-  # Modify the snapshot by tweaking the USD forward curve
+  # Modify the snapshot by tweaking the USD curve
   print (paste ("Modifying snapshot", snapshot.id, "by", shift))
-  snapshot <- SetSnapshotYieldCurve (snapshot, "USD_FUNDING", modify.curve (GetSnapshotYieldCurve (snapshot, "USD_FUNDING"), shift))
+  snapshot <- SetSnapshotYieldCurve (snapshot, "USD_SECONDARY", modify.curve (GetSnapshotYieldCurve (snapshot, "USD_SECONDARY"), shift))
 
   # Write the snapshot back
   print (paste ("Updating snapshot"))

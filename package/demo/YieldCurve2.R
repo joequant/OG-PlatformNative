@@ -12,7 +12,7 @@
 Init ()
 
 # Find a view identifier (the view must contain at least one yield curve primitive output)
-view.name <- "Multi-Currency Swap Test View"
+view.name <- "Demo Swap Portfolio View"
 view.identifier <- Views (view.name)[1,1]
 
 # Create a client to iterate over a year of data (see Historical.R for explanation of how)

@@ -6,6 +6,8 @@
 
 # Demonstrates constructing a FRA security, specifying all of the market data required and pricing it using the engine.
 
+# Note: this is not currently part of the main demo set as it includes Bloomberg tickers so does not work with the Open Source example server
+
 Init ()
 
 # Create the security as an R object

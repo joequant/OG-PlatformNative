@@ -30,16 +30,29 @@ create.view <- function (security) {
 
 # Create the security
 print ("Creating base security")
-security <- FXOptionSecurity (
-  name = "Example security",
-  putCurrency = "EUR",
-  putAmount = 1500000,
-  callCurrency = "USD",
-  callAmount = 1000000,
-  expiry = "2014-01-06",
-  settlementDate = "2014-01-06",
-  long = TRUE,
-  exerciseType = AmericanExerciseType ())
+security <- SwapSecurity (
+  name = "IR Swap USD 40,326,000 2021-08-08 - USD LIBOR 3m / 2.709%",
+  tradeDate = "2011-08-08",
+  effectiveDate = "2011-08-08",
+  maturityDate = "2021-08-08",
+  counterparty = "CParty",
+  payLeg = FloatingInterestRateLeg (
+    dayCount = "Actual/360",
+    frequency = "Quarterly",
+    regionId = "FINANCIAL_REGION~US+GB",
+    businessDayConvention = "Modified Following",
+    notional = InterestRateNotional ("USD", 40326000),
+    eom = FALSE,
+    floatingReferenceRateId = "Reference Rate Simple Name~USD LIBOR 3m",
+    floatingRateType = "IBOR"),
+  receiveLeg = FixedInterestRateLeg (
+    dayCount = "30U/360",
+    frequency = "Semi-annual",
+    regionId = "FINANCIAL_REGION~US+GB",
+    businessDayConvention = "Modified Following",
+    notional = InterestRateNotional ("USD", 40326000),
+    eom = FALSE,
+    rate = 0.027))
 
 # Create the view
 print ("Creating base view")
@@ -80,7 +93,9 @@ for (shift in shifts) {
 
   # Modify the security and update the view
   print (paste ("Modifying security by", shift))
-  security.modified <- SetFXOptionSecurityCallAmount (security, GetFXOptionSecurityCallAmount (security) * shift)
+  leg <- GetSwapSecurityReceiveLeg (security)
+  leg.modified <- SetFixedInterestRateLegRate (leg, GetFixedInterestRateLegRate (leg) * shift)
+  security.modified <- SetSwapSecurityReceiveLeg (security, leg.modified)
   view.modified <- create.view (security.modified)
   view.id <- StoreViewDefinition (view.modified, view.id)
 

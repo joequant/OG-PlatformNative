@@ -9,11 +9,14 @@
 Init ()
 
 # Curve tickers
-tickers <- c ("US00O/N Index", "US0001W Index", "US0002W Index", "US0001M Index", "US0002M Index", "US0003M Index", "USSW2 Curncy", "USSW3 Curncy", "USSW4 Curncy", "USSW5 Curncy", "USSW6 Curncy", "USSW7 Curncy", "USSW8 Curncy", "USSW9 Curncy", "USSW10 Curncy", "USSW15 Curncy", "USSW20 Curncy", "USSW25 Curncy", "USSW30 Curncy")
+tickers <- c ("USDCASHP1D", "USDCASHP1M", "USDCASHP2M", "USDCASHP3M", "USDCASHP4M", "USDCASHP5M", "USDCASHP6M", "USDCASHP7M", "USDCASHP8M", "USDCASHP9M", "USDCASHP10M", "USDCASHP11M", "USDCASHP12M", "USDSWAPP1Y", "USDSWAPP2Y", "USDSWAPP3Y", "USDSWAPP4Y", "USDSWAPP5Y", "USDSWAPP6Y", "USDSWAPP7Y", "USDSWAPP8Y", "USDSWAPP9Y", "USDSWAPP10Y", "USDSWAPP15Y", "USDSWAPP20Y", "USDSWAPP25Y", "USDSWAPP30Y", "USDSWAPP40Y", "USDSWAPP50Y", "USDSWAPP80Y")
+tickers.field <- "CLOSE"
+tickers.scheme <- "OG_SYNTHETIC_TICKER"
+
 # TODO: should query the curve definitions in the system to get these tickers
 
 # Fetch timeseries
-timeseries <- lapply (tickers, function (x) { FetchTimeSeries (dataField = "PX_LAST", identifier = paste ("BLOOMBERG_TICKER", x, sep = "~")) })
+timeseries <- lapply (tickers, function (x) { FetchTimeSeries (dataField = tickers.field, identifier = paste (tickers.scheme, x, sep = "~")) })
 # TODO: should use the range truncated form to just get a couple of years of data
 
 # Extend start of shorter timeseries so curve starts in same place

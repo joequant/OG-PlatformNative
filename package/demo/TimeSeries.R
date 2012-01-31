@@ -9,7 +9,7 @@
 Init ()
 
 # Fetch a timeseries
-ticker.ts <- FetchTimeSeries (dataField = "PX_LAST", identifier = "BLOOMBERG_TICKER~US0001M Index")
+ticker.ts <- FetchTimeSeries (dataField = "CLOSE", identifier = "OG_SYNTHETIC_TICKER~USDCASHP1M")
 
 # Convert the timeseries to an XTS object (requires XTS to already be loaded)
 ticker.xts <- as.xts.TimeSeries (ticker.ts)

@@ -4,7 +4,9 @@
  # Please see distribution for license.
  ##
 
-# Demonstrates specifying curve names at the position level.
+# Demonstrates specifying curve names at the position level. Note that the "out-the-box" example server contains only
+# a single set of curves called "SECONDARY" so the position attributes specified here will be ignored unless additional
+# curves called "FORWARD_3M" and/or "FUNDING" are defined.
 
 Init ()
 
@@ -23,7 +25,7 @@ security <- SwapSecurity (
     businessDayConvention = "Modified Following",
     notional = InterestRateNotional ("USD", 40326000),
     eom = FALSE,
-    floatingReferenceRateId = "BLOOMBERG_TICKER~US0003M Index",
+    floatingReferenceRateId = "Reference Rate Simple Name~USD LIBOR 3m",
     floatingRateType = "IBOR"),
   receiveLeg = FixedInterestRateLeg (
     dayCount = "30U/360",
