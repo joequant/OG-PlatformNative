@@ -37,7 +37,7 @@ while (!is.null (result)) {
   print (paste ("Got cycle", viewCycleId.ViewComputationResultModel (result)))
   # Get the data from the "Default" configuration in the view
   data <- results.ViewComputationResultModel (result)$Default
-  print (paste(length (data), "row(s) of data"))
+  print (paste(nrow (data), "row(s) of data"))
   # Identify the row with the portfolio values (it's the only portfolio node row in our example view)
   portfolio <- data[which (data$type == "PORTFOLIO_NODE"),]
   # Identify the PV column(s)

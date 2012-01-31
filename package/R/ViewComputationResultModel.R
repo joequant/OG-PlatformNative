@@ -178,24 +178,24 @@ column.ViewComputationResultModel <- function (data, config, col) {
   results <- data@msg$results
   configs <- results[1]
   results <- results[2]
-  if (is.list (configs)) {
-    if (length (configs) > 0) {
+  if (length (configs) > 0) {
+    if (length (configs) > 1) {
       result <- NA
       for (index in seq (from = 1, to = length (configs))) {
         if (configs[index] == config) {
-          result <- .column.ViewComputationResultModel (results[index], col)
+          result <- .column.ViewComputationResultModel (results[[index]], col)
         }
       }
       result
     } else {
-      NA
+      if (configs == config) {
+        .column.ViewComputationResultModel (results, col)
+      } else {
+        NA
+      }
     }
   } else {
-    if (configs == config) {
-      .column.ViewComputationResultModel (results, col)
-    } else {
-      NA
-    }
+    NA
   }
 }
 

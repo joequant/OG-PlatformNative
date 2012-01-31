@@ -45,7 +45,7 @@ results <- lapply (shiftAmounts, function (shift) {
     # Extract the PV from our results
     print (paste ("Got cycle", viewCycleId.ViewComputationResultModel (result)))
     data <- results.ViewComputationResultModel (result)$Default
-    print (paste (length (data), "row(s) of data"))
+    print (paste (nrow (data), "row(s) of data"))
     portfolio <- data[which (data$type == "PORTFOLIO_NODE"),]
     columns.pv <- columns.ViewComputationResultModel (data, ValueRequirementNames.Present.Value)
     value.pv <- firstValue.ViewComputationResultModel (portfolio, columns.pv)
