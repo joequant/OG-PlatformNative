@@ -66,7 +66,7 @@ OpenGamma:::LOGDEBUG ("Creating view client")
 view.client <- ViewClient (viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id)), useSharedProcess = FALSE)
 view.result <- NULL
 
-# Set the snapshot snapshot with necessary market data
+# Set the snapshot with necessary market data
 OpenGamma:::LOGDEBUG ("Updating snapshot")
 tickers <- list (
   "OG_SYNTHETIC_TICKER~USDSWAPP40Y" = 0.032172118,
@@ -110,12 +110,12 @@ market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.dat
 OpenGamma:::LOGINFO ("Snapshot updated to", market.data.id)
 
 # Get the results from the view
-OpenGamma:::LOGDEBUG ("Fetching next results")
+OpenGamma:::LOGDEBUG ("Fetching results")
 TriggerViewCycle (view.client)
 view.result <- GetViewResult (
   viewClient = view.client,
   waitForResult = -1,
-  lastViewCycleId = if (is.null (view.result)) NULL else viewCycleId.ViewComputationResultModel (view.result))
+  NULL)
 OpenGamma:::LOGINFO ("Got result", viewCycleId.ViewComputationResultModel (view.result))
 
 # Pull out the results from the data.frame to a simple list
