@@ -12,7 +12,7 @@ Install.ValueRequirementNames <- function (stub) {
     names <- invoke.Functions (func, list ())
     for (name in names) {
       stub.ValueRequirementNames$const (
-        make.names (gsub ("_", ".", name)),
+        gsub ("\\.+$", "", gsub ("^\\.+", "", gsub ("\\.\\.+", ".", make.names (gsub ("_", ".", name))))),
         paste (name, "constant"),
         "The symbolic constant used within the analytics library to describe calculated values.",
         paste ("\"", gsub ("(\"|\\\\)", "\\\\\\1", name), "\"", sep = ""),
