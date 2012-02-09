@@ -26,17 +26,20 @@
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="LanguageExtPath" Directory_Parent="TARGETDIR" DefaultDir="Langua~1|LanguageExtPath" IsPseudoRoot="1"/>
     <ROW Directory="LanguageJarPath" Directory_Parent="TARGETDIR" DefaultDir="Langua~2|LanguageJarPath" IsPseudoRoot="1"/>
+    <ROW Directory="OpenGamma_Dir" Directory_Parent="ProgramMenuFolder" DefaultDir="OpenGa~1|OpenGamma"/>
+    <ROW Directory="ProgramMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="Progra~1|ProgramMenuFolder" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="OpenGamma.zip" ComponentId="{1155CA63-4E2E-4F5B-894E-57AF251B4F64}" Directory_="APPDIR" Attributes="0" KeyPath="OpenGamma.zip" Type="0"/>
+    <ROW Component="StartMenu" ComponentId="{9B229F2C-7F02-478B-9286-C48AA04BC1AC}" Directory_="OpenGamma_Dir" Attributes="0"/>
     <ROW Component="og_rstats_ext.jar" ComponentId="{1BC7D83B-C14B-42A4-8F8F-154DD46C51C6}" Directory_="LanguageJarPath" Attributes="0" KeyPath="og_rstats_ext.jar" Type="0"/>
     <ROW Component="og_rstats_ext.xml" ComponentId="{0EC26F6F-DC37-4774-B296-56AD0F3CF71C}" Directory_="LanguageExtPath" Attributes="0" KeyPath="og_rstats_ext.xml" Type="0"/>
     <ROW Component="settings_32" ComponentId="{F17D205A-0BB9-4EBC-AB3F-7C53B72120CB}" Directory_="APPDIR" Attributes="4" Condition="R32_PATH" KeyPath="ProductName32"/>
     <ROW Component="settings_64" ComponentId="{8793997F-DA74-4757-9116-EEC5CEE5FF78}" Directory_="APPDIR" Attributes="260" Condition="R64_PATH" KeyPath="ProductName64"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="R extension" Description="OpenGamma Tools for R" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="OpenGamma.zip og_rstats_ext.jar og_rstats_ext.xml settings_32 settings_64"/>
+    <ROW Feature="MainFeature" Title="R extension" Description="OpenGamma Tools for R" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="OpenGamma.zip StartMenu og_rstats_ext.jar og_rstats_ext.xml settings_32 settings_64"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -111,6 +114,9 @@
     <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
     <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="OpenGamma_Dir" Component_="StartMenu"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AiRemoveFilesCommit" Type="11777" Source="ResourceCleaner.dll" Target="OnAiRemoveFilesCommit" WithoutSeq="true"/>
     <ROW Action="AI_AiRemoveFilesDeferred_Permanent" Type="11265" Source="ResourceCleaner.dll" Target="OnAiRemoveFilesPermanent" WithoutSeq="true"/>
@@ -144,6 +150,10 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="OpenGamma.exe" SourcePath="..\build\og-language\Util\OpenGamma.ico" Index="0"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
+    <ROW IniFile="URL" FileName="Toolsf~1.url|Tools for R documentation (online).url" DirProperty="OpenGamma_Dir" Section="InternetShortcut" Key="URL" Value="http://docs.opengamma.com/display/DOC/OpenGamma+Tools+for+R" Action="0" Component_="StartMenu"/>
+    <ROW IniFile="WorkingDirectory" FileName="Toolsf~1.url|Tools for R documentation (online).url" DirProperty="OpenGamma_Dir" Section="InternetShortcut" Key="WorkingDirectory" Value="[OpenGamma_Dir]" Action="0" Component_="StartMenu"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
@@ -159,8 +169,8 @@
     <ROW Action="RInstall64" Condition="NOT Installed AND R64_PATH" Sequence="5935"/>
     <ROW Action="RRemove32_1" Condition="R32_PATH AND NOT R64_PATH AND REMOVE=&quot;ALL&quot;" Sequence="1652"/>
     <ROW Action="RRemove64_1" Condition="R64_PATH AND REMOVE=&quot;ALL&quot;" Sequence="1651"/>
-    <ROW Action="AI_AiRemoveFilesImmediate" Sequence="3499"/>
     <ROW Action="AI_AiRemoveFilesRollback" Sequence="3099"/>
+    <ROW Action="AI_AiRemoveFilesImmediate" Sequence="3499"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
