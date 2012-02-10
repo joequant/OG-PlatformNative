@@ -101,11 +101,14 @@ invoke.Procedures <- function (index, args) {
         params,
         paste (body, collapse = "\n"),
         FALSE)
+      c (index, name, argNames, toString (argFlags))
     } else {
       LOGERROR ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags)
+      c ()
     }
   } else {
     LOGWARN ("Invalid index", index)
+    c ()
   }
 }
 
@@ -114,6 +117,39 @@ Install.Procedures <- function (stub) {
   count <- count.Procedures ()
   LOGINFO ("Declaring", count, "procedures")
   stub.Procedures <- stub$begin ("Procedures")
-  for (index in seq (from = 0, to = count - 1)) .installByIndex.Procedures (stub.Procedures, index)
+  stub.Procedures$metadata ("count", count)
+  description <- c ()
+  for (index in seq (from = 0, to = count - 1)) {
+    description <- c (description, .installByIndex.Procedures (stub.Procedures, index))
+  }
+  stub.Procedures$metadata ("description", description)
   stub.Procedures$end ()
+}
+
+# Checks the proxy declarations for the procedures match those currently exported
+Verify.Procedures <- function () {
+  server.count <- count.Procedures ()
+  og.count <- OG:::.count.Procedures
+  if (server.count == og.count) {
+    server <- c ()
+    for (index in seq (from = 0, to = server.count - 1)) {
+      server <- c (server, index, getName.Procedures (index), getParameterNames.Procedures (index), toString (getParameterFlags.Procedures (index)))
+    }
+    og <- OG:::.description.Procedures
+    if (length (server) == length (og)) {
+      if (length (which ((server == og) == FALSE)) == 0) {
+        LOGDEBUG ("Procedure metadata matches current Java stack")
+        TRUE
+      } else {
+        LOGDEBUG ("Procedure metadata differs")
+        FALSE
+      }
+    } else {
+      LOGDEBUG ("Procedure metadata length differs, expected", length (server), "found", length (og))
+      FALSE
+    }
+  } else {
+    LOGDEBUG ("Different number of procedures in stub library, expected", server.count, "found", og.count)
+    FALSE
+  }
 }
