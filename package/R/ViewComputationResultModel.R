@@ -166,7 +166,7 @@ firstValue.ViewComputationResultModel <- function (row, columns) {
       }
     }
     valueReq <- new.ValueRequirement (specificationName, specificationProperties)
-    if (valueReq == col) {
+    if (valueReq %in% col) {
       values[[computationTargetIdentifier]] <- value
     }
   }
