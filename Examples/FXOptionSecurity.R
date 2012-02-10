@@ -1,0 +1,162 @@
+##
+ # Copyright (C) 2012 - present by OpenGamma Inc. and the OpenGamma group of companies
+ #
+ # Please see distribution for license.
+ ##
+
+# Demonstrates constructing an FX Option Security, specifying all of the market data required and pricing it using the engine.
+
+# Note: this is not currently part of the main demo set as it includes Bloomberg tickers so does not work with the Open Source example server
+
+Init ()
+
+# Create the security as an R object
+OpenGamma:::LOGDEBUG ("Creating security")
+security <- FXOptionSecurity (
+  name = "Long put USD 1000000.0, call EUR 80000.0 on 2012-07-01",
+  callAmount = 80000,
+  callCurrency = "EUR",
+  putCurrency = "USD",
+  putAmount = 100000,
+  expiry = "2012-07-01",
+  exerciseType = EuropeanExerciseType (),
+  long = TRUE,
+  settlementDate = "2012-07-03")
+
+# Store the security in the session database
+OpenGamma:::LOGDEBUG ("Storing security")
+security.id <- StoreSecurity (security)
+OpenGamma:::LOGINFO ("Created security", security.id)
+
+# Create a portfolio containing a position in this security so that we can price it
+OpenGamma:::LOGDEBUG ("Creating portfolio")
+position <- PortfolioPosition (security = security.id, quantity = 1)
+node <- PortfolioNode (name = "FX Option", positions = position)
+portfolio <- Portfolio (name = "Single FX Option", rootNode = node)
+portfolio.id <- StorePortfolio (portfolio)
+OpenGamma:::LOGINFO ("Created portfolio", portfolio.id)
+
+# Create a view on this portfolio
+OpenGamma:::LOGDEBUG ("Creating view")
+requirements <- c (
+  ValueRequirementNames.Forward.Delta.LV,
+  ValueRequirementNames.Forward.Gamma.LV,
+  ValueRequirementNames.Forward.Vanna.LV,
+  ValueRequirementNames.Forward.Vega.LV,
+  ValueRequirementNames.Forward.Vomma.LV,
+  ValueRequirementNames.Full.PDE.Grid.LV,
+  ValueRequirementNames.PDE.Bucketed.Vega.LV,
+  ValueRequirementNames.PDE.Greeks.LV,
+  new.ValueRequirement (ValueRequirementNames.Present.Value, "CalculationMethod=LocalVolatilityPDEMethod"))
+view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
+view.id <- StoreViewDefinition (view)
+calc.config <- "Default"
+OpenGamma:::LOGINFO ("Created view", view.id)
+
+# Create a snapshot containing the market data
+OpenGamma:::LOGDEBUG ("Creating snapshot")
+market.data <- Snapshot ()
+market.data <- SetSnapshotName (market.data, "FX Option Example")
+market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EUR Curncy", marketValue = 1.32905, type = "PRIMITIVE")
+surface.points <- list (
+  list ("P14D", "0, ATM", 0.1113),
+  list ("P21D", "15, BUTTERFLY", 0.0059),
+  list ("P1Y", "25, BUTTERFLY", 0.0056),
+  list ("P21D", "25, RISK_REVERSAL", -0.01565),
+  list ("P1Y", "15, RISK_REVERSAL", -0.041525),
+  list ("P6M", "15, BUTTERFLY", 0.01135),
+  list ("P6M", "25, RISK_REVERSAL", -0.025325),
+  list ("P5Y", "0, ATM", 0.123425),
+  list ("P6M", "15, RISK_REVERSAL", -0.03845),
+  list ("P6M", "25, BUTTERFLY", 0.00475),
+  list ("P21D", "15, RISK_REVERSAL", -0.02265),
+  list ("P1Y", "25, RISK_REVERSAL", -0.02735),
+  list ("P21D", "25, BUTTERFLY", 0.002625),
+  list ("P1Y", "15, BUTTERFLY", 0.012975),
+  list ("P21D", "0, ATM", 0.1091),
+  list ("P6M", "0, ATM", 0.117325),
+  list ("P14D", "15, BUTTERFLY", 0.004875),
+  list ("P14D", "25, RISK_REVERSAL", -0.010375),
+  list ("P5Y", "25, BUTTERFLY", 0.004025),
+  list ("P5Y", "15, RISK_REVERSAL", -0.032225),
+  list ("P1Y", "0, ATM", 0.1234),
+  list ("P5Y", "25, RISK_REVERSAL", -0.02105),
+  list ("P5Y", "15, BUTTERFLY", 0.008975),
+  list ("P14D", "15, RISK_REVERSAL", -0.0156),
+  list ("P14D", "25, BUTTERFLY", 0.002125),
+  list ("P1M", "25, BUTTERFLY", 0.002525),
+  list ("P1M", "15, RISK_REVERSAL", -0.023675),
+  list ("P7D", "15, BUTTERFLY", 0.005075),
+  list ("P7D", "25, RISK_REVERSAL", -0.0063),
+  list ("P3M", "25, BUTTERFLY", 0.003925),
+  list ("P10Y", "15, BUTTERFLY", 0.008275),
+  list ("P3M", "15, RISK_REVERSAL", -0.03415),
+  list ("P10Y", "25, RISK_REVERSAL", -0.018725),
+  list ("P1M", "25, RISK_REVERSAL", -0.016075),
+  list ("P1M", "15, BUTTERFLY", 0.005475),
+  list ("P3M", "25, RISK_REVERSAL", -0.0226),
+  list ("P10Y", "15, RISK_REVERSAL", -0.030975),
+  list ("P3M", "15, BUTTERFLY", 0.00875),
+  list ("P10Y", "25, BUTTERFLY", 0.002775),
+  list ("P7D", "15, RISK_REVERSAL", -0.009225),
+  list ("P9M", "0, ATM", 0.12125),
+  list ("P7D", "25, BUTTERFLY", 0.0022),
+  list ("P7D", "0, ATM", 0.1146),
+  list ("P9M", "15, RISK_REVERSAL", -0.04175),
+  list ("P9M", "25, BUTTERFLY", 0.005225),
+  list ("P10Y", "0, ATM", 0.124325),
+  list ("P3M", "0, ATM", 0.113),
+  list ("P9M", "15, BUTTERFLY", 0.01255),
+  list ("P9M", "25, RISK_REVERSAL", -0.02645),
+  list ("P1M", "0, ATM", 0.11015))
+surface.data <- SnapshotVolatilitySurface ()
+for (surface.point in surface.points) {
+  surface.data <- SetVolatilitySurfacePoint (snapshot = surface.data, x = surface.point[[1]], y = surface.point[[2]], marketValue = surface.point[[3]], xc = "TENOR", yc = "INTEGER_FXVOLQUOTETYPE_PAIR")
+}
+surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_FX_VANILLA_OPTION"
+market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
+market.data.id <- StoreSnapshot (market.data)
+OpenGamma:::LOGINFO ("Created snapshot", market.data.id)
+
+# Create a view client attached to the snapshot
+OpenGamma:::LOGDEBUG ("Creating view client")
+view.client <- ViewClient (viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id)), useSharedProcess = FALSE)
+view.result <- NULL
+
+# Run the view with the surface adjusted each time
+for (shift in c (0.85, 0.90, 0.95, 1.00, 1.05, 1.10, 1.15)) {
+
+  # Shift the surface
+  tensor <- GetVolatilitySurfaceTensor (snapshot = surface.data, marketValue = TRUE)
+  tensor <- tensor * shift
+  surface.data <- SetVolatilitySurfaceTensor (snapshot = surface.data, overrideValue = tensor)
+  market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
+  market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
+  OpenGamma:::LOGINFO ("Updated snapshot for", shift, "shift")
+
+  # Get the results from the view
+  OpenGamma:::LOGDEBUG ("Fetching results")
+  TriggerViewCycle (view.client)
+  view.result <- GetViewResult (
+    viewClient = view.client,
+    waitForResult = -1,
+    lastViewCycleId = if (is.null (view.result)) { NULL } else { viewCycleId.ViewComputationResultModel (view.result) })
+  OpenGamma:::LOGINFO ("Got result", viewCycleId.ViewComputationResultModel (view.result))
+  
+  # Pull out the results from the data.frame to a simple list
+  view.result.data <- results.ViewComputationResultModel (view.result)[[calc.config]]
+  results <- lapply (requirements, function (requirement) {
+    columns <- columns.ViewComputationResultModel (view.result.data, requirement)
+    values <- column.ViewComputationResultModel (view.result, calc.config, columns)
+    if (length (values) > 0) {
+      values[[1]]
+    } else {
+      NA
+    }
+  })
+  names (results) <- requirements
+  
+  # Just print the results out; further analysis/summary or collation into an outer list is possible here 
+  print (results)
+
+}
