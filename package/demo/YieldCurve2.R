@@ -13,7 +13,12 @@ Init ()
 
 # Find a view identifier (the view must contain at least one yield curve primitive output)
 view.name <- "Demo MultiCurrency Swap Portfolio View"
-view.identifier <- Views (view.name)[1,1]
+view.matches <- Views (view.name)
+if (length (view.matches) == 0) {
+  stop ("No view called '", view.name, "' defined")
+} else {
+  view.identifier <- view.matches[1, 1]
+}
 
 # Create a client to iterate over a year of data (see Historical.R for explanation of how)
 end.time <- Sys.time () - (14 * 86400)

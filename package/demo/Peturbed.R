@@ -11,7 +11,12 @@ Init ()
 
 # Find a view identifier (omit view name for arbitrary view)
 viewName <- "Demo Swap Portfolio View"
-viewIdentifier <- Views (viewName)[1,1]
+matchedViews <- Views (viewName)
+if (length (matchedViews) == 0) {
+  stop ("No view called '", viewName, "' defined")
+} else {
+  viewIdentifier <- matchedViews[1,1]
+}
 
 # Set up the view client descriptor to sample a historic period (a month ending last week). This
 # will be used over each of our "shift" samples.
