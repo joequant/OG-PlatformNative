@@ -12,7 +12,12 @@ Init ()
 
 # Find a view identifier (omit the view name to graph the first view)
 viewName <- "Demo Swap Portfolio View"
-viewIdentifier <- Views (viewName)[1,1]
+matchedViews <- Views (viewName)
+if (length (matchedViews) == 0) {
+  stop ("No view called '", viewName, "' defined")
+} else {
+  viewIdentifier <- matchedViews[1, 1]
+}
 
 # Create a client (private process) for sampling a historic period (past 365 days in this example)
 endTime <- Sys.time () - (14 * 86400)

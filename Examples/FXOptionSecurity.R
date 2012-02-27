@@ -44,13 +44,13 @@ requirements <- c (
   ValueRequirementNames.Forward.Vanna.LV,
   ValueRequirementNames.Forward.Vega.LV,
   ValueRequirementNames.Forward.Vomma.LV,
-  ValueRequirementNames.Full.PDE.Grid.LV,
   ValueRequirementNames.PDE.Bucketed.Vega.LV,
   ValueRequirementNames.PDE.Greeks.LV,
   new.ValueRequirement (ValueRequirementNames.Present.Value, "CalculationMethod=LocalVolatilityPDEMethod"))
 view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
 calc.config <- "Default"
+valuation.time <- as.POSIXct ("2012-01-30 12:00:00 GMT")
 OpenGamma:::LOGINFO ("Created view", view.id)
 
 # Create a snapshot containing the market data
@@ -120,7 +120,7 @@ OpenGamma:::LOGINFO ("Created snapshot", market.data.id)
 
 # Create a view client attached to the snapshot
 OpenGamma:::LOGDEBUG ("Creating view client")
-view.client <- ViewClient (viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id)), useSharedProcess = FALSE)
+view.client <- ViewClient (viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id), valuation.time), useSharedProcess = FALSE)
 view.result <- NULL
 
 # Run the view with the surface adjusted each time
@@ -143,13 +143,18 @@ for (shift in c (0.85, 0.90, 0.95, 1.00, 1.05, 1.10, 1.15)) {
     lastViewCycleId = if (is.null (view.result)) { NULL } else { viewCycleId.ViewComputationResultModel (view.result) })
   OpenGamma:::LOGINFO ("Got result", viewCycleId.ViewComputationResultModel (view.result))
   
-  # Pull out the results from the data.frame to a simple list
+  # Pull out the results from the data.frame to a simple list, converting any Fudge message instances
   view.result.data <- results.ViewComputationResultModel (view.result)[[calc.config]]
   results <- lapply (requirements, function (requirement) {
     columns <- columns.ViewComputationResultModel (view.result.data, requirement)
     values <- column.ViewComputationResultModel (view.result, calc.config, columns)
     if (length (values) > 0) {
-      values[[1]]
+      value <- values[[1]]
+      if (is.FudgeMsg (value)) {
+        toObject.FudgeMsg (value, identity)
+      } else {
+        value
+      }
     } else {
       NA
     }

@@ -193,6 +193,14 @@
         body,
         FALSE)
     }
+    info$metadata <- function (name, value, className = module) {
+      cat (
+        paste (".", name, ".", className, " <- c(", sep = ""),
+        paste ("\"", value, "\"", sep = "", collapse = ", "),
+        ")\n",
+        file = info$src,
+        sep = "")
+    }
     info$end <- function () {
       close (info$src)
     }
@@ -213,10 +221,12 @@
   Install.Procedures (stub)
   LOGDEBUG ("Declaring local data bindings")
   Install.Bloomberg (stub)
+  Install.BucketedGreekResultCollection (stub)
   Install.MarketDataRequirementNames (stub)
   Install.MarketDataSnapshot (stub)
   Install.Number (stub)
   Install.ObjectsPair (stub)
+  Install.PDEGreekResultCollection (stub)
   Install.Tenor (stub)
   Install.TimeSeries (stub)
   Install.ValueProperties (stub)
@@ -236,7 +246,6 @@
   if (!is.na (test)) {
     Sys.setenv ("R_TESTS" = test)
   }
-  #unlink (tmp, recursive = TRUE)
 }
 
 # Looks up the details for the stub import package
@@ -277,7 +286,34 @@ Init <- function (cached.stub = getOption ("opengamma.cache.stub")) {
     LOGINFO ("OpenGamma namespaces already initialised")
     TRUE
   } else {
-    if (is.null (cached.stub) || !cached.stub || !is.list (.og.package ())) {
+    og <- .og.package ()
+    if (!is.list (og)) {
+      LOGINFO ("Stub OG package not available")
+      cached.stub <- FALSE
+    }
+    if (is.null (cached.stub)) {
+      opengamma.built <- strsplit (packageDescription ("OpenGamma")$Built, ";")[[1]][3]
+      og.built <- strsplit (packageDescription ("OG")$Built, ";")[[1]][3]
+      if (opengamma.built <= og.built) {
+        cached.stub <- TRUE
+        if (!Verify.Functions ()) {
+          LOGINFO ("Stub Functions invalid")
+          cached.stub <- FALSE
+        }
+        if (!Verify.LiveData ()) {
+          LOGINFO ("Stub LiveData invalid")
+          cached.stub <- FALSE
+        }
+        if (!Verify.Procedures ()) {
+          LOGINFO ("Stub Procedures invalid")
+          cached.stub <- FALSE
+        }
+      } else {
+        LOGINFO ("Stub OG package older than main OpenGamma package")
+        cached.stub <- FALSE
+      }
+    }
+    if (!cached.stub) {
       .install.package ()
     }
     require ("OG")

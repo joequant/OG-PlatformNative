@@ -5,7 +5,7 @@ Historical	Iterates a view over historical market data to produce timeseries for
 MarketDataSnapshot	Demonstrates manipulating a market data snapshot programmatically.
 Peturbed	Iterates a view over some historical market data that is peturbed slightly. This demonstrates injecting values into the engine.
 SwapExample	Demonstrates constructing a swap security, specifying all of the market data required and pricing it using the engine.
-TimeSeries	Loads a time-series from the database using a Bloomberg ticker
+TimeSeries	Loads a time-series from the database using a ticker
 View	Select one or more views to run; this might be a wild-card search string like "*" to run all views (not currently supported in OG-Language)
 YieldCurve	Loads the time-series for yield curve data points to construct a 3D "curve over time" graph.
 YieldCurve2	Iterates a view over historical data, extracting the fitted curve from each cycle to produce a dataset for a 3D "fitted curve over time" chart. This uses the code within the main OpenGamma engine and analytics library compared to YieldCurve.R which simply fetches the raw time-series used to construct the curve.

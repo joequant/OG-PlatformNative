@@ -16,7 +16,13 @@ tickers.scheme <- "OG_SYNTHETIC_TICKER"
 # TODO: should query the curve definitions in the system to get these tickers
 
 # Fetch timeseries
-timeseries <- lapply (tickers, function (x) { FetchTimeSeries (dataField = tickers.field, identifier = paste (tickers.scheme, x, sep = "~")) })
+timeseries <- lapply (tickers, function (x) {
+  x.ts <- FetchTimeSeries (dataField = tickers.field, identifier = paste (tickers.scheme, x, sep = "~"))
+  if (is.null (x.ts)) {
+    stop ("Time series '", x, "' not found")
+  }
+  x.ts
+})
 # TODO: should use the range truncated form to just get a couple of years of data
 
 # Extend start of shorter timeseries so curve starts in same place

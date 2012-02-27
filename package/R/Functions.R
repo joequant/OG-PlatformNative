@@ -115,11 +115,14 @@ find.Functions <- function (name) {
         params,
         paste (body, collapse = "\n"),
         FALSE)
+      c (index, name, argNames, toString (argFlags))
     } else {
       LOGERROR ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags)
+      c ()
     }
   } else {
     LOGWARN ("Invalid index", index)
+    c ()
   }
 }
 
@@ -128,6 +131,39 @@ Install.Functions <- function (stub) {
   count <- count.Functions ()
   LOGINFO ("Declaring", count, "functions")
   stub.Functions <- stub$begin ("Functions")
-  for (index in seq (from = 0, to = count - 1)) .installByIndex.Functions (stub.Functions, index)
+  stub.Functions$metadata ("count", toString (count))
+  description <- c ()
+  for (index in seq (from = 0, to = count - 1)) {
+    description <- c (description, .installByIndex.Functions (stub.Functions, index))
+  }
+  stub.Functions$metadata ("description", description)
   stub.Functions$end ()
+}
+
+# Checks the proxy declarations for the functions match those currently exported
+Verify.Functions <- function () {
+  server.count <- count.Functions ()
+  og.count <- OG:::.count.Functions
+  if (server.count == og.count) {
+    server <- c ()
+    for (index in seq (from = 0, to = server.count - 1)) {
+      server <- c (server, index, getName.Functions (index), getParameterNames.Functions (index), toString (getParameterFlags.Functions (index)))
+    }
+    og <- OG:::.description.Functions
+    if (length (server) == length (og)) {
+      if (length (which ((server == og) == FALSE)) == 0) {
+        LOGDEBUG ("Function metadata matches current Java stack")
+        TRUE
+      } else {
+        LOGDEBUG ("Function metadata differs")
+        FALSE
+      }
+    } else {
+      LOGDEBUG ("Function metadata length differs, expected", length (server), "found", length (og))
+      FALSE
+    }
+  } else {
+    LOGDEBUG ("Different number of functions in stub library, expected", server.count, "found", og.count)
+    FALSE
+  }
 }

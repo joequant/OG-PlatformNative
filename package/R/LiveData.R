@@ -105,11 +105,14 @@ invoke.LiveData <- function (index, args) {
         params,
         paste (body, collapse = "\n"),
         FALSE)
+      c (index, name, argNames, toString (argFlags))
     } else {
       LOGERROR ("Invalid parameters for", index, "argNames:", argNames, "argFlags:", argFlags)
+      c ()
     }
   } else {
     LOGWARN ("Invalid index", index)
+    c ()
   }
 }
 
@@ -118,6 +121,39 @@ Install.LiveData <- function (stub) {
   count <- count.LiveData ()
   LOGINFO ("Declaring", count, "live data connections")
   stub.LiveData <- stub$begin ("LiveData")
-  for (index in seq (from = 0, to = count - 1)) .installByIndex.LiveData (stub.LiveData, index)
+  stub.LiveData$metadata ("count", toString (count))
+  description <- c ()
+  for (index in seq (from = 0, to = count - 1)) {
+    description <- c (description, .installByIndex.LiveData (stub.LiveData, index))
+  }
+  stub.LiveData$metadata ("description", description)
   stub.LiveData$end ()
+}
+
+# Checks the proxy declarations for the live data match those currently exported
+Verify.LiveData <- function () {
+  server.count <- count.LiveData ()
+  og.count <- OG:::.count.LiveData
+  if (server.count == og.count) {
+    server <- c ()
+    for (index in seq (from = 0, to = server.count - 1)) {
+      server <- c (server, index, getName.LiveData (index), getParameterNames.LiveData (index), toString (getParameterFlags.LiveData (index)))
+    }
+    og <- OG:::.description.LiveData
+    if (length (server) == length (og)) {
+      if (length (which ((server == og) == FALSE)) == 0) {
+        LOGDEBUG ("Live data metadata matches current Java stack")
+        TRUE
+      } else {
+        LOGDEBUG ("Live data metadata differs")
+        FALSE
+      }
+    } else {
+      LOGDEBUG ("Live data metadata length differs, expected", length (server), "found", length (og))
+      FALSE
+    }
+  } else {
+    LOGDEBUG ("Different number of live data connections in stub library, expected", server.count, "found", og.count)
+    FALSE
+  }
 }
