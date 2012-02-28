@@ -13,8 +13,8 @@ Init ()
 # Create the security as an R object
 OpenGamma:::LOGDEBUG ("Creating security")
 security <- FXOptionSecurity (
-  name = "Long put USD 1000000.0, call EUR 80000.0 on 2012-07-01",
-  callAmount = 80000,
+  name = "Long put USD 1000000.0, call EUR 75000.0 on 2012-07-01",
+  callAmount = 75000,
   callCurrency = "EUR",
   putCurrency = "USD",
   putAmount = 100000,
@@ -199,6 +199,8 @@ Butterfly <- function(callVol, putVol, atm) 0.5*(callVol+putVol)-atm
 CallVol <- function(butterfly, riskReversal,atmVol)butterfly+0.5*riskReversal+atmVol
 PutVol <- function(butterfly, riskReversal,atmVol)butterfly-0.5*riskReversal+atmVol
 
+
+#Convert FX quote points (Risk reversals etc) to flat delta points
 toDeltaPoints <- function(fxQuotePoints){
   dimensions <- dim(fxQuotePoints)
   deltas = dimensions[1]
@@ -219,6 +221,7 @@ toDeltaPoints <- function(fxQuotePoints){
   res
 }
 
+#Convert flat FX delta quotes to risk reversals etc 
 toFXQuotePoints <- function(deltaPoints){
   dimensions <- dim(deltaPoints)
   deltas = dimensions[1]
@@ -239,85 +242,15 @@ toFXQuotePoints <- function(deltaPoints){
   res
 }
 
-
-tensor <- GetVolatilitySurfaceTensor (snapshot = surface.data, marketValue = TRUE)
-OpenGamma:::LOGINFO ("about to run toDeltaPoints")
-deltaPoints <- toDeltaPoints(tensor)
-
-###########################################################################
-#PV cal
-market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
-market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
-# Get the results from the view
-OpenGamma:::LOGDEBUG ("Fetching results")
-TriggerViewCycle (view.client)
-view.result <- GetViewResult (
-  viewClient = view.client,
-  waitForResult = -1,
-  lastViewCycleId = if (is.null (view.result)) { NULL } else { viewCycleId.ViewComputationResultModel (view.result) })
-# Pull out the results from the data.frame to a simple list
-view.result.data <- results.ViewComputationResultModel (view.result)[[calc.config]]
-results <- lapply (requirements, function (requirement) {
-  columns <- columns.ViewComputationResultModel (view.result.data, requirement)
-  values <- column.ViewComputationResultModel (view.result, calc.config, columns)
-  if (length (values) > 0) {
-    values[[1]]
-  } else {
-    NA
-  }
-})
-names (results) <- requirements
-pv = results[[1]]
-#######################
-
-eps = 1e-4
-dimensions <- dim(deltaPoints)
-deltas = dimensions[1]
-expiries = dimensions[2]
-res <- matrix(NA,deltas,expiries)
-for(i in 1:deltas){
-  for(j in 1:expiries){
-      temp <- deltaPoints
-      temp[i,j] <- temp[i,j]+eps;
-     ################################################
-      fxQuotePoints <-toFXQuotePoints(temp)
-      surface.data <- SetVolatilitySurfaceTensor (snapshot = surface.data, overrideValue = fxQuotePoints)
-      market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
-      market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
-      # Get the results from the view
-      OpenGamma:::LOGDEBUG ("Fetching results")
-      TriggerViewCycle (view.client)
-      view.result <- GetViewResult (
-        viewClient = view.client,
-        waitForResult = -1,
-        lastViewCycleId = if (is.null (view.result)) { NULL } else { viewCycleId.ViewComputationResultModel (view.result) })
-      # Pull out the results from the data.frame to a simple list
-      view.result.data <- results.ViewComputationResultModel (view.result)[[calc.config]]
-      results <- lapply (requirements, function (requirement) {
-        columns <- columns.ViewComputationResultModel (view.result.data, requirement)
-        values <- column.ViewComputationResultModel (view.result, calc.config, columns)
-        if (length (values) > 0) {
-          values[[1]]
-        } else {
-          NA
-        }
-      })
-      names (results) <- requirements
-      ###################################################
-      res[i,j] = (results[[1]]-pv)/eps
-      
-    }
-}
-
 getPresentValue<- function(deltaPoints){
   fxQuotePoints <-toFXQuotePoints(deltaPoints)
-  surface.data <- SetVolatilitySurfaceTensor (snapshot = surface.data, overrideValue = fxQuotePoints)
-  market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
-  market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
+  surface.data <<- SetVolatilitySurfaceTensor (snapshot = surface.data, overrideValue = fxQuotePoints)
+  market.data <<- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
+  market.data.id <<- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
   # Get the results from the view
   OpenGamma:::LOGDEBUG ("Fetching results")
   TriggerViewCycle (view.client)
-  view.result <- GetViewResult (
+  view.result <<- GetViewResult (
     viewClient = view.client,
     waitForResult = -1,
     lastViewCycleId = if (is.null (view.result)) { NULL } else { viewCycleId.ViewComputationResultModel (view.result) })
@@ -335,4 +268,32 @@ getPresentValue<- function(deltaPoints){
   names (results) <- requirements
   results[[1]]
 }
+
+
+tensor <- GetVolatilitySurfaceTensor (snapshot = surface.data, marketValue = TRUE)
+OpenGamma:::LOGINFO ("about to run toDeltaPoints")
+deltaPoints <- toDeltaPoints(tensor)
+
+#PV cal
+pv =  getPresentValue(deltaPoints)
+
+#Bump each flat delta input in turn and compute the change in value of the option
+eps <- 1e-4
+dimensions <- dim(deltaPoints)
+deltas <- dimensions[1]
+expiries <- dimensions[2]
+res <- matrix(NA,deltas,expiries)
+for(i in 1:deltas){
+  for(j in 1:expiries){
+      temp <- deltaPoints
+      temp[i,j] <- temp[i,j]+eps;
+      bumped <- getPresentValue(temp)
+      res[i,j] <- (bumped-pv)/eps
+    }
+}
+
+
+print(pv)
+print(res)
+
   
