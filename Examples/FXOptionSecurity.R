@@ -57,7 +57,7 @@ OpenGamma:::LOGINFO ("Created view", view.id)
 OpenGamma:::LOGDEBUG ("Creating snapshot")
 market.data <- Snapshot ()
 market.data <- SetSnapshotName (market.data, "FX Option Example")
-market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EUR Curncy", marketValue = 1.32905, type = "PRIMITIVE")
+market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = 1.32905, type = "PRIMITIVE")
 surface.points <- list (
   list ("P14D", "0, ATM", 0.1113),
   list ("P21D", "15, BUTTERFLY", 0.0059),
@@ -115,6 +115,68 @@ for (surface.point in surface.points) {
 }
 surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
+curve.points <- list (
+  "BLOOMBERG_TICKER~USDR2T Curncy" = 0.002,
+  "BLOOMBERG_TICKER~USSOA Curncy" = 0.001112,
+  "BLOOMBERG_TICKER~USSOB Curncy" = 0.00113,
+  "BLOOMBERG_TICKER~USSOC Curncy" = 0.00119,
+  "BLOOMBERG_TICKER~USSOD Curncy" = 0.00119,
+  "BLOOMBERG_TICKER~USSOE Curncy" = 0.001162,
+  "BLOOMBERG_TICKER~USSOF Curncy" = 0.00125,
+  "BLOOMBERG_TICKER~USSOI Curncy" = 0.00132,
+  "BLOOMBERG_TICKER~USSO1 Curncy" = 0.00137,
+  "BLOOMBERG_TICKER~USSO2 Curncy" = 0.00195,
+  "BLOOMBERG_TICKER~USSO3 Curncy" = 0.00315,
+  "BLOOMBERG_TICKER~USSO4 Curncy" = 0.005185,
+  "BLOOMBERG_TICKER~USSO5 Curncy" = 0.007505,
+  "BLOOMBERG_TICKER~USSO10 Curncy" = 0.01696)
+curve.data <- SnapshotYieldCurve ()
+for (curve.point in names (curve.points)) {
+  curve.data <- SetYieldCurvePoint (
+    snapshot = curve.data,
+    valueName = MarketDataRequirementNames.Market.Value,
+    identifier = curve.point,
+    marketValue = curve.points[[curve.point]])
+}
+market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_FUNDING", yieldCurve = curve.data)
+curve.points <- list (
+  "BLOOMBERG_TICKER~EUDR1Z Curncy" = 0.004,
+  "BLOOMBERG_TICKER~EUDR2Z Curncy" = 0.00325,
+  "BLOOMBERG_TICKER~EUDR3Z Curncy" = 0.0035,
+  "BLOOMBERG_TICKER~EUSWEA Curncy" = 0.003455,
+  "BLOOMBERG_TICKER~EUSWEB Curncy" = 0.003505,
+  "BLOOMBERG_TICKER~EUSWEC Curncy" = 0.003485,
+  "BLOOMBERG_TICKER~EUSWED Curncy" = 0.00345,
+  "BLOOMBERG_TICKER~EUSWEE Curncy" = 0.00343,
+  "BLOOMBERG_TICKER~EUSWEF Curncy" = 0.003415,
+  "BLOOMBERG_TICKER~EUSWEG Curncy" = 0.0034175,
+  "BLOOMBERG_TICKER~EUSWEH Curncy" = 0.00343,
+  "BLOOMBERG_TICKER~EUSWEI Curncy" = 0.003415,
+  "BLOOMBERG_TICKER~EUSWEJ Curncy" = 0.00338,
+  "BLOOMBERG_TICKER~EUSWEK Curncy" = 0.0034625,
+  "BLOOMBERG_TICKER~EUSWE1 Curncy" = 0.00346,
+  "BLOOMBERG_TICKER~EUSWE2 Curncy" = 0.00401,
+  "BLOOMBERG_TICKER~EUSWE3 Curncy" = 0.0053075,
+  "BLOOMBERG_TICKER~EUSWE4 Curncy" = 0.007225,
+  "BLOOMBERG_TICKER~EUSWE5 Curncy" = 0.00939,
+  "BLOOMBERG_TICKER~EUSWE6 Curncy" = 0.01156,
+  "BLOOMBERG_TICKER~EUSWE7 Curncy" = 0.01349,
+  "BLOOMBERG_TICKER~EUSWE8 Curncy" = 0.015175,
+  "BLOOMBERG_TICKER~EUSWE9 Curncy" = 0.016626,
+  "BLOOMBERG_TICKER~EUSWE10 Curncy" = 0.017882,
+  "BLOOMBERG_TICKER~EUSWE15 Curncy" = 0.021725,
+  "BLOOMBERG_TICKER~EUSWE20 Curncy" = 0.022755,
+  "BLOOMBERG_TICKER~EUSWE25 Curncy" = 0.022565,
+  "BLOOMBERG_TICKER~EUSWE30 Curncy" = 0.02205)
+curve.data <- SnapshotYieldCurve ()
+for (curve.point in names (curve.points)) {
+  curve.data <- SetYieldCurvePoint (
+    snapshot = curve.data,
+    valueName = MarketDataRequirementNames.Market.Value,
+    identifier = curve.point,
+    marketValue = curve.points[[curve.point]])
+}
+market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "EUR_FUNDING", yieldCurve = curve.data)
 market.data.id <- StoreSnapshot (market.data)
 OpenGamma:::LOGINFO ("Created snapshot", market.data.id)
 
@@ -165,3 +227,4 @@ for (shift in c (0.85, 0.90, 0.95, 1.00, 1.05, 1.10, 1.15)) {
   print (results)
 
 }
+
