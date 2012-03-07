@@ -9,7 +9,7 @@
 # Note: this is not currently part of the main demo set as it includes Bloomberg tickers so does not work with the Open Source example server
 
 Init ()
-
+OpenGamma:::LOGINFO ("adsadadsds")
 # Create the security as an R object
 OpenGamma:::LOGDEBUG ("Creating security")
 security <- FXOptionSecurity (
