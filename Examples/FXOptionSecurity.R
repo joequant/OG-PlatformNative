@@ -116,6 +116,7 @@ for (surface.point in surface.points) {
 surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 curve.points <- list (
+  "BLOOMBERG_TICKER~USDR1T Curncy" = 0.002,
   "BLOOMBERG_TICKER~USDR2T Curncy" = 0.002,
   "BLOOMBERG_TICKER~USSOA Curncy" = 0.001112,
   "BLOOMBERG_TICKER~USSOB Curncy" = 0.00113,
