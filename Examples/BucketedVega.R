@@ -113,7 +113,7 @@ surface.data <- SnapshotVolatilitySurface ()
 for (surface.point in surface.points) {
   surface.data <- SetVolatilitySurfacePoint (snapshot = surface.data, x = surface.point[[1]], y = surface.point[[2]], marketValue = surface.point[[3]], xc = "TENOR", yc = "INTEGER_FXVOLQUOTETYPE_PAIR")
 }
-surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_FX_VANILLA_OPTION"
+surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 market.data.id <- StoreSnapshot (market.data)
 OpenGamma:::LOGINFO ("Created snapshot", market.data.id)
