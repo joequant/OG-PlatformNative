@@ -9,7 +9,6 @@
 # Note: this is not currently part of the main demo set as it includes Bloomberg tickers so does not work with the Open Source example server
 
 Init ()
-OpenGamma:::LOGINFO ("adsadadsds")
 # Create the security as an R object
 OpenGamma:::LOGDEBUG ("Creating security")
 security <- FXOptionSecurity (
@@ -119,6 +118,7 @@ market.data.id <- StoreSnapshot (market.data)
 OpenGamma:::LOGINFO ("Created snapshot", market.data.id)
 
 tickers <- list (
+  "BLOOMBERG_TICKER~USDR1T Curncy" = 0.002,
   "BLOOMBERG_TICKER~USDR2T Curncy" = 0.002,
   "BLOOMBERG_TICKER~USSOA Curncy" = 0.001112,
   "BLOOMBERG_TICKER~USSOB Curncy" = 0.00113,
