@@ -47,7 +47,7 @@ requirements <- c (
 #  ValueRequirementNames.Full.PDE.Grid.LV,
 #  ValueRequirementNames.PDE.Bucketed.Vega.LV,
  # ValueRequirementNames.PDE.Greeks.LV,
-  new.ValueRequirement (ValueRequirementNames.Forex.PV.Quotes, "CalculationMethod=LocalVolatilityPDEMethod"),
+ # new.ValueRequirement (ValueRequirementNames.Forex.PV.Quotes, "CalculationMethod=LocalVolatilityPDEMethod"),
   new.ValueRequirement (ValueRequirementNames.Implied.Vol.LV.Black.Equivalent, "CalculationMethod=LocalVolatilityPDEMethod"))
 view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
