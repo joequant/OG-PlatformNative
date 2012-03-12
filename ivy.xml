@@ -1,10 +1,8 @@
 <ivy-module version="2.0">
     <info organisation="com.opengamma" module="og-rstats" status="integration"/>
     <publications>
-      <!-- JAR files -->
-      <artifact name="og-rstats-ext" type="jar" ext="jar" />
-      <!-- R package files -->
-      <artifact name="og-rstats-R" type="R" ext="zip" />
+      <artifact name="og-rstats" type="jar" ext="jar" />
+      <artifact name="og-rstats" type="source" ext="jar" />
     </publications>
     <dependencies>
       <dependency name="og-language" rev="latest.integration" />
