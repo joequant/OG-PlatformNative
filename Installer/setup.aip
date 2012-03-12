@@ -4,7 +4,7 @@
     <ROW Property="ALLUSERS" Value="2" MultiBuildValue="MSI_32:1"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPHELPLINK" Value="http://developers.opengamma.com"/>
-    <ROW Property="ARPPRODUCTICON" Value="OpenGamma.exe" Type="8"/>
+    <ROW Property="ARPPRODUCTICON" Value="OpenGamma_1.exe" Type="8"/>
     <ROW Property="ARPURLINFOABOUT" Value="http://github.com/OpenGamma/OG-RStats"/>
     <ROW Property="BannerBitmap" Value="banner" MultiBuildValue="MSI_32:opengamma_banner.bmp#Build:opengamma_banner.bmp" Type="1" MsiKey="BannerBitmap"/>
     <ROW Property="DialogBitmap" Value="dialog" MultiBuildValue="MSI_32:opengamma_dialog.bmp#Build:opengamma_dialog.bmp" Type="1" MsiKey="DialogBitmap"/>
@@ -44,15 +44,15 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
     <ROW File="OpenGamma.zip" Component_="OpenGamma.zip" FileName="OpenGa~1.zip|OpenGamma.zip" Attributes="0" SourcePath="..\dist\OpenGamma.zip" SelfReg="false"/>
-    <ROW File="og_rstats_ext.jar" Component_="og_rstats_ext.jar" FileName="og-rst~1.jar|og-rstats-ext.jar" Attributes="0" SourcePath="..\dist\og-rstats-ext.jar" SelfReg="false" NextFile="OpenGamma.zip"/>
-    <ROW File="og_rstats_ext.xml" Component_="og_rstats_ext.xml" FileName="og-rst~1.xml|og-rstats-ext.xml" Attributes="0" SourcePath="..\dist\og-rstats-ext.xml" SelfReg="false" NextFile="og_rstats_ext.jar"/>
+    <ROW File="og_rstats_ext.jar" Component_="og_rstats_ext.jar" FileName="og-rst~1.jar|og-rstats-ext.jar" Attributes="0" SourcePath="..\dist\og-rstats-jar.jar" SelfReg="false" NextFile="OpenGamma.zip"/>
+    <ROW File="og_rstats_ext.xml" Component_="og_rstats_ext.xml" FileName="og-rst~1.xml|og-rstats-ext.xml" Attributes="0" SourcePath="..\config\R.xml" SelfReg="false" NextFile="og_rstats_ext.jar"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiRemoveFileComponent">
     <ROW RemoveFile="log4cxx.properties" Options="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="Build" BuildName="MSI_64" BuildOrder="2" BuildType="1" PackageFolder="." PackageFileName="OG-RStats-[|ProductVersion]-64-bit" Languages="en" InstallationType="4" CompressCabs="false" MsiPackageType="x64"/>
-    <ROW BuildKey="MSI_32" BuildName="MSI_32" BuildOrder="1" BuildType="1" PackageFolder="." PackageFileName="OG-RStats-[|ProductVersion]-32-bit" Languages="en" InstallationType="4"/>
+    <ROW BuildKey="Build" BuildName="MSI_64" BuildOrder="2" BuildType="1" PackageFolder="..\dist" PackageFileName="OG-RStats-[|ProductVersion]-64-bit" Languages="en" InstallationType="4" CompressCabs="false" MsiPackageType="x64"/>
+    <ROW BuildKey="MSI_32" BuildName="MSI_32" BuildOrder="1" BuildType="1" PackageFolder="..\dist" PackageFileName="OG-RStats-[|ProductVersion]-32-bit" Languages="en" InstallationType="4"/>
     <ATTRIBUTE name="CurrentBuild" value="Build"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
@@ -148,7 +148,7 @@
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="OpenGamma.exe" SourcePath="..\build\og-language\Util\OpenGamma.ico" Index="0"/>
+    <ROW Name="OpenGamma_1.exe" SourcePath="..\lib\include\Util\OpenGamma.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="URL" FileName="Toolsf~1.url|Tools for R documentation (online).url" DirProperty="OpenGamma_Dir" Section="InternetShortcut" Key="URL" Value="http://docs.opengamma.com/display/DOC/OpenGamma+Tools+for+R" Action="0" Component_="StartMenu"/>
