@@ -27,11 +27,13 @@ LazyLoad: true</echo>
   </target>
 
   <target name="config" depends="description">
-    <exec executable="${basedir}/demo/00Index.pl"
+    <exec executable="perl"
           output="${basedir}/demo/00Index"
           dir="${basedir}/demo"
           failonerror="true"
-          failifexecutionfails="false" />
+          failifexecutionfails="false">
+      <arg value="00Index.pl" />
+    </exec>
   </target>
 
   <target name="dist">
