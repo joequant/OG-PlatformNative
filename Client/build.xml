@@ -5,7 +5,7 @@
   <target name="compile" depends="compile-init,core-cpp.compile" />
 
   <target name="compile-init">
-    <copy todir="${basedir}">
+    <copy todir="${basedir}" failonerror="false">
       <fileset dir="${lib.dir}/include/Connector">
         <include name="com_opengamma_language_connector_Function.h" />
         <include name="com_opengamma_language_connector_LiveData.h" />
@@ -21,7 +21,7 @@
   </target>
 
   <target name="dist">
-    <copy todir="${package.dir}/${package.name}/src">
+    <copy todir="${package.dir}/${package.name}/src" failonerror="false">
       <fileset dir="${basedir}">
         <include name="*.c" />
         <include name="*.cpp" />
@@ -30,7 +30,7 @@
       </fileset>
       <mapper type="glob" from="*" to="${ant.project.name}_*" />
     </copy>
-    <copy todir="${package.dir}/${package.name}/src">
+    <copy todir="${package.dir}/${package.name}/src" failonerror="false">
       <fileset dir="${basedir}">
         <include name="com_opengamma_*.c" />
         <include name="com_opengamma_*.h" />
