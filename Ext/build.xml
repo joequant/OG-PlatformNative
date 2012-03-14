@@ -1,6 +1,19 @@
-<project name="ext" default="compile">
-	<import file="build.impl.xml" />
-	<target name="clean-lib" />
-	<target name="clean-build" />
-	<target name="clean-dist" />
+<project name="ext">
+
+  <available property="og.language.client.jar" value="${build.dir}/jar/com.opengamma-og-language-og-language.jar" file="${build.dir}/jar/com.opengamma-og-language-og-language.jar" />
+  <available property="og.language.client.jar" value="${build.dir}/client.jar" file="${build.dir}/client.jar" />
+  <target name="fudge-proto" unless="proto.c.disabled">
+    <java classname="org.fudgemsg.proto.CommandLine" classpathref="run.path.id" fork="true">
+      <arg value="-d${solution.dir}/Client" />
+      <arg value="-lC" />
+      <arg value="-Xinclude=stdafx.h" />
+      <arg value="-s${src.dir}" />
+      <arg value="-p${og.language.client.jar}" />
+      <arg value="${src.dir}/com/opengamma/rstats/msg/DataInfo.proto" />
+      <arg value="${src.dir}/com/opengamma/rstats/msg/FunctionResult.proto" />
+      <arg value="${src.dir}/com/opengamma/rstats/msg/LiveDataResult.proto" />
+      <arg value="${src.dir}/com/opengamma/rstats/msg/ProcedureResult.proto" />
+    </java>
+  </target>
+
 </project>

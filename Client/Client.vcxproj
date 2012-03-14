@@ -83,6 +83,7 @@
     <ClInclude Include="com_opengamma_language_Value.h" />
     <ClInclude Include="com_opengamma_rstats_msg_DataInfo.h" />
     <ClInclude Include="com_opengamma_rstats_msg_FunctionResult.h" />
+    <ClInclude Include="com_opengamma_rstats_msg_LiveDataResult.h" />
     <ClInclude Include="com_opengamma_rstats_msg_ProcedureResult.h" />
     <ClInclude Include="Connector.h" />
     <ClInclude Include="DataUtil.h" />
@@ -101,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="com_opengamma_rstats_msg_DataInfo.c"><CompileAs>CompileAsCpp</CompileAs></ClCompile>
     <ClCompile Include="com_opengamma_rstats_msg_FunctionResult.c"><CompileAs>CompileAsCpp</CompileAs></ClCompile>
+    <ClCompile Include="com_opengamma_rstats_msg_LiveDataResult.c"><CompileAs>CompileAsCpp</CompileAs></ClCompile>
     <ClCompile Include="com_opengamma_rstats_msg_ProcedureResult.c"><CompileAs>CompileAsCpp</CompileAs></ClCompile>
     <ClCompile Include="DataUtil.cpp" />
     <ClCompile Include="Entities.cpp" />

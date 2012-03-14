@@ -1,60 +1,51 @@
 <project name="og-rstats" default="compile">
 
-  <property name="wkspace.dir" value="${basedir}/../.." />
-  <subant antfile="build-prefix.xml" buildpath="${basedir}" target="fetch-og-language-build">
-    <property name="wkspace.dir" value="${wkspace.dir}" />
-  </subant>
-  <import file="${basedir}/build-prefix.xml" />
+  <import file="${basedir}/build-core.xml" />
+  <import file="${basedir}/build-core-deploy.xml" />
 
-  <path id="java.build.path">
-    <pathelement path="${basedir}/Ext" />
-  </path>
-  <path id="javatest.build.path">
-    <path refid="java.build.path" />
-  </path>
   <path id="cc.build.path">
-    <pathelement path="${basedir}/Client" />
+    <pathelement path="${solution.dir}/Client" />
   </path>
+
   <path id="cctest.build.path">
-    <pathelement path="${basedir}/ClientTest" />
+    <pathelement path="${solution.dir}/ClientTest" />
   </path>
 
-  <import file="${og.language.dir}/build-suffix.xml" />
+  <target name="resolve" depends="core.resolve,deploy-og-language" />
 
-  <!-- This pattern should probably be in OG-Language; it will be needed for any child project -->
-  <target name="unpack-resolve" depends="build-suffix.unpack-resolve">
-    <unpack-zip org="com.opengamma" name="og-language" type="include" />
-    <unpack-zip org="com.opengamma" name="og-language" type="lib" />
-    <unpack-zip org="com.opengamma" name="og-language" type="bin" />
+  <target name="config" depends="core.config,deploy-config">
+    <copy todir="${build.dir}/ext" file="${solution.dir}/config/R.xml" />
+    <subant buildpath="package" target="config" inheritrefs="true" inheritall="true" />
   </target>
 
-  <target name="deploy-jars" depends="build-suffix.deploy-jars,build-suffix.make-config">
-    <move file="${build.dir}/jar/com.opengamma-og-language-og-language-client.jar" tofile="${build.dir}/client.jar" />
-    <copy todir="${build.dir}" file="${basedir}/config/logback.xml" failonerror="false" />
-    <mkdir dir="${build.dir}/ext" />
-    <copy todir="${build.dir}/ext">
-      <fileset dir="${og.language.dir}/config">
-        <include name="0og-language.xml" />
-      </fileset>
-    </copy>
-    <copy todir="${build.dir}/ext" file="${basedir}/config/R.xml" />
-  </target>
+  <target name="test-batch-cpp" depends="jar,core.test-batch-cpp" />
 
-  <target name="compile-package">
-    <subant target="compile" buildpath="${basedir}/package">
-      <property name="module.version" value="${module.version}" />
-      <property name="wkspace.dir" value="${wkspace.dir}" />
-    </subant>
-  </target>
-  <target name="compile" depends="build-suffix.compile,compile-package" />
+  <target name="test-batch" depends="core.test-batch,dist-source-impl,test-dist-impl" />
 
-  <target name="dist" depends="compile,dist-impl,dist-binary" description="Creates a binary and source R package distribution" />
+  <target name="dist-publish-core" depends="common.dist-publish,dist-source" />
+
+  <target name="dist-publish" depends="dist-publish-core,dist-binary">
+    <delete dir="${package.dir}" />
+    <mkdir dir="${dist.dir}/config/ext" />
+    <copy file="${solution.dir}/config/R.xml" todir="${dist.dir}/config/ext" />
+    <zip destfile="${dist.dir}/${ant.project.name}-config.zip" basedir="${dist.dir}/config" whenempty="create" />
+    <delete dir="${dist.dir}/config" />
+  </target>
   
-  <target name="dist-binary" depends="dist-binary-none,dist-binary-impl" />
-  <target name="dist-binary-none" unless="r.env.ok">
-    <echo>R or dependent libraries not installed - cannot build a binary distribution</echo>
+  <target name="dist-source" depends="dist-source-impl">
+    <!-- Note that this is only a source dist on a clean environment. After the binary has been
+         built the package will contain build artifacts (e.g. object files) -->
+    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${package.dir}" />
   </target>
-  <target name="dist-binary-impl" if="r.env.ok">
+  <target name="dist-source-impl">
+    <mkdir dir="${package.dir}/${package.name}" />
+    <subant buildpath="package" target="dist" inheritrefs="true" inheritall="true" />
+    <subant buildpathref="cc.build.path" target="dist" inheritrefs="true" inheritall="true" />
+    <mkdir dir="${package.dir}/${package.name}/src/build" />
+    <copy file="${build.dir}/version.h" todir="${package.dir}/${package.name}/src/build" />
+  </target>
+
+  <target name="dist-binary" depends="r-present" if="r.present">
     <exec executable="R" failonerror="true">
       <arg value="CMD" />
       <arg value="build" />
@@ -69,88 +60,59 @@
     </move>
   </target>
 
-  <target name="dist-impl">
-    <mkdir dir="${dist.dir}" />
-    <mkdir dir="${package.dir}" />
-    <subant target="dist" buildpath="${basedir}/package">
-      <property name="wkspace.dir" value="${wkspace.dir}" />
-    </subant>
-    <subant target="dist" buildpathref="java.build.path" antfile="build.parent-invoked.xml">
-      <property name="wkspace.dir" value="${wkspace.dir}" />
-    </subant>
-    <subant target="dist" buildpathref="cc.build.path">
-      <property name="wkspace.dir" value="${wkspace.dir}" />
-    </subant>
-    <copy todir="${package.dir}/${package.name}/src" file="version.h" />
-    <!-- This is a source R dist, but only on a clean environment; otherwise it may contain
-         binaries from an earlier build -->
-    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${package.dir}" />
-    <exec executable="R" failifexecutionfails="false" failonerror="true" resultproperty="r.installed.result">
-      <arg value="--version" />
-    </exec>
-    <condition property="r.env.ok">
-      <and>
-        <equals arg1="${r.installed.result}" arg2="0" />
-        <or>
-          <available file="${build.dir}/Debug/libClient.a" />
-          <available file="${build.dir}/Release/libClient.a" />
-          <available file="${build.dir}/DebugWin32/Client.lib" />
-          <available file="${build.dir}/ReleaseWin32/Client.lib" />
-          <available file="${build.dir}/Debugx64/Client.lib" />
-          <available file="${build.dir}/Releasex64/Client.lib" />
-        </or>
-      </and>
-    </condition>
+  <target name="binary-rename">
+    <copy tofile="${dist.dir}/${package.name}.zip" failonerror="false">
+      <fileset dir="${dist.dir}">
+        <include name="${package.name}_*.zip" />
+      </fileset>
+    </copy>
+  </target>
+  <target name="installer" depends="binary-rename,core.installer">
+    <delete file="${dist.dir}/${package.name}.zip" failonerror="false" />
   </target>
 
-  <target name="test-dist" depends="clean-dist,tests,compile-package,dist-impl,test-dist-none,test-dist-impl" description="Tests the R package distribution using 'R CMD check'" />
-  <target name="test-dist-none" unless="r.env.ok">
-    <echo>R or dependent libraries not installed - cannot test the distribution package</echo>
+  <target name="cpp-compile-check" unless="cpp.headers.present">
+    <available property="cpp.headers.present" file="${build.dir}/.cpp.compile" />
   </target>
-  <target name="test-dist-impl" if="r.env.ok">
-    <exec executable="R" failonerror="true">
+  <target name="r-present-check" depends="cpp-compile-check" unless="r.present" if="cpp.headers.present">
+    <exec executable="${R.command}" failonerror="true" failifexecutionfails="false" resultproperty="r.present.result">
+      <arg value="--version" />
+    </exec>
+    <condition property="r.present">
+      <equals arg1="${r.present.result}" arg2="0" />
+    </condition>
+  </target>
+  <target name="r-present" depends="r-present-check" unless="r.present">
+    <echo>R or dependent libraries not installed - cannot build or test the distribution</echo>
+  </target>
+
+  <target name="test-dist" depends="clean-dist,dist-publish-core,test-dist-impl" description="Tests the R package distribution using 'R CMD check'" />
+  <target name="test-dist-impl" depends="r-present" if="r.present">
+    <exec executable="${R.command}" failonerror="true">
       <arg value="CMD" />
       <arg value="check" />
       <arg value="${package.dir}/${package.name}" />
     </exec>
   </target>
 
-  <target name="install" depends="compile,dist-impl,install-none,install-impl" description="Installs the R package using 'R CMD INSTALL'" />
-  <target name="install-none" unless="r.env.ok">
-    <echo>R or dependent libraries not installed - cannot install the extension locally</echo>
-  </target>
-  <target name="install-impl" if="r.env.ok">
-    <exec executable="R" failonerror="true">
+  <target name="install" depends="clean-dist,dist-publish-core,core.install,r-present" if="r.present" description="Installs the R package using 'R CMD INSTALL'">
+    <exec executable="${R.command}" failonerror="true">
       <arg value="CMD" />
       <arg value="INSTALL" />
       <arg value="${package.dir}/${package.name}" />
     </exec>
   </target>
 
-  <target name="manual" depends="compile,dist-impl,manual-none,manual-impl" description="Generates default R documentation using 'R CMD Rd2pdf'" />
-  <target name="manual-none" unless="r.env.ok">
-    <echo>R or dependent libraries not installed - cannot build the manual locally</echo>
-  </target>
-  <target name="manual-impl" if="r.env.ok">
-    <exec executable="R" failonerror="true">
+  <target name="manual" depends="dist-publish-core,r-present" if="r.present" description="Generates default R documentation using 'R CMD Rd2pdf'">
+    <exec executable="${R.command}" failonerror="true">
       <arg value="CMD" />
       <arg value="Rd2pdf" />
       <arg value="${package.dir}/${package.name}" />
     </exec>
   </target>
 
-  <target name="clean-tests" depends="build-suffix.clean-tests">
+  <target name="clean-tests" depends="common.clean-tests">
     <delete includeemptydirs="true" failonerror="false" dir="${basedir}/${package.name}.Rcheck" />
-  </target>
-
-  <target name="windows-installer" depends="set-version" description="Builds the windows installation packages (requires a dist-binary and Advanced Installer)">
-    <exec executable="AdvancedInstaller.com" failifexecutionfails="true">
-      <arg line="/edit Installer\setup.aip /SetVersion ${module.version.msi}.${module.build.number}" />
-    </exec>
-    <copy file="${dist.dir}/${package.name}_${module.version}.zip" tofile="${dist.dir}/${package.name}.zip" />
-    <exec executable="AdvancedInstaller.com" failifexecutionfails="true">
-      <arg line="/build Installer\setup.aip" />
-    </exec>
   </target>
 
 </project>

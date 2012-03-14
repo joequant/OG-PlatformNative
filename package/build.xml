@@ -2,9 +2,6 @@
 
   <!-- Do not call the targets here directly; they should be called from the basedir's build.xml only -->
 
-  <property file="${basedir}/build.properties" />
-  <property file="${solution.dir}/build.properties" />
-
   <target name="license">
     <copy file="${wkspace.dir}/LICENSE.txt" tofile="${basedir}/LICENSE" />
   </target>
@@ -29,7 +26,7 @@ BugReports: http://jira.opengamma.com/browse/RSTAT
 LazyLoad: true</echo>
   </target>
 
-  <target name="compile" depends="description">
+  <target name="config" depends="description">
     <exec executable="${basedir}/demo/00Index.pl"
           output="${basedir}/demo/00Index"
           dir="${basedir}/demo"
@@ -38,7 +35,6 @@ LazyLoad: true</echo>
   </target>
 
   <target name="dist">
-    <mkdir dir="${package.dir}/${package.name}" />
     <copy todir="${package.dir}/${package.name}">
       <fileset dir="${basedir}">
         <exclude name=".gitignore" />
