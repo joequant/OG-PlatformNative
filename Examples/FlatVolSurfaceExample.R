@@ -39,6 +39,7 @@ OpenGamma:::LOGINFO ("Created portfolio", portfolio.id)
 # Create a view on this portfolio
 OpenGamma:::LOGDEBUG ("Creating view")
 requirements <- c (
+  
  # ValueRequirementNames.Forward.Delta.LV,
 #  ValueRequirementNames.Forward.Gamma.LV,
 #  ValueRequirementNames.Forward.Vanna.LV,
@@ -47,7 +48,8 @@ requirements <- c (
 #  ValueRequirementNames.Full.PDE.Grid.LV,
 #  ValueRequirementNames.PDE.Bucketed.Vega.LV,
  # ValueRequirementNames.PDE.Greeks.LV,
- # new.ValueRequirement (ValueRequirementNames.Forex.PV.Quotes, "CalculationMethod=LocalVolatilityPDEMethod"),
+#  new.ValueRequirement (ValueRequirementNames.Dual.Delta.LV, "CalculationMethod=LocalVolatilityPDEMethod"),
+  new.ValueRequirement (ValueRequirementNames.Domestic.Price.LV, "CalculationMethod=LocalVolatilityPDEMethod"),
   new.ValueRequirement (ValueRequirementNames.Implied.Vol.LV.Black.Equivalent, "CalculationMethod=LocalVolatilityPDEMethod"))
 view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
@@ -222,8 +224,12 @@ results <- lapply (requirements, function (requirement) {
   }
 })
 names (results) <- requirements
-pv = results[[1]]
-print(pv)
+#dualDelta = results[[1]]
+debug =  results[[1]]
+impVol = results[[2]]
+#print(dualDelta)
+print(debug)
+print(impVol)
 #######################
 
 
