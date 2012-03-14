@@ -20,6 +20,8 @@
 
   <target name="test-batch-cpp" depends="jar,core.test-batch-cpp" />
 
+  <target name="test-batch" depends="core.test-batch,dist-source-impl,test-dist-impl" />
+
   <target name="dist-publish-core" depends="common.dist-publish,dist-source" />
 
   <target name="dist-publish" depends="dist-publish-core,dist-binary">
@@ -30,15 +32,17 @@
     <delete dir="${dist.dir}/config" />
   </target>
   
-  <target name="dist-source">
+  <target name="dist-source" depends="dist-source-impl">
+    <!-- Note that this is only a source dist on a clean environment. After the binary has been
+         built the package will contain build artifacts (e.g. object files) -->
+    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${package.dir}" />
+  </target>
+  <target name="dist-source-impl">
     <mkdir dir="${package.dir}/${package.name}" />
     <subant buildpath="package" target="dist" inheritrefs="true" inheritall="true" />
     <subant buildpathref="cc.build.path" target="dist" inheritrefs="true" inheritall="true" />
     <mkdir dir="${package.dir}/${package.name}/src/build" />
     <copy file="${build.dir}/version.h" todir="${package.dir}/${package.name}/src/build" />
-    <!-- Note that this is only a source dist on a clean environment. After the binary has been
-         built the package will contain build artifacts (e.g. object files) -->
-    <zip destfile="${dist.dir}/${ant.project.name}-R.zip" basedir="${package.dir}" />
   </target>
 
   <target name="dist-binary" depends="r-present" if="r.present">
@@ -82,7 +86,8 @@
     <echo>R or dependent libraries not installed - cannot build or test the distribution</echo>
   </target>
 
-  <target name="test-dist" depends="clean-dist,dist-publish-core,r-present" if="r.present" description="Tests the R package distribution using 'R CMD check'">
+  <target name="test-dist" depends="clean-dist,dist-publish-core,test-dist-impl" description="Tests the R package distribution using 'R CMD check'" />
+  <target name="test-dist-impl" depends="r-present" if="r.present">
     <exec executable="${R.command}" failonerror="true">
       <arg value="CMD" />
       <arg value="check" />
