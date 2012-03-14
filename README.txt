@@ -11,6 +11,10 @@ This package is dependent on the OG-Language component from the main
 OG-Platform build. If these artifacts are not correctly generated then no
 artifacts will be produced from here.
 
+To run the package, the integration service from OG-Language will require a
+running engine instance to connect to (e.g. run the server from OG-Examples
+and use opengamma.engine.host=localhost in tests.properties).
+
 Assuming that OG-Language builds correctly then the R package should compile
 and run from Linux as long as R is in the path and R-devel headers are in the
 standard include path.
