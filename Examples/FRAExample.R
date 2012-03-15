@@ -38,7 +38,10 @@ OpenGamma:::LOGINFO ("Created portfolio", portfolio.id)
 
 # Create a view on this portfolio
 OpenGamma:::LOGDEBUG ("Creating view")
-requirements <- c (ValueRequirementNames.Present.Value, ValueRequirementNames.PV01)
+requirements <- c (
+  ValueRequirementNames.Present.Value,
+  new.ValueRequirement (ValueRequirementNames.PV01, "Curve=FUNDING"),
+  new.ValueRequirement (ValueRequirementNames.PV01, "Curve=FORWARD_3M"))
 view <- ViewDefinition ("FRA example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
 OpenGamma:::LOGINFO ("Created view", view.id)
