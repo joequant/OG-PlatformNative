@@ -24,7 +24,7 @@ fromVectors.VolatilitySurfaceSnapshot <- function (xc, x, yc, y, marketValue, ov
     surface <- SetVolatilitySurfacePoint (
       snapshot = surface,
       x = x[((i - 1) %/% length (y)) + 1],
-      y = y[(i %% length (y)) + 1],
+      y = y[((i - 1) %% length (y)) + 1],
       marketValue = marketValue[i],
       overrideValue = overrideValue[i],
       xc = xc,
