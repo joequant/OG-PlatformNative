@@ -49,7 +49,11 @@ OpenGamma:::LOGINFO ("Created portfolio", portfolio.id)
 
 # Create a view on this portfolio
 OpenGamma:::LOGDEBUG ("Creating view")
-requirements <- c (ValueRequirementNames.Present.Value, ValueRequirementNames.PV01)
+requirements <- c (
+  new.ValueRequirement (ValueRequirementNames.Present.Value, "FundingCurve=SECONDARY,ForwardCurve=SECONDARY"),
+  new.ValueRequirement (ValueRequirementNames.PV01, "Curve=SECONDARY,FundingCurve=SECONDARY,ForwardCurve=SECONDARY"))
+  # TODO: It shouldn't be necessary to specify the FundingCurve/ForwardCurve constraints, but the default injection
+  # mechanism was not working when this was wrtten.
 view <- ViewDefinition ("Swap example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
 OpenGamma:::LOGINFO ("Created view", view.id)
