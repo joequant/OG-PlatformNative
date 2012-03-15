@@ -5,7 +5,7 @@
  ##
 
 # Converts the duration sub-message to a real (number of seconds)
-.calculationDuration.ViewComputationResultModel <- function (msg) {
+calculationDuration.ViewComputationResultModel <- function (msg) {
   msg$seconds + msg$nanos / 1000000000
 }
 
@@ -84,7 +84,7 @@
 }
 
 # Converts the results Fudge message payload to a list of data.frame objects
-.results.ViewComputationResultModel <- function (msg) {
+results.ViewComputationResultModel <- function (msg) {
   configurations <- msg[1]
   results <- msg[2]
   result <- list ()
@@ -200,7 +200,7 @@ column.ViewComputationResultModel <- function (data, config, col) {
 }
 
 # Converts the live data Fudge message payload to a data.frame object
-.liveData.ViewComputationResultModel <- function (msg) {
+liveData.ViewComputationResultModel <- function (msg) {
   liveData <- msg[1]
   if (!is.list (liveData)) {
     liveData <- list (liveData)
@@ -220,10 +220,10 @@ Install.ViewComputationResultModel <- function (stub) {
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "viewCycleId")
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "valuationTime")
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "calculationTime")
-  .field.object.FudgeMsg (stub.ViewComputationResultModel, "calculationDuration", ".calculationDuration.ViewComputationResultModel")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "calculationDuration", "calculationDuration.ViewComputationResultModel")
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "versionCorrection")
-  .field.object.FudgeMsg (stub.ViewComputationResultModel, "results", ".results.ViewComputationResultModel")
-  .field.object.FudgeMsg (stub.ViewComputationResultModel, "liveData", ".liveData.ViewComputationResultModel")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "results", "results.ViewComputationResultModel")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "liveData", "liveData.ViewComputationResultModel")
   stub.ViewComputationResultModel$func (
     "column",
     "Find column from a data result",

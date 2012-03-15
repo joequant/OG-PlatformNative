@@ -21,7 +21,7 @@ fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
 }
 
 # Unpack the globalValues field from a snapshot
-.globalValues.MarketDataSnapshot <- function (msg) {
+globalValues.MarketDataSnapshot <- function (msg) {
   if (length (msg) == 0) {
     list ()
   } else {
@@ -30,13 +30,13 @@ fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
 }
 
 # Unpack the yieldCurves field from a snapshot
-.yieldCurves.MarketDataSnapshot <- function (msg) {
+yieldCurves.MarketDataSnapshot <- function (msg) {
   if (length (msg) == 0) {
     list ()
   } else {
     x <- field.FudgeMsg (msg, 2)
     if (!is.list (x)) x <- list (x)
-    curveSnapshots <- lapply (x, function (y) { .values.YieldCurveSnapshot (y$values) })
+    curveSnapshots <- lapply (x, function (y) { values.YieldCurveSnapshot (y$values) })
     x <- field.FudgeMsg (msg, 1)
     if (!is.list (x)) x <- list (x)
     names (curveSnapshots) <- sapply (x, function (y) { paste (y$currency, y$name, sep = "_") })
@@ -45,13 +45,13 @@ fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
 }
 
 # Unpack the volatilityCubes field from a snapshot
-.volatilityCubes.MarketDataSnapshot <- function (msg) {
+volatilityCubes.MarketDataSnapshot <- function (msg) {
   if (length (msg) == 0) {
     list ()
   } else {
     x <- field.FudgeMsg (msg, 2)
     if (!is.list (x)) x <- list (x)
-    cubeSnapshots <- lapply (x, function (y) { .dataFrames.VolatilityCubeSnapshot (y) })
+    cubeSnapshots <- lapply (x, function (y) { dataFrames.VolatilityCubeSnapshot (y) })
     x <- field.FudgeMsg (msg, 1)
     if (!is.list (x)) x <- list (x)
     names (cubeSnapshots) <- sapply (x, function (y) { paste (y$currency, y$name, sep = "_") })
@@ -60,13 +60,13 @@ fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
 }
 
 # Unpack the volatilitySurfaces field from a snapshot
-.volatilitySurfaces.MarketDataSnapshot <- function (msg) {
+volatilitySurfaces.MarketDataSnapshot <- function (msg) {
   if (length (msg) == 0) {
     list ()
   } else {
     x <- field.FudgeMsg (msg, 2)
     if (!is.list (x)) x <- list (x)
-    surfaceSnapshots <- lapply (x, function (y) { .values.VolatilitySurfaceSnapshot (y$values) })
+    surfaceSnapshots <- lapply (x, function (y) { values.VolatilitySurfaceSnapshot (y$values) })
     x <- field.FudgeMsg (msg, 1)
     if (!is.list (x)) x <- list (x)
     names (surfaceSnapshots) <- make.names (sapply (x, function (y) { paste (y$target, y$name, y$instrumentType, sep = "_") }))
@@ -81,10 +81,10 @@ Install.MarketDataSnapshot <- function (stub) {
   .field.object.FudgeMsg (stub.MarketDataSnapshot, "uniqueId")
   .field.object.FudgeMsg (stub.MarketDataSnapshot, "name")
   .field.object.FudgeMsg (stub.MarketDataSnapshot, "basisViewName")
-  .field.object.FudgeMsg (stub.MarketDataSnapshot, "globalValues", ".globalValues.MarketDataSnapshot")
-  .field.object.FudgeMsg (stub.MarketDataSnapshot, "yieldCurves", ".yieldCurves.MarketDataSnapshot")
-  .field.object.FudgeMsg (stub.MarketDataSnapshot, "volatilityCubes", ".volatilityCubes.MarketDataSnapshot")
-  .field.object.FudgeMsg (stub.MarketDataSnapshot, "volatilitySurfaces", ".volatilitySurfaces.MarketDataSnapshot")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "globalValues", "globalValues.MarketDataSnapshot")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "yieldCurves", "yieldCurves.MarketDataSnapshot")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "volatilityCubes", "volatilityCubes.MarketDataSnapshot")
+  .field.object.FudgeMsg (stub.MarketDataSnapshot, "volatilitySurfaces", "volatilitySurfaces.MarketDataSnapshot")
   stub.MarketDataSnapshot$fromFudgeMsg ("fromFudgeMsg.MarketDataSnapshot (msg)", "ManageableMarketDataSnapshot")
   stub.MarketDataSnapshot$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.UnstructuredMarketDataSnapshot (msg)", "UnstructuredMarketDataSnapshot")
   stub.MarketDataSnapshot$end ()

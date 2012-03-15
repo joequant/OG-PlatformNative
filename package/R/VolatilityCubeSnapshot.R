@@ -5,7 +5,7 @@
  ##
 
 # Unpack the values from the cube into data frames
-.dataFrames.VolatilityCubeSnapshot <- function (msg) {
+dataFrames.VolatilityCubeSnapshot <- function (msg) {
   values <- NULL
   otherValues <- NULL
   strikes <- NULL
@@ -13,13 +13,13 @@
     fieldName <- field$Name
     if (length (fieldName) > 0) {
       if (fieldName == "values") {
-        values <- .values.VolatilityCubeSnapshot (field$Value)
+        values <- values.VolatilityCubeSnapshot (field$Value)
       } else {
         if (fieldName == "otherValues") {
-          otherValues <- .otherValues.VolatilityCubeSnapshot (field$Value)
+          otherValues <- otherValues.VolatilityCubeSnapshot (field$Value)
         } else {
           if (fieldName == "strikes") {
-            strikes <- .strikes.VolatilityCubeSnapshot (field$Value)
+            strikes <- strikes.VolatilityCubeSnapshot (field$Value)
           }
         }
       }
@@ -29,12 +29,12 @@
 }
 
 # Unpack the values from the cube into a data frame
-.otherValues.VolatilityCubeSnapshot <- function (v) {
+otherValues.VolatilityCubeSnapshot <- function (v) {
   fromFudgeMsg.UnstructuredMarketDataSnapshot (v)
 }
 
 # Unpack the "other values" from the cube into a data frame
-.strikes.VolatilityCubeSnapshot <- function (v) {
+strikes.VolatilityCubeSnapshot <- function (v) {
   k <- v[1]
   if (!is.list (k)) k <- list (k)
   first <- sapply (k, function (z) { z$first })
@@ -47,7 +47,7 @@
 }
 
 # Unpack the strikes from the cube into a data frame
-.values.VolatilityCubeSnapshot <- function (v) {
+values.VolatilityCubeSnapshot <- function (v) {
   k <- v[1]
   if (!is.list (k)) k <- list (k)
   swapTenor <- sapply (k, function (z) { z$swapTenor })
@@ -64,9 +64,9 @@
 Install.VolatilityCubeSnapshot <- function (stub) {
   stub.VolatilityCubeSnapshot <- stub$begin ("VolatilityCubeSnapshot")
   .object.FudgeMsg (stub.VolatilityCubeSnapshot)
-  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "otherValues", ".otherValues.VolatilityCubeSnapshot")
-  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "strikes", ".strikes.VolatilityCubeSnapshot")
-  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "values", ".values.VolatilityCubeSnapshot")
+  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "otherValues", "otherValues.VolatilityCubeSnapshot")
+  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "strikes", "strikes.VolatilityCubeSnapshot")
+  .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "values", "values.VolatilityCubeSnapshot")
   stub.VolatilityCubeSnapshot$fromFudgeMsg ("fromFudgeMsg.VolatilityCubeSnapshot (msg)", "ManageableVolatilityCubeSnapshot")
   stub.VolatilityCubeSnapshot$end ()
 }

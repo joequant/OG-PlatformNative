@@ -44,12 +44,7 @@ snapshot <- SetSnapshotYieldCurve (snapshot, "USD_DEFAULT", curve)
 
 # Create volatility surfaces within the snapshot
 LOGDEBUG ("Set volatility surfaces")
-surface <- SnapshotVolatilitySurface ()
-for (x in c ("P1Y", "P2Y", "P3Y")) {
-  for (y in c ("0, ATM", "15, BUTTERFLY", "25, RISK_REVERSAL")) {
-    surface <- SetVolatilitySurfacePoint (surface, x, y, marketValue = 0.005, xc = "TENOR", yc = "INTEGER_FXVOLQUOTETYPE_PAIR")
-  }
-}
+surface <- fromVectors.VolatilitySurfaceSnapshot ("TENOR", c ("P1Y", "P2Y", "P3y"), "INTEGER_FXVOLQUOTETYPE_PAIR", c ("0, ATM", "15, BUTTERFLY", "25, RISK_REVERSAL"), rep (0.005, 9))
 snapshot <- SetSnapshotVolatilitySurface (snapshot, "Test~Test_DEFAULT_MarketStrangleRiskReversal_SWAPTION", surface)
 
 # Create volatility cubes within the snapshot
