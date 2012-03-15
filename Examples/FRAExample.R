@@ -89,6 +89,7 @@ for (ticker in names (tickers)) {
 }
 market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_FORWARD_3M", yieldCurve = curve.forward.3m)
 tickers <- list (
+  "BLOOMBERG_TICKER~USDR1T Curncy" = 0.0027,
   "BLOOMBERG_TICKER~USDR2T Curncy" = 0.0027,
   "BLOOMBERG_TICKER~USSO1 Curncy" = 0.00125,
   "BLOOMBERG_TICKER~USSO10 Curncy" = 0.0173,

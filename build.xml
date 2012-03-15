@@ -18,6 +18,23 @@
     <subant buildpath="package" target="config" inheritrefs="true" inheritall="true" />
   </target>
 
+  <target name="exists-OpenGammaR" unless="replace.OpenGammaR">
+    <condition property="exists.OpenGammaR">
+      <or>
+        <available file="${user.home}/etc/OpenGammaLtd/OpenGammaR" />
+        <os family="Windows" />
+      </or>
+    </condition>
+  </target>
+  <target name="deploy-OpenGammaR" depends="exists-OpenGammaR" unless="exists.OpenGammaR">
+    <echo file="${user.home}/etc/OpenGammaLtd/OpenGammaR"># Local build defaults
+
+connectorLogConfiguration=${basedir}/config/log4cxx.properties
+serviceExecutable=${basedir}/build/Debug/ServiceRunner
+</echo>
+  </target>
+  <target name="deploy-config" depends="core-deploy.deploy-config,deploy-OpenGammaR" />
+
   <target name="test-batch-cpp" depends="jar,core.test-batch-cpp" />
 
   <target name="test-batch" depends="core.test-batch,dist-source-impl,test-dist-impl" />

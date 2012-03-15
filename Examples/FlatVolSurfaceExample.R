@@ -58,71 +58,16 @@ OpenGamma:::LOGINFO ("Created view", view.id)
 
 # Create a snapshot containing the market data
 OpenGamma:::LOGDEBUG ("Creating snapshot")
-atmVol <- 0.2;
 market.data <- Snapshot ()
 market.data <- SetSnapshotName (market.data, "FX Option Example")
 market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = 1.3503, type = "PRIMITIVE")
-surface.points <- list (
-  list ("P14D", "0, ATM", atmVol),
-  list ("P21D", "15, BUTTERFLY", 0.0),
-  list ("P1Y", "25, BUTTERFLY",  0.0),
-  list ("P21D", "25, RISK_REVERSAL",  0.0),
-  list ("P1Y", "15, RISK_REVERSAL",  0.0),
-  list ("P6M", "15, BUTTERFLY",  0.0),
-  list ("P6M", "25, RISK_REVERSAL",  0.0),
-  list ("P5Y", "0, ATM", atmVol),
-  list ("P6M", "15, RISK_REVERSAL",  0.0),
-  list ("P6M", "25, BUTTERFLY", 0.0),
-  list ("P21D", "15, RISK_REVERSAL",  0.0),
-  list ("P1Y", "25, RISK_REVERSAL",  0.0),
-  list ("P21D", "25, BUTTERFLY",  0.0),
-  list ("P1Y", "15, BUTTERFLY",  0.0),
-  list ("P21D", "0, ATM",atmVol),
-  list ("P6M", "0, ATM", atmVol),
-  list ("P14D", "15, BUTTERFLY", 0.0),
-  list ("P14D", "25, RISK_REVERSAL",  0.0),
-  list ("P5Y", "25, BUTTERFLY",  0.0),
-  list ("P5Y", "15, RISK_REVERSAL",  0.0),
-  list ("P1Y", "0, ATM",atmVol),
-  list ("P5Y", "25, RISK_REVERSAL",  0.0),
-  list ("P5Y", "15, BUTTERFLY",  0.0),
-  list ("P14D", "15, RISK_REVERSAL", 0.0),
-  list ("P14D", "25, BUTTERFLY",  0.0),
-  list ("P1M", "25, BUTTERFLY",  0.0),
-  list ("P1M", "15, RISK_REVERSAL",  0.0),
-  list ("P7D", "15, BUTTERFLY",  0.0),
-  list ("P7D", "25, RISK_REVERSAL",  0.0),
-  list ("P3M", "25, BUTTERFLY",  0.0),
-  list ("P10Y", "15, BUTTERFLY",  0.0),
-  list ("P3M", "15, RISK_REVERSAL",  0.0),
-  list ("P10Y", "25, RISK_REVERSAL",  0.0),
-  list ("P1M", "25, RISK_REVERSAL",  0.0),
-  list ("P1M", "15, BUTTERFLY",  0.0),
-  list ("P3M", "25, RISK_REVERSAL",  0.0),
-  list ("P10Y", "15, RISK_REVERSAL",  0.0),
-  list ("P3M", "15, BUTTERFLY",  0.0),
-  list ("P10Y", "25, BUTTERFLY",  0.0),
-  list ("P7D", "15, RISK_REVERSAL",  0.0),
-  list ("P9M", "0, ATM",  atmVol),
-  list ("P7D", "25, BUTTERFLY",  0.0),
-  list ("P7D", "0, ATM", atmVol),
-  list ("P9M", "15, RISK_REVERSAL",  0.0),
-  list ("P9M", "25, BUTTERFLY",  0.0),
-  list ("P10Y", "0, ATM",atmVol),
-  list ("P3M", "0, ATM",atmVol),
-  list ("P9M", "15, BUTTERFLY",  0.0),
-  list ("P9M", "25, RISK_REVERSAL",  0.0),
-  list ("P1M", "0, ATM", atmVol))
-surface.data <- SnapshotVolatilitySurface ()
-for (surface.point in surface.points) {
-  surface.data <- SetVolatilitySurfacePoint (snapshot = surface.data, x = surface.point[[1]], y = surface.point[[2]], marketValue = surface.point[[3]], xc = "TENOR", yc = "INTEGER_FXVOLQUOTETYPE_PAIR")
-}
+
+volatility.atm <- 0.2
+volatility <- c (volatility.atm, 0, 0, 0, 0)
+surface.tenors <- c ("P7D", "P14D", "P21D", "P1M", "P3M", "P6M", "P9M", "P1Y", "P5Y", "P10Y")
+surface.data <- fromVectors.VolatilitySurfaceSnapshot ("TENOR", surface.tenors, "INTEGER_FXVOLQUOTETYPE_PAIR", c ("0, ATM", "15, BUTTERFLY", "25, BUTTERFLY", "15, RISK_REVERSAL", "25, RISK_REVERSAL"), rep (volatility, length (surface.tenors)))
 surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
-market.data.id <- StoreSnapshot (market.data)
-OpenGamma:::LOGINFO ("Created snapshot", market.data.id)
-
-
 tickers <- list (
   "BLOOMBERG_TICKER~USDR1T Curncy" = 0.002,
   "BLOOMBERG_TICKER~USDR2T Curncy" = 0.002,
@@ -139,7 +84,6 @@ tickers <- list (
   "BLOOMBERG_TICKER~USSO4 Curncy" = 0.005185,
   "BLOOMBERG_TICKER~USSO5 Curncy" = 0.007505,
   "BLOOMBERG_TICKER~USSO10 Curncy" = 0.01696)
-
 curve.funding <- SnapshotYieldCurve ()
 for (ticker in names (tickers)) {
   curve.funding <- SetYieldCurvePoint (
@@ -149,9 +93,6 @@ for (ticker in names (tickers)) {
     marketValue = tickers[[ticker]])
 }
 market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_FUNDING", yieldCurve = curve.funding)
-market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
-
-
 tickers <- list (
   "BLOOMBERG_TICKER~EUDR1Z Curncy" = 0.004,
   "BLOOMBERG_TICKER~EUDR2Z Curncy" = 0.00325,
@@ -181,7 +122,6 @@ tickers <- list (
   "BLOOMBERG_TICKER~EUSWE20 Curncy" = 0.022755,
   "BLOOMBERG_TICKER~EUSWE25 Curncy" = 0.022565,
   "BLOOMBERG_TICKER~EUSWE30 Curncy" = 0.02205)
-  
 curve.funding <- SnapshotYieldCurve ()
 for (ticker in names (tickers)) {
   curve.funding <- SetYieldCurvePoint (
@@ -191,15 +131,13 @@ for (ticker in names (tickers)) {
     marketValue = tickers[[ticker]])
 }
 market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "EUR_FUNDING", yieldCurve = curve.funding)
-market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
-
+market.data.id <- StoreSnapshot (snapshot = market.data)
+OpenGamma:::LOGINFO ("Created snapshot", market.data.id)
 
 # Create a view client attached to the snapshot
 OpenGamma:::LOGDEBUG ("Creating view client")
 view.client <- ViewClient (viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id)), useSharedProcess = FALSE)
-#view.client <- ViewClient (viewDescriptor = view.id, useSharedProcess = FALSE)
 view.result <- NULL
-
 
 ###########################################################################
 #PV cal
@@ -231,7 +169,3 @@ impVol = results[[1]]
 #print(debug)
 print(impVol)
 #######################
-
-
-
-

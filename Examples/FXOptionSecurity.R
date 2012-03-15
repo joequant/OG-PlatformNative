@@ -58,62 +58,20 @@ OpenGamma:::LOGDEBUG ("Creating snapshot")
 market.data <- Snapshot ()
 market.data <- SetSnapshotName (market.data, "FX Option Example")
 market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = 1.32905, type = "PRIMITIVE")
-surface.points <- list (
-  list ("P14D", "0, ATM", 0.1113),
-  list ("P21D", "15, BUTTERFLY", 0.0059),
-  list ("P1Y", "25, BUTTERFLY", 0.0056),
-  list ("P21D", "25, RISK_REVERSAL", -0.01565),
-  list ("P1Y", "15, RISK_REVERSAL", -0.041525),
-  list ("P6M", "15, BUTTERFLY", 0.01135),
-  list ("P6M", "25, RISK_REVERSAL", -0.025325),
-  list ("P5Y", "0, ATM", 0.123425),
-  list ("P6M", "15, RISK_REVERSAL", -0.03845),
-  list ("P6M", "25, BUTTERFLY", 0.00475),
-  list ("P21D", "15, RISK_REVERSAL", -0.02265),
-  list ("P1Y", "25, RISK_REVERSAL", -0.02735),
-  list ("P21D", "25, BUTTERFLY", 0.002625),
-  list ("P1Y", "15, BUTTERFLY", 0.012975),
-  list ("P21D", "0, ATM", 0.1091),
-  list ("P6M", "0, ATM", 0.117325),
-  list ("P14D", "15, BUTTERFLY", 0.004875),
-  list ("P14D", "25, RISK_REVERSAL", -0.010375),
-  list ("P5Y", "25, BUTTERFLY", 0.004025),
-  list ("P5Y", "15, RISK_REVERSAL", -0.032225),
-  list ("P1Y", "0, ATM", 0.1234),
-  list ("P5Y", "25, RISK_REVERSAL", -0.02105),
-  list ("P5Y", "15, BUTTERFLY", 0.008975),
-  list ("P14D", "15, RISK_REVERSAL", -0.0156),
-  list ("P14D", "25, BUTTERFLY", 0.002125),
-  list ("P1M", "25, BUTTERFLY", 0.002525),
-  list ("P1M", "15, RISK_REVERSAL", -0.023675),
-  list ("P7D", "15, BUTTERFLY", 0.005075),
-  list ("P7D", "25, RISK_REVERSAL", -0.0063),
-  list ("P3M", "25, BUTTERFLY", 0.003925),
-  list ("P10Y", "15, BUTTERFLY", 0.008275),
-  list ("P3M", "15, RISK_REVERSAL", -0.03415),
-  list ("P10Y", "25, RISK_REVERSAL", -0.018725),
-  list ("P1M", "25, RISK_REVERSAL", -0.016075),
-  list ("P1M", "15, BUTTERFLY", 0.005475),
-  list ("P3M", "25, RISK_REVERSAL", -0.0226),
-  list ("P10Y", "15, RISK_REVERSAL", -0.030975),
-  list ("P3M", "15, BUTTERFLY", 0.00875),
-  list ("P10Y", "25, BUTTERFLY", 0.002775),
-  list ("P7D", "15, RISK_REVERSAL", -0.009225),
-  list ("P9M", "0, ATM", 0.12125),
-  list ("P7D", "25, BUTTERFLY", 0.0022),
-  list ("P7D", "0, ATM", 0.1146),
-  list ("P9M", "15, RISK_REVERSAL", -0.04175),
-  list ("P9M", "25, BUTTERFLY", 0.005225),
-  list ("P10Y", "0, ATM", 0.124325),
-  list ("P3M", "0, ATM", 0.113),
-  list ("P9M", "15, BUTTERFLY", 0.01255),
-  list ("P9M", "25, RISK_REVERSAL", -0.02645),
-  list ("P1M", "0, ATM", 0.11015))
-surface.data <- SnapshotVolatilitySurface ()
-for (surface.point in surface.points) {
-  surface.data <- SetVolatilitySurfacePoint (snapshot = surface.data, x = surface.point[[1]], y = surface.point[[2]], marketValue = surface.point[[3]], xc = "TENOR", yc = "INTEGER_FXVOLQUOTETYPE_PAIR")
-}
-surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_FX_VANILLA_OPTION"
+surface.points.x <- c ("P7D", "P14D", "P21D", "P1M", "P3M", "P6M", "P9M", "P1Y", "P5Y", "P10Y")
+surface.points.y <- c ("0, ATM", "15, BUTTERFLY", "15, RISK_REVERSAL", "25, BUTTERFLY", "25, RISK_REVERSAL")
+surface.points.data <- c (0.1146, 0.005075, -0.009225, 0.0022, -0.0063,
+                          0.1113, 0.004875, -0.0156, 0.002125, -0.010375,
+                          0.1091, 0.0059, -0.02265, 0.002625, -0.01565,
+                          0.11015, 0.005475, -0.023675, 0.002525, -0.016075,
+                          0.113, 0.00875, -0.03415, 0.003925, -0.0226,
+                          0.117325, 0.01135, -0.03845, 0.00475, -0.025325,
+                          0.12125, 0.01255, -0.04175, 0.005225, -0.02645,
+                          0.1234, 0.012975, -0.041525, 0.0056, -0.02735,
+                          0.123425, 0.008975, -0.032225, 0.004025, -0.02105,
+                          0.124325, 0.008275, -0.030975, 0.002775, -0.018725)
+surface.data <- fromVectors.VolatilitySurfaceSnapshot (xc = "TENOR", x = surface.points.x, yc = "INTEGER_FXVOLQUOTETYPE_PAIR", y = surface.points.y, marketValue = surface.points.data)
+surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 curve.points <- list (
   "BLOOMBERG_TICKER~USDR1T Curncy" = 0.002,
@@ -228,4 +186,3 @@ for (shift in c (0.85, 0.90, 0.95, 1.00, 1.05, 1.10, 1.15)) {
   print (results)
 
 }
-
