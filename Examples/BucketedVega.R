@@ -70,7 +70,7 @@ surface.points.data <- c (0.1146, 0.005075, -0.009225, 0.0022, -0.0063,
                           0.123425, 0.008975, -0.032225, 0.004025, -0.02105,
                           0.124325, 0.008275, -0.030975, 0.002775, -0.018725)
 surface.data <- fromVectors.VolatilitySurfaceSnapshot (xc = "TENOR", x = surface.points.x, yc = "INTEGER_FXVOLQUOTETYPE_PAIR", y = surface.points.y, marketValue = surface.points.data)
-surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_FX_VANILLA_OPTION"
+surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 tickers <- list (
   "BLOOMBERG_TICKER~USDR1T Curncy" = 0.002,

@@ -63,7 +63,7 @@ volatility.atm <- 0.2
 volatility <- c (volatility.atm, 0, 0, 0, 0)
 surface.tenors <- c ("P7D", "P14D", "P21D", "P1M", "P3M", "P6M", "P9M", "P1Y", "P5Y", "P10Y")
 surface.data <- fromVectors.VolatilitySurfaceSnapshot ("TENOR", surface.tenors, "INTEGER_FXVOLQUOTETYPE_PAIR", c ("0, ATM", "15, BUTTERFLY", "25, BUTTERFLY", "15, RISK_REVERSAL", "25, RISK_REVERSAL"), rep (volatility, length (surface.tenors)))
-surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_FX_VANILLA_OPTION"
+surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 tickers <- list (
   "BLOOMBERG_TICKER~USDR1T Curncy" = 0.002,
