@@ -69,7 +69,7 @@ volatilitySurfaces.MarketDataSnapshot <- function (msg) {
     surfaceSnapshots <- lapply (x, function (y) { values.VolatilitySurfaceSnapshot (y$values) })
     x <- field.FudgeMsg (msg, 1)
     if (!is.list (x)) x <- list (x)
-    names (surfaceSnapshots) <- make.names (sapply (x, function (y) { paste (y$target, y$name, y$instrumentType, sep = "_") }))
+    names (surfaceSnapshots) <- make.names (sapply (x, function (y) { paste (y$target, y$name, y$quoteType, y$quoteUnits, y$instrumentType, sep = "_") }))
     surfaceSnapshots
   }
 }

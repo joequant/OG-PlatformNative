@@ -23,8 +23,8 @@ fromVectors.VolatilitySurfaceSnapshot <- function (xc, x, yc, y, marketValue, ov
   for (i in 1:length (marketValue)) {
     surface <- SetVolatilitySurfacePoint (
       snapshot = surface,
-      x = x[i %/% length (y)],
-      y = y[i %% length (y)],
+      x = x[((i - 1) %/% length (y)) + 1],
+      y = y[(i %% length (y)) + 1],
       marketValue = marketValue[i],
       overrideValue = overrideValue[i],
       xc = xc,
@@ -50,6 +50,6 @@ Install.VolatilitySurfaceSnapshot <- function (stub) {
           y = "The Y key values",
           marketValue = "The market data value points",
           overrideValue = "?The override value points (omit to not set)"),
-    "OpenGamma:::fromVectors.VolatilitySurfaceSnapshot (as.string (xc), as.vector (x), as.string (yc), as.vector (y), as.vector (marketValue), as.vector (overrideValue))")
+    "OpenGamma:::fromVectors.VolatilitySurfaceSnapshot (as.character (xc), as.vector (x), as.character (yc), as.vector (y), as.vector (marketValue), as.vector (overrideValue))")
   stub.VolatilitySurfaceSnapshot$end ()
 }
