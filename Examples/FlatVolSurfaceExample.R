@@ -90,7 +90,6 @@ for (ticker in names (tickers)) {
     marketValue = tickers[[ticker]])
 }
 market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_FUNDING", yieldCurve = curve.funding)
-market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
 tickers <- list (
   "BLOOMBERG_TICKER~EUDR1Z Curncy" = 0.004,
   "BLOOMBERG_TICKER~EUDR2Z Curncy" = 0.00325,
