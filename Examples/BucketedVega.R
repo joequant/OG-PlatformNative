@@ -7,20 +7,46 @@
 # Demonstrates constructing an FX Option Security, specifying all of the market data required and pricing it using the engine.
 
 # Note: this is not currently part of the main demo set as it includes Bloomberg tickers so does not work with the Open Source example server
+today <- as.POSIXlt(Sys.Date(), "GMT")
+
+
+tenors <- list("7D", "14D", "21D", "1M", "3m", "6M", "9M", "1Y", "5Y", "10Y")
+nTenors <- length(tenors)
+expiries <- c()
+# for (index in c(1:nTenors))
+# {
+#   offsets <- regexpr("\\d+", tenors[i], perl=TRUE)
+#   num <- as.numeric(substring(tenors[i], offsets[1], offsets[1]+attr(offsets, "match.length")-1))
+#   if(l)
+#   expiries 
+# }
+
+#tenor <-  as.difftime(1, format = "%X", units = "weeks")
+expiry <- today# + tenor
+expiry$year <- expiry$year + 10
+settlementDate <- expiry + as.difftime(2, format = "%X", units = "days")
+t <- 10#as.numeric(tenor)*7/365
+
+forward <- 1.3
+atmVol <- 0.10
+atm <- forward*exp(t*atmVol^2/2)
+strike <- atm
 
 Init ()
 # Create the security as an R object
 OpenGamma:::LOGDEBUG ("Creating security")
 security <- FXOptionSecurity (
   name = "Long put USD 1000000.0, call EUR 75000.0 on 2012-07-01",
-  callAmount = 75000,
+  callAmount = 1000000/strike,
   callCurrency = "EUR",
   putCurrency = "USD",
-  putAmount = 100000,
-  expiry = "2012-07-01",
+  putAmount = 1000000,
+  expiry = as.POSIXct(expiry),
+  #expiry = "2012-07-01",
   exerciseType = EuropeanExerciseType (),
-  long = TRUE,
-  settlementDate = "2012-07-03")
+long = TRUE,
+  settlementDate = as.POSIXct(settlementDate))
+  # settlementDate = "2012-07-03"
 
 # Store the security in the session database
 OpenGamma:::LOGDEBUG ("Storing security")
@@ -56,63 +82,119 @@ OpenGamma:::LOGINFO ("Created view", view.id)
 OpenGamma:::LOGDEBUG ("Creating snapshot")
 market.data <- Snapshot ()
 market.data <- SetSnapshotName (market.data, "FX Option Example")
-market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = 1.3503, type = "PRIMITIVE")
+#market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = 1.3503, type = "PRIMITIVE")
+market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = 1.3, type = "PRIMITIVE")
+
+#expiries are 7D, 14D, 21D, 1M, 3m, 6M, 9M, 1Y, 5Y, 10Y
+
 surface.points <- list (
-  list ("P14D", "0, ATM", 0.1113),
-  list ("P21D", "15, BUTTERFLY", 0.0059),
-  list ("P1Y", "25, BUTTERFLY", 0.0056),
-  list ("P21D", "25, RISK_REVERSAL", -0.01565),
-  list ("P1Y", "15, RISK_REVERSAL", -0.041525),
-  list ("P6M", "15, BUTTERFLY", 0.01135),
-  list ("P6M", "25, RISK_REVERSAL", -0.025325),
-  list ("P5Y", "0, ATM", 0.123425),
-  list ("P6M", "15, RISK_REVERSAL", -0.03845),
-  list ("P6M", "25, BUTTERFLY", 0.00475),
-  list ("P21D", "15, RISK_REVERSAL", -0.02265),
-  list ("P1Y", "25, RISK_REVERSAL", -0.02735),
-  list ("P21D", "25, BUTTERFLY", 0.002625),
-  list ("P1Y", "15, BUTTERFLY", 0.012975),
-  list ("P21D", "0, ATM", 0.1091),
-  list ("P6M", "0, ATM", 0.117325),
-  list ("P14D", "15, BUTTERFLY", 0.004875),
-  list ("P14D", "25, RISK_REVERSAL", -0.010375),
-  list ("P5Y", "25, BUTTERFLY", 0.004025),
-  list ("P5Y", "15, RISK_REVERSAL", -0.032225),
-  list ("P1Y", "0, ATM", 0.1234),
-  list ("P5Y", "25, RISK_REVERSAL", -0.02105),
-  list ("P5Y", "15, BUTTERFLY", 0.008975),
-  list ("P14D", "15, RISK_REVERSAL", -0.0156),
-  list ("P14D", "25, BUTTERFLY", 0.002125),
-  list ("P1M", "25, BUTTERFLY", 0.002525),
-  list ("P1M", "15, RISK_REVERSAL", -0.023675),
-  list ("P7D", "15, BUTTERFLY", 0.005075),
-  list ("P7D", "25, RISK_REVERSAL", -0.0063),
-  list ("P3M", "25, BUTTERFLY", 0.003925),
-  list ("P10Y", "15, BUTTERFLY", 0.008275),
-  list ("P3M", "15, RISK_REVERSAL", -0.03415),
-  list ("P10Y", "25, RISK_REVERSAL", -0.018725),
-  list ("P1M", "25, RISK_REVERSAL", -0.016075),
-  list ("P1M", "15, BUTTERFLY", 0.005475),
-  list ("P3M", "25, RISK_REVERSAL", -0.0226),
-  list ("P10Y", "15, RISK_REVERSAL", -0.030975),
-  list ("P3M", "15, BUTTERFLY", 0.00875),
-  list ("P10Y", "25, BUTTERFLY", 0.002775),
-  list ("P7D", "15, RISK_REVERSAL", -0.009225),
-  list ("P9M", "0, ATM", 0.12125),
-  list ("P7D", "25, BUTTERFLY", 0.0022),
-  list ("P7D", "0, ATM", 0.1146),
-  list ("P9M", "15, RISK_REVERSAL", -0.04175),
-  list ("P9M", "25, BUTTERFLY", 0.005225),
-  list ("P10Y", "0, ATM", 0.124325),
-  list ("P3M", "0, ATM", 0.113),
-  list ("P9M", "15, BUTTERFLY", 0.01255),
-  list ("P9M", "25, RISK_REVERSAL", -0.02645),
-  list ("P1M", "0, ATM", 0.11015))
+  list ("P14D", "0, ATM", atmVol),
+  list ("P21D", "15, BUTTERFLY", 0.0),
+  list ("P1Y", "25, BUTTERFLY",  0.0),
+  list ("P21D", "25, RISK_REVERSAL",  0.0),
+  list ("P1Y", "15, RISK_REVERSAL",  0.0),
+  list ("P6M", "15, BUTTERFLY",  0.0),
+  list ("P6M", "25, RISK_REVERSAL",  0.0),
+  list ("P5Y", "0, ATM", atmVol),
+  list ("P6M", "15, RISK_REVERSAL",  0.0),
+  list ("P6M", "25, BUTTERFLY", 0.0),
+  list ("P21D", "15, RISK_REVERSAL",  0.0),
+  list ("P1Y", "25, RISK_REVERSAL",  0.0),
+  list ("P21D", "25, BUTTERFLY",  0.0),
+  list ("P1Y", "15, BUTTERFLY",  0.0),
+  list ("P21D", "0, ATM",atmVol),
+  list ("P6M", "0, ATM", atmVol),
+  list ("P14D", "15, BUTTERFLY", 0.0),
+  list ("P14D", "25, RISK_REVERSAL",  0.0),
+  list ("P5Y", "25, BUTTERFLY",  0.0),
+  list ("P5Y", "15, RISK_REVERSAL",  0.0),
+  list ("P1Y", "0, ATM",atmVol),
+  list ("P5Y", "25, RISK_REVERSAL",  0.0),
+  list ("P5Y", "15, BUTTERFLY",  0.0),
+  list ("P14D", "15, RISK_REVERSAL", 0.0),
+  list ("P14D", "25, BUTTERFLY",  0.0),
+  list ("P1M", "25, BUTTERFLY",  0.0),
+  list ("P1M", "15, RISK_REVERSAL",  0.0),
+  list ("P7D", "15, BUTTERFLY",  0.0),
+  list ("P7D", "25, RISK_REVERSAL",  0.0),
+  list ("P3M", "25, BUTTERFLY",  0.0),
+  list ("P10Y", "15, BUTTERFLY",  0.0),
+  list ("P3M", "15, RISK_REVERSAL",  0.0),
+  list ("P10Y", "25, RISK_REVERSAL",  0.0),
+  list ("P1M", "25, RISK_REVERSAL",  0.0),
+  list ("P1M", "15, BUTTERFLY",  0.0),
+  list ("P3M", "25, RISK_REVERSAL",  0.0),
+  list ("P10Y", "15, RISK_REVERSAL",  0.0),
+  list ("P3M", "15, BUTTERFLY",  0.0),
+  list ("P10Y", "25, BUTTERFLY",  0.0),
+  list ("P7D", "15, RISK_REVERSAL",  0.0),
+  list ("P9M", "0, ATM",  atmVol),
+  list ("P7D", "25, BUTTERFLY",  0.0),
+  list ("P7D", "0, ATM", atmVol),
+  list ("P9M", "15, RISK_REVERSAL",  0.0),
+  list ("P9M", "25, BUTTERFLY",  0.0),
+  list ("P10Y", "0, ATM",atmVol),
+  list ("P3M", "0, ATM",atmVol),
+  list ("P9M", "15, BUTTERFLY",  0.0),
+  list ("P9M", "25, RISK_REVERSAL",  0.0),
+  list ("P1M", "0, ATM", atmVol))
+
+#surface.points <- list (
+#   list ("P14D", "0, ATM", 0.1113),
+#   list ("P21D", "15, BUTTERFLY", 0.0059),
+#   list ("P1Y", "25, BUTTERFLY", 0.0056),
+#   list ("P21D", "25, RISK_REVERSAL", -0.01565),
+#   list ("P1Y", "15, RISK_REVERSAL", -0.041525),
+#   list ("P6M", "15, BUTTERFLY", 0.01135),
+#   list ("P6M", "25, RISK_REVERSAL", -0.025325),
+#   list ("P5Y", "0, ATM", 0.123425),
+#   list ("P6M", "15, RISK_REVERSAL", -0.03845),
+#   list ("P6M", "25, BUTTERFLY", 0.00475),
+#   list ("P21D", "15, RISK_REVERSAL", -0.02265),
+#   list ("P1Y", "25, RISK_REVERSAL", -0.02735),
+#   list ("P21D", "25, BUTTERFLY", 0.002625),
+#   list ("P1Y", "15, BUTTERFLY", 0.012975),
+#   list ("P21D", "0, ATM", 0.1091),
+#   list ("P6M", "0, ATM", 0.117325),
+#   list ("P14D", "15, BUTTERFLY", 0.004875),
+#   list ("P14D", "25, RISK_REVERSAL", -0.010375),
+#   list ("P5Y", "25, BUTTERFLY", 0.004025),
+#   list ("P5Y", "15, RISK_REVERSAL", -0.032225),
+#   list ("P1Y", "0, ATM", 0.1234),
+#   list ("P5Y", "25, RISK_REVERSAL", -0.02105),
+#   list ("P5Y", "15, BUTTERFLY", 0.008975),
+#   list ("P14D", "15, RISK_REVERSAL", -0.0156),
+#   list ("P14D", "25, BUTTERFLY", 0.002125),
+#   list ("P1M", "25, BUTTERFLY", 0.002525),
+#   list ("P1M", "15, RISK_REVERSAL", -0.023675),
+#   list ("P7D", "15, BUTTERFLY", 0.005075),
+#   list ("P7D", "25, RISK_REVERSAL", -0.0063),
+#   list ("P3M", "25, BUTTERFLY", 0.003925),
+#   list ("P10Y", "15, BUTTERFLY", 0.008275),
+#   list ("P3M", "15, RISK_REVERSAL", -0.03415),
+#   list ("P10Y", "25, RISK_REVERSAL", -0.018725),
+#   list ("P1M", "25, RISK_REVERSAL", -0.016075),
+#   list ("P1M", "15, BUTTERFLY", 0.005475),
+#   list ("P3M", "25, RISK_REVERSAL", -0.0226),
+#   list ("P10Y", "15, RISK_REVERSAL", -0.030975),
+#   list ("P3M", "15, BUTTERFLY", 0.00875),
+#   list ("P10Y", "25, BUTTERFLY", 0.002775),
+#   list ("P7D", "15, RISK_REVERSAL", -0.009225),
+#   list ("P9M", "0, ATM", 0.12125),
+#   list ("P7D", "25, BUTTERFLY", 0.0022),
+#   list ("P7D", "0, ATM", 0.1146),
+#   list ("P9M", "15, RISK_REVERSAL", -0.04175),
+#   list ("P9M", "25, BUTTERFLY", 0.005225),
+#   list ("P10Y", "0, ATM", 0.124325),
+#   list ("P3M", "0, ATM", 0.113),
+#   list ("P9M", "15, BUTTERFLY", 0.01255),
+#   list ("P9M", "25, RISK_REVERSAL", -0.02645),
+#   list ("P1M", "0, ATM", 0.11015))
 surface.data <- SnapshotVolatilitySurface ()
 for (surface.point in surface.points) {
   surface.data <- SetVolatilitySurfacePoint (snapshot = surface.data, x = surface.point[[1]], y = surface.point[[2]], marketValue = surface.point[[3]], xc = "TENOR", yc = "INTEGER_FXVOLQUOTETYPE_PAIR")
 }
-surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_FX_VANILLA_OPTION"
+surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 market.data.id <- StoreSnapshot (market.data)
 OpenGamma:::LOGINFO ("Created snapshot", market.data.id)

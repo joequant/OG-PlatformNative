@@ -49,7 +49,7 @@ requirements <- c (
 #  ValueRequirementNames.PDE.Bucketed.Vega.LV,
  # ValueRequirementNames.PDE.Greeks.LV,
 #  new.ValueRequirement (ValueRequirementNames.Dual.Delta.LV, "CalculationMethod=LocalVolatilityPDEMethod"),
-  new.ValueRequirement (ValueRequirementNames.Domestic.Price.LV, "CalculationMethod=LocalVolatilityPDEMethod"),
+#  new.ValueRequirement (ValueRequirementNames.Domestic.Price.LV, "CalculationMethod=LocalVolatilityPDEMethod"),
   new.ValueRequirement (ValueRequirementNames.Implied.Vol.LV.Black.Equivalent, "CalculationMethod=LocalVolatilityPDEMethod"))
 view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
@@ -117,7 +117,7 @@ surface.data <- SnapshotVolatilitySurface ()
 for (surface.point in surface.points) {
   surface.data <- SetVolatilitySurfacePoint (snapshot = surface.data, x = surface.point[[1]], y = surface.point[[2]], marketValue = surface.point[[3]], xc = "TENOR", yc = "INTEGER_FXVOLQUOTETYPE_PAIR")
 }
-surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_FX_VANILLA_OPTION"
+surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 market.data.id <- StoreSnapshot (market.data)
 OpenGamma:::LOGINFO ("Created snapshot", market.data.id)
@@ -225,10 +225,10 @@ results <- lapply (requirements, function (requirement) {
 })
 names (results) <- requirements
 #dualDelta = results[[1]]
-debug =  results[[1]]
-impVol = results[[2]]
+#debug =  results[[1]]
+impVol = results[[1]]
 #print(dualDelta)
-print(debug)
+#print(debug)
 print(impVol)
 #######################
 
