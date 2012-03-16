@@ -4,49 +4,127 @@
 # Please see distribution for license.
 ##
 
-# Demonstrates constructing an FX Option Security, specifying all of the market data required and pricing it using the engine.
-
 # Note: this is not currently part of the main demo set as it includes Bloomberg tickers so does not work with the Open Source example server
-today <- as.POSIXlt(Sys.Date(), "GMT")
+Init ()
+
+##########
+# utility function - could live in a different script 
+##########
+RiskReversal <- function(callVol, putVol) callVol - putVol
+Butterfly <- function(callVol, putVol, atm) 0.5*(callVol+putVol)-atm
+CallVol <- function(butterfly, riskReversal,atmVol)butterfly+0.5*riskReversal+atmVol
+PutVol <- function(butterfly, riskReversal,atmVol)butterfly-0.5*riskReversal+atmVol
+
+#Convert FX quote points (Risk reversals etc) to flat delta points
+toDeltaPoints <- function(fxQuotePoints){
+  dimensions <- dim(fxQuotePoints)
+  deltas = dimensions[1]
+  expiries = dimensions[2]
+  if((deltas-1)%%2!=0) OpenGamma:::LOGERROR ("must be an odd number of deltas")
+  deltaPairs = (deltas-1)%/%2;
+  res <- matrix(NA,deltas,expiries)
+  for(j in 1:expiries){
+    atmVol = fxQuotePoints[1,j]
+    for(i in 1:deltaPairs){
+      rr =  fxQuotePoints[2*i,j]
+      butt =  fxQuotePoints[2*i+1,j]
+      res[i,j]= PutVol(butt,rr,atmVol)
+      res[deltas+1-i,j] = CallVol(butt,rr,atmVol)
+    }
+    res[deltaPairs+1,j] =atmVol
+  }
+  res
+}
+
+#Convert flat FX delta quotes to risk reversals etc 
+toFXQuotePoints <- function(deltaPoints){
+  dimensions <- dim(deltaPoints)
+  deltas = dimensions[1]
+  expiries = dimensions[2]
+  if((deltas-1)%%2!=0) OpenGamma:::LOGERROR ("must be an odd number of deltas")
+  deltaPairs = (deltas-1)%/%2;
+  res <- matrix(NA,deltas,expiries)
+  for(j in 1:expiries){
+    atmVol = deltaPoints[deltaPairs+1,j]
+    for(i in 1:deltaPairs){
+      put = deltaPoints[i,j]
+      call = deltaPoints[deltas+1-i,j]
+      res [2*i,j] = RiskReversal(call,put)
+      res [2*i+1,j] = Butterfly(call,put,atmVol)
+    }
+    res[1,j] =atmVol
+  }
+  res
+}
+
+#get an expiry date when tenor is a string in the formatt PxE, with E = D, M or Y and x an integer 
+getExpiry <- function(tenor, today){
+  num <- as.integer(substring (tenor, 2, nchar(tenor) - 1))
+  dmy <-  substring (tenor, nchar(tenor))
+  expiry <- today
+  if(dmy == "d" || dmy == "D"){
+    expiry <- expiry + as.difftime(num, format = "%X", units = "days")
+  }else if(dmy == "m" || dmy == "M"){
+    expiry$mon <- expiry$mon + num
+  }else if(dmy == "y" || dmy == "Y"){
+    expiry$year <- expiry$year + num
+  }else{
+    stop(paste(dmy," not a valid tenor"))
+  }
+  expiry <- as.POSIXct(expiry)
+}
+#########################
+# end of unity functions 
+#########################
+
+today <- as.POSIXlt(Sys.Date(), "GMT") #price option from today. Change to use some other date
+option.expiries  <- c("P7D", "P6M",  "P10Y") #The expiries of the options to price  
+spotFX <- 1.3
+notional <- 1000000
+
+#set up market data surface
+tenors <- c ("P7D", "P14D", "P21D", "P1M", "P3M", "P6M", "P9M", "P1Y", "P5Y", "P10Y")
+FX.quotes <- c ("0, ATM", "15, BUTTERFLY", "15, RISK_REVERSAL", "25, BUTTERFLY", "25, RISK_REVERSAL")
+#NOTE only use one of these
+#Flat surface (for debugging)
+atmVol <- 0.20
+#surface.points.data <- rep (c(atmVol, 0, 0, 0, 0), length (tenors))
+#Real market data
+surface.points.data <- c (0.1146, 0.005075, -0.009225, 0.0022, -0.0063,
+                          0.1113, 0.004875, -0.0156, 0.002125, -0.010375,
+                          0.1091, 0.0059, -0.02265, 0.002625, -0.01565,
+                          0.11015, 0.005475, -0.023675, 0.002525, -0.016075,
+                          0.113, 0.00875, -0.03415, 0.003925, -0.0226,
+                          0.117325, 0.01135, -0.03845, 0.00475, -0.025325,
+                          0.12125, 0.01255, -0.04175, 0.005225, -0.02645,
+                          0.1234, 0.012975, -0.041525, 0.0056, -0.02735,
+                          0.123425, 0.008975, -0.032225, 0.004025, -0.02105,
+                          0.124325, 0.008275, -0.030975, 0.002775, -0.018725)
+surface.data <- fromVectors.VolatilitySurfaceSnapshot (xc = "TENOR", x = tenors, yc = "INTEGER_FXVOLQUOTETYPE_PAIR", y = FX.quotes, marketValue = surface.points.data)
+surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 
 
-tenors <- list("7D", "14D", "21D", "1M", "3m", "6M", "9M", "1Y", "5Y", "10Y")
-nTenors <- length(tenors)
-expiries <- c()
-# for (index in c(1:nTenors))
-# {
-#   offsets <- regexpr("\\d+", tenors[i], perl=TRUE)
-#   num <- as.numeric(substring(tenors[i], offsets[1], offsets[1]+attr(offsets, "match.length")-1))
-#   if(l)
-#   expiries 
-# }
+nOptions <- length(option.expiries)
+for (index in c(1:nOptions)){
 
-#tenor <-  as.difftime(1, format = "%X", units = "weeks")
-expiry <- today# + tenor
-expiry$year <- expiry$year + 10
-settlementDate <- expiry + as.difftime(2, format = "%X", units = "days")
-t <- 10#as.numeric(tenor)*7/365
-
-forward <- 1.3
-atmVol <- 0.10
-atm <- forward*exp(t*atmVol^2/2)
+expiry <- getExpiry(option.expiries[index],today)
+settlementDate <- expiry + as.difftime(2, format = "%X", units = "days") #2 days after expiry
+timeToExpiry <- as.integer(expiry - today)/365.25
+atm <- spotFX*exp(timeToExpiry*atmVol^2/2) #this is not quite DNS since we are using the spotFX forward 
 strike <- atm
 
-Init ()
 # Create the security as an R object
 OpenGamma:::LOGDEBUG ("Creating security")
 security <- FXOptionSecurity (
-  name = "Long put USD 1000000.0, call EUR 75000.0 on 2012-07-01",
-  callAmount = 1000000/strike,
+  name = paste("Long put USD,",notional,", call EUR", notional/strike,"on", expiry),
+  callAmount = notional/strike,
   callCurrency = "EUR",
   putCurrency = "USD",
-  putAmount = 1000000,
-  expiry = as.POSIXct(expiry),
-  #expiry = "2012-07-01",
+  putAmount = notional,
+  expiry,
   exerciseType = EuropeanExerciseType (),
-long = TRUE,
-  settlementDate = as.POSIXct(settlementDate))
-  # settlementDate = "2012-07-03"
+  long = TRUE,
+  settlementDate)
 
 # Store the security in the session database
 OpenGamma:::LOGDEBUG ("Storing security")
@@ -64,15 +142,8 @@ OpenGamma:::LOGINFO ("Created portfolio", portfolio.id)
 # Create a view on this portfolio
 OpenGamma:::LOGDEBUG ("Creating view")
 requirements <- c (
- # ValueRequirementNames.Forward.Delta.LV,
-#  ValueRequirementNames.Forward.Gamma.LV,
-#  ValueRequirementNames.Forward.Vanna.LV,
- # ValueRequirementNames.Forward.Vega.LV,
-#  ValueRequirementNames.Forward.Vomma.LV,
-#  ValueRequirementNames.Full.PDE.Grid.LV,
-#  ValueRequirementNames.PDE.Bucketed.Vega.LV,
- # ValueRequirementNames.PDE.Greeks.LV,
-  new.ValueRequirement (ValueRequirementNames.Implied.Vol.LV.Black.Equivalent, "CalculationMethod=LocalVolatilityPDEMethod"))
+  new.ValueRequirement (ValueRequirementNames.Implied.Vol.LV.Black.Equivalent, "CalculationMethod=LocalVolatilityPDEMethod"),
+  new.ValueRequirement (ValueRequirementNames.Price.LV, "CalculationMethod=LocalVolatilityPDEMethod"))
 view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
 calc.config <- "Default"
@@ -83,11 +154,7 @@ OpenGamma:::LOGDEBUG ("Creating snapshot")
 market.data <- Snapshot ()
 market.data <- SetSnapshotName (market.data, "FX Option Example")
 market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = 1.3, type = "PRIMITIVE")
-surface.points.x <- c ("P7D", "P14D", "P21D", "P1M", "P3M", "P6M", "P9M", "P1Y", "P5Y", "P10Y")
-surface.points.y <- c ("0, ATM", "15, BUTTERFLY", "15, RISK_REVERSAL", "25, BUTTERFLY", "25, RISK_REVERSAL")
-surface.points.data <- rep (0, length (surface.points.x) * length (surface.points.y))
-surface.data <- fromVectors.VolatilitySurfaceSnapshot (xc = "TENOR", x = surface.points.x, yc = "INTEGER_FXVOLQUOTETYPE_PAIR", y = surface.points.y, marketValue = surface.points.data)
-surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
+
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 tickers <- list (
   "BLOOMBERG_TICKER~USDR1T Curncy" = 0.002,
@@ -160,54 +227,9 @@ OpenGamma:::LOGDEBUG ("Creating view client")
 view.client <- ViewClient (viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id)), useSharedProcess = FALSE)
 view.result <- NULL
 
-RiskReversal <- function(callVol, putVol) callVol - putVol
-Butterfly <- function(callVol, putVol, atm) 0.5*(callVol+putVol)-atm
-CallVol <- function(butterfly, riskReversal,atmVol)butterfly+0.5*riskReversal+atmVol
-PutVol <- function(butterfly, riskReversal,atmVol)butterfly-0.5*riskReversal+atmVol
 
-#Convert FX quote points (Risk reversals etc) to flat delta points
-toDeltaPoints <- function(fxQuotePoints){
-  dimensions <- dim(fxQuotePoints)
-  deltas = dimensions[1]
-  expiries = dimensions[2]
-  if((deltas-1)%%2!=0) OpenGamma:::LOGERROR ("must be an odd number of deltas")
-  deltaPairs = (deltas-1)%/%2;
-  res <- matrix(NA,deltas,expiries)
-  for(j in 1:expiries){
-    atmVol = fxQuotePoints[1,j]
-    for(i in 1:deltaPairs){
-      rr =  fxQuotePoints[2*i,j]
-      butt =  fxQuotePoints[2*i+1,j]
-      res[i,j]= PutVol(butt,rr,atmVol)
-      res[deltas+1-i,j] = CallVol(butt,rr,atmVol)
-    }
-    res[deltaPairs+1,j] =atmVol
-  }
-  res
-}
-
-#Convert flat FX delta quotes to risk reversals etc 
-toFXQuotePoints <- function(deltaPoints){
-  dimensions <- dim(deltaPoints)
-  deltas = dimensions[1]
-  expiries = dimensions[2]
-  if((deltas-1)%%2!=0) OpenGamma:::LOGERROR ("must be an odd number of deltas")
-  deltaPairs = (deltas-1)%/%2;
-  res <- matrix(NA,deltas,expiries)
-  for(j in 1:expiries){
-    atmVol = deltaPoints[deltaPairs+1,j]
-    for(i in 1:deltaPairs){
-      put = deltaPoints[i,j]
-      call = deltaPoints[deltas+1-i,j]
-      res [2*i,j] = RiskReversal(call,put)
-      res [2*i+1,j] = Butterfly(call,put,atmVol)
-    }
-    res[1,j] =atmVol
-  }
-  res
-}
-
-getPresentValue<- function(deltaPoints){
+#Get the value requirements by triggering a recalculation 
+getValueRequirements<- function(deltaPoints){
   fxQuotePoints <-toFXQuotePoints(deltaPoints)
   surface.data <<- SetVolatilitySurfaceTensor (snapshot = surface.data, overrideValue = fxQuotePoints)
   market.data <<- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
@@ -231,7 +253,7 @@ getPresentValue<- function(deltaPoints){
     }
   })
   names (results) <- requirements
-  results[[1]]
+  results
 }
 
 tensor <- GetVolatilitySurfaceTensor (snapshot = surface.data, marketValue = TRUE)
@@ -239,22 +261,31 @@ OpenGamma:::LOGINFO ("about to run toDeltaPoints")
 deltaPoints <- toDeltaPoints(tensor)
 
 #PV cal
-pv =  getPresentValue(deltaPoints)
+valReq <-  getValueRequirements(deltaPoints)
+impVol <- valReq[[1]]
+pipPrice <- valReq[[2]]
 
 #Bump each flat delta input in turn and compute the change in value of the option
 eps <- 1e-4
 dimensions <- dim(deltaPoints)
 deltas <- dimensions[1]
 expiries <- dimensions[2]
-res <- matrix(NA,deltas,expiries)
+impVolSens <- matrix(NA,deltas,expiries)
+priceSens <- matrix(NA,deltas,expiries)
 for(i in 1:deltas){
   for(j in 1:expiries){
       temp <- deltaPoints
       temp[i,j] <- temp[i,j]+eps;
-      bumped <- getPresentValue(temp)
-      res[i,j] <- (bumped-pv)/eps
+      valReq <- getValueRequirements(temp)
+      impVolSens[i,j] <- (valReq[[1]]-impVol)/eps
+      priceSens[i,j] <- 0.01*notional*(valReq[[2]]-pipPrice)/eps
     }
 }
 
-print(pv)
-print(res) 
+print(paste("Option expiry:",option.expiries[index],"(", expiry ,"tau =", timeToExpiry, "years). Strike:",strike,"Implied vol:", impVol))
+print("Implied Volatility sensitivity matrix")
+print(impVolSens)
+print("Put price sensitivity matrix")
+print(priceSens)
+
+}
