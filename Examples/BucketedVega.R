@@ -78,7 +78,7 @@ getExpiry <- function(tenor, today){
 #########################
 
 today <- as.POSIXlt(Sys.Date(), "GMT") #price option from today. Change to use some other date
-option.expiries  <- c("P7D", "P6M",  "P10Y") #The expiries of the options to price  
+option.expiries  <- c("P6M") #The expiries of the options to price  
 spotFX <- 1.3
 notional <- 1000000
 
@@ -88,7 +88,7 @@ FX.quotes <- c ("0, ATM", "15, BUTTERFLY", "15, RISK_REVERSAL", "25, BUTTERFLY",
 #NOTE only use one of these
 #Flat surface (for debugging)
 atmVol <- 0.20
-#surface.points.data <- rep (c(atmVol, 0, 0, 0, 0), length (tenors))
+# surface.points.data <- rep (c(atmVol, 0.1, 0, 0.05, 0), length (tenors))
 #Real market data
 surface.points.data <- c (0.1146, 0.005075, -0.009225, 0.0022, -0.0063,
                           0.1113, 0.004875, -0.0156, 0.002125, -0.010375,
@@ -111,7 +111,7 @@ expiry <- getExpiry(option.expiries[index],today)
 settlementDate <- expiry + as.difftime(2, format = "%X", units = "days") #2 days after expiry
 timeToExpiry <- as.integer(expiry - today)/365.25
 atm <- spotFX*exp(timeToExpiry*atmVol^2/2) #this is not quite DNS since we are using the spotFX forward 
-strike <- atm
+strike <- atm*1.2
 
 # Create the security as an R object
 OpenGamma:::LOGDEBUG ("Creating security")
