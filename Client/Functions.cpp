@@ -86,7 +86,7 @@ CFunctions::~CFunctions () {
 /// @return a collection instance or NULL if there was a problem
 const CFunctions *CFunctions::GetAvailable (CFunctionQueryAvailable *poQuery) {
 	LOGDEBUG (TEXT ("Waiting for available functions"));
-	const com_opengamma_language_function_Available *pAvailable = poQuery->Recv (CRequestBuilder::GetDefaultTimeout ());
+	const com_opengamma_language_function_Available *pAvailable = poQuery->Recv (CRequestBuilder::GetDefaultTimeout () * 2);
 	if (!pAvailable) {
 		LOGWARN (TEXT ("Did not get available function response"));
 		return NULL;
