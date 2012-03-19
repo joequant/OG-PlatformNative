@@ -273,6 +273,10 @@
 .onLoad <- function (libname, pkgname) {
   LOGINFO ("Loading OpenGamma namespace")
   library.dynam ("OpenGamma", pkgname)
+  if ("OG" %in% loadedNamespaces ()) {
+    LOGDEBUG ("Flagging OG as pre-loaded")
+    OpenGammaCall ("DllMain_setPreload")
+  }
   if (OpenGammaCall ("DllMain_check")) {
     LOGINFO ("OpenGamma namespace loaded")
   } else {
@@ -282,10 +286,17 @@
 
 # Initialises the OpenGamma package(s)
 Init <- function (cached.stub = getOption ("opengamma.cache.stub")) {
+  init <- TRUE
   if ("OG" %in% loadedNamespaces ()) {
-    LOGINFO ("OpenGamma namespaces already initialised")
-    TRUE
-  } else {
+    if (OpenGammaCall ("DllMain_isPreload")) {
+      LOGINFO ("OpenGamma namespaces pre-loaded")
+      unloadNamespace ("OG")
+    } else {
+      LOGINFO ("OpenGamma namespaces already initialised")
+      init <- FALSE
+    }
+  }
+  if (init) {
     og <- .og.package ()
     if (!is.list (og)) {
       LOGINFO ("Stub OG package not available")
@@ -317,6 +328,8 @@ Init <- function (cached.stub = getOption ("opengamma.cache.stub")) {
       .install.package ()
     }
     require ("OG")
+  } else {
+    TRUE
   }
 }
 
