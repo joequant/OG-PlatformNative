@@ -1,4 +1,4 @@
-\name{field.FudgeMsg}
+\name{field.FudgeMsg}%Misc
 \alias{[,FudgeMsg-method}
 \alias{$,FudgeMsg-method}
 \alias{field.FudgeMsg}

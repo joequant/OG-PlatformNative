@@ -130,7 +130,7 @@ find.Functions <- function (name) {
 Install.Functions <- function (stub) {
   count <- count.Functions ()
   LOGINFO ("Declaring", count, "functions")
-  stub.Functions <- stub$begin ("Functions")
+  stub.Functions <- stub$begin ("Functions", Category.INTERNAL)
   stub.Functions$metadata ("count", toString (count))
   description <- c ()
   for (index in seq (from = 0, to = count - 1)) {

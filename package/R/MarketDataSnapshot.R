@@ -76,7 +76,7 @@ volatilitySurfaces.MarketDataSnapshot <- function (msg) {
 
 # Brings declarations for MarketDataSnapshot into scope
 Install.MarketDataSnapshot <- function (stub) {
-  stub.MarketDataSnapshot <- stub$begin ("MarketDataSnapshot")
+  stub.MarketDataSnapshot <- stub$begin ("MarketDataSnapshot", Category.MARKET_DATA)
   .object.FudgeMsg (stub.MarketDataSnapshot)
   .field.object.FudgeMsg (stub.MarketDataSnapshot, "uniqueId")
   .field.object.FudgeMsg (stub.MarketDataSnapshot, "name")

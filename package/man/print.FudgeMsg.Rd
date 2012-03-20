@@ -1,4 +1,4 @@
-\name{print.FudgeMsg}
+\name{print.FudgeMsg}%Misc
 \alias{print.FudgeMsg}
 \title{Pretty prints a Fudge messsage structure}
 \description{

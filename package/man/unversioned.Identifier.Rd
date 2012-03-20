@@ -1,4 +1,4 @@
-\name{unversioned.Identifier}
+\name{unversioned.Identifier}%Identifier
 \alias{unversioned.Identifier}
 \title{Removes the version suffix from a unique identifier}
 \description{

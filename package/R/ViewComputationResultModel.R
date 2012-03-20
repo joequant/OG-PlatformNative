@@ -214,7 +214,7 @@ liveData.ViewComputationResultModel <- function (msg) {
 
 # Brings declarations for ViewComputationResultModel into scope
 Install.ViewComputationResultModel <- function (stub) {
-  stub.ViewComputationResultModel <- stub$begin ("ViewComputationResultModel")
+  stub.ViewComputationResultModel <- stub$begin ("ViewComputationResultModel", Category.VIEW)
   .object.FudgeMsg (stub.ViewComputationResultModel)
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "viewProcessId")
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "viewCycleId")

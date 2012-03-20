@@ -82,7 +82,7 @@
   info$man <- .man.create.package (dir)
   info$R <- .r.create.package (dir)
   info$tests <- .tests.create.package (dir)
-  info$begin <- function (module) {
+  info$begin <- function (module, classification) {
     info$module <- module
     info$src <- file (file.path (info$R, paste (module, "R", sep = ".")), "wt")
     info$setClass <- function (rep) {
@@ -117,7 +117,7 @@
         sep = "\n")
       man <- file (file.path (info$man, paste (x, "Rd", sep = ".")), "wt")
       cat (
-        paste ("\\name{", x, "}", sep = ""),
+        paste ("\\name{", x, "}%", classification, sep = ""),
         paste ("\\alias{", x, "}", sep = ""),
         paste ("\\title{", .escape.Rd (title), "}", sep = ""),
         paste ("\\description{", .escape.Rd (descr), "}", sep = ""),
@@ -125,10 +125,12 @@
         paste (sapply (names (params), function (x) {
           if (substring (params[x], 1, 1) == "?") {
             d <- substring (params[x], 2)
+            meta <- "%optional"
           } else {
             d <- params[x]
+            meta <- ""
           }
-          paste ("\\item{", x, "}{", .escape.Rd (d), "}", sep = "")
+          paste ("\\item{", x, "}{", .escape.Rd (d), "}", meta, sep = "")
         }), collapse = "\n"),
         "}",
         file = man,
@@ -147,7 +149,7 @@
         sep = "")
       man <- file (file.path (info$man, paste (x, "Rd", sep = ".")), "wt")
       cat (
-        paste ("\\name{", x, "}", sep = ""),
+        paste ("\\name{", x, "}%CONST_", classification, sep = ""),
         paste ("\\alias{", x, "}", sep = ""),
         paste ("\\title{", .escape.Rd (title), "}", sep = ""),
         paste ("\\description{", .escape.Rd (descr), "}", sep = ""),
@@ -209,12 +211,10 @@
   info
 }
 
-# Creates and installs the stub import package
-.install.package <- function () {
-  tmp <- file.path (tempdir (), "package")
-  dir.create (tmp)
+# Creates the stub import package
+.build.package <- function (dir) {
   LOGINFO ("Building import package")
-  stub <- .create.package (tmp)
+  stub <- .create.package (dir)
   LOGDEBUG ("Declaring core objects")
   Install.Functions (stub)
   Install.LiveData (stub)
@@ -236,6 +236,13 @@
   Install.VolatilityCubeSnapshot (stub)
   Install.VolatilitySurfaceSnapshot (stub)
   Install.YieldCurveSnapshot (stub)
+}
+
+# Creates and installs the stub import package
+.install.package <- function () {
+  tmp <- file.path (tempdir (), "package")
+  dir.create (tmp)
+  .build.package (tmp)
   LOGINFO ("Installing import package", tmp)
   test <- Sys.getenv ("R_TESTS")
   print (test)

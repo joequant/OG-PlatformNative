@@ -8,7 +8,7 @@
 Install.ValueRequirementNames <- function (stub) {
   func <- find.Functions ("ValueRequirementNames")
   if (func >= 0) {
-    stub.ValueRequirementNames <- stub$begin ("ValueRequirementNames")
+    stub.ValueRequirementNames <- stub$begin ("ValueRequirementNames", Category.VALUE)
     names <- invoke.Functions (func, list ())
     for (name in names) {
       stub.ValueRequirementNames$const (

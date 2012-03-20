@@ -35,7 +35,7 @@ fromVectors.VolatilitySurfaceSnapshot <- function (xc, x, yc, y, marketValue, ov
 
 # Brings declarations for VolatilitySurfaceSnapshot into scope
 Install.VolatilitySurfaceSnapshot <- function (stub) {
-  stub.VolatilitySurfaceSnapshot <- stub$begin ("VolatilitySurfaceSnapshot")
+  stub.VolatilitySurfaceSnapshot <- stub$begin ("VolatilitySurfaceSnapshot", Category.MARKET_DATA)
   .object.FudgeMsg (stub.VolatilitySurfaceSnapshot)
   .field.object.FudgeMsg (stub.VolatilitySurfaceSnapshot, "values", "values.VolatilitySurfaceSnapshot")
   stub.VolatilitySurfaceSnapshot$asDataFrame ("values.volatilitySurfaceSnapshot (x)")

@@ -6,7 +6,7 @@
 
 # Brings declarations for ViewClient into scope
 Install.ViewClient <- function (stub) {
-  stub.ViewClient <- stub$begin ("ViewClient")
+  stub.ViewClient <- stub$begin ("ViewClient", Category.VIEW)
   object.ExternalRef (stub.ViewClient)
   stub.ViewClient$end ()
 }

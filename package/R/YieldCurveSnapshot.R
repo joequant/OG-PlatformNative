@@ -11,7 +11,7 @@ values.YieldCurveSnapshot <- function (x) {
 
 # Brings declarations for YieldCurveSnapshot into scope
 Install.YieldCurveSnapshot <- function (stub) {
-  stub.YieldCurveSnapshot <- stub$begin ("YieldCurveSnapshot")
+  stub.YieldCurveSnapshot <- stub$begin ("YieldCurveSnapshot", Category.MARKET_DATA)
   .object.FudgeMsg (stub.YieldCurveSnapshot)
   .field.object.FudgeMsg (stub.YieldCurveSnapshot, "valuationTime")
   .field.object.FudgeMsg (stub.YieldCurveSnapshot, "values", "values.YieldCurveSnapshot")

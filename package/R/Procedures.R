@@ -116,7 +116,7 @@ invoke.Procedures <- function (index, args) {
 Install.Procedures <- function (stub) {
   count <- count.Procedures ()
   LOGINFO ("Declaring", count, "procedures")
-  stub.Procedures <- stub$begin ("Procedures")
+  stub.Procedures <- stub$begin ("Procedures", Category.INTERNAL)
   stub.Procedures$metadata ("count", count)
   description <- c ()
   for (index in seq (from = 0, to = count - 1)) {

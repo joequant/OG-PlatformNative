@@ -1,4 +1,4 @@
-\name{as.ExternalRef}
+\name{as.ExternalRef}%Misc
 \alias{as.ExternalRef}
 \title{Get a tracked reference to a Java stack entity}
 \description{

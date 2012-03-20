@@ -6,7 +6,7 @@
 
 # Brings arbitrary java.lang.Number utils into scope
 Install.Number <- function (stub) {
-  stub.Number <- stub$begin ("Number")
+  stub.Number <- stub$begin ("Number", Category.MISC)
   for (class in c ("Number", "Byte", "Double", "Float", "Integer", "Long", "Short")) {
     stub.Number$fromFudgeMsg ("msg$value", class)
   }

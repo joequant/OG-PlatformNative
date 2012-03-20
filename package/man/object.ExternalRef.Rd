@@ -1,4 +1,4 @@
-\name{object.ExternalRef}
+\name{object.ExternalRef}%Misc
 \alias{object.ExternalRef}
 \title{Declare an object based on a tracked reference}
 \description{

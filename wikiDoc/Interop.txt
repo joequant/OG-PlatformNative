@@ -1,0 +1,1 @@
+The 'Interop' functions should seldom need to be called directly. They are called by the core library when a Data object returned from the Java components includes additional metadata describing an R type to convert it to. When adding a top-level data type this mechanism can be more efficient than returning the Fudge encoding to R.

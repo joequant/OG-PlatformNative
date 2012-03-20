@@ -1,4 +1,4 @@
-\name{toFudgeMsg.FudgeMsg}
+\name{toFudgeMsg.FudgeMsg}%Misc
 \alias{toFudgeMsg}
 \alias{toFudgeMsg,FudgeMsg-method}
 \title{Convert to a Fudge message}

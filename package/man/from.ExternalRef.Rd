@@ -1,4 +1,4 @@
-\name{from.ExternalRef}
+\name{from.ExternalRef}%Misc
 \alias{from.ExternalRef}
 \title{Get the original value from a tracked reference}
 \description{

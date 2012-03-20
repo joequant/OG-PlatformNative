@@ -95,7 +95,7 @@ parse.ValueProperties <- function (propertyString) {
 
 # Brings declarations for ValueProperties into scope
 Install.ValueProperties <- function (stub) {
-  stub.ValueProperties <- stub$begin ("ValueProperties")
+  stub.ValueProperties <- stub$begin ("ValueProperties", Category.VALUE)
   .object.FudgeMsg (stub.ValueProperties)
   stub.ValueProperties$setMethod ("as.character", "function (x) { OpenGamma:::.toString.ValueProperties (x@msg) }")
   stub.ValueProperties$const ("empty", "The \"empty\" value property set", "The empty value property set can be satisfied by any properties, and can satisfy none (other than the empty set).", "OpenGamma:::empty.ValueProperties")

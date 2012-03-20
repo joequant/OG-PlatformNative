@@ -6,7 +6,7 @@
 
 # Brings array definitions into scope
 Install.Array <- function (stub) {
-  stub.Array <- stub$begin ("Array")
+  stub.Array <- stub$begin ("Array", Category.INTERNAL)
   stub.Array$interop ("ds <- data[[1]]\nd <- data[2:(1 + ds)]\narray (data[(2 + ds):length (data)], d)")
   stub.Array$encode ("d <- dim (data)\nds <- length (d)\nc (ds, d, data)")
   stub.Array$end ()
