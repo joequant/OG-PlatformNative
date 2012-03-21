@@ -78,7 +78,7 @@ getExpiry <- function(tenor, today){
 #########################
 
 today <- as.POSIXlt(Sys.Date(), "GMT") #price option from today. Change to use some other date
-option.expiries  <- c("P7D", "P6M",  "P10Y") #The expiries of the options to price
+option.expiries  <- c("P6M") #The expiries of the options to price
 spotFX <- 1.3
 notional <- 1000000
 
@@ -92,18 +92,18 @@ FX.quotes <- c ("0, ATM", "15, BUTTERFLY", "15, RISK_REVERSAL", "25, BUTTERFLY",
 #NOTE only use one of these
 #Flat surface (for debugging)
 atmVol <- 0.20
-#surface.points.data <- rep (c(atmVol, 0, 0, 0, 0), length (tenors))
+surface.points.data <- rep (c(atmVol, 0, 0, 0, 0), length (tenors))
 #Real market data
-surface.points.data <- c (0.1146, 0.005075, -0.009225, 0.0022, -0.0063,
-                          0.1113, 0.004875, -0.0156, 0.002125, -0.010375,
-                          0.1091, 0.0059, -0.02265, 0.002625, -0.01565,
-                          0.11015, 0.005475, -0.023675, 0.002525, -0.016075,
-                          0.113, 0.00875, -0.03415, 0.003925, -0.0226,
-                          0.117325, 0.01135, -0.03845, 0.00475, -0.025325,
-                          0.12125, 0.01255, -0.04175, 0.005225, -0.02645,
-                          0.1234, 0.012975, -0.041525, 0.0056, -0.02735,
-                          0.123425, 0.008975, -0.032225, 0.004025, -0.02105,
-                          0.124325, 0.008275, -0.030975, 0.002775, -0.018725)
+# surface.points.data <- c (0.1146, 0.005075, -0.009225, 0.0022, -0.0063,
+#                           0.1113, 0.004875, -0.0156, 0.002125, -0.010375,
+#                           0.1091, 0.0059, -0.02265, 0.002625, -0.01565,
+#                           0.11015, 0.005475, -0.023675, 0.002525, -0.016075,
+#                           0.113, 0.00875, -0.03415, 0.003925, -0.0226,
+#                           0.117325, 0.01135, -0.03845, 0.00475, -0.025325,
+#                           0.12125, 0.01255, -0.04175, 0.005225, -0.02645,
+#                           0.1234, 0.012975, -0.041525, 0.0056, -0.02735,
+#                           0.123425, 0.008975, -0.032225, 0.004025, -0.02105,
+#                           0.124325, 0.008275, -0.030975, 0.002775, -0.018725)
 surface.data <- fromVectors.VolatilitySurfaceSnapshot (xc = "TENOR", x = tenors, yc = "INTEGER_FXVOLQUOTETYPE_PAIR", y = FX.quotes, marketValue = surface.points.data)
 surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
