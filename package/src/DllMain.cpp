@@ -22,6 +22,45 @@ static CSuppressLoggingWarning g_oSetQuietMode;
 
 LOGGING (com.opengamma.rstats.package.DllMain);
 
+/// Pre-load tracker to monitor the stub OG package and force a reload if necessary.
+class CPreload {
+private:
+
+	/// TRUE if the OG stub is loaded, FALSE if it is not
+	bool m_bOGLoaded;
+
+public:
+
+	/// Creates a new, reset, instance
+	CPreload () {
+		Clear ();
+	}
+
+	/// Resets the instance, with OG initially unloaded.
+	void Clear () {
+		m_bOGLoaded = false;
+	}
+
+	/// Marks OG as loaded before the OpenGamma package.
+	void SetOGLoaded () {
+		m_bOGLoaded = true;
+	}
+
+	/// Tests if OG was loaded before the OpenGamma package and clears
+	/// the flag if it is.
+	///
+	/// @return TRUE if the OG stub was loaded before OpenGamma, FALSE otherwise
+	bool IsOGLoaded () {
+		bool bResult = m_bOGLoaded;
+		m_bOGLoaded = false;
+		return bResult;
+	}
+
+};
+
+/// The pre-load tracking instance
+static CPreload g_oPreload;
+
 extern "C" {
 
 	void LibExport R_init_OpenGamma (DllInfo *pInfo);
@@ -45,6 +84,22 @@ extern "C" {
 		return result;
 	}
 
+	/// Tests if OG was loaded before OpenGamma, return TRUE if it was and FALSE otherwise.
+	SEXP RPROC DllMain_isPreload0 () {
+		SEXP result = allocVector (INTSXP, 1);
+		if (result != R_NilValue) {
+			*INTEGER (result) = g_oPreload.IsOGLoaded ();
+		}
+		return result;
+	}
+
+	/// Sets the OG preload flag if the namespace is available before the OpenGamma namespace
+	/// is loaded.
+	SEXP RPROC DllMain_setPreload0 () {
+		g_oPreload.SetOGLoaded ();
+		return R_NilValue;
+	}
+	
 }
 
 #define F(name, args) { #name, (DL_FUNC)&name##args, args }
@@ -54,6 +109,8 @@ extern "C" {
 /// changes in the future.
 static R_CallMethodDef g_aMethods[] = {
 	F (DllMain_check, 0),
+	F (DllMain_isPreload, 0),
+	F (DllMain_setPreload, 0),
 	F (ExternalRef_create, 2),
 	F (ExternalRef_fetch, 1),
 	F (FudgeMsg_getAllFields, 1),
@@ -91,6 +148,7 @@ static R_CallMethodDef g_aMethods[] = {
 /// @param[in] pInfo see R documentation
 void LibExport R_init_OpenGamma (DllInfo *pInfo) {
 	LOGDEBUG (TEXT ("Initialising Dll"));
+	g_oPreload.Clear ();
 	g_poFunctions = NULL;
 	g_poLiveData = NULL;
 	g_poProcedures = NULL;
@@ -118,6 +176,7 @@ void LibExport R_init_OpenGamma (DllInfo *pInfo) {
 /// @param[in] pInfo see R documentation
 void LibExport R_unload_OpenGamma (DllInfo *pInfo) {
 	LOGINFO (TEXT ("Unloading DLL"));
+	g_oPreload.Clear ();
 	if (g_poFunctions) {
 		CFunctions::Release (g_poFunctions);
 		g_poFunctions = NULL;

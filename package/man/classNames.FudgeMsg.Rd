@@ -1,4 +1,4 @@
-\name{classNames.FudgeMsg}
+\name{classNames.FudgeMsg}%Misc
 \alias{classNames.FudgeMsg}
 \title{Get the class names of an encoded object}
 \description{

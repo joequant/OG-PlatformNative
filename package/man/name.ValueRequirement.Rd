@@ -1,4 +1,4 @@
-\name{name.ValueRequirement}
+\name{name.ValueRequirement}%Value
 \alias{name.ValueRequirement}
 \alias{name.ValueSpecification}
 \title{Extract the name component of a value requirement/specification string}

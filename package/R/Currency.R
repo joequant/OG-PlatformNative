@@ -29,15 +29,7 @@ fromFudgeMsg.MultipleCurrencyAmount <- function (msg) {
 
 # Brings currency definitions into scope
 Install.Currency <- function (stub) {
-  stub.Currency <- stub$begin ("Currency")
+  stub.Currency <- stub$begin ("Currency", Category.CURRENCY)
   stub.Currency$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.MultipleCurrencyAmount (msg)", "MultipleCurrencyAmount")
   stub.Currency$end ()
-}
-# Brings PDEResults definitions into scope
-Install.PDEResults <- function (stub) {
-  stub.PDEResults <- stub$begin ("PDEResults")
-  stub.PDEResults$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.BucketedGreekResultCollection (msg)", "BucketedGreekResultCollection")
-  stub.PDEResults$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.ForexLocalVolatilityPDEPresentValueResultCollection (msg)", "ForexLocalVolatilityPDEPresentValueResultCollection")
-  stub.PDEResults$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.PDEGreekResultCollection (msg)", "PDEGreekResultCollection")
-  stub.PDEResults$end ()
 }

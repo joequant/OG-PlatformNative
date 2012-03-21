@@ -1,4 +1,4 @@
-\name{is.FudgeMsg}
+\name{is.FudgeMsg}%Misc
 \alias{is.FudgeMsg}
 \title{Test if an object is a Fudge message instance}
 \description{

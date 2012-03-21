@@ -3,7 +3,7 @@
   <!-- Do not call the targets here directly; they should be called from the basedir's build.xml only -->
 
   <target name="license">
-    <copy file="${wkspace.dir}/LICENSE.txt" tofile="${basedir}/LICENSE" />
+    <copy file="${solution.dir}/LICENSE.txt" tofile="${basedir}/LICENSE" />
   </target>
 
   <target name="description" depends="license">

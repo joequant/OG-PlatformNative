@@ -8,7 +8,7 @@
 Install.MarketDataRequirementNames <- function (stub) {
   func <- find.Functions ("MarketDataRequirementNames")
   if (func >= 0) {
-    stub.MarketDataRequirementNames <- stub$begin ("MarketDataRequirementNames")
+    stub.MarketDataRequirementNames <- stub$begin ("MarketDataRequirementNames", Category.MARKET_DATA)
     names <- invoke.Functions (func, list ())
     for (name in names) {
       stub.MarketDataRequirementNames$const (

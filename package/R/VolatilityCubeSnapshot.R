@@ -62,7 +62,7 @@ values.VolatilityCubeSnapshot <- function (v) {
 
 # Brings declarations for VolatilityCubeSnapshot into scope
 Install.VolatilityCubeSnapshot <- function (stub) {
-  stub.VolatilityCubeSnapshot <- stub$begin ("VolatilityCubeSnapshot")
+  stub.VolatilityCubeSnapshot <- stub$begin ("VolatilityCubeSnapshot", Category.MARKET_DATA)
   .object.FudgeMsg (stub.VolatilityCubeSnapshot)
   .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "otherValues", "otherValues.VolatilityCubeSnapshot")
   .field.object.FudgeMsg (stub.VolatilityCubeSnapshot, "strikes", "strikes.VolatilityCubeSnapshot")

@@ -1,4 +1,4 @@
-\name{properties.ValueRequirement}
+\name{properties.ValueRequirement}%Value
 \alias{properties.ValueRequirement}
 \alias{properties.ValueSpecification}
 \title{Extract the properties component of a value requirement/specification string}

@@ -1,4 +1,4 @@
-\name{fields.FudgeMsg}
+\name{fields.FudgeMsg}%Misc
 \alias{fields.FudgeMsg}
 \title{Get fields from a Fudge messsage}
 \description{
@@ -7,4 +7,3 @@
 \arguments{
 	\item{x}{A Fudge message object}
 }
-\usage{fields.FudgeMsg(x)}

@@ -81,7 +81,7 @@ fromFudgeMsg.PDEResultCollection <- function (msg) {
 
 # Brings PDEResults definitions into scope
 Install.PDEResults <- function (stub) {
-  stub.PDEResults <- stub$begin ("PDEResults")
+  stub.PDEResults <- stub$begin ("PDEResults", Category.MISC)
   stub.PDEResults$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.BucketedGreekResultCollection (msg)", "BucketedGreekResultCollection")
   stub.PDEResults$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.ForexLocalVolatilityPDEPresentValueResultCollection (msg)", "ForexLocalVolatilityPDEPresentValueResultCollection")
   stub.PDEResults$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.PDEResultCollection (msg)", "PDEResultCollection")

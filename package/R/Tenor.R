@@ -6,7 +6,7 @@
 
 # Brings Tenor definitions into scope
 Install.Tenor <- function (stub) {
-  stub.Tenor <- stub$begin ("Tenor")
+  stub.Tenor <- stub$begin ("Tenor", Category.MISC)
   stub.Tenor$fromFudgeMsg ("msg$tenor")
   stub.Tenor$end ()
 }

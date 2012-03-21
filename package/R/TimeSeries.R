@@ -34,7 +34,7 @@ as.xts.TimeSeries <- function (data) {
 
 # Brings TimeSeries definitions into scope
 Install.TimeSeries <- function (stub) {
-  stub.TimeSeries <- stub$begin ("TimeSeries")
+  stub.TimeSeries <- stub$begin ("TimeSeries", Category.TIMESERIES)
   stub.TimeSeries$interop ("OpenGamma:::Interop.TimeSeries (data)")
   stub.TimeSeries$interop ("OpenGamma:::Interop.TimeSeriesStart (data)", "TimeSeriesStart")
   stub.TimeSeries$end ()

@@ -120,7 +120,7 @@ invoke.LiveData <- function (index, args) {
 Install.LiveData <- function (stub) {
   count <- count.LiveData ()
   LOGINFO ("Declaring", count, "live data connections")
-  stub.LiveData <- stub$begin ("LiveData")
+  stub.LiveData <- stub$begin ("LiveData", Category.INTERNAL)
   stub.LiveData$metadata ("count", toString (count))
   description <- c ()
   for (index in seq (from = 0, to = count - 1)) {

@@ -1,4 +1,4 @@
-\name{mapToDataFrame.FudgeMsg}
+\name{mapToDataFrame.FudgeMsg}%Misc
 \alias{mapToDataFrame.FudgeMsg}
 \title{Convert a Fudge encoded map to a data frame}
 \description{

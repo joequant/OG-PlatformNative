@@ -112,7 +112,11 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     </exec>
   </target>
 
-  <target name="install" depends="clean-dist,dist-publish-core,core.install,r-present" if="r.present" description="Installs the R package using 'R CMD INSTALL'">
+  <target name="install-check" unless="og.build.invoked">
+    <antcall target="clean-dist" inheritrefs="true" inheritall="true" />
+    <antcall target="dist-publish-core" inheritrefs="true" inheritall="true" />
+  </target>
+  <target name="install" depends="install-check,core.install,r-present" if="r.present" description="Installs the R package using 'R CMD INSTALL'">
     <exec executable="${R.command}" failonerror="true">
       <arg value="CMD" />
       <arg value="INSTALL" />

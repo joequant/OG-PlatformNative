@@ -1,4 +1,4 @@
-\name{as.xts.TimeSeries}
+\name{as.xts.TimeSeries}%TimeSeries
 \alias{as.xts.TimeSeries}
 \title{Get a XTS form of a time-series returned from Java}
 \description{

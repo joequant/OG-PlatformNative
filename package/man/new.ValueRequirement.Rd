@@ -1,4 +1,4 @@
-\name{new.ValueRequirement}
+\name{new.ValueRequirement}%Value
 \alias{new.ValueRequirement}
 \alias{new.ValueSpecification}
 \title{Create a new value requirement/specification string}

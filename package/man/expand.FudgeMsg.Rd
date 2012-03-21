@@ -1,4 +1,4 @@
-\name{expand.FudgeMsg}
+\name{expand.FudgeMsg}%Misc
 \alias{expand.FudgeMsg}
 \title{Expand a Fudge message}
 \description{
