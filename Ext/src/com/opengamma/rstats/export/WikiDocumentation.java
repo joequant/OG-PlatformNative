@@ -32,6 +32,7 @@ import com.opengamma.language.export.CategorizingDefinitionExporter.Entry;
 import com.opengamma.language.export.WikiDocumentationExporter;
 import com.opengamma.language.export.WikiExporter;
 import com.opengamma.language.export.WikiPageExporter;
+import com.opengamma.language.external.ExternalFunctionProvider;
 import com.opengamma.language.function.FunctionDefinitionFilter;
 import com.opengamma.language.function.FunctionRepository;
 
@@ -359,6 +360,7 @@ public class WikiDocumentation extends WikiExporter {
   // TODO: for each function, look in the examples folder (package/demo) to see which ones use it and add that to the documentation block
 
   public static void main(final String[] args) { // CSIGNORE
+    ExternalFunctionProvider.setExcludeTests(true);
     (new AbstractMain() {
       @Override
       protected boolean main(final SessionContext context, final String[] args) {
