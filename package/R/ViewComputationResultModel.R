@@ -122,10 +122,14 @@ columns.ViewComputationResultModel <- function (data, valueRequirement) {
 
 # Find the first non-NA value from a data frame row
 firstValue.ViewComputationResultModel <- function (row, columns) {
-  if (length (columns) > 0) {
-    a.columns <-  columns[sapply (columns, function (x) { !is.na (row[[x]]) })]
-    if (length (a.columns) > 0) {
-      row[[a.columns[[1]]]]
+  if (length (row.names (row)) == 1) {
+    if (length (columns) > 0) {
+      a.columns <-  columns[sapply (columns, function (x) { !is.na (row[[x]]) })]
+      if (length (a.columns) > 0) {
+        row[[a.columns[[1]]]]
+      } else {
+        NA
+      }
     } else {
       NA
     }

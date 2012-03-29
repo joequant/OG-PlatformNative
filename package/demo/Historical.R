@@ -11,7 +11,7 @@
 Init ()
 
 # Find a view identifier (omit the view name to graph the first view)
-viewName <- "Demo Swap Portfolio View"
+viewName <- "Example Swap Portfolio View"
 matchedViews <- Views (viewName)
 if (length (matchedViews) == 0) {
   stop ("No view called '", viewName, "' defined")

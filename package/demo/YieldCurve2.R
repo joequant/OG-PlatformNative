@@ -12,7 +12,7 @@
 Init ()
 
 # Find a view identifier (the view must contain at least one yield curve primitive output)
-view.name <- "Demo MultiCurrency Swap Portfolio View"
+view.name <- "Example MultiCurrency Swap View"
 view.matches <- Views (view.name)
 if (length (view.matches) == 0) {
   stop ("No view called '", view.name, "' defined")
