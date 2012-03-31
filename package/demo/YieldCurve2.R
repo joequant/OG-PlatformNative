@@ -12,8 +12,11 @@
 Init ()
 
 # Find a view identifier (the view must contain at least one yield curve primitive output)
-view.name <- "Example MultiCurrency Swap View"
+view.name <- "MultiCurrency Swap View"
 view.matches <- Views (view.name)
+if (length (view.matches) == 0) {
+  view.matches <- Views (paste ("Example", view.name))
+}
 if (length (view.matches) == 0) {
   stop ("No view called '", view.name, "' defined")
 } else {
@@ -34,7 +37,7 @@ while (!is.null (result)) {
   TriggerViewCycle (view.client)
   print (paste ("Got cycle", viewCycleId.ViewComputationResultModel (result)))
   # Look up the column(s) containing curves
-  curve.specs <- columns.ViewComputationResultModel (results.ViewComputationResultModel (result)$PortfolioCurrency, ValueRequirementNames.YieldCurve)
+  curve.specs <- columns.ViewComputationResultModel (results.ViewComputationResultModel (result)$Default, ValueRequirementNames.YieldCurve)
   if (length (curve.specs) > 0) {
     print (paste ("Got", length (curve.specs), "curve column(s)"))
     # The data frame representation can't contain the actual FudgeMsg, so we have to request each columns as a list
@@ -42,7 +45,7 @@ while (!is.null (result)) {
       # Extract the curve name from the column label properties
       curve.name <- properties.ValueRequirement (curve.specs[[i]])$Curve
       # Process the curves with this name
-      curve.values <- column.ViewComputationResultModel (result, "PortfolioCurrency", curve.specs[[i]])
+      curve.values <- column.ViewComputationResultModel (result, "Default", curve.specs[[i]])
       if (length (curve.values) > 0) {
         curve.identifiers <- labels (curve.values)
         for (j in seq (from = 1, to = length (curve.values))) {

@@ -10,8 +10,11 @@
 Init ()
 
 # Find a view identifier (omit view name for arbitrary view)
-viewName <- "Example Swap Portfolio View"
+viewName <- "Swap Portfolio View"
 matchedViews <- Views (viewName)
+if (length (matchedViews) == 0) {
+  matchedViews <- Views (paste ("Example", viewName))
+}
 if (length (matchedViews) == 0) {
   stop ("No view called '", viewName, "' defined")
 } else {

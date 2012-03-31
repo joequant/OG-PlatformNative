@@ -6,12 +6,15 @@
 
 # Select one or more views to run; this might be a wild-card search string like "*" to
 # run all views (not currently supported in OG-Language)
-viewSearchPattern <- "Example Swap Portfolio View"
+viewSearchPattern <- "Swap Portfolio View"
 
 Init ()
 
 # Iterates through the views available, runs a cycle and displays the output
 views <- Views (viewSearchPattern)
+if (length (views) == 0) {
+  views <- Views (paste ("Example", viewSearchPattern))
+}
 if (length (views) == 0) {
   stop ("No views matching the pattern '", viewSearchPattern, "' found")
 } else {
