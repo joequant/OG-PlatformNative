@@ -15,7 +15,7 @@ Init ()
 view.name <- "MultiCurrency Swap View"
 view.matches <- Views (view.name)
 if (length (view.matches) == 0) {
-  view.matches <- Views (paste ("Example", view.name))
+  view.matches <- Views ("Example MultiCurrency Swap Portfolio View")
 }
 if (length (view.matches) == 0) {
   stop ("No view called '", view.name, "' defined")
