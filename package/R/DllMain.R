@@ -279,7 +279,7 @@
 # Loads the OpenGamma native code package and brings the functions defined in the Java stack into scope
 .onLoad <- function (libname, pkgname) {
   LOGINFO ("Loading OpenGamma namespace")
-  library.dynam ("OpenGamma", pkgname)
+  library.dynam ("OpenGamma", pkgname, .libPaths ())
   if ("OG" %in% loadedNamespaces ()) {
     LOGDEBUG ("Flagging OG as pre-loaded")
     OpenGammaCall ("DllMain_setPreload")

@@ -117,7 +117,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     <antcall target="dist-publish-core" inheritrefs="true" inheritall="true" />
   </target>
   <target name="install" depends="install-check,core.install,r-present" if="r.present" description="Installs the R package using 'R CMD INSTALL'">
-    <exec executable="${R.command}" failonerror="true">
+    <exec executable="${R.command}" failonerror="false">
       <arg value="CMD" />
       <arg value="INSTALL" />
       <arg value="${package.dir}/${package.name}" />
