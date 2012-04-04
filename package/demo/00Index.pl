@@ -20,17 +20,17 @@ foreach my $file (sort (@files)) {
   my $state = 0;
   while (my $line = <FILE>) {
     if ($state == 0) {
-      $state = 1 if ($line =~ /^ ##$/);
+      $state = 1 if ($line =~ /^ ##\r?$/);
     } elsif ($state == 1) {
-      $state = 2 if ($line =~ /^$/);
+      $state = 2 if ($line =~ /^\r?$/);
     } elsif ($state >= 2) {
-      if ($line =~ /^# (.*)$/) {
+      if ($line =~ /^# (.*?)\r?$/) {
         if ($state == 2) {
-	  $state = 3;
-	  $buffer .= "\t";
-	} else {
-	  $buffer .= " ";
-	}
+          $state = 3;
+          $buffer .= "\t";
+        } else {
+          $buffer .= " ";
+        }
         $buffer .= $1;
       } else {
         last;
