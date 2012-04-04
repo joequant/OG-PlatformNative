@@ -16,11 +16,15 @@ closedir (DIR);
 foreach my $file (sort (@files)) {
   next if ($file !~ /^(.*)\.R$/);
   my $buffer = $1;
+  my $cr;
   open (FILE, $file) || die $!;
   my $state = 0;
   while (my $line = <FILE>) {
     if ($state == 0) {
-      $state = 1 if ($line =~ /^ ##\r?$/);
+      if ($line =~ /^ ##(\r?)$/) {
+        $state = 1;
+        $cr = $1;
+      }
     } elsif ($state == 1) {
       $state = 2 if ($line =~ /^\r?$/);
     } elsif ($state >= 2) {
@@ -38,5 +42,5 @@ foreach my $file (sort (@files)) {
     }
   }
   close (FILE);
-  print "$buffer\n";
+  print "$buffer$cr\n";
 }
