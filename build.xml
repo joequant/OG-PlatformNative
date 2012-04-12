@@ -88,6 +88,11 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     <delete file="${dist.dir}/${package.name}.zip" failonerror="false" />
   </target>
 
+  <target name="installer-impl">
+    <installer-make file="Installer/R.aip" />
+    <installer-make build-id="${ai.build.all}" />
+  </target>
+
   <target name="cpp-compile-check" unless="cpp.headers.present">
     <available property="cpp.headers.present" file="${build.dir}/.cpp.compile" />
   </target>
