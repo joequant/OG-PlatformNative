@@ -58,8 +58,8 @@
     <attribute name="build-id" default="DefaultBuild" />
     <attribute name="dir" default="Installer" />
     <sequential>
-      <ai-set-version version="${module.version.msi}.${module.build.number}" file="@{file}" dir="@{dir}"/>
-      <ai-build file="@{file}" build-id="@{build-id}"/>
+      <ai-set-version version="${module.version.msi}.${module.build.number}" file="@{file}" />
+      <ai-build file="@{file}" build-id="@{build-id}" dir="@{dir}" />
     </sequential>
   </macrodef>
   <target name="installer-impl" />
