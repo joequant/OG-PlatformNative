@@ -121,7 +121,7 @@
     <ROW Action="OG_LANGUAGE_EXT_2" BaseAction="ValidateProductID" After="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
-    <ROW ModuleID="OG_RStats" Version="1.0.0" GUID="0E88570F_9ADE_4D21_9BC3_DD9B188C021D" Name="R package" Manufacturer="OpenGamma Ltd" Comments="The R extension package"/>
+    <ROW ModuleID="OG_RStats" Version="1.0.1" GUID="0E88570F_9ADE_4D21_9BC3_DD9B188C021D" Name="R package" Manufacturer="OpenGamma Ltd" Comments="The R extension package"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleUISeqComponent">
     <ROW Action="OG_LANGUAGE_EXT_1" BaseAction="OG_LANGUAGE_JAR_1" After="1"/>

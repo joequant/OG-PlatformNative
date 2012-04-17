@@ -39,7 +39,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
 
   <target name="test-batch" depends="core.test-batch,dist-source-impl,test-dist-impl" />
 
-  <target name="dist-publish-core" depends="common.dist-publish,dist-source" />
+  <target name="dist-publish-core" depends="core.dist-publish,dist-source" />
 
   <target name="dist-publish" depends="dist-publish-core,dist-binary">
     <delete dir="${package.dir}" />
@@ -88,8 +88,10 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     <delete file="${dist.dir}/${package.name}.zip" failonerror="false" />
   </target>
 
+  <target name="compile-msm-impl">
+    <installer-make file="R.aip" />
+  </target>
   <target name="installer-impl">
-    <installer-make file="Installer/R.aip" />
     <installer-make build-id="${ai.build.all}" />
   </target>
 

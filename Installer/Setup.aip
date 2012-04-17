@@ -18,7 +18,7 @@
     <ROW Property="ProductCode" Value="1033:{3A1B012D-9310-456F-AF6A-AF293C1B9917} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="OpenGamma Tools for R" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="1.0.0"/>
+    <ROW Property="ProductVersion" Value="1.0.1"/>
     <ROW Property="RSTAT_FILE" Value="Tools for R"/>
     <ROW Property="RSTAT_REG32" Value="OpenGammaR"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
