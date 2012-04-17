@@ -41,7 +41,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
 
   <target name="dist-publish-core" depends="core.dist-publish,dist-source" />
 
-  <target name="dist-publish" depends="dist-publish-core,dist-binary">
+  <target name="dist-publish" depends="dist-publish-core">
     <delete dir="${package.dir}" />
     <mkdir dir="${dist.dir}/config/ext" />
     <copy file="${solution.dir}/config/R.xml" todir="${dist.dir}/config/ext" />
@@ -77,15 +77,12 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     </move>
   </target>
 
-  <target name="binary-rename">
+  <target name="binary-rename" depends="dist-binary">
     <copy tofile="${dist.dir}/${package.name}.zip" failonerror="false">
       <fileset dir="${dist.dir}">
         <include name="${package.name}_*.zip" />
       </fileset>
     </copy>
-  </target>
-  <target name="installer" depends="binary-rename,core.installer">
-    <delete file="${dist.dir}/${package.name}.zip" failonerror="false" />
   </target>
 
   <target name="compile-msm-impl" depends="binary-rename">
