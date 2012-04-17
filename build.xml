@@ -39,9 +39,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
 
   <target name="test-batch" depends="core.test-batch,dist-source-impl,test-dist-impl" />
 
-  <target name="dist-publish-core" depends="core.dist-publish,dist-source" />
-
-  <target name="dist-publish" depends="dist-publish-core">
+  <target name="dist-publish" depends="core.dist-publish">
     <delete dir="${package.dir}" />
     <mkdir dir="${dist.dir}/config/ext" />
     <copy file="${solution.dir}/config/R.xml" todir="${dist.dir}/config/ext" />
@@ -62,7 +60,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     <copy file="${build.dir}/version.h" todir="${package.dir}/${package.name}/src/build" />
   </target>
 
-  <target name="dist-binary" depends="r-present" if="r.present">
+  <target name="dist-binary" depends="dist-source,r-present" if="r.present">
     <exec executable="R" failonerror="true">
       <arg value="CMD" />
       <arg value="build" />
@@ -77,7 +75,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     </move>
   </target>
 
-  <target name="binary-rename" depends="dist-binary">
+  <target name="binary-rename">
     <copy tofile="${dist.dir}/${package.name}.zip" failonerror="false">
       <fileset dir="${dist.dir}">
         <include name="${package.name}_*.zip" />
@@ -85,6 +83,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     </copy>
   </target>
 
+  <target name="compile-msm" depends="dist-binary,core.compile-msm" />
   <target name="compile-msm-impl" depends="binary-rename">
     <installer-make file="R.aip" />
     <delete file="${dist.dir}/${package.name}.zip" failonerror="false" />
@@ -108,7 +107,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     <echo>R or dependent libraries not installed - cannot build or test the distribution</echo>
   </target>
 
-  <target name="test-dist" depends="clean-dist,dist-publish-core,test-dist-impl" description="Tests the R package distribution using 'R CMD check'" />
+  <target name="test-dist" depends="clean-dist,core.dist-publish,test-dist-impl" description="Tests the R package distribution using 'R CMD check'" />
   <target name="test-dist-impl" depends="r-present" if="r.present">
     <exec executable="${R.command}" failonerror="true">
       <arg value="CMD" />
@@ -119,7 +118,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
 
   <target name="install-check" unless="og.build.invoked">
     <antcall target="clean-dist" inheritrefs="true" inheritall="true" />
-    <antcall target="dist-publish-core" inheritrefs="true" inheritall="true" />
+    <antcall target="core.dist-publish" inheritrefs="true" inheritall="true" />
   </target>
   <target name="install" depends="install-check,core.install,r-present" if="r.present" description="Installs the R package using 'R CMD INSTALL'">
     <exec executable="${R.command}" failonerror="false">
@@ -129,7 +128,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     </exec>
   </target>
 
-  <target name="manual" depends="dist-publish-core,r-present" if="r.present" description="Generates default R documentation using 'R CMD Rd2pdf'">
+  <target name="manual" depends="core.dist-publish,r-present" if="r.present" description="Generates default R documentation using 'R CMD Rd2pdf'">
     <exec executable="${R.command}" failonerror="true">
       <arg value="CMD" />
       <arg value="Rd2pdf" />
