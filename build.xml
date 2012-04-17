@@ -88,8 +88,9 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     <delete file="${dist.dir}/${package.name}.zip" failonerror="false" />
   </target>
 
-  <target name="compile-msm-impl">
+  <target name="compile-msm-impl" depends="binary-rename">
     <installer-make file="R.aip" />
+    <delete file="${dist.dir}/${package.name}.zip" failonerror="false" />
   </target>
   <target name="installer-impl">
     <installer-make build-id="${ai.build.all}" />
