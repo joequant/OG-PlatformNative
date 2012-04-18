@@ -1,0 +1,4 @@
+{
+    "*.R|rdoc" : { "rdoc" : { "ext" : "sqlite3" }},
+    "*.md|jinjajit|markdown" : { "allinputs" : true }
+}
