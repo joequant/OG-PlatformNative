@@ -1,0 +1,133 @@
+\documentclass[a4paper]{amsart}
+
+%\geometry{showframe}% for debugging purposes -- displays the margins
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{hyperref}
+
+% Set up the images/graphics package
+\usepackage{graphicx}
+\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+
+% The fancyvrb package lets us customize the formatting of verbatim
+% environments.  We use a slightly smaller font.
+\usepackage{fancyvrb}
+\fvset{fontsize=\small}
+
+% Syntax highlighting
+<< pygments['pastie.tex'] >>
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\begin{document}
+
+The OpenGamma R package allows you to connect with a running OpenGamma server. The examples in this document were generated using the OG-Example server and the dummy data it contains.
+
+\section{Running the OG-Example Server}
+
+The OG-Example server must be running first.
+
+TODO - how to install and start.
+
+When the server is running, you should be able to point your browser to \verb|localhost:8080| and you should see something like this:
+
+<< d['take-screenshot.py|idio|l']['load-portfolio-page'] >>
+
+\includegraphics[width=5in]{dexy--screenshot-portfolio-page.pdf}
+
+\section{Securities}
+
+Let's use the web interface to explore the securities that are available:
+
+<< d['take-screenshot.py|idio|l']['load-securities-page'] >>
+
+\includegraphics[width=5in]{dexy--screenshot-securities-page.pdf}
+
+<< d['take-screenshot.py|idio|l']['show-security'] >>
+
+\includegraphics[width=5in]{dexy--screenshot-view-security.pdf}
+
+We can use any of the listed identifiers (along with their scheme) to retrieve a reference to this security, as below:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['security-amazon-tickers'] >>
+
+Alternatively, we can pass OpenGamma's internal unique identifier like this:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['security-amazon-uniqueid'] >>
+
+Attributes can be accessed by calling ExpandSecurity or, for more detail, a more specific method such as ExpandEquitySecurity (for an equity). There are also some GetSecurityX methods which return attributes:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['security-properties'] >>
+
+\section{Time Series}
+
+Let's use the web interface to explore the time series that are available:
+
+<< d['take-screenshot.py|idio|l']['load-timeseries-page'] >>
+
+\includegraphics[width=5in]{dexy--screenshot-timeseries-page.pdf}
+
+We can click on any of the time series listed on the left and explore the data:
+
+<< d['take-screenshot.py|idio|l']['show-timeseries'] >>
+
+\includegraphics[width=5in]{dexy--screenshot-view-timeseries.pdf}
+
+We see that the ticker is \verb|<< d['r-vars.json']['ticker'] >>|, so let's now construct an R script to view and graph this time series in R. First, we load the necessary libraries:
+
+<< d['time_series.R|idio|l']['libraries'] >>
+
+Now, we simply call the FetchTimeSeries method, passing the ticker:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['fetch-ts'] >>
+
+We can easily plot the returned data:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['plot-ts'] >>
+
+\includegraphics{dexy--dbhts.pdf}
+
+We can convert the time series to xts:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['convert-xts'] >>
+
+Description of as.xts.TimeSeries from documentation: << d['rdoc.R|rdoc']['OpenGamma']['as.xts.TimeSeries']['description'] >>
+
+And plot as an xts object:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['plot-xts'] >>
+
+\includegraphics{dexy--dbhts-xts.pdf}
+
+
+\section{Methods}
+
+<% for k, v in d['rdoc.R|rdoc']['OG'].iteritems() -%>
+\vspace{1cm}
+\large
+\textbf{<< k >>}
+\normalsize
+
+<< v['title'] >>
+
+<< v['description'] >>
+
+<% if v.has_key('arguments') -%>
+\vspace{0.5cm}
+\textbf{Arguments}
+
+\fontshape{it}\selectfont
+<% for arg_name, arg_desc in v['arguments'].iteritems() -%>
+\verb|<< arg_name >>| << arg_desc >>
+
+<% endfor -%>
+\fontshape{n}\selectfont
+<% endif -%>
+
+<% endfor -%>
+
+\end{document}
+
