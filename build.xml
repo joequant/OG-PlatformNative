@@ -13,6 +13,26 @@
 
   <target name="resolve" depends="core.resolve,deploy-og-language" />
 
+  <!--
+       Feel free to remove this 'docs' task if it causes problems.
+       The default 'docs' task tries to run javadocs which fails here.
+       This way we run r docs instead.
+  -->
+  <target name="docs" depends="rdocs" />
+
+  <target name="rdocs" description="Task which builds traditional-style PDF R docs (not dexy docs). Requires latex.">
+      <property name="docfile" value="OpenGamma-RStats.pdf"/>
+      <exec executable="R">
+          <arg value="CMD" />
+          <arg value="Rd2pdf" />
+          <arg value="--no-preview"/>
+          <arg value="--force"/>
+          <arg value="--output=${docfile}"/>
+          <arg value="package/"/>
+      </exec>
+      <echo message="R docs have been saved to ${docfile}" />
+  </target>
+
   <target name="config" depends="core.config,deploy-config">
     <copy todir="${build.dir}/ext" file="${solution.dir}/config/R.xml" />
     <subant buildpath="package" target="config" inheritrefs="true" inheritall="true" />
