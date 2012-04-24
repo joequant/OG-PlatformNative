@@ -3,7 +3,7 @@ Analytics2	Demonstrates the full use of the system for performing calculations b
 Curves	Demonstrates specifying curve names at the position level. Note that the "out-the-box" example server contains only a single set of curves called "SECONDARY" so the position attributes specified here will be ignored unless additional curves called "FORWARD_3M" and/or "FUNDING" are defined.
 Historical	Iterates a view over historical market data to produce timeseries for the portfolio. This demonstrates the functions used to perform the historical iteration; the choice of view and handling the data is arbitrary.
 MarketDataSnapshot	Demonstrates manipulating a market data snapshot programmatically.
-Peturbed	Iterates a view over some historical market data that is peturbed slightly. This demonstrates injecting values into the engine.
+Perturbed	Iterates a view over some historical market data that is perturbed slightly. This demonstrates injecting values into the engine.
 SwapExample	Demonstrates constructing a swap security, specifying all of the market data required and pricing it using the engine.
 TimeSeries	Loads a time-series from the database using a ticker
 View	Select one or more views to run; this might be a wild-card search string like "*" to run all views (not currently supported in OG-Language)
