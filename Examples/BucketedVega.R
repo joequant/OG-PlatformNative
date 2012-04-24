@@ -77,16 +77,16 @@ getExpiry <- function(tenor, today){
 # end of utility functions 
 #########################
 
-today <- as.POSIXlt(Sys.Date(), "GMT") #price option from today. Change to use some other date
+today <- as.POSIXlt("2012-04-24", "GMT") #price option from 24/04/2012. Change to use some other date or use Sys.Date()
 option.expiries  <- c("P7D","P6M") #The expiries of the options to price
-spotFX <- 1.3
+spotFX <- 1.34
 notional <- 1000000
 
 # Create a snapshot containing the base market data
 OpenGamma:::LOGDEBUG ("Creating snapshot")
 market.data <- Snapshot ()
 market.data <- SetSnapshotName (market.data, "FX Option Example")
-market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = 1.3, type = "PRIMITIVE")
+market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = spotFX, type = "PRIMITIVE")
 tenors <- c ("P7D", "P14D", "P21D", "P1M", "P3M", "P6M", "P9M", "P1Y", "P5Y", "P10Y")
 FX.quotes <- c ("0, ATM", "15, BUTTERFLY", "15, RISK_REVERSAL", "25, BUTTERFLY", "25, RISK_REVERSAL")
 #NOTE only use one of these
@@ -211,8 +211,8 @@ OpenGamma:::LOGINFO ("Created portfolio", portfolio.id)
 
 # Create a view on this portfolio
 OpenGamma:::LOGDEBUG ("Creating view")
-implied.vol.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Implied.Vol.LV.Black.Equivalent, "CalculationMethod=LocalVolatilityPDEMethod")
-price.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Price.LV, "CalculationMethod=LocalVolatilityPDEMethod")
+implied.vol.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Implied.Volatility, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=Spline, PDEDirection=Forward")
+price.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Present.Value, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=SABR, PDEDirection=Forward")
 requirements <- c (implied.vol.valueRequirement, price.valueRequirement)
 view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
