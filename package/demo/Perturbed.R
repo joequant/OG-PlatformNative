@@ -4,7 +4,7 @@
  # Please see distribution for license.
  ##
 
-# Iterates a view over some historical market data that is peturbed slightly. This demonstrates
+# Iterates a view over some historical market data that is perturbed slightly. This demonstrates
 # injecting values into the engine.
 
 Init ()
