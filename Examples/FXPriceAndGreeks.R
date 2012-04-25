@@ -8,41 +8,44 @@
 Init ()
 
 #get an expiry date when tenor is a string in the formatt PxE, with E = D, M or Y and x an integer 
-getExpiry <- function(tenor, today){
-  num <- as.integer(substring (tenor, 2, nchar(tenor) - 1))
-  dmy <-  substring (tenor, nchar(tenor))
+getExpiry <- function (tenor, today) {
+  num <- as.integer (substring (tenor, 2, nchar (tenor) - 1))
+  dmy <-  substring (tenor, nchar (tenor))
   expiry <- today
-  if(dmy == "d" || dmy == "D"){
-    expiry <- expiry + as.difftime(num, format = "%X", units = "days")
-  }else if(dmy == "m" || dmy == "M"){
+  if (dmy == "d" || dmy == "D") {
+    expiry <- expiry + as.difftime (num, format = "%X", units = "days")
+  } else if (dmy == "m" || dmy == "M") {
     expiry$mon <- expiry$mon + num
-  }else if(dmy == "y" || dmy == "Y"){
+  } else if (dmy == "y" || dmy == "Y") {
     expiry$year <- expiry$year + num
-  }else{
-    stop(paste(dmy," not a valid tenor"))
+  } else {
+    stop (paste (dmy," not a valid tenor"))
   }
-  expiry <- as.POSIXct(expiry)
+  expiry <- as.POSIXct (expiry)
 }
-#########################
-# end of utility functions 
-#########################
 
+#############################################################################
+# End of utility functions
+#############################################################################
 
-today <- as.POSIXlt("2012-04-24", "GMT") #price option from 24/04/2012. Change to use some other date or use Sys.Date()
-option.expiries  <- c("P6M") #The expiries of the options to price
+today <- as.POSIXlt ("2012-04-24", "GMT") #price option from 24/04/2012. Change to use some other date or use Sys.Date()
+option.expiry <- "P6M" #The expiries of the options to price
 spotFX <- 1.34
-option.strikes <-seq(0.8 ,2.0,length.out=50)
+option.strikes <- seq (0.8, 2.0, length.out = 50)
 notional <- 1000000
 
-# Create a snapshot containing the base market data
+# Create a snapshot containing the market data
 OpenGamma:::LOGDEBUG ("Creating snapshot")
 market.data <- Snapshot ()
 market.data <- SetSnapshotName (market.data, "FX Option Example")
-market.data <- SetSnapshotGlobalValue (snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value, identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = spotFX, type = "PRIMITIVE")
+market.data <- SetSnapshotGlobalValue (
+  snapshot = market.data, valueName = MarketDataRequirementNames.Market.Value,
+  identifier = "BLOOMBERG_TICKER~EURUSD Curncy", marketValue = spotFX, type = "PRIMITIVE")
 
-######################################################################################
+#############################################################################
 # Specify the market surface data
-######################################################################################
+#############################################################################
+
 tenors <- c ("P7D", "P14D", "P21D", "P1M", "P3M", "P6M", "P9M", "P1Y", "P5Y", "P10Y")
 FX.quotes <- c ("0, ATM", "15, BUTTERFLY", "15, RISK_REVERSAL", "25, BUTTERFLY", "25, RISK_REVERSAL")
 #NOTE only use one of these
@@ -61,7 +64,6 @@ FX.quotes <- c ("0, ATM", "15, BUTTERFLY", "15, RISK_REVERSAL", "25, BUTTERFLY",
 #                           0.123425, 0.008975, -0.032225, 0.004025, -0.02105,
 #                           0.124325, 0.008275, -0.030975, 0.002775, -0.018725)
 
-
 surface.points.data <- c (0.17045 ,0.00665 ,-0.0168 ,0.002725 ,-0.012025,
                           0.1688 ,0.00725 ,-0.02935 ,0.00335 ,-0.02015,
                           0.167425 ,0.00835 ,-0.039125 ,0.0038 ,-0.026,
@@ -73,13 +75,17 @@ surface.points.data <- c (0.17045 ,0.00665 ,-0.0168 ,0.002725 ,-0.012025,
                           0.138 ,0.009275 ,-0.032775 ,0.00385 ,-0.02085,
                           0.12515 ,0.007075 ,-0.023925 ,0.002575 ,-0.015175)
 
-surface.data <- fromVectors.VolatilitySurfaceSnapshot (xc = "TENOR", x = tenors, yc = "INTEGER_FXVOLQUOTETYPE_PAIR", y = FX.quotes, marketValue = surface.points.data)
+surface.data <- fromVectors.VolatilitySurfaceSnapshot (
+  xc = "TENOR", x = tenors,
+  yc = "INTEGER_FXVOLQUOTETYPE_PAIR", y = FX.quotes,
+  marketValue = surface.points.data)
 surface.name <- "UnorderedCurrencyPair~EURUSD_DEFAULT_MarketStrangleRiskReversal_VolatilityQuote_FX_VANILLA_OPTION"
 market.data <- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
 
-######################################################################################
+#############################################################################
 # Specify the instruments that build the USD funding curve 
-######################################################################################
+#############################################################################
+
 tickers <- list (
   "BLOOMBERG_TICKER~USDR1T Curncy" = 0.002,
   "BLOOMBERG_TICKER~USDR2T Curncy" = 0.002,
@@ -106,9 +112,10 @@ for (ticker in names (tickers)) {
 }
 market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_FUNDING", yieldCurve = curve.funding)
 
-######################################################################################
+#############################################################################
 # Specify the instruments that build the EUR funding curve 
-######################################################################################
+#############################################################################
+
 tickers <- list (
   "BLOOMBERG_TICKER~EUDR1Z Curncy" = 0.004,
   "BLOOMBERG_TICKER~EUDR2Z Curncy" = 0.00325,
@@ -150,24 +157,23 @@ market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "EUR_FUNDIN
 market.data.id <- StoreSnapshot (snapshot = market.data)
 OpenGamma:::LOGINFO ("Created market data snapshot", market.data.id)
 
-######################################################################################
-# Build a portfolio containing all of the theoretical securities; each cycle of the 
-# engine can then crunch the numbers for all of them in parallel.
-######################################################################################
+#############################################################################
+# Build a portfolio containing all of the theoretical securities; A cycle of
+# the engine can then crunch the numbers for all of them in parallel.
+#############################################################################
+
 positions <- c ()
-security.labels <- list ()
-for (option.expiry in option.expiries) {
-  expiry <- getExpiry(option.expiry,today)
-  settlementDate <- expiry + as.difftime(2, format = "%X", units = "days") #2 days after expiry
-  timeToExpiry <- as.integer(expiry - today)/365.25
-  for(option.strike in option.strikes){
+expiry <- getExpiry (option.expiry, today)
+settlementDate <- expiry + as.difftime (2, format = "%X", units = "days") #2 days after expiry
+timeToExpiry <- as.integer (expiry - today) / 365.25
+for(option.strike in option.strikes) {
 #   atm <- spotFX*exp(timeToExpiry*atmVol^2/2) #this is not quite DNS since we are using the spotFX forward 
 #   strike <- atm
-  # Create and store the security
+# Create and store the security
   OpenGamma:::LOGDEBUG ("Creating security", option.expiry)
   security <- FXOptionSecurity (
-    name = paste("Long put USD,",notional,", call EUR", notional/option.strike,"on", expiry),
-    callAmount = notional/option.strike,
+    name = paste("Long put USD,",notional,", call EUR", notional / option.strike,"on", expiry),
+    callAmount = notional / option.strike,
     callCurrency = "EUR",
     putCurrency = "USD",
     putAmount = notional,
@@ -177,138 +183,106 @@ for (option.expiry in option.expiries) {
     settlementDate)
   security.id <- StoreSecurity (security)
   OpenGamma:::LOGINFO ("Created security", security.id)
-  security.labels[[security.id]] <- paste ("Option expiry:", option.expiry, "(", expiry, "tau =", timeToExpiry, "years). Strike:", option.strike)
-  # NOTE: is the security "name" used at all; the string above could be stored there and an additional "labels" won't be necessary
-  # Create the position
-  position <- PortfolioPosition (security = security.id, quantity = 1)
-  positions <- c (positions, position)
-}}
+  positions <- c (positions, PortfolioPosition (security = security.id, quantity = 1))
+}
 OpenGamma:::LOGDEBUG ("Creating portfolio")
 node <- PortfolioNode (name = "FX Options", positions = positions)
-portfolio <- Portfolio (name = "BucketedVega temporary portfolio", rootNode = node)
+portfolio <- Portfolio (name = "FX Options Temporary Portfolio", rootNode = node)
 portfolio.id <- StorePortfolio (portfolio)
 OpenGamma:::LOGINFO ("Created portfolio", portfolio.id)
+# Fetch the position IDs as stored in the database - results will be keyed by these
+positions <- sapply (fields.FudgeMsg (FetchPortfolio (portfolio.id)$root$positions), function (x) { x$Value$uniqueId })
 
 # Create a view on this portfolio
 OpenGamma:::LOGDEBUG ("Creating view")
-impliedVol.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Implied.Volatility, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=Spline, PDEDirection=Forward")
-price.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Present.Value, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=SABR, PDEDirection=Forward")
-forwardDelta.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Forward.Delta, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator= SABR, PDEDirection=Forward")
- forwardGamma.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Forward.Gamma, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=SABR, PDEDirection=Forward")
-dualDelta.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Dual.Delta, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=SABR, PDEDirection=Forward")
-dualGamma.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Dual.Gamma, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=SABR, PDEDirection=Forward")
-forwardVega.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Forward.Vega, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=SABR, PDEDirection=Forward")
-forwardVanna.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Forward.Vanna, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=SABR, PDEDirection=Forward")
-forwardVomma.valueRequirement <- new.ValueRequirement (ValueRequirementNames.Forward.Vomma, "CalculationMethod=LocalVolatilityPDE, SmileInterpolator=SABR, PDEDirection=Forward")
-requirements <- c (impliedVol.valueRequirement, price.valueRequirement, forwardDelta.valueRequirement, forwardGamma.valueRequirement, dualDelta.valueRequirement, dualGamma.valueRequirement, forwardVega.valueRequirement, forwardVanna.valueRequirement, forwardVomma.valueRequirement)
-#requirements <- c ( forwardVomma.valueRequirement)
+requirements <- list (
+  impliedVol = new.ValueRequirement (ValueRequirementNames.Implied.Volatility, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=Spline",
+    "PDEDirection=Forward",
+    sep = ", ")),
+  price = new.ValueRequirement (ValueRequirementNames.Present.Value, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=SABR",
+    "PDEDirection=Forward",
+    sep = ", ")),
+  forwardDelta = new.ValueRequirement (ValueRequirementNames.Forward.Delta, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=SABR",
+    "PDEDirection=Forward",
+    sep = ", ")),
+  forwardGamma = new.ValueRequirement (ValueRequirementNames.Forward.Gamma, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=SABR",
+    "PDEDirection=Forward",
+    sep = ", ")),
+  dualDelta = new.ValueRequirement (ValueRequirementNames.Dual.Delta, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=SABR",
+    "PDEDirection=Forward",
+    sep = ", ")),
+  dualGamma = new.ValueRequirement (ValueRequirementNames.Dual.Gamma, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=SABR",
+    "PDEDirection=Forward",
+    sep = ", ")),
+  forwardVega = new.ValueRequirement (ValueRequirementNames.Forward.Vega, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=SABR",
+    "PDEDirection=Forward",
+    sep = ", ")),
+  forwardVanna = new.ValueRequirement (ValueRequirementNames.Forward.Vanna, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=SABR",
+    "PDEDirection=Forward",
+    sep = ", ")),
+  forwardVomma = new.ValueRequirement (ValueRequirementNames.Forward.Vomma, paste (
+    "CalculationMethod=LocalVolatilityPDE",
+    "SmileInterpolator=SABR",
+    "PDEDirection=Forward",
+    sep = ", ")))
 view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
 calc.config <- "Default"
 OpenGamma:::LOGINFO ("Created view", view.id)
 
-# Create a view client attached to the snapshot
+# Create a view client attached to the snapshot and execute a cycle
 OpenGamma:::LOGDEBUG ("Creating view client")
-view.client <- ViewClient (viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id)), useSharedProcess = FALSE)
-view.result <- NULL
-  
-# Update the volatility surface, trigger a cycle, and return the list of results 
-runOneCycle <- function(fxQuotePoints) {
-#   fxQuotePoints <-toFXQuotePoints (deltaPoints)
-   surface.data <<- SetVolatilitySurfaceTensor (snapshot = surface.data, overrideValue = fxQuotePoints)
-  market.data <<- SetSnapshotVolatilitySurface (market.data, surface.name, surface.data)
-  market.data.id <<- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
-  # Get the results from the view
-  OpenGamma:::LOGDEBUG ("Triggering cycle")
-  TriggerViewCycle (view.client)
-  view.result <<- GetViewResult (
-    viewClient = view.client,
-    waitForResult = -1,
-    lastViewCycleId = if (is.null (view.result)) { NULL } else { viewCycleId.ViewComputationResultModel (view.result) })
-  OpenGamma:::LOGINFO ("Got result", viewCycleId.ViewComputationResultModel (view.result))
-  # Pull out the results from the data.frame to a labeled list
-  view.result.data <- results.ViewComputationResultModel (view.result)[[calc.config]]
-  results <- lapply (requirements, function (requirement) {
+view.client <- ViewClient (
+  viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id)),
+  useSharedProcess = FALSE)
+OpenGamma:::LOGDEBUG ("Triggering cycle")
+TriggerViewCycle (view.client)
+view.result <- GetViewResult (viewClient = view.client, waitForResult = -1)
+OpenGamma:::LOGINFO ("Got result", viewCycleId.ViewComputationResultModel (view.result))
+
+# For each value requirement, extract the result column values and produce that in the portfolio
+# ordering (i.e. to correspond to option.strikes)
+view.result.data <- results.ViewComputationResultModel (view.result)[[calc.config]]
+results <- data.frame (
+  strikes = option.strikes,
+  lapply (requirements, function (requirement) {
     columns <- columns.ViewComputationResultModel (view.result.data, requirement)
     values <- column.ViewComputationResultModel (view.result, calc.config, columns)
     if (length (values) > 0) {
-      values
-    } else {
-      NA
-    }
-  })
-  names (results) <- requirements
-  results
-}
+        sapply (positions, function (position) {
+          values[[position]]
+        }, USE.NAMES = FALSE)
+      } else {
+        NA
+      }
+    }))
 
-# Initial calculation using base
-tensor <- GetVolatilitySurfaceTensor (snapshot = surface.data, marketValue = TRUE)
-base.values <- runOneCycle(tensor)
-base.impliedVols <- base.values[[impliedVol.valueRequirement]]
-base.pipPrices <- base.values[[price.valueRequirement]]
-base.forwardDelta <- base.values[[forwardDelta.valueRequirement]]
-base.forwardGamma <- base.values[[forwardGamma.valueRequirement]]
-base.dualDelta <- base.values[[dualDelta.valueRequirement]]
-base.dualGamma <- base.values[[dualGamma.valueRequirement]]
-base.forwardVega <- base.values[[forwardVega.valueRequirement]]
-base.forwardVanna <- base.values[[forwardVanna.valueRequirement]]
- base.forwardVomma <- base.values[[forwardVomma.valueRequirement]]
-positions <- sapply (fields.FudgeMsg (FetchPortfolio (portfolio.id)$root$positions), function (x) { x$Value$uniqueId })
+# Print the results data frame
+print (results)
 
-# Print out the results (note these are keyed by the position identifiers, so we need to query the
-# database to resolve these back to security identifiers)
-ordered.impliedVols <- c ()
-ordered.pipPrices <- c ()
-ordered.forwardDelta <- c ()
-ordered.forwardGamma <- c ()
-ordered.dualDelta <- c ()
-ordered.dualGamma <- c ()
-ordered.forwardVega <- c ()
-ordered.forwardVanna <-c ()
-ordered.forwardVomma <- c ()
-for (position.id in positions) {
-  position <- NA
-  try({position <- FetchPosition (position.id)}, silent = TRUE)
-  if (!is.na (position)) {
-    security.id <- position$securityKey$ID
-    security.id <- paste (security.id$Scheme, security.id$Value, sep = "~")
-    ordered.impliedVols <- c (ordered.impliedVols , base.impliedVols[[position.id]])
-   ordered.pipPrices <- c (ordered.pipPrices, base.pipPrices[[position.id]])
-    ordered.forwardDelta <- c (ordered.forwardDelta, base.forwardDelta[[position.id]])
-    ordered.forwardGamma <- c (ordered.forwardGamma, base.forwardGamma[[position.id]])
-    ordered.dualDelta <- c (ordered.dualDelta, base.dualDelta[[position.id]])
-    ordered.dualGamma <- c (ordered.dualGamma, base.dualGamma[[position.id]])
-    ordered.forwardVega <- c (ordered.forwardVega, base.forwardVega[[position.id]])
-    ordered.forwardVanna <- c (ordered.forwardVanna, base.forwardVanna[[position.id]])
-    ordered.forwardVomma <- c (ordered.forwardVomma, base.forwardVomma[[position.id]])
-#     print (paste (security.labels[[security.id]]))#, "Implied vol:", base.impVols[[position.id]]))
-#     print ("Put price")
-#     print (base.pipPrices[[position.id]])
-#     print ("Forward delta")
-#     print (base.forwardDelta[[position.id]])
-#     ordered.forwardDelta <- c (ordered.forwardDelta, base.forwardDelta[[position.id]])
-#     print ("Forward gamma")
-#     print (base.forwardGamma[[position.id]])
-#     print ("Dual delta")
-#     print (base.dualDelta[[position.id]])
-#     print ("Dual gamma")
-#     print (base.dualGamma[[position.id]])
-#     print ("Forward vega")
-#     print (base.forwardVega[[position.id]])
-#     print ("Forward vanna")
-#     print (base.forwardVanna[[position.id]])
-#     print ("Forward vomma")
-#     print (base.forwardVomma[[position.id]])
-  }
-}
-  
-plot(option.strikes,ordered.impliedVols)
- plot(option.strikes,ordered.pipPrices)
-  plot(option.strikes,ordered.forwardDelta)
-  plot(option.strikes,ordered.forwardGamma)
-  plot(option.strikes,ordered.dualDelta)
-  plot(option.strikes,ordered.dualGamma)
-  plot(option.strikes,ordered.forwardVega)
-  plot(option.strikes,ordered.forwardVanna)
- plot(option.strikes,ordered.forwardVomma)
-
+# Plot the column pairs
+plot (results$strikes, results$impliedVol)
+plot (results$strikes, results$price)
+plot (results$strikes, results$forwardDelta)
+plot (results$strikes, results$forwardGamma)
+plot (results$strikes, results$dualDelta)
+plot (results$strikes, results$dualGamma)
+plot (results$strikes, results$forwardVega)
+plot (results$strikes, results$forwardVanna)
+plot (results$strikes, results$forwardVomma)
