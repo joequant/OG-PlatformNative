@@ -1,4 +1,13 @@
 {
-    "*.R|rdoc" : { "rdoc" : { "ext" : "sqlite3" }},
-    "*.md|jinjajit|markdown" : { "allinputs" : true }
+    "page*.txt|jinjajit|confluence" : { "allinputs" : true },
+    "screenshots.js|fn|casperjs" : {},
+    "screenshots.js|idio|l" : {},
+    "docs.tex|jinjajit|latex" : { "allinputs" : true },
+    "rdoc.R|rdoc" : { "rdoc" : { "ext" : "sqlite3" }},
+    "*.R|fn|idio|rint|pyg|l" : { "rint" : { "timeout" : 100 }, "except" : "rdoc" },
+    "*.R|idio|l" : {},
+    "*.R|pyg" : {},
+    "*.sh|idio" : {},
+    "*.js|idio|t" : {},
+    "*.md|jinjajit|markdown|easyhtml" : { "allinputs" : true, "markdown" : { "toc" : { "anchorlink" : true }} }
 }

@@ -34,21 +34,23 @@ TODO - how to install and start.
 
 When the server is running, you should be able to point your browser to \verb|localhost:8080| and you should see something like this:
 
-<< d['take-screenshot.py|idio|l']['load-portfolio-page'] >>
+<< d['screenshots.js|idio|l']['initial'] >>
 
-\includegraphics[width=5in]{dexy--screenshot-portfolio-page.pdf}
+\includegraphics[width=5in]{initial.png}
 
 \section{Securities}
 
 Let's use the web interface to explore the securities that are available:
 
-<< d['take-screenshot.py|idio|l']['load-securities-page'] >>
+<< d['screenshots.js|idio|l']['securities'] >>
 
-\includegraphics[width=5in]{dexy--screenshot-securities-page.pdf}
+\includegraphics[width=5in]{securities.png}
 
-<< d['take-screenshot.py|idio|l']['show-security'] >>
+Here is a single security:
 
-\includegraphics[width=5in]{dexy--screenshot-view-security.pdf}
+<< d['screenshots.js|idio|l']['security'] >>
+
+\includegraphics[width=5in]{security.png}
 
 We can use any of the listed identifiers (along with their scheme) to retrieve a reference to this security, as below:
 
@@ -66,15 +68,15 @@ Attributes can be accessed by calling ExpandSecurity or, for more detail, a more
 
 Let's use the web interface to explore the time series that are available:
 
-<< d['take-screenshot.py|idio|l']['load-timeseries-page'] >>
+<< d['screenshots.js|idio|l']['all-time-series'] >>
 
-\includegraphics[width=5in]{dexy--screenshot-timeseries-page.pdf}
+\includegraphics[width=5in]{all-timeseries.png}
 
 We can click on any of the time series listed on the left and explore the data:
 
-<< d['take-screenshot.py|idio|l']['show-timeseries'] >>
+<< d['screenshots.js|idio|l']['time-series'] >>
 
-\includegraphics[width=5in]{dexy--screenshot-view-timeseries.pdf}
+\includegraphics[width=5in]{timeseries.png}
 
 We see that the ticker is \verb|<< d['r-vars.json']['ticker'] >>|, so let's now construct an R script to view and graph this time series in R. First, we load the necessary libraries:
 
@@ -88,20 +90,21 @@ We can easily plot the returned data:
 
 << d['time_series.R|fn|idio|rint|pyg|l']['plot-ts'] >>
 
-\includegraphics{dexy--dbhts.pdf}
+\includegraphics{dbhts.pdf}
 
 We can convert the time series to xts:
 
 << d['time_series.R|fn|idio|rint|pyg|l']['convert-xts'] >>
 
-Description of as.xts.TimeSeries from documentation: << d['rdoc.R|rdoc']['OpenGamma']['as.xts.TimeSeries']['description'] >>
+Description of as.xts.TimeSeries from documentation: << d['rdoc.R|rdoc']['OpenGamma:as.xts.TimeSeries:description'] >>
 
 And plot as an xts object:
 
 << d['time_series.R|fn|idio|rint|pyg|l']['plot-xts'] >>
 
-\includegraphics{dexy--dbhts-xts.pdf}
+\includegraphics{dbhts-xts.pdf}
 
+<% if False -%>
 
 \section{Methods}
 
@@ -128,6 +131,8 @@ And plot as an xts object:
 <% endif -%>
 
 <% endfor -%>
+
+<% endif -%>
 
 \end{document}
 

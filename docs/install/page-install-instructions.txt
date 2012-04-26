@@ -1,0 +1,106 @@
+These are detailed instructions for setting up the full OpenGamma stack from source on an Ubuntu server, including OG-RStats, and all dependencies needed for generating documentation. These instructions are tested by running the full script on an EC2 instance.
+
+EC2 instances have a relatively small home directory size, and it's easy to run out of disk space when compiling large projects. To start with we move to the attached external drive and create a working directory:
+
+{code}
+{{ d['full-setup.sh|idio|t']['workspace'].rstrip() }}
+{code}
+
+Next we make sure that the system is up-to-date:
+
+{code}
+{{ d['full-setup.sh|idio|t']['update-system'].rstrip() }}
+{code}
+
+We install a JDK:
+
+{code}
+{{ d['full-setup.sh|idio|t']['install-jdk'].rstrip() }}
+{code}
+
+And we install ant:
+
+{code}
+{{ d['full-setup.sh|idio|t']['install-ant'].rstrip() }}
+{code}
+
+Because we are going to build OG-RStats, we also need some C++-related utilities:
+
+{code}
+{{ d['full-setup.sh|idio|t']['install-cpp-utils'].rstrip() }}
+{code}
+
+Hack to make sure we can use Apache Portable Runtime:
+{code}
+{{ d['full-setup.sh|idio|t']['fix-apr'].rstrip() }}
+{code}
+
+And we also need the C++ tasks for ant:
+
+{code}
+{{ d['full-setup.sh|idio|t']['install-ant-cpptasks'].rstrip() }}
+{code}
+
+To build R documentation, we will need LaTeX. We have already installed the latest texlive (it's a very slow install), so we just need to ensure that it is on the PATH:
+
+{code}
+{{ d['full-setup.sh|idio|t']['texlive-path'].rstrip() }}
+{code}
+
+Next we install R and make sure we have the texinfo library:
+
+{code}
+{{ d['full-setup.sh|idio|t']['install-r'].rstrip() }}
+{code}
+
+We're getting there! We need git so we can install some software from git repositories (including OpenGamma):
+
+{code}
+{{ d['full-setup.sh|idio|t']['install-git'].rstrip() }}
+{code}
+
+Now we need to install the Fudge messaging library from source, and because we are installing from source we also need libtool:
+
+{code}
+{{ d['full-setup.sh|idio|t']['install-fudge'].rstrip() }}
+{code}
+
+Now we can install the OpenGamma platform! We set the OG_USER and OG_PASSWORD variables in advance so we can have an unattended install:
+
+{code}
+{{ d['full-setup.sh|idio|t']['opengamma-platform'].rstrip() }}
+{code}
+
+Now we have compiled all the Java and C++ code, and we can go ahead and start the OpenGamma server:
+
+{code}
+{{ d['full-setup.sh|idio|t']['start-server'].rstrip() }}
+{code}
+
+We can verify that the server is running by visiting localhost:8080
+
+{code}
+{{ d['check-install.js|idio|t']['initial'].rstrip() }}
+{code}
+
+!initial.png!
+
+Great! Now we need to finish configuring OG-RStats which needs a little tweaking. We set some parameters and create some directories (these will soon be taken care of by the installer):
+
+{code}
+{{ d['rstats-setup.sh|idio|t']['configure-rstats'].rstrip() }}
+{code}
+
+We install some R packages (this ensures the R package installer is configured before we install the OpenGamma package):
+
+{code}
+{{ d['rstats-setup.sh|idio|t']['r-packages'].rstrip() }}
+{code}
+
+Now we can install the OpenGamma R package:
+
+{code}
+{{ d['rstats-setup.sh|idio|t']['install-rstats'].rstrip() }}
+{code}
+
+Now R should be ready to go.

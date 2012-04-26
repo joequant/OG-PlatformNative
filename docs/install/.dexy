@@ -1,0 +1,6 @@
+{
+    "@full-setup.sh|idio|t" : { "repo" : "http://github.com/OpenGamma/OG-Platform", "branch" : "develop", "path" : "docs/install/full-setup.sh" },
+    "@rstats-setup.sh|idio|t" : { "repo" : "http://github.com/OpenGamma/OG-Platform", "branch" : "develop", "path" : "docs/install/rstats-setup.sh" },
+    "check-install.js|fn|casperjs" : {},
+    "run-r.sh|shint" : { "shint" : { "timeout" : 60 }}
+}

@@ -31,11 +31,11 @@ tickers <- c(
              "OG_SYNTHETIC_TICKER~AMZN"
              )
 
-for (ticker in tickers) {
+for (t in tickers) {
     print("==================================================")
-    print(ticker)
+    print(t)
     print("--------------------")
-    security <- FetchSecurity(ticker)
+    security <- FetchSecurity(t)
     print(security)
 }
 
@@ -53,7 +53,6 @@ GetSecurityType(security)
 ### @export "save-vars"
 library(rjson)
 var_file <- file("dexy--r-vars.json", "w")
-e <- new.env(hash=TRUE)
-assign("ticker", ticker, env=e)
-writeLines(toJSON(e), var_file)
+vars = list(ticker=ticker)
+writeLines(toJSON(vars), var_file)
 close(var_file)

@@ -1,0 +1,51 @@
+{toc}
+
+h2. Analytics
+
+{code}
+{{ d['analytics.R|fn|rintbatch'] }}
+{code}
+
+h2. Analytics 2
+
+{code}
+{{ d['analytics2.R|fn|rintbatch'] }}
+{code}
+
+h2. Curves
+
+{code}
+{{ d['curves.R|fn|rintbatch'] }}
+{code}
+
+h2. Historical
+
+{code}
+{{ d['historical.R|fn|rintbatch'] }}
+{code}
+
+h2. SwapExample
+
+{code}
+{{ d['swap.R|fn|rintbatch'] }}
+{code}
+
+h2. Perturbed
+
+{code}
+{{ d['perturbed.R|fn|rintbatch'] }}
+{code}
+
+h2. Yield
+
+{code}
+{{ d['yield.R|fn|rintbatch'] }}
+{code}
+
+h2. Yield 2
+
+{code}
+{{ d['yield2.R|fn|rintbatch'] }}
+{code}
+
+!yield-chart-2-series-3d-example.png!
