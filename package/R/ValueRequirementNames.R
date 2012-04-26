@@ -12,10 +12,10 @@ Install.ValueRequirementNames <- function (stub) {
     names <- invoke.Functions (func, list ())
     for (name in names) {
       stub.ValueRequirementNames$const (
-        gsub ("\\.+$", "", gsub ("^\\.+", "", gsub ("\\.\\.+", ".", make.names (gsub ("_", ".", name))))),
+        gsub ("\\.+$", "", gsub ("^\\.+", "", gsub ("\\.\\.+", ".", make.names (gsub ("_", ".", name, fixed = TRUE))))),
         paste (name, "constant"),
         "The symbolic constant used within the analytics library to describe calculated values.",
-        paste ("\"", gsub ("(\"|\\\\)", "\\\\\\1", name), "\"", sep = ""),
+        paste ("\"", OpenGammaCall ("String_escape", name, "\\\""), "\"", sep = ""),
         TRUE)
     }
     stub.ValueRequirementNames$end ()

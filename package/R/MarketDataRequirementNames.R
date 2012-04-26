@@ -12,10 +12,10 @@ Install.MarketDataRequirementNames <- function (stub) {
     names <- invoke.Functions (func, list ())
     for (name in names) {
       stub.MarketDataRequirementNames$const (
-        make.names (gsub ("_", ".", name)),
+        make.names (gsub ("_", ".", name, fixed = TRUE)),
         paste (name, "constant"),
         "The symbolic constant used within the analytics library to specify market data requirements.",
-        paste ("\"", gsub ("(\"|\\\\)", "\\\\\\1", name), "\"", sep = ""),
+        paste ("\"", OpenGammaCall("String_escape", name, "\\\""), "\"", sep = ""),
         TRUE)
     }
     LOGDEBUG (length (names), "MarketDataRequirementNames imported")

@@ -16,6 +16,7 @@
 #include "LiveData.h"
 #include "Procedures.h"
 #include "Errors.h"
+#include "String.h"
 
 /// Try and suppress the error message written to stderr to avoid R CMD check from failing.
 static CSuppressLoggingWarning g_oSetQuietMode;
@@ -139,6 +140,7 @@ static R_CallMethodDef g_aMethods[] = {
 	F (Procedures_getParameterNames, 1),
 	F (Procedures_getParameterDescriptions, 1),
 	F (Procedures_invoke, 3),
+	F (String_escape, 2),
 	{ NULL, NULL, 0 }
 };
 

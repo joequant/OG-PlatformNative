@@ -6,7 +6,7 @@
 
 # Escape characters in string representation of a ValueProperties
 .escape.ValueProperties <- function (str) {
-  gsub ("([,= ?]|\\[|\\]|\\\\)", "\\\\\\1", str)
+  OpenGammaCall ("String_escape", str, "\\,= ?[]")
 }
 
 # Creates the string representation of a ValueProperties message
@@ -26,7 +26,7 @@
   if (!is.null (without)) {
     properties <- c ()
     for (field in fields.FudgeMsg (without)) {
-      properties <- append (properties, .escape.ValueProperties (field$Value))
+      append (properties, .escape.ValueProperties (field$Value))
     }
     if (length (properties) > 0) {
       paste ("INFINITE-{", paste (properties, collapse = ","), "}", sep = "")
@@ -38,30 +38,29 @@
       str <- c ()
       for (field in fields.FudgeMsg (with)) {
         fieldValue <- field$Value
-        property <- c (.escape.ValueProperties (field$Name), "=")
+        property <- rep ("", 6)
+        property[1] <- .escape.ValueProperties (field$Name)
+        property[2] <- "="
         if (is.FudgeMsg (fieldValue)) {
-          optional <- FALSE
-          property <- append (property, "[")
+          property[3] <- "["
           values <- c ()
           for (value in fields.FudgeMsg (fieldValue)) {
             if (value$Name == "optional") {
-              optional <- TRUE
+              property[6] <- "?"
             } else {
-              values <- append (values, .escape.ValueProperties (value$Value))
+              append (values, value$Value)
             }
           }
-          property <- append (property, paste (values, collapse = ","), "]")
-          if (optional) {
-            property <- append (property, "?")
-          }
+          property[4] <- paste (.escape.ValueProperties (values), collapse = ",")
+          property[5] <- "]"
         } else {
           if (fieldValue == "indicator") {
-            property <- append (property, "[]")
+            property[3] <- "[]"
           } else {
-            property <- append (property, .escape.ValueProperties (fieldValue))
+            property[4] <- .escape.ValueProperties (fieldValue)
           }
         }
-        str <- append (str, paste (property, collapse = ""))
+        append (str, property)
       }
       paste (str, collapse = ",")
     } else {

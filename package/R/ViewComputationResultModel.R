@@ -75,7 +75,7 @@ calculationDuration.ViewComputationResultModel <- function (msg) {
   })
   cmd <- c ("data.frame (identifier = computationTargetIdentifier, type = computationTargetType")
   cmd <- append (cmd, sapply (names (values), function (valueName) {
-    escaped <- gsub ("(\"|\\\\)", "\\\\\\1", valueName)
+    escaped <- OpenGammaCall ("String_escape", valueName, "\\\"")
     paste ("`", escaped, "` = values[[\"", escaped, "\"]]", sep = "")
   }))
   cmd <- append (cmd, "row.names = \"identifier\", check.names=FALSE)")
@@ -124,7 +124,7 @@ columns.ViewComputationResultModel <- function (data, valueRequirement) {
 firstValue.ViewComputationResultModel <- function (row, columns) {
   if (length (row.names (row)) == 1) {
     if (length (columns) > 0) {
-      a.columns <-  columns[sapply (columns, function (x) { !is.na (row[[x]]) })]
+      a.columns <- columns[sapply (columns, function (x) { !is.na (row[[x]]) })]
       if (length (a.columns) > 0) {
         row[[a.columns[[1]]]]
       } else {
@@ -141,6 +141,13 @@ firstValue.ViewComputationResultModel <- function (row, columns) {
 # Extract a direct column list from a configuration result
 .column.ViewComputationResultModel <- function (data, col) {
   values <- list ()
+  names <- c ()
+  for (valueRequirement in col) {
+    name <- name.ValueRequirement (valueRequirement)
+    if (!(name %in% names)) {
+      names <- c(names, name.ValueRequirement (valueRequirement))
+    }
+  }
   for (field in fields.FudgeMsg (data)) {
     computationTargetIdentifier <- NULL
     specificationProperties <- NULL
@@ -152,10 +159,14 @@ firstValue.ViewComputationResultModel <- function (row, columns) {
         for (y in fields.FudgeMsg (x$Value)) {
           name <- y$Name
           if (name == "properties") {
-            specificationProperties <- .toString.ValueProperties (y$Value)
+            specificationProperties <- y$Value
           } else {
             if (name == "valueName") {
               specificationName <- y$Value
+              if (!(specificationName %in% names)) {
+                specificationName <- NULL
+                break
+              }
             } else {
               if (name == "computationTargetIdentifier") {
                 computationTargetIdentifier <- y$Value
@@ -163,15 +174,20 @@ firstValue.ViewComputationResultModel <- function (row, columns) {
             }
           }
         }
+        if (is.null (specificationName)) {
+          break
+        }
       } else {
         if (name == "value") {
           value <- x$Value
         }
       }
     }
-    valueReq <- new.ValueRequirement (specificationName, specificationProperties)
-    if (valueReq %in% col) {
-      values[[computationTargetIdentifier]] <- value
+    if (!is.null (specificationName)) {
+      valueReq <- new.ValueRequirement (specificationName, .toString.ValueProperties (specificationProperties))
+      if (valueReq %in% col) {
+        values[[computationTargetIdentifier]] <- value
+      }
     }
   }
   values

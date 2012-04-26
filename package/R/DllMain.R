@@ -70,7 +70,7 @@
 
 # Escapes a string for use in the Rd format
 .escape.Rd <- function (str) {
-  gsub ("%", "\\\\%", str)
+  OpenGammaCall ("String_escape", str, "\\%")
 }
 
 # Creates the outline package structure
@@ -123,11 +123,11 @@
         paste ("\\description{", .escape.Rd (descr), "}", sep = ""),
         "\\arguments{",
         paste (sapply (names (params), function (x) {
-          if (substring (params[x], 1, 1) == "?") {
-            d <- substring (params[x], 2)
+          if (substring (params[[x]], 1, 1) == "?") {
+            d <- substring (params[[x]], 2)
             meta <- "%optional"
           } else {
-            d <- params[x]
+            d <- params[[x]]
             meta <- ""
           }
           paste ("\\item{", x, "}{", .escape.Rd (d), "}", meta, sep = "")
