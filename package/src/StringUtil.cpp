@@ -5,8 +5,8 @@
  */
 
 #include "stdafx.h"
-#include "String.h"
-#include Client(String.h)
+#include "StringUtil.h"
+#include Client(StringUtil.h)
 #include "Errors.h"
 
 LOGGING (com.opengamma.rstats.package.String);

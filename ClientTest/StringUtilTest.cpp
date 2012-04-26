@@ -6,11 +6,11 @@
 
 #include "stdafx.h"
 
-// Test the objects and functions in Client/String.cpp
+// Test the objects and functions in Client/StringUtil.cpp
 
-#include "Client/String.h"
+#include "Client/StringUtil.h"
 
-LOGGING (com.opengamma.rstats.client.StringTest);
+LOGGING (com.opengamma.rstats.client.StringUtil);
 
 static void UnescapedA () {
 	ASSERT (!StringEscapeA ("No escaped characters", "", 0));
@@ -26,7 +26,7 @@ static void EscapedA () {
 	free (psz);
 }
 
-BEGIN_TESTS (StringTest)
+BEGIN_TESTS (StringUtilTest)
 	TEST (UnescapedA)
 	TEST (EscapedA)
 END_TESTS

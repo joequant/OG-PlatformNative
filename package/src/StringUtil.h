@@ -4,8 +4,8 @@
  * Please see distribution for license.
  */
 
-#ifndef __inc_og_rstats_package_string_h
-#define __inc_og_rstats_package_string_h
+#ifndef __inc_og_rstats_package_stringutil_h
+#define __inc_og_rstats_package_stringutil_h
 
 /// R method helper for strings.
 class RString {
@@ -26,4 +26,4 @@ extern "C" {
 }
 #endif /* ifdef GLOBALS */
 
-#endif /* ifndef __inc_og_rstats_package_string_h */
+#endif /* ifndef __inc_og_rstats_package_stringutil_h */

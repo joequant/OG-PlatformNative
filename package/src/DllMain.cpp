@@ -16,7 +16,7 @@
 #include "LiveData.h"
 #include "Procedures.h"
 #include "Errors.h"
-#include "String.h"
+#include "StringUtil.h"
 
 /// Try and suppress the error message written to stderr to avoid R CMD check from failing.
 static CSuppressLoggingWarning g_oSetQuietMode;

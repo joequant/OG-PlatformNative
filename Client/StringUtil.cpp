@@ -5,9 +5,9 @@
  */
 
 #include "stdafx.h"
-#include Client(String.h)
+#include Client(StringUtil.h)
 
-LOGGING (com.opengamma.rstats.client.String);
+LOGGING (com.opengamma.rstats.client.StringUtil);
 
 /// Escapes the string by inserting a special character before the reserved characters.
 /// A new string is allocated to contain the escaped version. The caller must release this
