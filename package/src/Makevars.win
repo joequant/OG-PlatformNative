@@ -66,6 +66,7 @@ OBJECTS=Package.res \
 	Client_Procedures.obj \
 	Client_Repositories.obj \
 	Client_Settings.obj \
+	Client_StringUtil.obj \
 	com_opengamma_rstats_msg_DataInfo.obj \
 	com_opengamma_rstats_msg_FunctionResult.obj \
 	com_opengamma_rstats_msg_LiveDataResult.obj \
@@ -81,7 +82,8 @@ OBJECTS=Package.res \
 	LiveData.obj \
 	Parameters.obj \
 	Procedures.obj \
-	RCallback.obj
+	RCallback.obj \
+	StringUtil.obj
 
 all:	Client_stdafx.obj \
 	$(SHLIB)
