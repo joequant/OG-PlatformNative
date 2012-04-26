@@ -1,0 +1,4 @@
+{
+    "chartSeries3d.alpha.R" : {},
+    "*.R|fn|rintbatch" : { "inputs" : ["chartSeries3d.alpha.R"] }
+}
