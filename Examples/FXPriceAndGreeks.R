@@ -263,15 +263,9 @@ results <- data.frame (
   strikes = option.strikes,
   lapply (requirements, function (requirement) {
     columns <- columns.ViewComputationResultModel (view.result.data, requirement)
-    values <- column.ViewComputationResultModel (view.result, calc.config, columns)
-    if (length (values) > 0) {
-        sapply (positions, function (position) {
-          values[[position]]
-        }, USE.NAMES = FALSE)
-      } else {
-        NA
-      }
-    }))
+    sapply (positions, function (position) {
+      firstValue.ViewComputationResultModel (view.result.data[position,], columns)
+    }, USE.NAMES = FALSE)}))
 
 # Print the results data frame
 print (results)
