@@ -1,7 +1,6 @@
 ### @export "libraries"
 library(OpenGamma)
 OpenGamma::Init()
-options(useFancyQuotes=FALSE)
 
 library(xts)
 
@@ -32,11 +31,10 @@ tickers <- c(
              )
 
 for (t in tickers) {
-    print("==================================================")
-    print(t)
     print("--------------------")
+    print(t)
     security <- FetchSecurity(t)
-    print(security)
+    print(security$uniqueId)
 }
 
 ### @export "security-amazon-uniqueid"

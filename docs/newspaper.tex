@@ -1,0 +1,290 @@
+\documentclass[custom, plainsections]{sciposter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Modify paper size and font size in papercustom.cfg in your tex install
+% e.g. something like:
+%  /usr/local/texlive/2010/texmf-dist/tex/latex/sciposter/papercustom.cfg
+%  /usr/share/texmf-texlive/tex/latex/sciposter/papercustom.cfg
+%
+%\renewcommand{\papertype}{custom}
+%\renewcommand{\fontpointsize}{14pt}
+%\setlength{\paperwidth}{28.9cm}
+%\setlength{\paperheight}{38.0cm}
+%\renewcommand{\setpspagesize}{
+%  \ifthenelse{\equal{\orientation}{portrait}}{
+%    \special{papersize=28.9cm,38.0cm}
+%    }{\special{papersize=38.0cm,28.9cm}
+%    }
+%  }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[ascii]{inputenc}
+\usepackage[greek, english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage{color}
+\usepackage[small, numbered]{cwpuzzle}
+\usepackage{multicol}
+\usepackage{hyperref}
+
+\newcommand{\codesize}{\fontsize{8pt}{10pt}\selectfont}
+
+\usepackage{fancyvrb}
+\fvset{fontsize=\codesize} % have code extracts be in smaller font size
+
+\setlength\columnseprule{0.2pt}
+
+<< pygments['bw.tex'] >>
+
+\renewcommand{\rmdefault}{ptm}
+\newcommand{\megasize}{\fontsize{68pt}{20pt}\selectfont}
+
+\setmargins[0.5in]
+
+\pagenumbering{arabic}
+
+\title{OpenGamma News}
+\begin{document}
+\rmfamily
+
+\begin{megasize}
+\includegraphics{og-device.eps}
+\hspace{0.1in}
+OpenGamma News
+\end{megasize} \hfill May 2012
+
+\begin{multicols*}{3}
+
+\small
+
+\PARstart{T}{he} Opengamma R package works with the R platform so you can run portfolio simulations and have access to all your favorite analytics tools in R, while also having access to the web interface and other platform tools.
+
+\PARstart{O}{penGamma} provides technology for financial institutions to improve analytics calculation and delivery to front-office and risk users.
+
+Using a completely open architecture, we enable a transparent and unified approach to trading and risk analytics that will radically improve the quality, accuracy and timeliness of data to the end-users, and significantly expand the capabilities of in-house IT and development resources.
+
+The OpenGamma Platform is modular and quick to install so you can enjoy the benefits of our technology with little effort or up-front investment. Trading data management, live risk alerts, and sophisticated, dynamic Excel integration are some examples where you can get started quickly and get immediate benefit.
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.2cm}
+
+\end{multicols*}
+
+\pagebreak
+
+\begin{multicols*}{2}
+\small
+
+\textbf{Installing the OpenGamma Platform}
+
+\vspace{0.5cm}
+
+You can download the latest version of the OpenGamma platform, including R support, from \url{http://developers.opengamma.com/}. Please consult the online documentation for installation instructions for your platform. OpenGamma comes with example data in the OG-Example project which is what is used to run all the examples here.
+
+Once the server is installed and running, you should be able to point your browser to \verb|localhost:8080| and you should see something like this:
+
+\vspace{0.5cm}
+\includegraphics[width=5in]{initial.png}
+\vspace{0.5cm}
+
+Let's start an R instance and load and initialize the OpenGamma library:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['init'] >>
+
+Now that we are set up, we can start to explore. To get used to the system, we'll go through some of the basic entities and OpenGamma terminology, using both the web interface and R.
+
+\textbf{Securities}
+\vspace{0.5cm}
+
+A security is any asset that may be owned by someone. While some systems divide securities into exchange-traded versus over-the-counter/contract-based, OpenGamma uses the same terminology for all types of assets. We can use the web interface to explore the securities that are available:
+
+\vspace{0.5cm}
+\includegraphics[width=5in]{securities.png}
+\vspace{0.5cm}
+
+Clicking on a security brings up a summray page for that security:
+
+\vspace{0.5cm}
+\includegraphics[width=5in]{security.png}
+\vspace{0.5cm}
+
+In the first section we see several different available identifiers. We can use these within R to retrieve a reference to that security using the FetchSecurity function:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['fetch-security'] >>
+
+The default output written to the console isn't terribly helpful. We can see more clearly what we have retrieved by using R's print() function:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['print-security'] >>
+
+Or, if we want to retrieve the information in a more structured format, we can use the ExpandSecurity function:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['expand-security'] >>
+
+More information is returned by calling the Expand* function specific to the type of security we have retrieved, in this case an equity:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['expand-equity-security'] >>
+
+We can call some helper functions to access security attributes:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['get-security-attributes'] >>
+
+We can retrieve the same security by using some of the other tickers listed:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['isin'] >>
+<< d['hello_world.R|fn|idio|rint|pyg|l']['synthetic'] >>
+
+We can also pass the internal OpenGamma uniqueId to retrieve the security:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['unique-id'] >>
+
+\vspace{0.5cm}
+
+\textbf{Portfolios}
+
+To discuss portfolios, we also need to introduce Positions and Trades. A Position is a holding in a particular Security. In general, a Position is the quantity of a particular Security held by a trading group. A Trade is a single transaction in which some quantity of a Security is bought or sold. Trades may be netted/aggregated into a Position, or may stand on their own.
+
+A portfolio is a named collection of Positions (and thus Trades). Portfolios can be aggregated in a number of ways, or left flat. A Portfolio Node is a particular point in the aggregation structure of a Portfolio. Even flat Portfolios (without any additional aggregation done) have at least one Portfolio Node, the root one which holds all Positions.
+
+We can explore the available portfolios from within R:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['portfolios'] >>
+
+We can also view portfolios in the web interface:
+
+\vspace{0.5cm}
+\includegraphics[width=5in]{portfolios.png}
+\vspace{0.5cm}
+
+We'll look at the Cash Portfolio:
+
+\vspace{0.5cm}
+\includegraphics[width=5in]{portfolio.png}
+\vspace{0.5cm}
+
+We retrieve the portfolio in R using FetchPortfolio:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['cash-portfolio'] >>
+
+We get the root node of the portfolio:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['node'] >>
+
+We can then see the positions:
+
+<< d['hello_world.R|fn|idio|rint|pyg|l']['positions'] >>
+
+\textbf{Views}
+
+TODO example of views..
+
+\textbf{Time Series}
+
+We can view time series of historical data for various securities. Let's browse what's available using the web interface:
+
+\vspace{0.5cm}
+\includegraphics[width=5in]{timeseries.png}
+\vspace{0.5cm}
+
+We can click on any of the time series listed and explore the data:
+
+\vspace{0.5cm}
+\includegraphics[width=5in]{show-timeseries.png}
+\vspace{0.5cm}
+
+We see that the ticker is \verb|<< d['r-vars.json']['ticker'] >>|, so let's now construct an R script to view and graph this time series in R. First, we load the necessary libraries:
+
+<< d['time_series.R|idio|l']['libraries'] >>
+
+Now, we call the FetchTimeSeries method, passing the ticker:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['fetch-ts'] >>
+
+We can easily plot the returned data:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['plot-ts'] >>
+
+\includegraphics[width=5in]{dbhts.pdf}
+
+We can convert the time series to xts:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['convert-xts'] >>
+
+Description of as.xts.TimeSeries from documentation: << d['rdoc.R|rdoc']['OpenGamma:as.xts.TimeSeries:description'] >>
+
+And plot as an xts object:
+
+<< d['time_series.R|fn|idio|rint|pyg|l']['plot-xts'] >>
+
+\includegraphics[width=5in]{dbhts-xts.pdf}
+
+\pagebreak
+
+\textbf{Yield Curves}
+
+Here is source code for chartSeries3d:
+
+<< d['chartSeries3d.alpha.R|pyg|l'] >>
+
+<< d['yield2.R|fn|rintbatch|pyg|l'] >>
+
+\includegraphics[width=5in]{yield-chart-2-series-3d-example.pdf}
+
+\end{multicols*}
+
+\pagebreak
+
+\begin{multicols*}{3}
+\small
+
+\textbf{About OpenGamma}
+
+OpenGamma was founded in 2009 to develop an open platform for analytics and risk management for the financial services industry.
+
+We recognized that firms across the industry are wastefully replicating the same technology stack over and over again. Not only does this make it difficult for firms to optimize their IT spend on producing proprietary value to the firm, it also makes it harder for innovative technology firms to come to market (also hurting customers by limiting their choice in technology providers).
+
+Our goal is simple: provide the best technology in the industry for developing applications for front-office and risk analytics, and deliver it with a business model optimized for our customers' needs.
+
+Our flagship technology, the OpenGamma Platform, is designed to allow financial services firms to unify their calculation of analytics across the traditional trading and risk management boundaries. Our modern approach to software development, our completely open architecture, and our open source principles mean that customers can have faith that the platform will be able to support their analytics needs now and in the future.
+
+Founded by a team with extensive experience building front-office and risk analytics systems, OpenGamma has grown to bring together a team with extensive experience both in financial services organizations (J.P. Morgan, RBS, KBC Financial Products, Dexia, Commerzbank) as well as pure technology providers (Expedia/Hotels.com, SITA, 1010data, Red Gate). This approach means that we can deliver on customer's needs for a technology partner that understands their domain at a deep level, but can bring in the best parts of technology and user experience from outside the financial services industry.
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.2cm}
+
+\textbf{Work for OpenGamma}
+
+OpenGamma is the author and sponsor of the OpenGamma Platform, the first Open Source platform for quantitative finance. Used by investment banks, hedge funds, and others, this revolutionary technology allows firms to focus on their proprietary approaches to the market, without having to recreate the same technology as other firms.
+
+We are always on the lookout for talented technologists and quants to join our team.
+
+Our employees come from a wide range of backgrounds. Some of us come from Hedge Funds, some of us come from Investment Banks, and some of us have no financial services background whatsoever. We think that this diversity helps us develop better software, by drawing on the experience of our team across disciplines.
+
+As part of our comprehensive front office analytics and risk management offering, we have built a cross-asset-class analytics library with excellent coverage of fixed income and equity products. Our focus is on building an Open Source analytics library with a comprehensive range of analytic measures and numerical techniques supporting a wide range of derivatives products.
+
+Our R Integration Module is primarily intended to provide facilities for scenario analysis and, as such, allows R functions to be used to perturb input data and run batch jobs based on snapshots and/or historical data.
+
+\textbf{What working at OpenGamma is like}
+
+We have an open, airy office with lots of natural light, and a stocked fridge. All developers have their choice of workstation and monitor (most people have 30" displays on their desktop). Everything we do is designed to help the team perform at the peak of their abilities.
+
+What we don't believe in is putting unnecessary roadblocks in the way of you doing your job. No weekly status reports that nobody will read. No change control committees. No business analysts getting in between you and the information you need to implement functionality. No team of people telling you "no" no matter what the question.
+
+\textbf{What we're looking for}
+
+Quite simply, we're looking for the best. Our recruiting process is quite rigorous because we believe that the quality of our team is one of our key competitive advantages.
+
+Candidates that are successful here tend to be ones that have demonstrated ability to self-prioritize and self-motivate. We don't believe in micro-management, so we make sure we hire people who are capable of thriving in an environment where they're given responsibility and the freedom to execute on our vision.
+
+We're also looking for people that we get along with. While we work hard at OpenGamma, we also have a friendly, social atmosphere because we all genuinely like working with each other.
+
+\textbf{How to apply}
+
+View our open vacancies at \url{http://www.opengamma.com/jobs}
+
+We will warn you, though: when you only hire the best, your recruiting process tends to be pretty intense. Depending on the role you might have to do several maths tests, and will go through several of the most gruelling hours of interviews you've likely faced. If you look at that as a challenge, get in touch. We're hiring.
+
+\end{multicols*}
+
+\end{document}
+
