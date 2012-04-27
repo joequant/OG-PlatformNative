@@ -1,13 +1,18 @@
 {
     "page*.txt|jinjajit|confluence" : { "allinputs" : true },
+    "newspaper.tex|fn|jinjajit|latex|bw" : { "allinputs" : true },
     "screenshots.js|fn|casperjs" : {},
     "screenshots.js|idio|l" : {},
-    "docs.tex|jinjajit|latex" : { "allinputs" : true },
+    "docs.tex|jinjajit|latex" : { "allinputs" : true, "disabled" : true },
     "rdoc.R|rdoc" : { "rdoc" : { "ext" : "sqlite3" }},
-    "*.R|fn|idio|rint|pyg|l" : { "rint" : { "timeout" : 100 }, "except" : "rdoc" },
+    "*.R|fn|idio|rint|pyg|l" : { "rint" : { "timeout" : 100 }, "except" : "rdoc|chartSeries3d|yield2" },
+    "yield2.R|fn|rintbatch|pyg|l" : { "inputs" : ["chartSeries3d.alpha.R"] },
     "*.R|idio|l" : {},
     "*.R|pyg" : {},
+    "*.R|pyg|l" : {},
     "*.sh|idio" : {},
     "*.js|idio|t" : {},
+    "*.jpg" : {},
+    "*.eps" : {},
     "*.md|jinjajit|markdown|easyhtml" : { "allinputs" : true, "markdown" : { "toc" : { "anchorlink" : true }} }
 }
