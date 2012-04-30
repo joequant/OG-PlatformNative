@@ -26,7 +26,7 @@
   if (!is.null (without)) {
     properties <- c ()
     for (field in fields.FudgeMsg (without)) {
-      append (properties, .escape.ValueProperties (field$Value))
+      properties <- append (properties, .escape.ValueProperties (field$Value))
     }
     if (length (properties) > 0) {
       paste ("INFINITE-{", paste (properties, collapse = ","), "}", sep = "")
@@ -48,7 +48,7 @@
             if (value$Name == "optional") {
               property[6] <- "?"
             } else {
-              append (values, value$Value)
+              values <- append (values, value$Value)
             }
           }
           property[4] <- paste (.escape.ValueProperties (values), collapse = ",")
@@ -60,7 +60,7 @@
             property[4] <- .escape.ValueProperties (fieldValue)
           }
         }
-        append (str, property)
+        str <- append (str, paste (property, collapse = ""))
       }
       paste (str, collapse = ",")
     } else {
