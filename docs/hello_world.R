@@ -46,5 +46,4 @@ GetPortfolioNodeUniqueId(node)
 ### @export "positions"
 positions <- GetPortfolioNodePositions(node)
 p <- positions[[1]]
-print(p)
 ExpandSecurity(GetPositionSecurity(p))

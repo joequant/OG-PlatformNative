@@ -5,6 +5,12 @@
 
 {{ d['rdoc.R|rdoc']["%s:description" % k] }}
 
+<table>
+{% for k, v in json.loads(d['rdoc.R|rdoc'].storage().get("%s:arguments" % k, "{}")).iteritems() -%}
+<tr><th>{{ k }}</th><td>{{ v }}</td></tr>
+{% endfor -%}
+</table>
+
 <pre>
 {{ d['rdoc.R|rdoc']["%s:source" % k] }}
 </pre>

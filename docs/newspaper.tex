@@ -22,7 +22,7 @@
 \usepackage[greek, english]{babel}
 \usepackage[pdftex]{graphicx}
 \usepackage{color}
-\usepackage[small, numbered]{cwpuzzle}
+\usepackage[numbered]{cwpuzzle}
 \usepackage{multicol}
 \usepackage{hyperref}
 
@@ -31,7 +31,6 @@
 \usepackage{fancyvrb}
 \fvset{fontsize=\codesize} % have code extracts be in smaller font size
 
-\setlength\columnseprule{0.2pt}
 
 << pygments['bw.tex'] >>
 
@@ -48,15 +47,19 @@
 
 \begin{megasize}
 \includegraphics{og-device.eps}
-\hspace{0.1in}
+\hspace{0.3in}
 OpenGamma News
 \end{megasize} \hfill May 2012
+
+\vspace{0.5cm}
+
+\setlength\columnseprule{0pt}
 
 \begin{multicols*}{3}
 
 \small
 
-\PARstart{T}{he} Opengamma R package works with the R platform so you can run portfolio simulations and have access to all your favorite analytics tools in R, while also having access to the web interface and other platform tools.
+\PARstart{T}{he} Opengamma R package works with R and the OpenGamma platform so you can take advantage of the R language and all your favorite analytics tools, while you and your colleagues also have access to the web interface and the other OpenGamma platform tools and interfaces.
 
 \PARstart{O}{penGamma} provides technology for financial institutions to improve analytics calculation and delivery to front-office and risk users.
 
@@ -66,26 +69,179 @@ The OpenGamma Platform is modular and quick to install so you can enjoy the bene
 
 \vspace{0.5cm}
 \hrule
+\vspace{0.5cm}
+
+\textbf{This Newsletter}
+
+\PARstart{O}{nce} you turn this page, you'll get to the really good stuff. Screenshots and live code to help you see what the OpenGamma R integration can do, and to get you started if you decide to download, install and play.
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\textbf{About OpenGamma}
+
+\PARstart{O}{penGamma} was founded in 2009 to develop an open platform for analytics and risk management for the financial services industry.
+
+We recognized that firms across the industry are wastefully replicating the same technology stack over and over again. Not only does this make it difficult for firms to optimize their IT spend on producing proprietary value to the firm, it also makes it harder for innovative technology firms to come to market (also hurting customers by limiting their choice in technology providers).
+
+Our goal is simple: provide the best technology in the industry for developing applications for front-office and risk analytics, and deliver it with a business model optimized for our customers' needs.
+
+Our flagship technology, the OpenGamma Platform, is designed to allow financial services firms to unify their calculation of analytics across the traditional trading and risk management boundaries. Our modern approach to software development, our completely open architecture, and our open source principles mean that customers can have faith that the platform will be able to support their analytics needs now and in the future.
+
+Founded by a team with extensive experience building front-office and risk analytics systems, OpenGamma has grown to bring together a team with extensive experience both in financial services organizations (J.P. Morgan, RBS, KBC Financial Products, Dexia, Commerzbank) as well as pure technology providers (Expedia/Hotels.com, SITA, 1010data, Red Gate). This approach means that we can deliver on customer's needs for a technology partner that understands their domain at a deep level, but can bring in the best parts of technology and user experience from outside the financial services industry.
+
+\vfill
+\columnbreak
+
+\textbf{Contents}
+
+Getting Started \dotfill \pageref{sec:getting-started}
+
+Views & Calculations  \dotfill \pageref{sec:views}
+
+Yield Curves  \dotfill \pageref{sec:yield-curves}
+
+Time Series \dotfill \pageref{sec:time-series}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.3cm}
+
+\textbf{Market Conventions Guide}
+
+\PARstart{I}{n} our experience, as Quantitative Analysts, Risk Managers, Back-Office Officers and Traders, we've all one day or another tried to look up a small detail about a very familiar instrument without finding it. Does Euribor use the end-of-month rule? What is the standard payment frequency for a three-year AUD swap? What is the last trading date of a mid-curve option on Liffe? Those questions may sound familiar. Often, the only way to find answers is to ask your colleagues, search the internet or call a counterpart. Everybody is supposed to know about them, but they have not been readily available in one unique, easily accessible place, until now.
+
+\textbf{Introducing the Interest Rate Instruments and Market Conventions Guide}
+
+\url{http://bit.ly/marketconvguide}
+
+\url{http://bit.ly/marketconvblog}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.3cm}
+
+\textbf{R in Finance Crossword Puzzle}
+
+\vspace{0.3cm}
+
+\textbf{Across}
+
+1. it's classified
+2. presenter of Liquid Gold, Illiquid Assets at R in Finance
+3. a sequence of data points
+4. perturbed
+5. string them together
+6. promise to buy it back
+7. a collection of financial assets
+8. binary messaging system sponsored by OpenGamma
+9. this type of curve wouldn't make Black & Scholes happy
+10. Armstrong's package for remote execution of R jobs
+
+\textbf{Down}
+
+1. if you can't see, adjust theta and phi
+2. nyet
+3. time to maturity
+4. algorithms that estimate using random sampling
+5. the term structure of interest rates
+6. the City of Big Shoulders
+7. double \rule{3mm}{.1pt}
+8. quantitative \rule{3mm}{.1pt}
+9. an open source platform for risk and trading analytics
+10. location of OpenGamma HQ
+11. derivatives exchange jointly operated by Deutsche Borse and SIX Swiss Exchange
+
+\vspace{0.3cm}
+
+\begin{Puzzle}{12}{17}%
+|*|*|[1]t|[1]a|x|o|[2]n|o|[4]m|y|*|*|.
+|*|*|*|n|*|*|o|*|o|*|*|*|.
+|[2]k|i|n|g|*|[5]y|*|*|n|*|*|*|.
+|*|*|*|l|*|i|*|*|t|*|*|[6]c|.
+|[3]t|i|m|e|s|e|r|i|e|s|*|h|.
+|e|*|*|*|*|l|*|*|c|*|*|i|.
+|[4]n|u|[7]d|g|e|d|*|*|a|*|*|c|.
+|o|*|i|*|*|[5]c|h|a|r|*|*|a|.
+|[6]r|[8]e|p|[9]o|*|u|*|*|l|*|*|g|.
+|*|a|*|[7]p|o|r|t|f|o|[10]l|i|o|.
+|*|s|*|e|*|v|*|*|*|o|*|*|.
+|*|i|*|n|*|e|*|*|*|n|*|*|.
+|*|n|*|g|*|*|*|[8]f|u|d|g|[11]e|.
+|*|g|*|a|*|*|*|*|*|o|*|u|.
+|*|*|[9]s|m|i|l|e|*|*|n|*|r|.
+|*|*|*|m|*|*|*|*|*|*|*|e|.
+|*|[10]d|e|a|t|h|s|t|a|r|*|x|.
+\end{Puzzle}
+
+
+\vfill
+\columnbreak
+
+\textbf{Work for OpenGamma}
 \vspace{0.2cm}
+
+\PARstart{O}{penGamma} is the author and sponsor of the OpenGamma Platform, the first Open Source platform for quantitative finance. Used by investment banks, hedge funds, and others, this revolutionary technology allows firms to focus on their proprietary approaches to the market, without having to recreate the same technology as other firms.
+
+We are always on the lookout for talented technologists and quants to join our team.
+
+Our employees come from a wide range of backgrounds. Some of us come from Hedge Funds, some of us come from Investment Banks, and some of us have no financial services background whatsoever. We think that this diversity helps us develop better software, by drawing on the experience of our team across disciplines.
+
+As part of our comprehensive front office analytics and risk management offering, we have built a cross-asset-class analytics library with excellent coverage of fixed income and equity products. Our focus is on building an Open Source analytics library with a comprehensive range of analytic measures and numerical techniques supporting a wide range of derivatives products.
+
+Our R Integration Module is primarily intended to provide facilities for scenario analysis and, as such, allows R functions to be used to perturb input data and run batch jobs based on snapshots and/or historical data.
+
+\vspace{0.2cm}
+\textbf{What working at OpenGamma is like}
+\vspace{0.2cm}
+
+We have an open, airy office with lots of natural light, and a stocked fridge. All developers have their choice of workstation and monitor (most people have 30" displays on their desktop). Everything we do is designed to help the team perform at the peak of their abilities.
+
+What we don't\ believe in is putting unnecessary roadblocks in the way of you doing your job. No weekly status reports that nobody will read. No change control committees. No business analysts getting in between you and the information you need to implement functionality. No team of people telling you ``no'' no matter what the question.
+
+\vspace{0.2cm}
+\textbf{What we're looking for}
+\vspace{0.2cm}
+
+Quite simply, we're looking for the best. Our recruiting process is quite rigorous because we believe that the quality of our team is one of our key competitive advantages.
+
+Candidates that are successful here tend to be ones that have demonstrated ability to self-prioritize and self-motivate. We don't believe in micro-management, so we make sure we hire people who are capable of thriving in an environment where they're given responsibility and the freedom to execute on our vision.
+
+We're also looking for people that we get along with. While we work hard at OpenGamma, we also have a friendly, social atmosphere because we all genuinely like working with each other.
+
+\vspace{0.2cm}
+\textbf{How to apply}
+\vspace{0.2cm}
+
+View our open vacancies at:
+
+\url{http://www.opengamma.com/jobs}
+
+We will warn you, though: when you only hire the best, your recruiting process tends to be pretty intense. Depending on the role you might have to do several maths tests, and will go through several of the most gruelling hours of interviews you've likely faced. If you look at that as a challenge, get in touch. We're hiring.
 
 \end{multicols*}
 
+\setlength\columnseprule{0.2pt}
 \pagebreak
 
 \begin{multicols*}{2}
 \small
 
-\textbf{Installing the OpenGamma Platform}
+\textbf{Getting Started}
+\label{sec:getting-started}
 
 \vspace{0.5cm}
 
-You can download the latest version of the OpenGamma platform, including R support, from \url{http://developers.opengamma.com/}. Please consult the online documentation for installation instructions for your platform. OpenGamma comes with example data in the OG-Example project which is what is used to run all the examples here.
+\PARstart{I}{n} this section we will guide you through an initial exploratory session with the OpenGamma R package and the web interface, and familiarize you with some of the basic data types used.
+
+You can download the latest version of the OpenGamma platform, including R support, from \url{http://developers.opengamma.com/}. Please consult the online documentation for installation instructions for your platform. You will need to have the OpenGamma server installed and running in order to use the R package.  OpenGamma comes with example data in the OG-Example project which is what is used to run all the examples here, so you should be able to follow this tutorial without needing to connect to any proprietary data sources (of course, it gets even better once you do).
 
 Once the server is installed and running, you should be able to point your browser to \verb|localhost:8080| and you should see something like this:
 
 \vspace{0.5cm}
 \includegraphics[width=5in]{initial.png}
-\vspace{0.5cm}
+\vspace{0.2cm}
 
 Let's start an R instance and load and initialize the OpenGamma library:
 
@@ -93,16 +249,19 @@ Let's start an R instance and load and initialize the OpenGamma library:
 
 Now that we are set up, we can start to explore. To get used to the system, we'll go through some of the basic entities and OpenGamma terminology, using both the web interface and R.
 
-\textbf{Securities}
 \vspace{0.5cm}
+\textbf{Securities}
+\vspace{0.2cm}
 
 A security is any asset that may be owned by someone. While some systems divide securities into exchange-traded versus over-the-counter/contract-based, OpenGamma uses the same terminology for all types of assets. We can use the web interface to explore the securities that are available:
 
 \vspace{0.5cm}
 \includegraphics[width=5in]{securities.png}
-\vspace{0.5cm}
 
-Clicking on a security brings up a summray page for that security:
+\vfill
+\columnbreak
+
+Clicking on a security brings up a summary page for that security:
 
 \vspace{0.5cm}
 \includegraphics[width=5in]{security.png}
@@ -119,6 +278,9 @@ The default output written to the console isn't terribly helpful. We can see mor
 Or, if we want to retrieve the information in a more structured format, we can use the ExpandSecurity function:
 
 << d['hello_world.R|fn|idio|rint|pyg|l']['expand-security'] >>
+
+\vfill
+\pagebreak
 
 More information is returned by calling the Expand* function specific to the type of security we have retrieved, in this case an equity:
 
@@ -140,6 +302,7 @@ We can also pass the internal OpenGamma uniqueId to retrieve the security:
 \vspace{0.5cm}
 
 \textbf{Portfolios}
+\label{sec:portfolios}
 
 To discuss portfolios, we also need to introduce Positions and Trades. A Position is a holding in a particular Security. In general, a Position is the quantity of a particular Security held by a trading group. A Trade is a single transaction in which some quantity of a Security is bought or sold. Trades may be netted/aggregated into a Position, or may stand on their own.
 
@@ -173,13 +336,143 @@ We can then see the positions:
 
 << d['hello_world.R|fn|idio|rint|pyg|l']['positions'] >>
 
-\textbf{Views}
+\vfill
+\pagebreak
 
-TODO example of views..
+\textbf{Views and Calculations}
+\label{sec:views}
+
+This example demonstrates constructing a portfolio containing securities with different properties (in this case FX Options with a range of strikes) to show how a single OpenGamma engine cycle can then be used to calculate everything in parallel.
+
+First we load and initialize the OpenGamma library:
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['setup'] >>
+
+We define some dates and values:
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['constants'] >>
+
+Create a portfolio containing all of the theoretical securities
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['create-positions'] >>
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['create-portfolio'] >>
+
+Fetch the position IDs as stored in the database - results will be keyed by these
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['position-ids'] >>
+
+Requirements
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['requirements'] >>
+
+Create a view on this portfolio. Note the constraints used to configure how
+calculations are performed; refer to the online documentation for the full range
+of parameters that can be used to control each underlying analytic model.
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['define-view'] >>
+
+Create a view client attached to the snapshot and execute a cycle against current market data. This is what actually triggers the calculations we want:
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['view-client'] >>
+
+For each value requirement, extract the result column values and produce that in the portfolio
+ordering (i.e. to correspond to option.strikes)
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['extract-results'] >>
+
+Here are results
+
+<< d['FXPriceAndGreeks.R|fn|idio|rint|pyg|l']['results'] >>
+
+\includegraphics{price.pdf}
+
+\end{multicols*}
+
+\pagebreak
+
+\begin{multicols*}{3}
+\setlength\columnseprule{0pt}
+
+\includegraphics{forward-delta.pdf}
+
+\includegraphics{forward-gamma.pdf}
+
+\includegraphics{implied-vol.pdf}
+
+\includegraphics{forward-vega.pdf}
+
+\includegraphics{dual-delta.pdf}
+
+\includegraphics{dual-gamma.pdf}
+
+\includegraphics{forward-vanna.pdf}
+
+\includegraphics{forward-vomma.pdf}
+
+\vspace{10cm}
+
+\end{multicols*}
+\pagebreak
+\begin{multicols*}{2}
+
+\textbf{Yield Curves}
+\label{sec:yield-curves}
+
+In this example we iterate a view over historical data, extracting the fitted curve from each cycle to produce a dataset for a 3D ``fitted curve over time'' chart. We start by initializing the OpenGamma package:
+
+<< d['yield2.R|fn|idio|rint|pyg|l']['setup'] >>
+
+Next we find a view identifier to work with (the view must contain at least one yield curve primitive output):
+
+<< d['yield2.R|fn|idio|rint|pyg|l']['find-view'] >>
+
+Create a client to iterate over a year of data (see the OpenGamma demo Historical.R for an explanation of how):
+
+<< d['yield2.R|fn|idio|rint|pyg|l']['create-client'] >>
+
+Build the result into this - a list of lists, each sub-list contains Curve/Date values for a curve
+
+<< d['yield2.R|fn|idio|rint|pyg|l']['build-list'] >>
+
+For each curve, prepare it for plotting by running the interpolator to get consistently positioned values
+
+<< d['yield2.R|fn|idio|rint|pyg|l']['prepare-curves'] >>
+
+<< d['yield2.R|fn|idio|rint|pyg|l']['chart-series-3d'] >>
+
+\includegraphics{chartseries.pdf}
+
+\hrule
+
+Here is the solution to the crossword puzzle:
+
+\PuzzleSolution
+\begin{Puzzle}{12}{17}%
+|*|*|[1]t|[1]a|x|o|[2]n|o|[4]m|y|*|*|.
+|*|*|*|n|*|*|o|*|o|*|*|*|.
+|[2]k|i|n|g|*|[5]y|*|*|n|*|*|*|.
+|*|*|*|l|*|i|*|*|t|*|*|[6]c|.
+|[3]t|i|m|e|s|e|r|i|e|s|*|h|.
+|e|*|*|*|*|l|*|*|c|*|*|i|.
+|[4]n|u|[7]d|g|e|d|*|*|a|*|*|c|.
+|o|*|i|*|*|[5]c|h|a|r|*|*|a|.
+|[6]r|[8]e|p|[9]o|*|u|*|*|l|*|*|g|.
+|*|a|*|[7]p|o|r|t|f|o|[10]l|i|o|.
+|*|s|*|e|*|v|*|*|*|o|*|*|.
+|*|i|*|n|*|e|*|*|*|n|*|*|.
+|*|n|*|g|*|*|*|[8]f|u|d|g|[11]e|.
+|*|g|*|a|*|*|*|*|*|o|*|u|.
+|*|*|[9]s|m|i|l|e|*|*|n|*|r|.
+|*|*|*|m|*|*|*|*|*|*|*|e|.
+|*|[10]d|e|a|t|h|s|t|a|r|*|x|.
+\end{Puzzle}
+
+\pagebreak
 
 \textbf{Time Series}
+\label{sec:time-series}
 
-We can view time series of historical data for various securities. Let's browse what's available using the web interface:
+In this section we will look at extracting time series and creating plots within R using native time series and also xts.  We can view time series of historical data for various securities. Let's browse what's available using the web interface:
 
 \vspace{0.5cm}
 \includegraphics[width=5in]{timeseries.png}
@@ -216,73 +509,6 @@ And plot as an xts object:
 << d['time_series.R|fn|idio|rint|pyg|l']['plot-xts'] >>
 
 \includegraphics[width=5in]{dbhts-xts.pdf}
-
-\pagebreak
-
-\textbf{Yield Curves}
-
-Here is source code for chartSeries3d:
-
-<< d['chartSeries3d.alpha.R|pyg|l'] >>
-
-<< d['yield2.R|fn|rintbatch|pyg|l'] >>
-
-\includegraphics[width=5in]{yield-chart-2-series-3d-example.pdf}
-
-\end{multicols*}
-
-\pagebreak
-
-\begin{multicols*}{3}
-\small
-
-\textbf{About OpenGamma}
-
-OpenGamma was founded in 2009 to develop an open platform for analytics and risk management for the financial services industry.
-
-We recognized that firms across the industry are wastefully replicating the same technology stack over and over again. Not only does this make it difficult for firms to optimize their IT spend on producing proprietary value to the firm, it also makes it harder for innovative technology firms to come to market (also hurting customers by limiting their choice in technology providers).
-
-Our goal is simple: provide the best technology in the industry for developing applications for front-office and risk analytics, and deliver it with a business model optimized for our customers' needs.
-
-Our flagship technology, the OpenGamma Platform, is designed to allow financial services firms to unify their calculation of analytics across the traditional trading and risk management boundaries. Our modern approach to software development, our completely open architecture, and our open source principles mean that customers can have faith that the platform will be able to support their analytics needs now and in the future.
-
-Founded by a team with extensive experience building front-office and risk analytics systems, OpenGamma has grown to bring together a team with extensive experience both in financial services organizations (J.P. Morgan, RBS, KBC Financial Products, Dexia, Commerzbank) as well as pure technology providers (Expedia/Hotels.com, SITA, 1010data, Red Gate). This approach means that we can deliver on customer's needs for a technology partner that understands their domain at a deep level, but can bring in the best parts of technology and user experience from outside the financial services industry.
-
-\vspace{0.5cm}
-\hrule
-\vspace{0.2cm}
-
-\textbf{Work for OpenGamma}
-
-OpenGamma is the author and sponsor of the OpenGamma Platform, the first Open Source platform for quantitative finance. Used by investment banks, hedge funds, and others, this revolutionary technology allows firms to focus on their proprietary approaches to the market, without having to recreate the same technology as other firms.
-
-We are always on the lookout for talented technologists and quants to join our team.
-
-Our employees come from a wide range of backgrounds. Some of us come from Hedge Funds, some of us come from Investment Banks, and some of us have no financial services background whatsoever. We think that this diversity helps us develop better software, by drawing on the experience of our team across disciplines.
-
-As part of our comprehensive front office analytics and risk management offering, we have built a cross-asset-class analytics library with excellent coverage of fixed income and equity products. Our focus is on building an Open Source analytics library with a comprehensive range of analytic measures and numerical techniques supporting a wide range of derivatives products.
-
-Our R Integration Module is primarily intended to provide facilities for scenario analysis and, as such, allows R functions to be used to perturb input data and run batch jobs based on snapshots and/or historical data.
-
-\textbf{What working at OpenGamma is like}
-
-We have an open, airy office with lots of natural light, and a stocked fridge. All developers have their choice of workstation and monitor (most people have 30" displays on their desktop). Everything we do is designed to help the team perform at the peak of their abilities.
-
-What we don't believe in is putting unnecessary roadblocks in the way of you doing your job. No weekly status reports that nobody will read. No change control committees. No business analysts getting in between you and the information you need to implement functionality. No team of people telling you "no" no matter what the question.
-
-\textbf{What we're looking for}
-
-Quite simply, we're looking for the best. Our recruiting process is quite rigorous because we believe that the quality of our team is one of our key competitive advantages.
-
-Candidates that are successful here tend to be ones that have demonstrated ability to self-prioritize and self-motivate. We don't believe in micro-management, so we make sure we hire people who are capable of thriving in an environment where they're given responsibility and the freedom to execute on our vision.
-
-We're also looking for people that we get along with. While we work hard at OpenGamma, we also have a friendly, social atmosphere because we all genuinely like working with each other.
-
-\textbf{How to apply}
-
-View our open vacancies at \url{http://www.opengamma.com/jobs}
-
-We will warn you, though: when you only hire the best, your recruiting process tends to be pretty intense. Depending on the role you might have to do several maths tests, and will go through several of the most gruelling hours of interviews you've likely faced. If you look at that as a challenge, get in touch. We're hiring.
 
 \end{multicols*}
 
