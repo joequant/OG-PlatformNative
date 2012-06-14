@@ -8,10 +8,6 @@ package com.opengamma.rstats.function;
 import java.util.Collection;
 
 import com.opengamma.language.Data;
-import com.opengamma.language.async.AsynchronousExecution;
-import com.opengamma.language.async.AsynchronousOperation;
-import com.opengamma.language.async.AsynchronousResult;
-import com.opengamma.language.async.ResultListener;
 import com.opengamma.language.connector.UserMessagePayload;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.function.FunctionAdapter;
@@ -21,6 +17,10 @@ import com.opengamma.language.function.Result;
 import com.opengamma.rstats.data.RDataInfo;
 import com.opengamma.rstats.msg.DataInfo;
 import com.opengamma.rstats.msg.FunctionResult;
+import com.opengamma.util.async.AsynchronousExecution;
+import com.opengamma.util.async.AsynchronousOperation;
+import com.opengamma.util.async.AsynchronousResult;
+import com.opengamma.util.async.ResultListener;
 
 /**
  * Wraps a default FunctionVisitor to decorate the result messages with additional information. 
