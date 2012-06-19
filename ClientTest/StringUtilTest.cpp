@@ -22,7 +22,7 @@ static void EscapedA () {
 	char *psz;
 	psz = StringEscapeA ("\\Te\"s\\t\\\"", "\\\"", '\\');
 	ASSERT (psz);
-	ASSERT (!strcmp (psz, "\\\\Te\\\"s\\\\t\\\\\""));
+	ASSERT (!strcmp (psz, "\\\\Te\\\"s\\\\t\\\\\\\""));
 	free (psz);
 }
 
