@@ -67,12 +67,12 @@ static com_opengamma_language_Value *_ObjectValue (const CRCallback *poR, SEXP o
 /// @return the Value instance or NULL if there was a problem (e.g. invalid type)
 com_opengamma_language_Value *CValue::FromSEXP (const CRCallback *poR, SEXP value, int index) {
 #define ALLOC_PVALUE \
-    pValue = new com_opengamma_language_Value; \
-    if (!pValue) { \
-        LOGFATAL (ERR_MEMORY); \
-        return NULL; \
-    } \
-    memset (pValue, 0, sizeof (com_opengamma_language_Value));
+	pValue = new com_opengamma_language_Value; \
+	if (!pValue) { \
+		LOGFATAL (ERR_MEMORY); \
+		return NULL; \
+	} \
+	memset (pValue, 0, sizeof (com_opengamma_language_Value));
 	com_opengamma_language_Value *pValue;
 	switch (TYPEOF (value)) {
 		case INTSXP :
@@ -293,6 +293,25 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 			} else {
 				LOGFATAL (ERR_MEMORY);
 			}
+		} else if (isArray (data)) {
+			SEXP encoded = poR->InvokeMethod (R_ENCODE_ARRAY, data);
+			if (isVector (encoded)) {
+				LOGDEBUG (TEXT ("Vector encoding of N-dimensional array"));
+				PROTECT (encoded);
+				pData->_linear = new com_opengamma_language_Value*[length (encoded) + 1];
+				if (pData->_linear) {
+					int n;
+					for (n = 0; n < length (encoded); n++) {
+						pData->_linear[n] = CValue::FromSEXP (poR, encoded, n);
+					}
+					pData->_linear[n] = NULL;
+				} else {
+					LOGFATAL (ERR_MEMORY);
+				}
+				UNPROTECT (1);
+			} else {
+				LOGERROR (ERR_PARAMETER_TYPE);
+			}
 		} else if (isVector (data) || isList (data)) {
 			if (length (data) > 1) {
 				LOGDEBUG (TEXT ("Vector with ") << length (data) << TEXT (" elements"));
@@ -311,25 +330,6 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 				pData->_single = CValue::FromSEXP (poR, data);
 			} else {
 				LOGDEBUG (TEXT ("Empty vector"));
-			}
-		} else if (isArray (data)) {
-			SEXP encoded = poR->InvokeMethod (R_ENCODE_ARRAY, data);
-			if (isVector (encoded)) {
-				LOGDEBUG (TEXT ("Vectoring encoding of N-dimensional array"));
-				PROTECT (encoded);
-				pData->_linear = new com_opengamma_language_Value*[length (data) + 1];
-				if (pData->_linear) {
-					int n;
-					for (n = 0; n < length (data); n++) {
-						pData->_linear[n] = CValue::FromSEXP (poR, data, n);
-					}
-					pData->_linear[n] = NULL;
-				} else {
-					LOGFATAL (ERR_MEMORY);
-				}
-				UNPROTECT (1);
-			} else {
-				LOGERROR (ERR_PARAMETER_TYPE);
 			}
 		} else if (isNull (data)) {
 			LOGDEBUG (TEXT ("NULL"));
