@@ -220,6 +220,7 @@
   Install.LiveData (stub)
   Install.Procedures (stub)
   LOGDEBUG ("Declaring local data bindings")
+  Install.Array (stub)
   Install.Bloomberg (stub)
   Install.Currency (stub)
   Install.MarketDataRequirementNames (stub)
