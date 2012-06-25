@@ -46,6 +46,9 @@ public class CubeConverter extends AbstractMappedConverter {
       @Override
       public Value[][][] convert(final Data data) {
         final Value[] values = data.getLinear();
+        if (values == null) {
+          return null;
+        }
         if (values[0].getIntValue() != 3) {
           throw new IllegalArgumentException();
         }

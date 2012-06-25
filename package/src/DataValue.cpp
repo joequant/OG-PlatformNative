@@ -86,8 +86,7 @@ com_opengamma_language_Value *CValue::FromSEXP (const CRCallback *poR, SEXP valu
 			if (pValue->_boolValue) *pValue->_boolValue = INTEGER (value)[index] ? FUDGE_TRUE : FUDGE_FALSE;
 			break;
 		case NILSXP :
-			LOGDEBUG (TEXT ("NULL value"));
-			pValue = NULL;
+			ALLOC_PVALUE
 			break;
 		case REALSXP :
 			ALLOC_PVALUE
