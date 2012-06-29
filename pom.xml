@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.opengamma</groupId>
+    <artifactId>og-parent</artifactId>
+    <version>1.1-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
+  </parent>
+  <artifactId>og-rstats</artifactId>
+  <packaging>jar</packaging>
+  <name>OG-RStats</name>
+  <description>OpenGamma platform R language integration</description>
+
+  <!-- ==================================================================== -->
+  <issueManagement>
+    <system>Jira</system>
+    <url>http://jira.opengamma.com/browse/RSTAT</url>
+  </issueManagement>
+  <licenses>
+    <license>
+      <name>Proprietary OpenGamma licensing</name>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:https://github.com/OpenGamma/OG-RStats.git</connection>
+    <developerConnection>scm:git:https://github.com/OpenGamma/OG-RStats.git</developerConnection>
+    <url>https://github.com/OpenGamma/OG-RStats</url>
+  </scm>
+
+  <!-- ==================================================================== -->
+  <build>
+    <sourceDirectory>Ext/src</sourceDirectory>
+    <testSourceDirectory>Ext/tests/unit</testSourceDirectory>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.opengamma</groupId>
+      <artifactId>og-language</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>
