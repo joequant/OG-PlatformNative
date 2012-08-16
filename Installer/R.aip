@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="8.7.1" Modules="msm" RootPath="." Language="en" Id="{38E2DA2F-695A-4DC9-AFC3-16DB606E210B}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="9.4" Modules="msm" RootPath="." Language="en" Id="{38E2DA2F-695A-4DC9-AFC3-16DB606E210B}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_ModuleId" Value="0E88570F_9ADE_4D21_9BC3_DD9B188C021D"/>
     <ROW Property="M_FILE" Value="OpenGamma Ltd"/>
@@ -99,8 +99,8 @@
     <ROW IniFile="WorkingDirectory" FileName="Toolsf~2.url|Tools for R documentation (online).url" DirProperty="M_START__Dir" Section="InternetShortcut" Key="WorkingDirectory" Value="[OpenGamma_Dir]" Action="0" Component_="StartMenu"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
-    <ROW Registry="connectorLogConfiguration" Root="2" Key="SOFTWARE\[M_REG32.0E88570F_9ADE_4D21_9BC3_DD9B188C021D]\[RSTAT_REG32.0E88570F_9ADE_4D21_9BC3_DD9B188C021D]" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg32"/>
-    <ROW Registry="connectorLogConfiguration_1" Root="2" Key="SOFTWARE\[M_REG64.0E88570F_9ADE_4D21_9BC3_DD9B188C021D]\[RSTAT_REG64.0E88570F_9ADE_4D21_9BC3_DD9B188C021D]" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg64"/>
+    <ROW Registry="connectorLogConfiguration" Root="2" Key="SOFTWARE\[M_REG32]\[RSTAT_REG32]" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg32"/>
+    <ROW Registry="connectorLogConfiguration_1" Root="2" Key="SOFTWARE\[M_REG64]\[RSTAT_REG64]" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg64"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
     <ROW ServiceControl="ServiceName" Name="OpenGammaLanguageAPI" Event="34" Wait="1" Component_="R.xml"/>
@@ -109,12 +109,12 @@
     <ROW RequiredID="OG_LanguageCore.BFBD8D7F_3845_4E0F_AF95_4B3CCBC4AD60" RequiredLanguage="1033"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleInstExSeqComponent">
-    <ROW Action="RRemove64_1" BaseAction="RRemove32_1" After="1" Condition="R64_PATH AND REMOVE=&quot;ALL&quot;"/>
-    <ROW Action="RRemove32_1" BaseAction="Uninstall" After="1" Condition="R32_PATH AND NOT R64_PATH AND REMOVE=&quot;ALL&quot;"/>
+    <ROW Action="RRemove64_1" BaseAction="RRemove32_1" After="1" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) ) AND ( R64_PATH )"/>
+    <ROW Action="RRemove32_1" BaseAction="Uninstall" After="1" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) ) AND ( R32_PATH AND NOT R64_PATH )"/>
     <ROW Action="RRemove32" BaseAction="RRemove64" After="1" Condition="R32_PATH AND NOT R64_PATH"/>
     <ROW Action="RRemove64" BaseAction="Rollback" After="1" Condition="R64_PATH"/>
-    <ROW Action="RInstall64" BaseAction="RInstall32" After="1" Condition="NOT Installed AND R64_PATH"/>
-    <ROW Action="RInstall32" BaseAction="Install" After="1" Condition="NOT Installed AND R32_PATH AND NOT R64_PATH"/>
+    <ROW Action="RInstall64" BaseAction="RInstall32" After="1" Condition="( NOT Installed ) AND ( R64_PATH )"/>
+    <ROW Action="RInstall32" BaseAction="Install" After="1" Condition="( NOT Installed ) AND ( R32_PATH AND NOT R64_PATH )"/>
     <ROW Action="R64_PATH_2" BaseAction="R32_PATH_2" After="1"/>
     <ROW Action="R32_PATH_2" BaseAction="OG_LANGUAGE_JAR_2" After="1"/>
     <ROW Action="OG_LANGUAGE_JAR_2" BaseAction="OG_LANGUAGE_EXT_2" After="1"/>
