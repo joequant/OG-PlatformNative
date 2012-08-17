@@ -113,8 +113,8 @@
     <ROW Action="RRemove32_1" BaseAction="Uninstall" After="1" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) ) AND ( R32_PATH AND NOT R64_PATH )"/>
     <ROW Action="RRemove32" BaseAction="RRemove64" After="1" Condition="R32_PATH AND NOT R64_PATH"/>
     <ROW Action="RRemove64" BaseAction="Rollback" After="1" Condition="R64_PATH"/>
-    <ROW Action="RInstall64" BaseAction="RInstall32" After="1" Condition="( NOT Installed ) AND ( R64_PATH )"/>
-    <ROW Action="RInstall32" BaseAction="Install" After="1" Condition="( NOT Installed ) AND ( R32_PATH AND NOT R64_PATH )"/>
+    <ROW Action="RInstall64" BaseAction="RInstall32" After="1" Condition="( NOT Installed ) AND ( R64_PATH AND $OpenGamma.zip=3 )"/>
+    <ROW Action="RInstall32" BaseAction="Install" After="1" Condition="( NOT Installed ) AND ( R32_PATH AND NOT R64_PATH AND $OpenGamma.zip=3 )"/>
     <ROW Action="R64_PATH_2" BaseAction="R32_PATH_2" After="1"/>
     <ROW Action="R32_PATH_2" BaseAction="OG_LANGUAGE_JAR_2" After="1"/>
     <ROW Action="OG_LANGUAGE_JAR_2" BaseAction="OG_LANGUAGE_EXT_2" After="1"/>
