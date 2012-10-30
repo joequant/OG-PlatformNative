@@ -35,8 +35,8 @@
 
   <!-- ==================================================================== -->
   <build>
-    <sourceDirectory>Ext/src</sourceDirectory>
-    <testSourceDirectory>Ext/tests/unit</testSourceDirectory>
+    <sourceDirectory>Ext/src/main/java</sourceDirectory>
+    <testSourceDirectory>Ext/src/test/java</testSourceDirectory>
   </build>
 
   <dependencies>
