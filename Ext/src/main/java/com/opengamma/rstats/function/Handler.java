@@ -23,7 +23,7 @@ import com.opengamma.util.async.AsynchronousResult;
 import com.opengamma.util.async.ResultListener;
 
 /**
- * Wraps a default FunctionVisitor to decorate the result messages with additional information. 
+ * Wraps a default FunctionVisitor to decorate the result messages with additional information.
  */
 public class Handler extends FunctionAdapter<UserMessagePayload, SessionContext> {
 
@@ -39,8 +39,8 @@ public class Handler extends FunctionAdapter<UserMessagePayload, SessionContext>
       final Collection<Data> resultData = result.getResult();
       int skip = 0;
       FunctionResult decoratedResult = null;
-      for (Data resultDataItem : resultData) {
-        DataInfo info = RDataInfo.getFor(resultDataItem);
+      for (final Data resultDataItem : resultData) {
+        final DataInfo info = RDataInfo.getFor(resultDataItem);
         if (info != null) {
           if (decoratedResult == null) {
             decoratedResult = new FunctionResult(resultData);
@@ -68,14 +68,14 @@ public class Handler extends FunctionAdapter<UserMessagePayload, SessionContext>
     UserMessagePayload rawResult;
     try {
       rawResult = super.visitInvoke(message, data);
-    } catch (AsynchronousExecution e) {
-      final AsynchronousOperation<UserMessagePayload> asyncReturn = new AsynchronousOperation<UserMessagePayload>();
+    } catch (final AsynchronousExecution e) {
+      final AsynchronousOperation<UserMessagePayload> asyncReturn = AsynchronousOperation.create(UserMessagePayload.class);
       e.setResultListener(new ResultListener<UserMessagePayload>() {
         @Override
         public void operationComplete(final AsynchronousResult<UserMessagePayload> result) {
           try {
             asyncReturn.getCallback().setResult(decorateResult(result.getResult()));
-          } catch (RuntimeException e) {
+          } catch (final RuntimeException e) {
             asyncReturn.getCallback().setException(e);
           }
         }
