@@ -104,7 +104,7 @@ for (shift in shifts) {
 
   # Modify the snapshot by tweaking the USD curve
   print (paste ("Modifying snapshot", snapshot.id, "by", shift))
-  snapshot <- SetSnapshotYieldCurve (snapshot, "USD_SECONDARY", modify.curve (GetSnapshotYieldCurve (snapshot, "USD_SECONDARY"), shift))
+  snapshot <- SetSnapshotYieldCurve (snapshot, "USD_Discounting", modify.curve (GetSnapshotYieldCurve (snapshot, "USD_Discounting"), shift))
 
   # Write the snapshot back
   print (paste ("Updating snapshot"))
