@@ -10,12 +10,9 @@
 
 Init ()
 
-# Find a view identifier (omit the view name to graph the first view)
-viewName <- "Swap Portfolio View"
+# Find a view identifier (omit the view name to grab the first view)
+viewName <- "Equity Portfolio View"
 matchedViews <- Views (viewName)
-if (length (matchedViews) == 0) {
-  matchedViews <- Views (paste ("Example", viewName))
-}
 if (length (matchedViews) == 0) {
   stop ("No view called '", viewName, "' defined")
 } else {
@@ -28,11 +25,18 @@ startTime <- endTime - (365 * 86400)
 viewClientDescriptor <- HistoricalMarketDataViewClient (viewIdentifier, startTime, endTime)
 viewClient <- ViewClient (viewClientDescriptor, FALSE)
 # Start the first cycle (historical clients start "halted" so that additional parameters can be applied
-# to further peturb the historical data)
+# to further perturb the historical data)
 TriggerViewCycle (viewClient)
 
 # Build the result into these vectors
-presentValue <- c ()
+value.JensensAlpha <- c ()
+value.HistoricalVaR <- c ()
+value.FairValue <- c ()
+value.PnL <- c()
+
+# Lookup the identifier of the root node in the view's portfolio. The data frame containing the cycle results
+# will use the node (and position) identifiers as row names.
+rootNode <- GetPortfolioNodeUniqueId (GetPortfolioRootNode (FetchPortfolio (GetViewPortfolio (viewIdentifier))))
 
 # Iterate through the results, blocking on the first but waiting no longer than 10s for each subsequent one.
 # The timeout is arbitrary to demonstrate how the functions can be used to fail rather than block
@@ -46,21 +50,27 @@ while (!is.null (result)) {
   # Get the data from the "Default" configuration in the view
   data <- results.ViewComputationResultModel (result)$Default
   print (paste(nrow (data), "row(s) of data"))
-  # Identify the row with the portfolio values (it's the only portfolio node row in our example view)
-  portfolio <- data[which (data$type == "PORTFOLIO_NODE"),]
-  # Identify the PV column(s)
-  columns.pv <- columns.ViewComputationResultModel (data, ValueRequirementNames.Present.Value)
-  # Get the PV for the portfolio
-  value.pv <- firstValue.ViewComputationResultModel (portfolio, columns.pv)
-  print (paste ("PV for", valuationTime.ViewComputationResultModel (result), "=", value.pv))
-  presentValue <- append (presentValue, value.pv)
+  # Identify the row with the portfolio values
+  portfolio <- data[rootNode,]
+  # Get the values for the portfolio
+  jensensAlpha <- firstValue.ViewComputationResultModel (portfolio, columns.ViewComputationResultModel (data, ValueRequirementNames.Jensen.s.Alpha))
+  historicalVaR <- firstValue.ViewComputationResultModel (portfolio, columns.ViewComputationResultModel (data, ValueRequirementNames.HistoricalVaR))
+  fairValue <- firstValue.ViewComputationResultModel (portfolio, columns.ViewComputationResultModel (data, ValueRequirementNames.FairValue))
+  pnl <- firstValue.ViewComputationResultModel (portfolio, columns.ViewComputationResultModel (data, ValueRequirementNames.PnL))
+  print (paste ("Value for", valuationTime.ViewComputationResultModel (result), "=", jensensAlpha, historicalVaR, fairValue, pnl))
+  value.JensensAlpha <- append (value.JensensAlpha, jensensAlpha)
+  value.HistoricalVaR <- append (value.HistoricalVaR, historicalVaR)
+  value.FairValue <- append (value.FairValue, fairValue)
+  value.PnL <- append (value.PnL, pnl)
   # Next iteration
   print (paste ("Waiting for next cycle"))
   result <- GetViewResult (viewClient, timeout, viewCycleId.ViewComputationResultModel (result))
 }
 
-presentValue.ts <- ts (data = presentValue, start = as.Date (startTime))
-print (presentValue.ts)
+value.JensensAlpha.ts <- ts (data = value.JensensAlpha, start = as.Date (startTime))
+value.HistoricalVaR.ts <- ts (data = value.HistoricalVaR, start = as.Date (startTime))
+value.FairValue.ts <- ts (data = value.FairValue, start = as.Date (startTime))
+value.PnL.ts <- ts (data = value.PnL, start = as.Date (startTime))
 
-# Store this time series into the database (the name of the portfolio and portfolio identifier should be resolved programatically)
-# StoreTimeSeries (presentValue.ts, name = "Present Value on Swap Portfolio", identifier = "DbPrt~1303", dataField = ValueRequirementNames.Present.Value, dataSource = "OPENGAMMA", dataProvider = "OPENGAMMA", observationTime = "LONDON_CLOSE", master = "GLOBAL")
+# Store this time series into the database
+# StoreTimeSeries (value.FairValue.ts, name = "FairValue on Example Portfolio", dataField = "FairValue", dataSource = "OPENGAMMA", dataProvider = "OPENGAMMA", observationTime = "LONDON_CLOSE", master = "GLOBAL")
