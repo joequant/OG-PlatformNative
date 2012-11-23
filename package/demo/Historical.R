@@ -38,10 +38,10 @@ value.PnL <- c()
 # will use the node (and position) identifiers as row names.
 rootNode <- GetPortfolioNodeUniqueId (GetPortfolioRootNode (FetchPortfolio (GetViewPortfolio (viewIdentifier))))
 
-# Iterate through the results, blocking on the first but waiting no longer than 10s for each subsequent one.
+# Iterate through the results, blocking on the first but waiting no longer than 30s for each subsequent one.
 # The timeout is arbitrary to demonstrate how the functions can be used to fail rather than block
 # indefinately which may (or may not) be desirable in some systems.
-timeout <- 10000
+timeout <- 30000
 result <- GetViewResult (viewClient, -1)
 while (!is.null (result)) {
   # Trigger the next iteration while we work with the previous
@@ -58,10 +58,10 @@ while (!is.null (result)) {
   fairValue <- firstValue.ViewComputationResultModel (portfolio, columns.ViewComputationResultModel (data, ValueRequirementNames.FairValue))
   pnl <- firstValue.ViewComputationResultModel (portfolio, columns.ViewComputationResultModel (data, ValueRequirementNames.PnL))
   print (paste ("Value for", valuationTime.ViewComputationResultModel (result), "=", jensensAlpha, historicalVaR, fairValue, pnl))
-  value.JensensAlpha <- append (value.JensensAlpha, jensensAlpha)
-  value.HistoricalVaR <- append (value.HistoricalVaR, historicalVaR)
-  value.FairValue <- append (value.FairValue, fairValue)
-  value.PnL <- append (value.PnL, pnl)
+  value.JensensAlpha <- append (value.JensensAlpha, if (is.numeric (jensensAlpha)) as.double (jensensAlpha) else NA)
+  value.HistoricalVaR <- append (value.HistoricalVaR, if (is.numeric (historicalVaR)) as.double (historicalVaR) else NA)
+  value.FairValue <- append (value.FairValue, if (is.numeric (fairValue)) as.double (fairValue) else NA)
+  value.PnL <- append (value.PnL, if (is.numeric (pnl)) as.double (pnl) else NA)
   # Next iteration
   print (paste ("Waiting for next cycle"))
   result <- GetViewResult (viewClient, timeout, viewCycleId.ViewComputationResultModel (result))
