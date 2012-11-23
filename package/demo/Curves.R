@@ -37,9 +37,9 @@ security.id <- StoreSecurity (security)
 
 # Create a portfolio containing two positions in this security
 print ("Creating portfolio")
-position.forward <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "Forward3m")
-position.discounting <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "Discounting")
-position.secondary <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "SECONDARY")
+position.forward <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "Forward3M")
+position.discounting <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_FundingCurve", "Discounting")
+position.secondary <- SetPositionAttribute (SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "SECONDARY"), "*.DEFAULT_FundingCurve", "SECONDARY")
 node <- PortfolioNode (name = "Example", positions = list (position.forward, position.discounting, position.secondary))
 portfolio <- Portfolio ("Example Portfolio", node)
 portfolio.id <- StorePortfolio (portfolio)
