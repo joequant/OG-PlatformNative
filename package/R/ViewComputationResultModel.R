@@ -62,7 +62,7 @@ calculationDuration.ViewComputationResultModel <- function (msg) {
       column <- append (column, NA)
     }
     if (is.FudgeMsg (value)) {
-      value <- "FudgeMsg"
+      value <- toString (toObject.FudgeMsg (value, function (x) { "FudgeMsg" }))
     }
     column[[i]] <- value
     values[[valueName]] <- column

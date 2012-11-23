@@ -225,6 +225,7 @@
   Install.Currency (stub)
   Install.MarketDataRequirementNames (stub)
   Install.MarketDataSnapshot (stub)
+  Install.NotCalculatedSentinel (stub)
   Install.Number (stub)
   Install.ObjectsPair (stub)
   Install.PDEResults (stub)
