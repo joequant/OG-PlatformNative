@@ -246,12 +246,18 @@
   dir.create (tmp)
   .build.package (tmp)
   LOGINFO ("Installing import package", tmp)
+  # Clear the R_TESTS environment variable
   test <- Sys.getenv ("R_TESTS")
-  print (test)
   if (!is.na (test)) {
     Sys.unsetenv ("R_TESTS")
   }
+  # Silent package install
+  assign ("system.default", base::system, baseenv ())
+  assign ("system.quiet", function (...) { system.default (ignore.stdout = TRUE, ...) }, baseenv ())
+  assignInNamespace ("system", system.quiet, "base")
   install.packages (pkgs = tmp, repos = NULL, type = "source", INSTALL_opts = "--no-multiarch")
+  assignInNamespace ("system", system.default, "base")
+  # Restore the environment
   if (!is.na (test)) {
     Sys.setenv ("R_TESTS" = test)
   }

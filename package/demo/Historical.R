@@ -70,6 +70,7 @@ while (!is.null (result)) {
 value.JensensAlpha.ts <- ts (data = value.JensensAlpha, start = as.Date (startTime))
 value.HistoricalVaR.ts <- ts (data = value.HistoricalVaR, start = as.Date (startTime))
 value.FairValue.ts <- ts (data = value.FairValue, start = as.Date (startTime))
+# value.FairValue.xts <- xts (value.FairValue, order.by = as.Date (index (value.FairValue.ts), origin = "1970-01-01"))
 value.PnL.ts <- ts (data = value.PnL, start = as.Date (startTime))
 
 # Store this time series into the database
