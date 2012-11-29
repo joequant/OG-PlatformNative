@@ -46,7 +46,8 @@ result <- GetViewResult (viewClient, -1)
 while (!is.null (result)) {
   # Trigger the next iteration while we work with the previous
   TriggerViewCycle (viewClient)
-  print (paste ("Got cycle", viewCycleId.ViewComputationResultModel (result)))
+  viewCycleId <- viewCycleId.ViewComputationResultModel (result)
+  print (paste ("Got cycle", viewCycleId))
   # Get the data from the "Default" configuration in the view
   data <- results.ViewComputationResultModel (result)$Default
   print (paste(nrow (data), "row(s) of data"))
@@ -64,7 +65,7 @@ while (!is.null (result)) {
   value.PnL <- append (value.PnL, if (is.numeric (pnl)) as.double (pnl) else NA)
   # Next iteration
   print (paste ("Waiting for next cycle"))
-  result <- GetViewResult (viewClient, timeout, viewCycleId.ViewComputationResultModel (result))
+  result <- GetViewResult (viewClient, timeout, viewCycleId)
 }
 
 value.JensensAlpha.ts <- ts (data = value.JensensAlpha, start = as.Date (startTime))
