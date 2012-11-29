@@ -256,11 +256,11 @@
   if (silent) {
     assign ("system.default", base::system, baseenv ())
     assign ("system.quiet", function (...) { system.default (ignore.stdout = TRUE, ...) }, baseenv ())
-    assignInNamespace ("system", system.quiet, "base", baseenv())
+    try (assignInNamespace ("system", system.quiet, "base", baseenv()), silent = TRUE)
   }
   install.packages (pkgs = tmp, repos = NULL, type = "source", INSTALL_opts = "--no-multiarch")
   if (silent) {
-    assignInNamespace ("system", system.default, "base")
+    try (assignInNamespace ("system", system.default, "base"), silent = TRUE)
   }
   # Restore the environment
   if (!is.na (test)) {
