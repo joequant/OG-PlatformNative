@@ -256,7 +256,7 @@
   if (silent) {
     assign ("system.default", base::system, baseenv ())
     assign ("system.quiet", function (...) { system.default (ignore.stdout = TRUE, ...) }, baseenv ())
-    assignInNamespace ("system", system.quiet, "base")
+    assignInNamespace ("system", system.quiet, "base", baseenv())
   }
   install.packages (pkgs = tmp, repos = NULL, type = "source", INSTALL_opts = "--no-multiarch")
   if (silent) {
