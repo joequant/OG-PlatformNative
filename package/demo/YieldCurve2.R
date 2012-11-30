@@ -12,11 +12,8 @@
 Init ()
 
 # Find a view identifier (the view must contain at least one yield curve primitive output)
-view.name <- "MultiCurrency Swap View"
+view.name <- "Multi-currency Swap View"
 view.matches <- Views (view.name)
-if (length (view.matches) == 0) {
-  view.matches <- Views ("Example MultiCurrency Swap Portfolio View")
-}
 if (length (view.matches) == 0) {
   stop ("No view called '", view.name, "' defined")
 } else {
@@ -41,28 +38,33 @@ while (!is.null (result)) {
   if (length (curve.specs) > 0) {
     print (paste ("Got", length (curve.specs), "curve column(s)"))
     # The data frame representation can't contain the actual FudgeMsg, so we have to request each columns as a list
-    for (i in seq (from = 1, to = length (curve.specs))) {
+    for (curve.spec in curve.specs) {
       # Extract the curve name from the column label properties
-      curve.name <- properties.ValueRequirement (curve.specs[[i]])$Curve
+      curve.name <- properties.ValueRequirement (curve.spec)$Curve
       # Process the curves with this name
-      curve.values <- column.ViewComputationResultModel (result, "Default", curve.specs[[i]])
+      curve.values <- column.ViewComputationResultModel (result, "Default", curve.spec)
       if (length (curve.values) > 0) {
         curve.identifiers <- labels (curve.values)
         for (j in seq (from = 1, to = length (curve.values))) {
-          # The label is the identifier; e.g. CurrencyISO~GBP so lose the scheme
-          curve.currency <- substring (curve.identifiers[j], 13)
-          # The curve data is a FudgeMsg (com.opengamma.financial.model.interestrate.curve.YieldCurve)
-          curve.object <- curve.values[[j]]$curve
-          # Append this iteration's curve data into the list
-          curve.label <- paste (curve.name, curve.currency, sep = "_")
-          curve.data <- curves[[curve.label]]
-          if (is.null (curve.data)) {
-            curve.data <- list (Date = c(), Curve = list ())
+          curve.value <- curve.values[[j]]
+          if (is.FudgeMsg (curve.value)) {
+            # The label is the identifier; e.g. CurrencyISO~GBP so lose the scheme
+            curve.currency <- substring (curve.identifiers[j], 13)
+            # The curve data is a FudgeMsg (com.opengamma.financial.model.interestrate.curve.YieldCurve)
+            curve.object <- curve.value$curve
+            if (length (curve.object) > 0) {
+              # Append this iteration's curve data into the list
+              curve.label <- paste (curve.name, curve.currency, sep = "_")
+              curve.data <- curves[[curve.label]]
+              if (is.null (curve.data)) {
+                curve.data <- list (Date = c(), Curve = list ())
+              }
+              curve.data$Date <- append (curve.data$Date, valuationTime.ViewComputationResultModel (result))
+              curve.data$Curve[[length (curve.data$Curve) + 1]] <- curve.object
+              curves[[curve.label]] <- curve.data
+              print (paste ("Got curve", curve.name, "on", curve.currency))
+            }
           }
-          curve.data$Date <- append (curve.data$Date, valuationTime.ViewComputationResultModel (result))
-          curve.data$Curve[[length (curve.data$Curve) + 1]] <- curve.object
-          curves[[curve.label]] <- curve.data
-          print (paste ("Got curve", curve.name, "on", curve.currency))
         }
       } else {
         print ("No curve values")
