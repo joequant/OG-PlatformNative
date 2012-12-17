@@ -10,7 +10,7 @@
 Init ()
 
 # Find a view identifier (omit view name for arbitrary view)
-viewName <- "Multi-currency Swap View"
+viewName <- "MultiCurrency Swap Portfolio View"
 matchedViews <- Views (viewName)
 if (length (matchedViews) == 0) {
   stop ("No view called '", viewName, "' defined")
@@ -26,7 +26,8 @@ viewClientDescriptor <- HistoricalMarketDataViewClient (viewIdentifier, startTim
 
 # Our shifts (-10%, -5%, 0, +5%, +10%) applied to some tickers
 shiftAmounts <- c (0.90, 0.95, 1, 1.05, 1.10)
-shiftTickers <- c ("OG_SYNTHETIC_TICKER~USDCASHP2M", "OG_SYNTHETIC_TICKER~USDCASHP3M", "OG_SYNTHETIC_TICKER~USDSWAPP5Y", "OG_SYNTHETIC_TICKER~USDSWAPP10Y")
+shiftTickers <- c ("OG_SYNTHETIC_TICKER~USDCASHP2M", "OG_SYNTHETIC_TICKER~USDCASHP3M", "OG_SYNTHETIC_TICKER~USDSWAPP5Y", "OG_SYNTHETIC_TICKER~USDSWAPP10Y",
+                   "BLOOMBERG_TICKER~US0002M Index", "BLOOMBERG_TICKER~US0003M Index", "BLOOMBERG_TICKER~USSW5 Curncy", "BLOOMBERG_TICKER~USSW10 Curncy")
 
 # Iterate over the shifts
 results <- lapply (shiftAmounts, function (shift) {
