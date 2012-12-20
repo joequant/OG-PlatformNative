@@ -30,7 +30,7 @@
 #ifdef _WIN32
 #include <hash_map>
 #else /* ifdef _WIN32 */
-#include <apr-1/apr_hash.h>
+#include <tr1/unordered_map>
 #endif /* ifdef _WIN32 */
 #endif /* ifdef __cplusplus */
 

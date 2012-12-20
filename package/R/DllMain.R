@@ -225,6 +225,7 @@
   Install.Currency (stub)
   Install.MarketDataRequirementNames (stub)
   Install.MarketDataSnapshot (stub)
+  Install.NotCalculatedSentinel (stub)
   Install.Number (stub)
   Install.ObjectsPair (stub)
   Install.PDEResults (stub)
@@ -245,12 +246,23 @@
   dir.create (tmp)
   .build.package (tmp)
   LOGINFO ("Installing import package", tmp)
+  # Clear the R_TESTS environment variable
   test <- Sys.getenv ("R_TESTS")
-  print (test)
   if (!is.na (test)) {
     Sys.unsetenv ("R_TESTS")
   }
+  # Silent package install
+  silent <- !environmentIsLocked (baseenv ())
+  if (silent) {
+    assign ("system.default", base::system, baseenv ())
+    assign ("system.quiet", function (...) { system.default (ignore.stdout = TRUE, ...) }, baseenv ())
+    try (assignInNamespace ("system", system.quiet, "base", baseenv()), silent = TRUE)
+  }
   install.packages (pkgs = tmp, repos = NULL, type = "source", INSTALL_opts = "--no-multiarch")
+  if (silent) {
+    try (assignInNamespace ("system", system.default, "base"), silent = TRUE)
+  }
+  # Restore the environment
   if (!is.na (test)) {
     Sys.setenv ("R_TESTS" = test)
   }

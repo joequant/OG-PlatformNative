@@ -8,8 +8,22 @@
 values.VolatilitySurfaceSnapshot <- function (msg) {
   k <- msg[1]
   if (!is.list (k)) k <- list (k)
-  first <- sapply (k, function (z) { toString (toObject.FudgeMsg (z$first)) })
-  second <- sapply (k, function (z) { toString (toObject.FudgeMsg (z$second)) })
+  first <- sapply (k, function (z) {
+    x <- z$first
+    if (is.FudgeMsg (x)) {
+      toString (toObject.FudgeMsg (x))
+    } else {
+      toString (x)
+    }
+  })
+  second <- sapply (k, function (z) {
+    x <- z$second
+    if (is.FudgeMsg (x)) {
+      toString (toObject.FudgeMsg (x))
+    } else {
+      toString (x)
+    }
+  })
   k <- msg[2]
   if (!is.list (k)) k <- list (k)
   marketValue <- sapply (k, function (z) { v <- z$marketValue; if (length (v) == 0) NA else v })
@@ -19,9 +33,9 @@ values.VolatilitySurfaceSnapshot <- function (msg) {
 
 # Construct a surface snapshot from data supplied in vectors
 fromVectors.VolatilitySurfaceSnapshot <- function (xc, x, yc, y, marketValue, overrideValue) {
-  surface <- SnapshotVolatilitySurface ()
+  surface <- OG::SnapshotVolatilitySurface ()
   for (i in 1:length (marketValue)) {
-    surface <- SetVolatilitySurfacePoint (
+    surface <- OG::SetVolatilitySurfacePoint (
       snapshot = surface,
       x = x[((i - 1) %/% length (y)) + 1],
       y = y[((i - 1) %% length (y)) + 1],
