@@ -105,7 +105,7 @@ toObject.FudgeMsg <- function (x, fallbackConstructor = toString) {
   if (existsFunction (constructor)) {
     getFunction (constructor, where = "package:OG")(x)
   } else {
-    LOGWARN ("No constructor", constructor)
+    LOGDEBUG ("No constructor", constructor)
     fallbackConstructor (x)
   }
 }

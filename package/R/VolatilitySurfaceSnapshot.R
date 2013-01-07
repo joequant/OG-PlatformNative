@@ -33,9 +33,9 @@ values.VolatilitySurfaceSnapshot <- function (msg) {
 
 # Construct a surface snapshot from data supplied in vectors
 fromVectors.VolatilitySurfaceSnapshot <- function (xc, x, yc, y, marketValue, overrideValue) {
-  surface <- SnapshotVolatilitySurface ()
+  surface <- OG::SnapshotVolatilitySurface ()
   for (i in 1:length (marketValue)) {
-    surface <- SetVolatilitySurfacePoint (
+    surface <- OG::SetVolatilitySurfacePoint (
       snapshot = surface,
       x = x[((i - 1) %/% length (y)) + 1],
       y = y[((i - 1) %% length (y)) + 1],

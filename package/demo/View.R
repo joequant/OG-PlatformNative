@@ -5,8 +5,9 @@
  ##
 
 # Select one or more views to run; this might be a wild-card search string like "*" to
-# run all views (not currently supported in OG-Language)
-viewSearchPattern <- "Swap Portfolio View"
+# run all views (not currently supported in OG-Language). Leaving blank will iterate
+# over all views.
+viewSearchPattern <- NULL
 
 Init ()
 

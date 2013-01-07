@@ -9,9 +9,19 @@
   is.object (x) && (class (x) == className)
 }
 
+# Produces a short string describing the value. Calling toString can crash the system if
+# big objects are used.
+.description <- function (x) {
+  if (is.object (x)) {
+    class (x)
+  } else {
+    paste ("non-object", typeof (x))
+  }
+}
+
 # Asserts that a value is an instance of the named class
 .assert.Object <- function (x, className) {
-  if (!.is.Object (x, className)) { stop (paste ("Can't apply to non", className, x)) }
+  if (!.is.Object (x, className)) { stop (paste ("Can't apply to non", className, "- type is", .description (x))) }
   invisible (0)
 }
 

@@ -58,20 +58,24 @@ calculationDuration.ViewComputationResultModel <- function (msg) {
     if (is.null (column)) {
       column <- c ()
     }
-    while (length (column) < i) {
-      column <- append (column, NA)
+    l <- length (column)
+    if (l < i) {
+      column <- append (column, rep (NA, i - l))
     }
     if (is.FudgeMsg (value)) {
-      value <- "FudgeMsg"
+      value <- toString (toObject.FudgeMsg (value, function (x) { "FudgeMsg" }))
     }
     column[[i]] <- value
     values[[valueName]] <- column
   }
+  computationTargetIdentifier.length <- length (computationTargetIdentifier);
   values <- lapply (values, function (x) {
-    while (length (x) < length (computationTargetIdentifier)) {
-      x <- append (x, NA)
+    l <- length (x)
+    if (l < computationTargetIdentifier.length) {
+      append (x, rep (NA, computationTargetIdentifier.length - l))
+    } else {
+      x
     }
-    x
   })
   cmd <- c ("data.frame (identifier = computationTargetIdentifier, type = computationTargetType")
   cmd <- append (cmd, sapply (names (values), function (valueName) {

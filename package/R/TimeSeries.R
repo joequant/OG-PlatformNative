@@ -20,9 +20,9 @@ Interop.TimeSeriesStart <- function (data) {
 as.xts.TimeSeries <- function (data) {
   if (existsFunction ("xts")) {
     v <- as.double (data)
-    i <- index (data)
+    i <- xts::index (data)
     w <- !is.na (v)
-    xts (v[w], order.by = as.Date (i[w], origin = "1970-01-01"))
+    xts::xts (v[w], order.by = as.Date (i[w], origin = "1970-01-01"))
   } else {
     if (require ("xts")) {
       as.xts.TimeSeries (data)
