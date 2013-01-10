@@ -12,7 +12,11 @@ Init ()
 ticker.id <- "OG_SYNTHETIC_TICKER~USDCASHP1M"
 ticker.ts <- FetchTimeSeries (dataField = "CLOSE", identifier = ticker.id)
 if (is.null (ticker.ts)) {
-  stop ("Time series '", ticker.id, "' not found")
+  ticker.id <- "BLOOMBERG_TICKER~US0001M Index"
+  ticker.ts <- FetchTimeSeries (dataField = "PX_LAST", identifier = ticker.id)
+  if (is.null (ticker.ts)) {
+    stop ("Time series '", ticker.id, "' not found")
+  }
 }
 
 # Convert the timeseries to an XTS object (requires XTS to already be loaded)

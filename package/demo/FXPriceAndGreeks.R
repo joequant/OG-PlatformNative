@@ -10,10 +10,8 @@
 
 Init ()
 
-today <- as.POSIXct ("2012-04-24", "GMT") # price option from 24/04/2012
-expiry <- as.POSIXct ("2012-10-24", "GMT") # expiry of the option
-spotFX <- 1.34
-option.strikes <- seq (0.8, 2.0, length.out = 50)
+expiry <- Sys.time () + as.difftime (26, format = "%X", units = "weeks") # About six-months to expiry
+option.strikes <- seq (0.8, 2.0, length.out = 50) # This can take a while - if running on a workstation, try a smaller number
 notional <- 1000000
 
 # Create a portfolio containing all of the theortical securities
@@ -21,7 +19,7 @@ positions <- c ()
 settlementDate <- expiry + as.difftime (2, format = "%X", units = "days") #2 days after expiry
 for(option.strike in option.strikes) {
   security <- FXOptionSecurity (
-    name = paste("Long put USD,",notional,", call EUR", notional / option.strike,"on", expiry),
+    name = paste ("Long put USD,", notional, ", call EUR", notional / option.strike, "on", expiry),
     callAmount = notional / option.strike,
     callCurrency = "EUR",
     putCurrency = "USD",
@@ -50,42 +48,42 @@ requirements <- list (
     sep = ", ")),
   price = new.ValueRequirement (ValueRequirementNames.Present.Value, paste (
     "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=SABR",
+    "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")),
   forwardDelta = new.ValueRequirement (ValueRequirementNames.Forward.Delta, paste (
     "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=SABR",
+    "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")),
   forwardGamma = new.ValueRequirement (ValueRequirementNames.Forward.Gamma, paste (
     "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=SABR",
+    "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")),
   dualDelta = new.ValueRequirement (ValueRequirementNames.Dual.Delta, paste (
     "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=SABR",
+    "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")),
   dualGamma = new.ValueRequirement (ValueRequirementNames.Dual.Gamma, paste (
     "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=SABR",
+    "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")),
   forwardVega = new.ValueRequirement (ValueRequirementNames.Forward.Vega, paste (
     "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=SABR",
+    "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")),
   forwardVanna = new.ValueRequirement (ValueRequirementNames.Forward.Vanna, paste (
     "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=SABR",
+    "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")),
   forwardVomma = new.ValueRequirement (ValueRequirementNames.Forward.Vomma, paste (
     "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=SABR",
+    "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")))
 view <- ViewDefinition ("FX Option Example", portfolio.id, requirements)
@@ -94,7 +92,8 @@ calc.config <- "Default"
 
 # Create a view client attached to the snapshot and execute a cycle against current market data.
 # This could equally use a snapshot as shown in other examples.
-view.client <- ViewClient (view.id, useSharedProcess = FALSE)
+view.client <- ViewClient (StaticMarketDataViewClient (view.id), useSharedProcess = FALSE)
+TriggerViewCycle (view.client)
 view.result <- GetViewResult (viewClient = view.client, waitForResult = -1)
 
 # For each value requirement, extract the result column values and produce that in the portfolio

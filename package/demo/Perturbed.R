@@ -10,26 +10,24 @@
 Init ()
 
 # Find a view identifier (omit view name for arbitrary view)
-viewName <- "Swap Portfolio View"
+viewName <- "MultiCurrency Swap Portfolio View"
 matchedViews <- Views (viewName)
-if (length (matchedViews) == 0) {
-  matchedViews <- Views (paste ("Example", viewName))
-}
 if (length (matchedViews) == 0) {
   stop ("No view called '", viewName, "' defined")
 } else {
   viewIdentifier <- matchedViews[1,1]
 }
 
-# Set up the view client descriptor to sample a historic period (a month ending last week). This
+# Set up the view client descriptor to sample a historic period (three months ending 14 days ago). This
 # will be used over each of our "shift" samples.
 endTime <- Sys.time () - (14 * 86400)
 startTime <- endTime - (90 * 86400)
 viewClientDescriptor <- HistoricalMarketDataViewClient (viewIdentifier, startTime, endTime)
 
-# Our shifts (-5%, -1%, 0, +1%, +5%) applied to some tickers
-shiftAmounts <- c (0.95, 0.99, 1, 1.01, 1.05)
-shiftTickers <- c ("OG_SYNTHETIC_TICKER~USDCASHP2M", "OG_SYNTHETIC_TICKER~USDCASHP3M", "OG_SYNTHETIC_TICKER~USDSWAPP5Y", "OG_SYNTHETIC_TICKER~USDSWAPP10Y")
+# Our shifts (-10%, -5%, 0, +5%, +10%) applied to some tickers
+shiftAmounts <- c (0.90, 0.95, 1, 1.05, 1.10)
+shiftTickers <- c ("OG_SYNTHETIC_TICKER~USDCASHP2M", "OG_SYNTHETIC_TICKER~USDCASHP3M", "OG_SYNTHETIC_TICKER~USDSWAPP5Y", "OG_SYNTHETIC_TICKER~USDSWAPP10Y",
+                   "BLOOMBERG_TICKER~US0002M Index", "BLOOMBERG_TICKER~US0003M Index", "BLOOMBERG_TICKER~USSW5 Curncy", "BLOOMBERG_TICKER~USSW10 Curncy")
 
 # Iterate over the shifts
 results <- lapply (shiftAmounts, function (shift) {
@@ -58,7 +56,7 @@ results <- lapply (shiftAmounts, function (shift) {
     columns.pv <- columns.ViewComputationResultModel (data, ValueRequirementNames.Present.Value)
     value.pv <- firstValue.ViewComputationResultModel (portfolio, columns.pv)
     print (paste ("PV for", valuationTime.ViewComputationResultModel (result), "with", shift, "=", value.pv))
-    presentValue <- append (presentValue, value.pv)
+    presentValue <- append (presentValue, if (is.numeric (value.pv)) value.pv else NA)
 
     # Get the next iteration
     print (paste ("Waiting for next cycle"))

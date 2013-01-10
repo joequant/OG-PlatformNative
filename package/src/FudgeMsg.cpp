@@ -107,24 +107,23 @@ SEXP RFudgeMsg::FromFudgeMsg (FudgeMsg msg) {
 	FudgeMsg_retain (msg);
 	SEXP msgtag = R_NilValue;
 	int prot = 0;
-	if (g_bSerialise) {
-		CFudgeMsgInfo *poMsg = CFudgeMsgInfo::GetMessage (msg);
-		if (poMsg) {
+	CFudgeMsgInfo *poMsg = CFudgeMsgInfo::GetMessage (msg);
+	if (poMsg) {
+		if (g_bSerialise) {
 			msgtag = allocVector (RAWSXP, poMsg->GetLength ());
 			if (msgtag != R_NilValue) {
 				PROTECT (msgtag);
 				prot++;
 				memcpy (RAW (msgtag), poMsg->GetData (), poMsg->GetLength ());
-				FudgeMsg_release (msg);
-				msg = poMsg->GetMessage ();
-				// Don't release the pointer; R will need the reference
 			} else {
 				LOGERROR (ERR_R_FUNCTION);
-				CFudgeMsgInfo::Release (poMsg);
 			}
-		} else {
-			LOGERROR (ERR_INTERNAL);
 		}
+		FudgeMsg_release (msg);
+		msg = poMsg->GetMessage ();
+		// Don't release the pointer; R will need the reference counted
+	} else {
+		LOGERROR (ERR_INTERNAL);
 	}
 	SEXP msgptr = R_MakeExternalPtr (msg, R_NilValue, msgtag);
 	PROTECT (msgptr);
@@ -357,6 +356,7 @@ SEXP RFudgeMsg::GetAllFields (SEXP message) {
 		} else {
 			LOGFATAL (ERR_MEMORY);
 		}
+		FudgeMsg_release (msg);
 	} else {
 		LOGERROR (ERR_PARAMETER_VALUE);
 	}

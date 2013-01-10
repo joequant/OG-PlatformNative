@@ -9,9 +9,19 @@
 Init ()
 
 # Curve tickers
-tickers <- c ("USDCASHP1D", "USDCASHP1M", "USDCASHP2M", "USDCASHP3M", "USDCASHP4M", "USDCASHP5M", "USDCASHP6M", "USDCASHP7M", "USDCASHP8M", "USDCASHP9M", "USDCASHP10M", "USDCASHP11M", "USDCASHP12M", "USDSWAPP1Y", "USDSWAPP2Y", "USDSWAPP3Y", "USDSWAPP4Y", "USDSWAPP5Y", "USDSWAPP6Y", "USDSWAPP7Y", "USDSWAPP8Y", "USDSWAPP9Y", "USDSWAPP10Y", "USDSWAPP15Y", "USDSWAPP20Y", "USDSWAPP25Y", "USDSWAPP30Y", "USDSWAPP40Y", "USDSWAPP50Y", "USDSWAPP80Y")
-tickers.field <- "CLOSE"
-tickers.scheme <- "OG_SYNTHETIC_TICKER"
+if (!is.null (FetchTimeSeries (dataField = "CLOSE", identifier = "OG_SYNTHETIC_TICKER~USDCASHP1D", maxPoints = 1))) {
+  tickers <- c ("USDCASHP1D", "USDCASHP1M", "USDCASHP2M", "USDCASHP3M", "USDCASHP4M", "USDCASHP5M", "USDCASHP6M", "USDCASHP7M", "USDCASHP8M", "USDCASHP9M", "USDCASHP10M", "USDCASHP11M", "USDCASHP12M", "USDSWAPP2Y", "USDSWAPP3Y", "USDSWAPP4Y", "USDSWAPP5Y", "USDSWAPP6Y", "USDSWAPP7Y", "USDSWAPP8Y", "USDSWAPP9Y", "USDSWAPP10Y", "USDSWAP12Y", "USDSWAPP15Y", "USDSWAPP20Y", "USDSWAPP25Y", "USDSWAPP30Y", "USDSWAPP40Y")
+  tickers.field <- "CLOSE"
+  tickers.scheme <- "OG_SYNTHETIC_TICKER"
+} else {
+  if (!is.null (FetchTimeSeries (dataField = "PX_LAST", identifier = "BLOOMBERG_TICKER~US0001W Index", maxPoints = 1))) {
+    tickers <- c ("US0001W Index", "US0001M Index", "US0002M Index", "USSW2 Curncy", "USSW3 Curncy", "USSW4 Curncy", "USSW5 Curncy", "USSW6 Curncy", "USSW7 Curncy", "USSW8 Curncy", "USSW9 Curncy", "USSW10 Curncy", "USSW15 Curncy", "USSW20 Curncy", "USSW25 Curncy", "USSW30 Curncy")
+    tickers.field <- "PX_LAST"
+    tickers.scheme <- "BLOOMBERG_TICKER"
+  } else {
+    stop ("Can't find time series tickers")
+  }
+}
 
 # TODO: should query the curve definitions in the system to get these tickers
 

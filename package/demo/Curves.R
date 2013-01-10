@@ -4,44 +4,44 @@
  # Please see distribution for license.
  ##
 
-# Demonstrates specifying curve names at the position level. Note that the "out-the-box" example server contains only
-# a single set of curves called "SECONDARY" so the position attributes specified here will be ignored unless additional
-# curves called "FORWARD_3M" and/or "FUNDING" are defined.
+# Demonstrates specifying curve names at the position level.
 
 Init ()
 
 # Create the security
 print ("Creating security")
 security <- SwapSecurity (
-  name = "IR Swap USD 40,326,000 2021-08-08 - USD LIBOR 3m / 2.709%",
-  tradeDate = "2011-08-08",
-  effectiveDate = "2011-08-08",
-  maturityDate = "2021-08-08",
+  name = "Swap: receive 3.60% fixed ACT/360 vs 3m Bank Bill",
+  tradeDate = "2013-09-05",
+  effectiveDate = "2013-09-05",
+  maturityDate = "2015-09-05",
   counterparty = "CParty",
-  payLeg = FloatingInterestRateLeg (
+  payLeg = FixedInterestRateLeg (
     dayCount = "Actual/360",
     frequency = "Quarterly",
-    regionId = "FINANCIAL_REGION~US+GB",
-    businessDayConvention = "Modified Following",
-    notional = InterestRateNotional ("USD", 40326000),
-    eom = FALSE,
-    floatingReferenceRateId = "Reference Rate Simple Name~USD LIBOR 3m",
-    floatingRateType = "IBOR"),
-  receiveLeg = FixedInterestRateLeg (
-    dayCount = "30U/360",
-    frequency = "Semi-annual",
-    regionId = "FINANCIAL_REGION~US+GB",
-    businessDayConvention = "Modified Following",
-    notional = InterestRateNotional ("USD", 40326000),
-    eom = FALSE,
-    rate = 0.027))
+    regionId = "FINANCIAL_REGION~AU",
+    businessDayConvention = "Following",
+    notional = InterestRateNotional ("AUD", 15000000),
+    eom = TRUE,
+    rate = 0.036),
+  receiveLeg = FloatingInterestRateLeg (
+    dayCount = "Actual/365",
+    frequency = "Quarterly",
+    regionId = "FINANCIAL_REGION~AU",
+    businessDayConvention = "Following",
+    notional = InterestRateNotional ("AUD", 15000000),
+    eom = TRUE,
+    floatingReferenceRateId = "Reference Rate Simple Name~AUD LIBOR 3m",
+    floatingRateType = "IBOR"))
 security.id <- StoreSecurity (security)
 
-# Create a portfolio containing two positions in this security
+# Create a portfolio containing positions in this security using the available curve configurations.
 print ("Creating portfolio")
-position.forward <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "FORWARD_3M")
-position.funding <- SetPositionAttribute (PortfolioPosition (security.id, 1), "*.DEFAULT_ForwardCurve", "FUNDING")
-node <- PortfolioNode (name = "Example", positions = list (position.forward, position.funding))
+position.1 <- SetPositionAttribute(PortfolioPosition (security.id, 1), "Present Value.DEFAULT_CurveCalculationConfig", "DefaultThreeCurveAUDConfig")
+position.2 <- SetPositionAttribute(PortfolioPosition (security.id, 1), "Present Value.DEFAULT_CurveCalculationConfig", "DiscountingAUDConfig")
+position.3 <- SetPositionAttribute(PortfolioPosition (security.id, 1), "Present Value.DEFAULT_CurveCalculationConfig", "ForwardFromDiscountingAUDConfig")
+position.4 <- SetPositionAttribute(PortfolioPosition (security.id, 1), "Present Value.DEFAULT_CurveCalculationConfig", "SingleAUDConfig")
+node <- PortfolioNode (name = "Example", positions = list (position.1, position.2, position.3, position.4))
 portfolio <- Portfolio ("Example Portfolio", node)
 portfolio.id <- StorePortfolio (portfolio)
 
