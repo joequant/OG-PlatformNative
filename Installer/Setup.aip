@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="8.6" version="8.7.1" Modules="enterprise" RootPath="." Language="en" Id="{62501721-0579-4CD0-AABA-32AB85DB6DFF}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="8.6" version="9.4" Modules="enterprise" RootPath="." Language="en" Id="{62501721-0579-4CD0-AABA-32AB85DB6DFF}">
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
+    <ROW Table="File" Column="Sequence" MinValue="1" MaxValue="32767" Description="Sequence with respect to the media images; order must track cabinet order." Options="0" ColumnType="2" ColumnIndex="7" ColumnSize="2" MsiKey="File#Sequence"/>
+    <ROW Table="Media" Column="LastSequence" MinValue="0" MaxValue="32767" Description="File sequence number for the last file for this media." Options="0" ColumnType="2" ColumnIndex="1" ColumnSize="2" MsiKey="Media#LastSequence"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="ALLUSERS" Value="2" MultiBuildValue="MSI_32:1#MSI_64:1#MSI_32_FULL:1#MSI_64_FULL:1"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
@@ -8,19 +12,21 @@
     <ROW Property="ARPURLINFOABOUT" Value="http://github.com/OpenGamma/OG-RStats"/>
     <ROW Property="BannerBitmap" Value="banner" MultiBuildValue="MSI_32:opengamma_banner.bmp#MSI_64:opengamma_banner.bmp#MSI_32_FULL:opengamma_banner.bmp#MSI_64_FULL:opengamma_banner.bmp" Type="1" MsiKey="BannerBitmap"/>
     <ROW Property="DialogBitmap" Value="dialog" MultiBuildValue="MSI_32:opengamma_dialog.bmp#MSI_64:opengamma_dialog.bmp#MSI_32_FULL:opengamma_dialog.bmp#MSI_64_FULL:opengamma_dialog.bmp" Type="1" MsiKey="DialogBitmap"/>
-    <ROW Property="LANG_FILE" Value="LanguageIntegration"/>
+    <ROW Property="LANG_FILE" Value="Language Integration Service"/>
     <ROW Property="LANG_REG32" Value="LanguageIntegration"/>
     <ROW Property="M_FILE" Value="OpenGamma Ltd"/>
     <ROW Property="M_REG32" Value="OpenGammaLtd"/>
+    <ROW Property="M_REG64" Value="OpenGammaLtd"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
     <ROW Property="OG_LANGUAGE_EXT" Value="?"/>
     <ROW Property="OG_LANGUAGE_JAR" Value="?"/>
     <ROW Property="ProductCode" Value="1033:{3A1B012D-9310-456F-AF6A-AF293C1B9917} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="OpenGamma Tools for R" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="1.0.1"/>
+    <ROW Property="ProductVersion" Value="1.0.1" Type="32"/>
     <ROW Property="RSTAT_FILE" Value="Tools for R"/>
     <ROW Property="RSTAT_REG32" Value="OpenGammaR"/>
+    <ROW Property="RSTAT_REG64" Value="OpenGammaR"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{FD073B60-84E8-4E1B-BAD4-F2C157867CE5}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="MSI_32:Windows 9x/ME#MSI_64:Windows 9x/ME#MSI_32_FULL:Windows 9x/ME#MSI_64_FULL:Windows 9x/ME" ValueLocId="-"/>
@@ -36,24 +42,25 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="JVM32" ComponentId="{4313EEF3-0A6D-4642-A4E8-D464345DAA48}" Directory_="APPDIR" Attributes="4" KeyPath="JVM32"/>
-    <ROW Component="JVM64" ComponentId="{255F11B3-7396-475E-8AD5-7C1E50F80F8B}" Directory_="APPDIR" Attributes="4" KeyPath="JVM64"/>
+    <ROW Component="JVM64" ComponentId="{255F11B3-7396-475E-8AD5-7C1E50F80F8B}" Directory_="APPDIR" Attributes="260" KeyPath="JVM64"/>
     <ROW Component="LANG_FILE_" ComponentId="{6242680E-C591-4550-9339-354B45DDD594}" Directory_="LANG_FILE__Dir" Attributes="0"/>
     <ROW Component="Logging" ComponentId="{EE8F242E-005F-40C0-A365-8471CE00B71C}" Directory_="RSTAT_FILE__Dir" Attributes="0"/>
     <ROW Component="MSVC32" ComponentId="{E5DED638-C894-4060-ABDB-2C53E0A40577}" Directory_="APPDIR" Attributes="4" KeyPath="MSVC32"/>
-    <ROW Component="MSVC64" ComponentId="{1882E376-25F1-453F-8247-92C4363D5A57}" Directory_="APPDIR" Attributes="4" KeyPath="MSVC64"/>
+    <ROW Component="MSVC64" ComponentId="{1882E376-25F1-453F-8247-92C4363D5A57}" Directory_="APPDIR" Attributes="260" KeyPath="MSVC64"/>
     <ROW Component="OG_Language32" ComponentId="{3A4EF133-F16D-4B22-BA44-B81C41BFE2A1}" Directory_="APPDIR" Attributes="4" KeyPath="OG_Language32"/>
-    <ROW Component="OG_Language64" ComponentId="{C836240F-FA7C-4ABF-B424-8896E3BA394A}" Directory_="APPDIR" Attributes="4" KeyPath="OG_Language64"/>
-    <ROW Component="OG_LanguageCore" ComponentId="{FA07F380-9E8C-4D29-A539-A27EE9BD7D3E}" Directory_="APPDIR" Attributes="4" KeyPath="OG_LanguageCore"/>
+    <ROW Component="OG_Language64" ComponentId="{C836240F-FA7C-4ABF-B424-8896E3BA394A}" Directory_="APPDIR" Attributes="260" KeyPath="OG_Language64"/>
+    <ROW Component="OG_LanguageCore32" ComponentId="{FA07F380-9E8C-4D29-A539-A27EE9BD7D3E}" Directory_="APPDIR" Attributes="4" KeyPath="OG_LanguageCore"/>
+    <ROW Component="OG_LanguageCore64" ComponentId="{8531F528-BF64-4B01-A970-A4FB09F8DA4D}" Directory_="APPDIR" Attributes="260" KeyPath="OG_LanguageCore_1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="JVM32" Title="32-bit JVM" Description="The 32-bit Java Runtime Environment" Display="7" Level="4" Directory_="APPDIR" Attributes="8" Options="32" Components="JVM32" Builds="MSI_32_FULL"/>
-    <ROW Feature="JVM64" Title="64-bit JVM" Description="The 64-bit Java Runtime Environment" Display="9" Level="4" Directory_="APPDIR" Attributes="8" Options="32" Components="JVM64" Builds="MSI_64_FULL"/>
-    <ROW Feature="MSVC32" Title="32-bit C++ Runtime" Description="The 32-bit C++ runtime libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="MSVC32" Builds="MSI_32_FULL;MSI_64_FULL"/>
-    <ROW Feature="MSVC64" Title="64-bit C++ Runtime" Description="The 64-bit C++ runtime libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="MSVC64" Builds="MSI_64_FULL"/>
+    <ROW Feature="JVM32" Title="32-bit JVM" Description="The 32-bit Java Runtime Environment" Display="7" Level="1" Directory_="APPDIR" Attributes="8" Components="JVM32" Builds="MSI_32_FULL"/>
+    <ROW Feature="JVM64" Title="64-bit JVM" Description="The 64-bit Java Runtime Environment" Display="9" Level="1" Directory_="APPDIR" Attributes="8" Components="JVM64" Builds="MSI_64_FULL"/>
+    <ROW Feature="MSVC32" Title="32-bit C++ Runtime" Description="The 32-bit C++ runtime libraries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="MSVC32" Builds="MSI_32_FULL;MSI_64_FULL"/>
+    <ROW Feature="MSVC64" Title="64-bit C++ Runtime" Description="The 64-bit C++ runtime libraries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="MSVC64" Builds="MSI_64_FULL"/>
     <ROW Feature="MainFeature" Title="R extension" Description="OpenGamma Tools for R" Display="3" Level="1" Directory_="APPDIR" Attributes="24" Components="Logging"/>
-    <ROW Feature="og_language_32" Feature_Parent="og_language_core" Title="32-bit Service" Description="The 32-bit binaries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="OG_Language32" Builds="MSI_32_FULL"/>
-    <ROW Feature="og_language_64" Feature_Parent="og_language_core" Title="64-bit Service" Description="The 64-bit binaries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="OG_Language64" Builds="MSI_64_FULL"/>
-    <ROW Feature="og_language_core" Title="Language Integration Service" Description="The OpenGamma infrastructure the R extension is built upon" Display="5" Level="4" Directory_="APPDIR" Attributes="8" Options="32" Components="LANG_FILE_ OG_LanguageCore" Builds="MSI_32_FULL;MSI_64_FULL"/>
+    <ROW Feature="og_language_32" Feature_Parent="og_language_core" Title="32-bit Service" Description="The 32-bit binaries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="OG_Language32" Builds="MSI_32_FULL"/>
+    <ROW Feature="og_language_64" Feature_Parent="og_language_core" Title="64-bit Service" Description="The 64-bit binaries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="OG_Language64" Builds="MSI_64_FULL"/>
+    <ROW Feature="og_language_core" Title="Language Integration Service" Description="The OpenGamma infrastructure the R extension is built upon" Display="5" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="LANG_FILE_ OG_LanguageCore32 OG_LanguageCore64" Builds="MSI_32_FULL;MSI_64_FULL"/>
     <ATTRIBUTE name="CurrentFeature" value="og_language_core"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
@@ -72,12 +79,17 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
     <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceTypeDlg.aip"/>
+    <ROW Fragment="MaintenanceWelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceWelcomeDlg.aip"/>
     <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
     <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
     <ROW Fragment="SetupTypeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SetupTypeDlg.aip"/>
     <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
     <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
     <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+    <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRemoveDlg.aip"/>
+    <ROW Fragment="VerifyRepairDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRepairDlg.aip"/>
+    <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomeDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
     <ROW Action="AI_TxtUpdaterCommit" Description="Commit text file changes. " Template="Commit text file changes." DescriptionLocId="ActionText.Description.AI_TxtUpdaterCommit" TemplateLocId="ActionText.Template.AI_TxtUpdaterCommit"/>
@@ -88,11 +100,13 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
     <ROW Property="R32_PATH" Signature_="AppSearchSign"/>
     <ROW Property="R64_PATH" Signature_="AppSearchSign_1"/>
-    <ROW Property="JAVASOFT_JRE_VERSION_64" Signature_="AppSearchSign_1_1"/>
     <ROW Property="REG_OG_LANGUAGE_EXT" Signature_="AppSearchSign_2"/>
     <ROW Property="REG_OG_LANGUAGE_JAR" Signature_="AppSearchSign_3"/>
-    <ROW Property="JAVASOFT_JRE_VERSION_32" Signature_="AppSearchSign_4"/>
+    <ROW Property="JAVASOFT_JRE_1_7_32" Signature_="AppSearchSign_3_1"/>
+    <ROW Property="JAVASOFT_JRE_1_7_64" Signature_="AppSearchSign_4_1"/>
     <ROW Property="R32_INVALID_PATH" Signature_="AppSearchSign_5"/>
+    <ROW Property="OPENGAMMA_JRE_1_7_32" Signature_="AppSearchSign_8"/>
+    <ROW Property="OPENGAMMA_JRE_1_7_64" Signature_="AppSearchSign_9"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
@@ -101,13 +115,30 @@
     <ROW Name="opengamma_dialog.bmp" SourcePath="opengamma-dialog.bmp"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiConditionComponent">
-    <ROW Feature_="JVM32" Level="1" Condition="NOT JAVASOFT_JRE_VERSION_32" Options="1"/>
-    <ROW Feature_="JVM64" Level="1" Condition="NOT JAVASOFT_JRE_VERSION_64" Options="1"/>
+    <ROW Feature_="MSVC64" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
+    <ROW Feature_="MSVC32" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
     <ROW Feature_="og_language_core" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
+    <ROW Feature_="og_language_32" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
+    <ROW Feature_="og_language_64" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
+    <ROW Feature_="JVM32" Level="4" Condition="(REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR) OR JAVASOFT_JRE_1_7_32 OR OPENGAMMA_JRE_1_7_32"/>
+    <ROW Feature_="JVM64" Level="4" Condition="(REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR) OR JAVASOFT_JRE_1_7_64 OR OPENGAMMA_JRE_1_7_64"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
-    <ROW Dialog_="CustomizeDlg" Control="Tree" Type="SelectionTree" X="25" Y="85" Width="175" Height="95" Attributes="7" Property="_BrowseProperty" Text="Tree of selections" Control_Next="Reset" TextLocId="Control.Text.CustomizeDlg#Tree" MsiKey="CustomizeDlg#Tree"/>
-    <ROW Dialog_="CustomizeDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Control_Next="Description" MsiKey="CustomizeDlg#BannerBitmap"/>
+    <ROW Dialog_="CustomizeDlg" Control="Tree" Type="SelectionTree" X="25" Y="85" Width="175" Height="95" Attributes="7" Property="_BrowseProperty" Text="Tree of selections" Order="100" TextLocId="Control.Text.CustomizeDlg#Tree" MsiKey="CustomizeDlg#Tree"/>
+    <ROW Dialog_="CustomizeDlg" Control="Reset" Type="PushButton" X="15" Y="243" Width="76" Height="17" Attributes="3" Text="[ButtonText_Reset]" Order="200" TextLocId="-" MsiKey="CustomizeDlg#Reset"/>
+    <ROW Dialog_="CustomizeDlg" Control="DiskCost" Type="PushButton" X="91" Y="243" Width="76" Height="17" Attributes="3" Text="Disk &amp;Usage" Order="300" TextLocId="Control.Text.CustomizeDlg#DiskCost" MsiKey="CustomizeDlg#DiskCost"/>
+    <ROW Dialog_="CustomizeDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="400" MsiKey="CustomizeDlg#BottomLine"/>
+    <ROW Dialog_="CustomizeDlg" Control="Logo" Type="Text" X="4" Y="228" Width="70" Height="12" Attributes="1" Text="Advanced Installer" Order="500" TextLocId="Control.Text.CustomizeDlg#Logo" MsiKey="CustomizeDlg#Logo"/>
+    <ROW Dialog_="CustomizeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="600" TextLocId="-" MsiKey="CustomizeDlg#Back" Options="1"/>
+    <ROW Dialog_="CustomizeDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="700" TextLocId="-" MsiKey="CustomizeDlg#Next" Options="1"/>
+    <ROW Dialog_="CustomizeDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Order="800" MsiKey="CustomizeDlg#BannerBitmap"/>
+    <ROW Dialog_="CustomizeDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Select the way you want features to be installed." Order="1000" TextLocId="Control.Text.CustomizeDlg#Description" MsiKey="CustomizeDlg#Description"/>
+    <ROW Dialog_="CustomizeDlg" Control="Box" Type="GroupBox" X="210" Y="81" Width="140" Height="98" Attributes="1" Order="1100" MsiKey="CustomizeDlg#Box"/>
+    <ROW Dialog_="CustomizeDlg" Control="ItemSize" Type="Text" X="215" Y="128" Width="131" Height="50" Attributes="3" Text="The size of the currently selected item." Order="1200" TextLocId="Control.Text.CustomizeDlg#ItemSize" MsiKey="CustomizeDlg#ItemSize"/>
+    <ROW Dialog_="CustomizeDlg" Control="ItemDescription" Type="Text" X="215" Y="90" Width="131" Height="30" Attributes="3" Text="Multiline description of the currently selected item." Order="1300" TextLocId="Control.Text.CustomizeDlg#ItemDescription" MsiKey="CustomizeDlg#ItemDescription"/>
+    <ROW Dialog_="CustomizeDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="1400" MsiKey="CustomizeDlg#BannerLine"/>
+    <ROW Dialog_="CustomizeDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Custom Setup" TextStyle="[DlgTitleFont]" Order="1500" TextLocId="Control.Text.CustomizeDlg#Title" MsiKey="CustomizeDlg#Title"/>
+    <ROW Dialog_="CustomizeDlg" Control="Text" Type="Text" X="25" Y="55" Width="320" Height="20" Attributes="3" Text="Click on the icons in the tree below to change the way features will be installed." Order="1600" TextLocId="Control.Text.CustomizeDlg#Text" MsiKey="CustomizeDlg#Text"/>
     <ATTRIBUTE name="DeletedRows" value="CustomizeDlg#Browse@CustomizeDlg#Location@CustomizeDlg#LocationLabel"/>
     <ATTRIBUTE name="FixedSizeBitmaps" value="0"/>
   </COMPONENT>
@@ -137,6 +168,12 @@
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_INSTALL AND InstallMode=InstallModeCustom" Ordering="202"/>
     <ROW Dialog_="SetupTypeDlg" Control_="CustomButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_INSTALL AND InstallMode=InstallModeCustom" Ordering="101"/>
     <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="SetupTypeDlg" Condition="AI_INSTALL AND InstallMode=InstallModeCustom" Ordering="2"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode = &quot;Remove&quot;" Ordering="299"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Repair" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode = &quot;Repair&quot;" Ordering="399"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode = &quot;Remove&quot;" Ordering="1"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode = &quot;Repair&quot;" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode = &quot;Remove&quot;" Ordering="601"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RepairButton" Event="NewDialog" Argument="VerifyRepairDlg" Condition="AI_MAINT AND InstallMode = &quot;Repair&quot;" Ordering="601"/>
     <ATTRIBUTE name="DeletedRows" value="CustomizeDlg#Browse#SelectionBrowse#BrowseDlg#1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
@@ -145,9 +182,11 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
     <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
     <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_ResolveLocalizedCredentials" Type="1" Source="aicustact.dll" Target="GetLocalizedCredentials"/>
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_TxtUpdaterCommit" Type="11777" Source="TxtUpdater.dll" Target="OnTxtUpdaterCommit" WithoutSeq="true"/>
@@ -177,20 +216,22 @@
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="747"/>
     <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1501"/>
     <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
-    <ROW Action="AI_ResolveKnownFolders" Sequence="51"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
     <ROW Action="AI_TxtUpdaterInstall" Sequence="5101"/>
     <ROW Action="OG_LANGUAGE_EXT_3" Condition="REG_OG_LANGUAGE_EXT" Sequence="201"/>
     <ROW Action="OG_LANGUAGE_JAR_3" Condition="REG_OG_LANGUAGE_JAR" Sequence="202"/>
     <ROW Action="OG_LANGUAGE_JAR_4" Condition="NOT REG_OG_LANGUAGE_JAR" Sequence="203"/>
     <ROW Action="OG_LANGUAGE_EXT_4" Condition="NOT REG_OG_LANGUAGE_EXT" Sequence="204"/>
+    <ROW Action="AI_ResolveLocalizedCredentials" Sequence="51"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="747"/>
-    <ROW Action="AI_ResolveKnownFolders" Sequence="51"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
     <ROW Action="OG_LANGUAGE_EXT_2" Condition="NOT REG_OG_LANGUAGE_EXT" Sequence="201"/>
     <ROW Action="OG_LANGUAGE_JAR_2" Condition="NOT REG_OG_LANGUAGE_JAR" Sequence="202"/>
     <ROW Action="OG_LANGUAGE_JAR_1" Condition="REG_OG_LANGUAGE_JAR" Sequence="203"/>
     <ROW Action="OG_LANGUAGE_EXT_1" Condition="REG_OG_LANGUAGE_EXT" Sequence="204"/>
+    <ROW Action="AI_ResolveLocalizedCredentials" Sequence="51"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="NOT R32_INVALID_PATH OR R32_PATH OR R64_PATH" Description="The R installation is not visible to the 32-bit Windows Installer. Please refer to the OpenGamma knowledge base for instructions on how to proceed." Builds="MSI_32"/>
@@ -211,20 +252,23 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AppSearchSign" Root="2" Key="SOFTWARE\R-core\R32" Name="InstallPath" Type="0"/>
     <ROW Signature_="AppSearchSign_1" Root="2" Key="SOFTWARE\R-core\R64" Name="InstallPath" Type="16"/>
-    <ROW Signature_="AppSearchSign_1_1" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment" Name="CurrentVersion" Type="18"/>
     <ROW Signature_="AppSearchSign_2" Root="2" Key="SOFTWARE\[M_REG32]\[LANG_REG32]" Name="exts" Type="0"/>
     <ROW Signature_="AppSearchSign_3" Root="2" Key="SOFTWARE\[M_REG32]\[LANG_REG32]" Name="jars" Type="0"/>
-    <ROW Signature_="AppSearchSign_4" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment" Name="CurrentVersion" Type="2"/>
+    <ROW Signature_="AppSearchSign_3_1" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment\1.7" Name="RuntimeLib" Type="1"/>
+    <ROW Signature_="AppSearchSign_4_1" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment\1.7" Name="RuntimeLib" Type="18"/>
     <ROW Signature_="AppSearchSign_5" Root="2" Key="SOFTWARE\R-core\R32" Name="InstallPath" Type="2"/>
+    <ROW Signature_="AppSearchSign_8" Root="2" Key="SOFTWARE\[M_REG32]\Java Runtime Environment\1.7" Name="RuntimeLib" Type="1"/>
+    <ROW Signature_="AppSearchSign_9" Root="2" Key="SOFTWARE\[M_REG64]\Java Runtime Environment\1.7" Name="RuntimeLib" Type="17"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="JVM32" Root="2" Key="Software\[M_REG32]\[RSTAT_REG32]\Install" Name="JVM32" Value="#1" Component_="JVM32"/>
-    <ROW Registry="JVM64" Root="2" Key="Software\[M_REG32]\[RSTAT_REG32]\Install" Name="JVM64" Value="#1" Component_="JVM64"/>
+    <ROW Registry="JVM64" Root="2" Key="Software\[M_REG64]\[RSTAT_REG64]" Name="JVM64" Value="#1" Component_="JVM64"/>
     <ROW Registry="MSVC32" Root="2" Key="Software\[M_REG32]\[RSTAT_REG32]\Install" Name="MSVC32" Value="#1" Component_="MSVC32"/>
-    <ROW Registry="MSVC64" Root="2" Key="Software\[M_REG32]\[RSTAT_REG32]\Install" Name="MSVC64" Value="#1" Component_="MSVC64"/>
+    <ROW Registry="MSVC64" Root="2" Key="Software\[M_REG64]\[RSTAT_REG64]" Name="MSVC64" Value="#1" Component_="MSVC64"/>
     <ROW Registry="OG_Language32" Root="2" Key="Software\[M_REG32]\[RSTAT_REG32]\Install" Name="OG_Language32" Value="#1" Component_="OG_Language32"/>
-    <ROW Registry="OG_Language64" Root="2" Key="Software\[M_REG32]\[RSTAT_REG32]\Install" Name="OG_Language64" Value="#1" Component_="OG_Language64"/>
-    <ROW Registry="OG_LanguageCore" Root="2" Key="Software\[M_REG32]\[RSTAT_REG32]\Install" Name="OG_LanguageCore" Value="#1" Component_="OG_LanguageCore"/>
+    <ROW Registry="OG_Language64" Root="2" Key="Software\[M_REG64]\[RSTAT_REG64]" Name="OG_Language64" Value="#1" Component_="OG_Language64"/>
+    <ROW Registry="OG_LanguageCore" Root="2" Key="Software\[M_REG32]\[RSTAT_REG32]\Install" Name="OG_LanguageCore" Value="#1" Component_="OG_LanguageCore32"/>
+    <ROW Registry="OG_LanguageCore_1" Root="2" Key="Software\[M_REG64]\[RSTAT_REG64]" Name="OG_LanguageCore" Value="#1" Component_="OG_LanguageCore64"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRemoveFileComponent">
     <ROW FileKey="log4cxx.properties" Component_="Logging" FileName="log4cxx.properties" DirProperty="RSTAT_FILE__Dir" InstallMode="2"/>
@@ -245,7 +289,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
     <ROW Key="log4cxx.properties" Component="Logging" FileName="log4cxx.properties" Directory="RSTAT_FILE__Dir" Options="17"/>
-    <ROW Key="log4cxx.service.properties" Component="OG_LanguageCore" FileName="log4cxx.service.properties" Directory="LANG_FILE__Dir" Options="17"/>
-    <ROW Key="logback.xml" Component="OG_LanguageCore" FileName="logback.xml" Directory="LANG_FILE__Dir" Options="17"/>
+    <ROW Key="log4cxx.service.properties" Component="OG_LanguageCore32" FileName="log4cxx.service.properties" Directory="LANG_FILE__Dir" Options="17"/>
+    <ROW Key="logback.xml" Component="OG_LanguageCore32" FileName="logback.xml" Directory="LANG_FILE__Dir" Options="17"/>
   </COMPONENT>
 </DOCUMENT>

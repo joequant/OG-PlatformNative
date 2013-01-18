@@ -109,6 +109,7 @@ serviceExecutable=${basedir}/build/Debug/ServiceRunner
     <delete file="${dist.dir}/${package.name}.zip" failonerror="false" />
   </target>
   <target name="installer-impl">
+    <fix-msm-parameters />
     <installer-make build-id="${ai.build.all}" />
   </target>
 
