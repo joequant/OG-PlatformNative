@@ -55,8 +55,8 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="JVM32" Title="32-bit JVM" Description="The 32-bit Java Runtime Environment" Display="7" Level="1" Directory_="APPDIR" Attributes="8" Components="JVM32" Builds="MSI_32_FULL"/>
     <ROW Feature="JVM64" Title="64-bit JVM" Description="The 64-bit Java Runtime Environment" Display="9" Level="1" Directory_="APPDIR" Attributes="8" Components="JVM64" Builds="MSI_64_FULL"/>
-    <ROW Feature="MSVC32" Title="32-bit C++ Runtime" Description="The 32-bit C++ runtime libraries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="MSVC32" Builds="MSI_32_FULL;MSI_64_FULL"/>
-    <ROW Feature="MSVC64" Title="64-bit C++ Runtime" Description="The 64-bit C++ runtime libraries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="MSVC64" Builds="MSI_64_FULL"/>
+    <ROW Feature="MSVC32" Title="32-bit C++ Runtime" Description="The 32-bit C++ runtime libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="MSVC32" Builds="MSI_32;MSI_64;MSI_32_FULL;MSI_64_FULL"/>
+    <ROW Feature="MSVC64" Title="64-bit C++ Runtime" Description="The 64-bit C++ runtime libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="MSVC64" Builds="MSI_64;MSI_64_FULL"/>
     <ROW Feature="MainFeature" Title="R extension" Description="OpenGamma Tools for R" Display="3" Level="1" Directory_="APPDIR" Attributes="24" Components="Logging"/>
     <ROW Feature="og_language_32" Feature_Parent="og_language_core" Title="32-bit Service" Description="The 32-bit binaries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="OG_Language32" Builds="MSI_32_FULL"/>
     <ROW Feature="og_language_64" Feature_Parent="og_language_core" Title="64-bit Service" Description="The 64-bit binaries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="OG_Language64" Builds="MSI_64_FULL"/>
@@ -115,8 +115,6 @@
     <ROW Name="opengamma_dialog.bmp" SourcePath="opengamma-dialog.bmp"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiConditionComponent">
-    <ROW Feature_="MSVC64" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
-    <ROW Feature_="MSVC32" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
     <ROW Feature_="og_language_core" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
     <ROW Feature_="og_language_32" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
     <ROW Feature_="og_language_64" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
