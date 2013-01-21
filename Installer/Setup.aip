@@ -118,8 +118,10 @@
     <ROW Feature_="og_language_core" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
     <ROW Feature_="og_language_32" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
     <ROW Feature_="og_language_64" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
-    <ROW Feature_="JVM32" Level="4" Condition="(REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR) OR JAVASOFT_JRE_1_7_32 OR OPENGAMMA_JRE_1_7_32"/>
-    <ROW Feature_="JVM64" Level="4" Condition="(REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR) OR JAVASOFT_JRE_1_7_64 OR OPENGAMMA_JRE_1_7_64"/>
+    <ROW Feature_="JVM32" Level="4" Condition="(NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR) AND (JAVASOFT_JRE_1_7_32 OR OPENGAMMA_JRE_1_7_32)"/>
+    <ROW Feature_="JVM64" Level="4" Condition="(NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR) AND (JAVASOFT_JRE_1_7_64 OR OPENGAMMA_JRE_1_7_64)"/>
+    <ROW Feature_="JVM32" Level="0" Condition="REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR"/>
+    <ROW Feature_="JVM64" Level="0" Condition="REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
     <ROW Dialog_="CustomizeDlg" Control="Tree" Type="SelectionTree" X="25" Y="85" Width="175" Height="95" Attributes="7" Property="_BrowseProperty" Text="Tree of selections" Order="100" TextLocId="Control.Text.CustomizeDlg#Tree" MsiKey="CustomizeDlg#Tree"/>
