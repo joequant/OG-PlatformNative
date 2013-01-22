@@ -53,14 +53,14 @@
     <ROW Component="OG_LanguageCore64" ComponentId="{8531F528-BF64-4B01-A970-A4FB09F8DA4D}" Directory_="APPDIR" Attributes="260" KeyPath="OG_LanguageCore_1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="JVM32" Title="32-bit JVM" Description="The 32-bit Java Runtime Environment" Display="7" Level="1" Directory_="APPDIR" Attributes="8" Components="JVM32" Builds="MSI_32_FULL"/>
-    <ROW Feature="JVM64" Title="64-bit JVM" Description="The 64-bit Java Runtime Environment" Display="9" Level="1" Directory_="APPDIR" Attributes="8" Components="JVM64" Builds="MSI_64_FULL"/>
+    <ROW Feature="JVM32" Title="32-bit JVM" Description="The 32-bit Java Runtime Environment" Display="5" Level="1" Directory_="APPDIR" Attributes="8" Components="JVM32" Builds="MSI_32_FULL"/>
+    <ROW Feature="JVM64" Title="64-bit JVM" Description="The 64-bit Java Runtime Environment" Display="7" Level="1" Directory_="APPDIR" Attributes="8" Components="JVM64" Builds="MSI_64_FULL"/>
     <ROW Feature="MSVC32" Title="32-bit C++ Runtime" Description="The 32-bit C++ runtime libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="MSVC32" Builds="MSI_32;MSI_64;MSI_32_FULL;MSI_64_FULL"/>
     <ROW Feature="MSVC64" Title="64-bit C++ Runtime" Description="The 64-bit C++ runtime libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="MSVC64" Builds="MSI_64;MSI_64_FULL"/>
     <ROW Feature="MainFeature" Title="R extension" Description="OpenGamma Tools for R" Display="3" Level="1" Directory_="APPDIR" Attributes="24" Components="Logging"/>
-    <ROW Feature="og_language_32" Feature_Parent="og_language_core" Title="32-bit Service" Description="The 32-bit binaries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="OG_Language32" Builds="MSI_32_FULL"/>
-    <ROW Feature="og_language_64" Feature_Parent="og_language_core" Title="64-bit Service" Description="The 64-bit binaries" Display="0" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="OG_Language64" Builds="MSI_64_FULL"/>
-    <ROW Feature="og_language_core" Title="Language Integration Service" Description="The OpenGamma infrastructure the R extension is built upon" Display="5" Level="32767" Directory_="APPDIR" Attributes="8" Options="32" Components="LANG_FILE_ OG_LanguageCore32 OG_LanguageCore64" Builds="MSI_32_FULL;MSI_64_FULL"/>
+    <ROW Feature="og_language_32" Feature_Parent="og_language_core" Title="32-bit Service" Description="The 32-bit binaries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="OG_Language32" Builds="MSI_32_FULL"/>
+    <ROW Feature="og_language_64" Feature_Parent="og_language_core" Title="64-bit Service" Description="The 64-bit binaries" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="OG_Language64" Builds="MSI_64_FULL"/>
+    <ROW Feature="og_language_core" Title="Language Integration Service" Description="The OpenGamma infrastructure the R extension is built upon" Display="0" Level="1" Directory_="APPDIR" Attributes="8" Components="LANG_FILE_ OG_LanguageCore32 OG_LanguageCore64" Builds="MSI_32_FULL;MSI_64_FULL"/>
     <ATTRIBUTE name="CurrentFeature" value="og_language_core"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
@@ -115,13 +115,10 @@
     <ROW Name="opengamma_dialog.bmp" SourcePath="opengamma-dialog.bmp"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiConditionComponent">
-    <ROW Feature_="og_language_core" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
-    <ROW Feature_="og_language_32" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
-    <ROW Feature_="og_language_64" Level="1" Condition="NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR" Options="1"/>
     <ROW Feature_="JVM32" Level="4" Condition="(NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR) AND (JAVASOFT_JRE_1_7_32 OR OPENGAMMA_JRE_1_7_32)"/>
     <ROW Feature_="JVM64" Level="4" Condition="(NOT REG_OG_LANGUAGE_EXT OR NOT REG_OG_LANGUAGE_JAR) AND (JAVASOFT_JRE_1_7_64 OR OPENGAMMA_JRE_1_7_64)"/>
-    <ROW Feature_="JVM32" Level="0" Condition="REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR"/>
-    <ROW Feature_="JVM64" Level="0" Condition="REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR"/>
+    <ROW Feature_="JVM32" Level="0" Condition="REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR AND NOT Installed"/>
+    <ROW Feature_="JVM64" Level="0" Condition="REG_OG_LANGUAGE_EXT AND REG_OG_LANGUAGE_JAR AND NOT Installed"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
     <ROW Dialog_="CustomizeDlg" Control="Tree" Type="SelectionTree" X="25" Y="85" Width="175" Height="95" Attributes="7" Property="_BrowseProperty" Text="Tree of selections" Order="100" TextLocId="Control.Text.CustomizeDlg#Tree" MsiKey="CustomizeDlg#Tree"/>
@@ -247,7 +244,7 @@
     <ROW Module="OG_Language_Core.msm" Path="..\lib\msm\OG-Language-Core.msm" Feature="og_language_core" Directory="APPDIR"/>
     <ROW Module="OG_Language_i386.msm" Path="..\lib\msm\OG-Language-i386.msm" Feature="og_language_32" Directory="APPDIR"/>
     <ROW Module="OG_Language_x64.msm" Path="..\lib\msm\OG-Language-x64.msm" Feature="og_language_64" Directory="APPDIR"/>
-    <ROW Module="OG_RStats.msm" Path="..\build\OG-RStats.msm" Feature="MainFeature" Directory="APPDIR" Params="OG_LANGUAGE_EXT=[OG_LANGUAGE_EXT];OG_LANGUAGE_JAR=[OG_LANGUAGE_JAR];R32_PATH=[R32_PATH];R64_PATH=[R64_PATH];"/>
+    <ROW Module="OG_RStats.msm" Path="..\build\OG-RStats.msm" Feature="MainFeature" Directory="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AppSearchSign" Root="2" Key="SOFTWARE\R-core\R32" Name="InstallPath" Type="0"/>
