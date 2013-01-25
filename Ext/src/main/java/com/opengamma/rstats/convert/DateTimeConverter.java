@@ -8,16 +8,18 @@ package com.opengamma.rstats.convert;
 import static com.opengamma.language.convert.TypeMap.MAJOR_LOSS;
 import static com.opengamma.language.convert.TypeMap.MINOR_LOSS;
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
+import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
 
 import java.util.Map;
 
-import javax.time.CalendricalException;
-import javax.time.Instant;
-import javax.time.InstantProvider;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeZone;
-import javax.time.calendar.ZonedDateTime;
+import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.temporal.TemporalAccessor;
 
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
@@ -86,8 +88,8 @@ public class DateTimeConverter extends AbstractTypeConverter {
     if (clazz == Value.class) {
       if (value instanceof LocalDate) {
         conversionContext.setResult(ValueUtils.of(((LocalDate) value).toString()));
-      } else if (value instanceof InstantProvider) {
-        conversionContext.setResult(ValueUtils.of((double) ((InstantProvider) value).toInstant().getEpochSeconds()));
+      } else if (value instanceof TemporalAccessor && ((TemporalAccessor) value).isSupported(INSTANT_SECONDS)) {
+        conversionContext.setResult(ValueUtils.of((double) ((TemporalAccessor) value).get(INSTANT_SECONDS)));
       } else {
         conversionContext.setFail();
       }
@@ -96,7 +98,7 @@ public class DateTimeConverter extends AbstractTypeConverter {
       if (str != null) {
         try {
           conversionContext.setResult(LocalDate.parse(str));
-        } catch (CalendricalException e) {
+        } catch (DateTimeException e) {
           conversionContext.setFail();
         }
       } else {
@@ -105,7 +107,7 @@ public class DateTimeConverter extends AbstractTypeConverter {
     } else if (clazz == Instant.class) {
       final Double epochSeconds = ((Value) value).getDoubleValue();
       if (epochSeconds != null) {
-        conversionContext.setResult(Instant.ofEpochSeconds(epochSeconds.longValue()));
+        conversionContext.setResult(Instant.ofEpochSecond(epochSeconds.longValue()));
       } else {
         conversionContext.setFail();
       }
@@ -131,18 +133,18 @@ public class DateTimeConverter extends AbstractTypeConverter {
   private static ZonedDateTime valueToZonedDateTime(final Value v) {
     final Double epochSeconds = v.getDoubleValue();
     if (epochSeconds != null) {
-      return ZonedDateTime.ofEpochSeconds(epochSeconds.longValue(), TimeZone.UTC);
+      return LocalDateTime.ofEpochSecond(epochSeconds.longValue(), 0, ZoneOffset.UTC).atZone(ZoneOffset.UTC);
     } else {
       final String dateTime = v.getStringValue();
       if (dateTime != null) {
         try {
           return ZonedDateTime.parse(dateTime);
-        } catch (CalendricalException e) {
+        } catch (DateTimeException e) {
           // Ignore
         }
         try {
-          return ZonedDateTime.of(LocalDate.parse(dateTime), LocalTime.MIDDAY, TimeZone.UTC);
-        } catch (CalendricalException e) {
+          return LocalDate.parse(dateTime).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
+        } catch (DateTimeException e) {
           // Ignore
         }
       }
