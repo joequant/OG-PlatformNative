@@ -46,11 +46,7 @@ requirements <- list (
     "SmileInterpolator=Spline",
     "PDEDirection=Forward",
     sep = ", ")),
-  price = new.ValueRequirement (ValueRequirementNames.Present.Value, paste (
-    "CalculationMethod=LocalVolatilityPDE",
-    "SmileInterpolator=Spline",
-    "PDEDirection=Forward",
-    sep = ", ")),
+  price = ValueRequirementNames.Present.Value,
   forwardDelta = new.ValueRequirement (ValueRequirementNames.Forward.Delta, paste (
     "CalculationMethod=LocalVolatilityPDE",
     "SmileInterpolator=Spline",
