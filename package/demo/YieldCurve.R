@@ -10,7 +10,7 @@ Init ()
 
 # Curve tickers
 if (!is.null (FetchTimeSeries (dataField = "CLOSE", identifier = "OG_SYNTHETIC_TICKER~USDCASHP1D", maxPoints = 1))) {
-  tickers <- c ("USDCASHP1D", "USDCASHP1M", "USDCASHP2M", "USDCASHP3M", "USDCASHP4M", "USDCASHP5M", "USDCASHP6M", "USDCASHP7M", "USDCASHP8M", "USDCASHP9M", "USDCASHP10M", "USDCASHP11M", "USDCASHP12M", "USDSWAPP2Y", "USDSWAPP3Y", "USDSWAPP4Y", "USDSWAPP5Y", "USDSWAPP6Y", "USDSWAPP7Y", "USDSWAPP8Y", "USDSWAPP9Y", "USDSWAPP10Y", "USDSWAP12Y", "USDSWAPP15Y", "USDSWAPP20Y", "USDSWAPP25Y", "USDSWAPP30Y", "USDSWAPP40Y")
+  tickers <- c ("USDCASHP1D", "USDCASHP1M", "USDCASHP2M", "USDCASHP3M", "USDCASHP4M", "USDCASHP5M", "USDCASHP6M", "USDCASHP7M", "USDCASHP8M", "USDCASHP9M", "USDCASHP10M", "USDCASHP11M", "USDCASHP12M", "USDSWAPP2Y", "USDSWAPP3Y", "USDSWAPP4Y", "USDSWAPP5Y", "USDSWAPP6Y", "USDSWAPP7Y", "USDSWAPP8Y", "USDSWAPP9Y", "USDSWAPP10Y", "USDSWAPP12Y", "USDSWAPP15Y", "USDSWAPP20Y", "USDSWAPP25Y", "USDSWAPP30Y", "USDSWAPP40Y")
   tickers.field <- "CLOSE"
   tickers.scheme <- "OG_SYNTHETIC_TICKER"
 } else {
@@ -65,6 +65,10 @@ timeseries <- sapply (timeseries, function (x) {
 })
 
 # Convert to XTS timeseries
-timeseries.dates <- as.Date (sapply (index (timeseries), function (x) { x + timeseries.start }), origin = "1970-01-01")
-timeseries <- xts (timeseries, order.by = timeseries.dates)
-colnames (timeseries) <- tickers
+if (require ("zoo")) {
+  timeseries.dates <- as.Date (sapply (index (timeseries), function (x) { x + timeseries.start }), origin = "1970-01-01")
+  if (require ("xts")) {
+    timeseries <- xts (timeseries, order.by = timeseries.dates)
+    colnames (timeseries) <- tickers
+  }
+}
