@@ -11,13 +11,15 @@ Init ()
 # Shifts every value in the curve by an amount by manipulating direct points
 shiftCurveByPoint <- function (curve, amount) {
   data <- values.YieldCurveSnapshot (curve)
-  apply (data, 1, function (x) {
-    v <- x["MarketValue"]
-    if (!is.na (v)) {
-      curve <<- SetYieldCurvePoint (curve, x["ValueName"], x["Identifier"], as.real (v) + amount)
-    }
-    invisible (0)
-  })
+  mapply (function (x.name, x.data) {
+    apply (x.data, 1, function (y) {
+      v <- y["MarketValue"]
+      if (!is.na (v)) {
+        curve <<- SetYieldCurvePoint (curve, y["ValueName"], paste (x.name, y["Identifier"], sep = '~'), as.real (v) + shift)
+      }
+      invisible (0)
+    })
+  }, names (data), data)
   curve
 }
 

@@ -20,13 +20,15 @@ get.result <- function (view.result, value.requirement.name, calc.config = "Defa
 # Helper function to alter the values for a yield curve
 modify.curve <- function (curve, shift) {
   data <- values.YieldCurveSnapshot (curve)
-  apply (data, 1, function (x) {
-    v <- x["MarketValue"]
-    if (!is.na (v)) {
-      curve <<- SetYieldCurvePoint (curve, x["ValueName"], x["Identifier"], as.real (v) + shift)
-    }
-    invisible (0)
-  })
+  mapply (function (x.name, x.data) {
+    apply (x.data, 1, function (y) {
+      v <- y["MarketValue"]
+      if (!is.na (v)) {
+        curve <<- SetYieldCurvePoint (curve, y["ValueName"], paste (x.name, y["Identifier"], sep = '~'), as.real (v) + shift)
+      }
+      invisible (0)
+    })
+  }, names (data), data)
   curve
 }
 

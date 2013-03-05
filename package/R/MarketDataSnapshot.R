@@ -4,19 +4,74 @@
  # Please see distribution for license.
  ##
 
-# Decodes a Fudge representation of a market data snapshot to a data frame
+# Decodes a Fudge representation of a market data snapshot to a data frame. This actually returns
+# a list of data frames. The frames are labelled with the scheme from the identifiers that are in
+# the identifier column of the frame. This it is easy to pick out the subset of identifiers you
+# are familiar with (eg tickers from your preferred data provider) and ignore the rest.
 fromFudgeMsg.UnstructuredMarketDataSnapshot <- function (msg) {
   if (length (msg) == 0) {
     NULL
   } else {
-    x <- field.FudgeMsg (msg, 1)
-    if (!is.list (x)) x <- list (x)
-    uniqueId <- sapply (x, function (y) { y$valueSpec$uniqueId })
-    valueName <- sapply (x, function (y) { y$valueName })
-    value <- lapply (x, function (y) { y$value })
-    marketValue <- sapply (value, function (y) { v <- y$marketValue; if (length (v) == 0) NA else v })
-    overrideValue <- sapply (value, function (y) { v <- y$overrideValue; if (length (v) == 0) NA else v })
-    data.frame (ValueName = valueName, Identifier = uniqueId, MarketValue = marketValue, OverrideValue = overrideValue)
+    xs <- field.FudgeMsg (msg, 1)
+    if (!is.list (xs)) xs <- list (xs)
+    result <- list ()
+    for (x in xs) {
+      identifiers <- list ()
+      valueName <- ""
+      marketValue <- NA
+      overrideValue <- NA
+      for (field in fields.FudgeMsg (x)) {
+        fieldName <- field$Name
+        if (fieldName == "identifiers") {
+          for (field2 in fields.FudgeMsg (field$Value)) {
+            if (field2$Name == "ID") {
+              scheme <- ""
+              value <- ""
+              for (field3 in fields.FudgeMsg (field2$Value)) {
+                fieldName <- field3$Name
+                if (fieldName == "Scheme") {
+                  scheme <- field3$Value
+                } else {
+                  if (fieldName == "Value") {
+                    value <- field3$Value
+                  }
+                }
+              }
+              identifiers[[length (identifiers) + 1]] <- c (scheme, value)
+            }
+          }
+        } else {
+          if (fieldName == "valueName") {
+            valueName <- field$Value
+          } else {
+            if (fieldName == "value") {
+              for (field2 in fields.FudgeMsg (field$Value)) {
+                fieldName <- field2$Name
+                if (fieldName == "marketValue") {
+                  marketValue <- field2$Value
+                } else {
+                  if (fieldName == "overrideValue") {
+                    overrideValue <- field2$Value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      for (identifier in identifiers) {
+        frame <- result[[identifier[1]]]
+        if (is.null (frame)) {
+          frame <- list ("ValueName" = c(), "Identifier" = c(), "MarketValue" = c(), "OverrideValue" = c())
+        }
+        frame$ValueName <- append (frame$ValueName, valueName)
+        frame$Identifier <- append (frame$Identifier, identifier[2])
+        frame$MarketValue <- append (frame$MarketValue, marketValue)
+        frame$OverrideValue <- append (frame$OverrideValue, overrideValue)
+        result[[identifier[1]]] <- frame
+      }
+    }
+    lapply (result, function (x) { data.frame (ValueName = x$ValueName, Identifier = x$Identifier, MarketValue = x$MarketValue, OverrideValue = x$OverrideValue) })
   }
 }
 
