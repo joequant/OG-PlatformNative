@@ -207,6 +207,131 @@ FudgeMsg RFudgeMsg::ToFudgeMsg (const CRCallback *poR, SEXP value) {
 	return NULL;
 }
 
+static void _GetField (SEXP strName, SEXP strOrdinal, SEXP strValue, SEXP result, int nResult, FudgeField *pField) {
+	char sz[32], *psz;
+	int nListSize = 1;
+	if (pField->flags & FUDGE_FIELD_HAS_NAME) nListSize++;
+	if (pField->flags & FUDGE_FIELD_HAS_ORDINAL) nListSize++;
+	SEXP field = allocList (nListSize);
+	SET_VECTOR_ELT (result, nResult, field);
+	if (pField->flags & FUDGE_FIELD_HAS_NAME) {
+		if (FudgeString_convertToASCIIZ (&psz, pField->name) == FUDGE_OK) {
+			SEXP name = mkString (psz);
+			free (psz);
+			SETCAR (field, name);
+			SET_TAG (field, strName);
+			field = CDR (field);
+		}
+	}
+	if (pField->flags & FUDGE_FIELD_HAS_ORDINAL) {
+		SETCAR (field, ScalarInteger (pField->ordinal));
+		SET_TAG (field, strOrdinal);
+		field = CDR (field);
+	}
+	SEXP elem = R_NilValue;
+	switch (pField->type) {
+	case FUDGE_TYPE_INDICATOR :
+		elem = mkString (R_FUDGEINDICATOR);
+		break;
+	case FUDGE_TYPE_BOOLEAN :
+		elem = ScalarLogical (pField->data.boolean);
+		break;
+	case FUDGE_TYPE_BYTE :
+		elem = ScalarInteger (pField->data.byte);
+		break;
+	case FUDGE_TYPE_SHORT :
+		elem = ScalarInteger (pField->data.i16);
+		break;
+	case FUDGE_TYPE_INT :
+		elem = ScalarInteger (pField->data.i32);
+		break;
+	case FUDGE_TYPE_LONG :
+		elem = ScalarReal (pField->data.i64);
+		break;
+	case FUDGE_TYPE_FLOAT :
+		elem = ScalarReal (pField->data.f32);
+		break;
+	case FUDGE_TYPE_DOUBLE :
+		elem = ScalarReal (pField->data.f64);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY :
+		elem = _CreateByteArray (pField->data.bytes, pField->numbytes / sizeof (fudge_byte));
+		break;
+	case FUDGE_TYPE_SHORT_ARRAY :
+		elem = _CreateShortArray (pField->data.bytes, pField->numbytes / sizeof (fudge_i16));
+		break;
+	case FUDGE_TYPE_INT_ARRAY :
+		elem = _CreateIntArray (pField->data.bytes, pField->numbytes / sizeof (fudge_i32));
+		break;
+	case FUDGE_TYPE_LONG_ARRAY :
+		elem = _CreateLongArray (pField->data.bytes, pField->numbytes / sizeof (fudge_i64));
+		break;
+	case FUDGE_TYPE_FLOAT_ARRAY :
+		elem = _CreateFloatArray (pField->data.bytes, pField->numbytes / sizeof (fudge_f32));
+		break;
+	case FUDGE_TYPE_DOUBLE_ARRAY :
+		elem = _CreateDoubleArray (pField->data.bytes, pField->numbytes / sizeof (fudge_f64));
+		break;
+	case FUDGE_TYPE_STRING :
+		if (FudgeString_convertToASCIIZ (&psz,pField->data.string) == FUDGE_OK) {
+			elem = mkString (psz);
+			free (psz);
+		}
+		break;
+	case FUDGE_TYPE_FUDGE_MSG :
+		elem = RFudgeMsg::FromFudgeMsg (pField->data.message);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_4 :
+		elem = _CreateByteArray (pField->data.bytes, 4);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_8 :
+		elem = _CreateByteArray (pField->data.bytes, 8);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_16 :
+		elem = _CreateByteArray (pField->data.bytes, 16);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_20 :
+		elem = _CreateByteArray (pField->data.bytes, 20);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_32 :
+		elem = _CreateByteArray (pField->data.bytes, 32);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_64 :
+		elem = _CreateByteArray (pField->data.bytes, 64);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_128 :
+		elem = _CreateByteArray (pField->data.bytes, 128);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_256 :
+		elem = _CreateByteArray (pField->data.bytes, 256);
+		break;
+	case FUDGE_TYPE_BYTE_ARRAY_512 :
+		elem = _CreateByteArray (pField->data.bytes, 512);
+		break;
+	case FUDGE_TYPE_DATE :
+		StringCbPrintfA (sz, sizeof (sz), "%04d-%02d-%02d", pField->data.datetime.date.year, pField->data.datetime.date.month, pField->data.datetime.date.day);
+		elem = mkString (sz);
+		// TODO: return a proper R date object
+		break;
+	case FUDGE_TYPE_TIME :
+		StringCbPrintfA (sz, sizeof (sz), "%d:%02d:%02d.%09d", pField->data.datetime.time.seconds / 3600, (pField->data.datetime.time.seconds / 60) % 60, pField->data.datetime.time.seconds % 60, pField->data.datetime.time.nanoseconds);
+		elem = mkString (sz);
+		// TODO: return a proper R time object
+		break;
+	case FUDGE_TYPE_DATETIME :
+		StringCbPrintfA (sz, sizeof (sz), "%04d-%02d-%02d %d:%02d:%02d.%09d", pField->data.datetime.date.year, pField->data.datetime.date.month, pField->data.datetime.date.day, pField->data.datetime.time.seconds / 3600, (pField->data.datetime.time.seconds / 60) % 60, pField->data.datetime.time.seconds % 60, pField->data.datetime.time.nanoseconds);
+		elem = mkString (sz);
+		// TODO: return a proper R datetime object
+		break;
+	default :
+		StringCbPrintfA (sz, sizeof (sz), "Unknown Fudge type %d", pField->type);
+		elem = mkString (sz);
+		break;
+	}
+	SETCAR (field, elem);
+	SET_TAG (field, strValue);
+}
+
 SEXP RFudgeMsg::GetAllFields (SEXP message) {
 	SEXP result = R_NilValue;
 	FudgeMsg msg = _GetFudgeMsgFromPointer (message);
@@ -224,133 +349,124 @@ SEXP RFudgeMsg::GetAllFields (SEXP message) {
 				SEXP strOrdinal = install (R_FUDGEFIELD_ORDINAL);
 				PROTECT (strOrdinal);
 				int n;
-				char sz[32], *psz;
 				for (n = 0; n < nFields; n++) {
-					int nListSize = 1;
-					if (aFields[n].flags & FUDGE_FIELD_HAS_NAME) nListSize++;
-					if (aFields[n].flags & FUDGE_FIELD_HAS_ORDINAL) nListSize++;
-					SEXP field = allocList (nListSize);
-					SET_VECTOR_ELT (result, n, field);
-					if (aFields[n].flags & FUDGE_FIELD_HAS_NAME) {
-						if (FudgeString_convertToASCIIZ (&psz, aFields[n].name) == FUDGE_OK) {
-							SEXP name = mkString (psz);
-							free (psz);
-							SETCAR (field, name);
-							SET_TAG (field, strName);
-							field = CDR (field);
-						}
-					}
-					if (aFields[n].flags & FUDGE_FIELD_HAS_ORDINAL) {
-						SETCAR (field, ScalarInteger (aFields[n].ordinal));
-						SET_TAG (field, strOrdinal);
-						field = CDR (field);
-					}
-					SEXP elem = R_NilValue;
-					switch (aFields[n].type) {
-					case FUDGE_TYPE_INDICATOR :
-						elem = mkString (R_FUDGEINDICATOR);
-						break;
-					case FUDGE_TYPE_BOOLEAN :
-						elem = ScalarLogical (aFields[n].data.boolean);
-						break;
-					case FUDGE_TYPE_BYTE :
-						elem = ScalarInteger (aFields[n].data.byte);
-						break;
-					case FUDGE_TYPE_SHORT :
-						elem = ScalarInteger (aFields[n].data.i16);
-						break;
-					case FUDGE_TYPE_INT :
-						elem = ScalarInteger (aFields[n].data.i32);
-						break;
-					case FUDGE_TYPE_LONG :
-						elem = ScalarReal (aFields[n].data.i64);
-						break;
-					case FUDGE_TYPE_FLOAT :
-						elem = ScalarReal (aFields[n].data.f32);
-						break;
-					case FUDGE_TYPE_DOUBLE :
-						elem = ScalarReal (aFields[n].data.f64);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY :
-						elem = _CreateByteArray (aFields[n].data.bytes, aFields[n].numbytes / sizeof (fudge_byte));
-						break;
-					case FUDGE_TYPE_SHORT_ARRAY :
-						elem = _CreateShortArray (aFields[n].data.bytes, aFields[n].numbytes / sizeof (fudge_i16));
-						break;
-					case FUDGE_TYPE_INT_ARRAY :
-						elem = _CreateIntArray (aFields[n].data.bytes, aFields[n].numbytes / sizeof (fudge_i32));
-						break;
-					case FUDGE_TYPE_LONG_ARRAY :
-						elem = _CreateLongArray (aFields[n].data.bytes, aFields[n].numbytes / sizeof (fudge_i64));
-						break;
-					case FUDGE_TYPE_FLOAT_ARRAY :
-						elem = _CreateFloatArray (aFields[n].data.bytes, aFields[n].numbytes / sizeof (fudge_f32));
-						break;
-					case FUDGE_TYPE_DOUBLE_ARRAY :
-						elem = _CreateDoubleArray (aFields[n].data.bytes, aFields[n].numbytes / sizeof (fudge_f64));
-						break;
-					case FUDGE_TYPE_STRING :
-						if (FudgeString_convertToASCIIZ (&psz, aFields[n].data.string) == FUDGE_OK) {
-							elem = mkString (psz);
-							free (psz);
-						}
-						break;
-					case FUDGE_TYPE_FUDGE_MSG :
-						elem = FromFudgeMsg (aFields[n].data.message);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_4 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 4);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_8 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 8);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_16 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 16);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_20 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 20);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_32 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 32);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_64 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 64);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_128 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 128);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_256 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 256);
-						break;
-					case FUDGE_TYPE_BYTE_ARRAY_512 :
-						elem = _CreateByteArray (aFields[n].data.bytes, 512);
-						break;
-					case FUDGE_TYPE_DATE :
-						StringCbPrintfA (sz, sizeof (sz), "%04d-%02d-%02d", aFields[n].data.datetime.date.year, aFields[n].data.datetime.date.month, aFields[n].data.datetime.date.day);
-						elem = mkString (sz);
-						// TODO: return a proper R date object
-						break;
-					case FUDGE_TYPE_TIME :
-						StringCbPrintfA (sz, sizeof (sz), "%d:%02d:%02d.%09d", aFields[n].data.datetime.time.seconds / 3600, (aFields[n].data.datetime.time.seconds / 60) % 60, aFields[n].data.datetime.time.seconds % 60, aFields[n].data.datetime.time.nanoseconds);
-						elem = mkString (sz);
-						// TODO: return a proper R time object
-						break;
-					case FUDGE_TYPE_DATETIME :
-						StringCbPrintfA (sz, sizeof (sz), "%04d-%02d-%02d %d:%02d:%02d.%09d", aFields[n].data.datetime.date.year, aFields[n].data.datetime.date.month, aFields[n].data.datetime.date.day, aFields[n].data.datetime.time.seconds / 3600, (aFields[n].data.datetime.time.seconds / 60) % 60, aFields[n].data.datetime.time.seconds % 60, aFields[n].data.datetime.time.nanoseconds);
-						elem = mkString (sz);
-						// TODO: return a proper R datetime object
-						break;
-					default :
-						StringCbPrintfA (sz, sizeof (sz), "Unknown Fudge type %d", aFields[n].type);
-						elem = mkString (sz);
-						break;
-					}
-					SETCAR (field, elem);
-					SET_TAG (field, strValue);
+				    _GetField (strName, strOrdinal, strValue, result, n, aFields + n);
 				}
 				UNPROTECT (4);
 			} else {
 				LOGFATAL (ERR_INTERNAL);
+			}
+			delete aFields;
+		} else {
+			LOGFATAL (ERR_MEMORY);
+		}
+		FudgeMsg_release (msg);
+	} else {
+		LOGERROR (ERR_PARAMETER_VALUE);
+	}
+	return result;
+}
+
+static FudgeString _GetFudgeString (SEXP value) {
+	FudgeString result = NULL;
+	if (TYPEOF (value) == STRSXP) {
+		if (length (value) == 1) {
+			const char *pszString = CHAR (STRING_ELT (value, 0));
+			FudgeString_createFromASCIIZ (&result, pszString);
+		}
+	}
+	return result;
+}
+
+SEXP RFudgeMsg::GetFieldsByName (SEXP message, SEXP name) {
+	SEXP result = R_NilValue;
+	FudgeMsg msg = _GetFudgeMsgFromPointer (message);
+	if (msg) {
+		FudgeString fieldName = _GetFudgeString (name);
+		if (fieldName) {
+			int nFields = FudgeMsg_numFields (msg);
+			FudgeField *aFields = new FudgeField[nFields];
+			if (aFields) {
+				if (FudgeMsg_getFields (aFields, nFields, msg) == nFields) {
+					int n, nMatches = 0;
+					for (n = 0; n < nFields; n++) {
+						if ((aFields[n].flags & FUDGE_FIELD_HAS_NAME) && !FudgeString_compare (aFields[n].name, fieldName)) {
+							nMatches++;
+						}
+					}
+					result = allocVector (VECSXP, nMatches);
+					if (result != R_NilValue) {
+						PROTECT (result);
+						SEXP strValue = install (R_FUDGEFIELD_VALUE);
+						PROTECT (strValue);
+						SEXP strName = install (R_FUDGEFIELD_NAME);
+						PROTECT (strName);
+						SEXP strOrdinal = install (R_FUDGEFIELD_ORDINAL);
+						PROTECT (strOrdinal);
+						nMatches = 0;
+						for (n = 0; n < nFields; n++) {
+							if ((aFields[n].flags & FUDGE_FIELD_HAS_NAME) && !FudgeString_compare (aFields[n].name, fieldName)) {
+								_GetField (strName, strOrdinal, strValue, result, nMatches++, aFields + n);
+							}
+						}
+						UNPROTECT (4);
+					} else {
+						LOGERROR (ERR_R_FUNCTION);
+					}
+				} else {
+					LOGERROR (ERR_INTERNAL);
+				}
+				delete aFields;
+			} else {
+				LOGFATAL (ERR_MEMORY);
+			}
+			FudgeString_release (fieldName);
+		} else {
+			LOGERROR (ERR_PARAMETER_VALUE);
+		}
+		FudgeMsg_release (msg);
+	} else {
+		LOGERROR (ERR_PARAMETER_VALUE);
+	}
+	return result;
+}
+
+SEXP RFudgeMsg::GetFieldsByOrdinal (SEXP message, SEXP ordinal) {
+	SEXP result = R_NilValue;
+	FudgeMsg msg = _GetFudgeMsgFromPointer (message);
+	if (msg) {
+		int nOrdinal = *INTEGER (ordinal);
+		int nFields = FudgeMsg_numFields (msg);
+		FudgeField *aFields = new FudgeField[nFields];
+		if (aFields) {
+			if (FudgeMsg_getFields (aFields, nFields, msg) == nFields) {
+				int n, nMatches = 0;
+				for (n = 0; n < nFields; n++) {
+					if ((aFields[n].flags & FUDGE_FIELD_HAS_ORDINAL) && (aFields[n].ordinal == nOrdinal)) {
+						nMatches++;
+					}
+				}
+				result = allocVector (VECSXP, nMatches);
+				if (result != R_NilValue) {
+					PROTECT (result);
+					SEXP strValue = install (R_FUDGEFIELD_VALUE);
+					PROTECT (strValue);
+					SEXP strName = install (R_FUDGEFIELD_NAME);
+					PROTECT (strName);
+					SEXP strOrdinal = install (R_FUDGEFIELD_ORDINAL);
+					PROTECT (strOrdinal);
+					nMatches = 0;
+					for (n = 0; n < nFields; n++) {
+						if ((aFields[n].flags & FUDGE_FIELD_HAS_ORDINAL) && (aFields[n].ordinal == nOrdinal)) {
+							_GetField (strName, strOrdinal, strValue, result, nMatches++, aFields + n);
+						}
+					}
+					UNPROTECT (4);
+				} else {
+					LOGERROR (ERR_INTERNAL);
+				}
+			} else {
+				LOGERROR (ERR_INTERNAL);
 			}
 			delete aFields;
 		} else {

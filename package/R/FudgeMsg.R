@@ -22,17 +22,23 @@ fields.FudgeMsg <- function (x) {
   OpenGammaCall ("FudgeMsg_getAllFields", x@message)
 }
 
-# Get a named field of a Fudge message
-field.FudgeMsg <- function (x, field) {
-  fields <- fields.FudgeMsg (x)
-  if (length (fields) > 0) {
-    if (length (field) > 1) {
-      sapply (field, function (y) { .field.FudgeMsg (fields, y) })
-    } else {
-      .field.FudgeMsg (fields, field)
-    }
+# Get one or more named fields of a Fudge message
+.fields.FudgeMsg <- function (x, field) {
+  .assert.FudgeMsg (x)
+  if (is.numeric (field)) {
+    OpenGammaCall ("FudgeMsg_getFieldsByOrdinal", x@message, as.integer (field))
   } else {
-    fields
+    OpenGammaCall ("FudgeMsg_getFieldsByName", x@message, as.character (field))
+  }
+}
+
+# Get one or more field values from a Fudge message
+field.FudgeMsg <- function (x, field) {
+  result <- sapply (.fields.FudgeMsg (x, field), function (y) { y$Value })
+  if (length (result) == 1) {
+    result[[1]]
+  } else {
+    result
   }
 }
 

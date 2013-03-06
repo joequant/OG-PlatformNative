@@ -115,6 +115,8 @@ static R_CallMethodDef g_aMethods[] = {
 	F (ExternalRef_create, 2),
 	F (ExternalRef_fetch, 1),
 	F (FudgeMsg_getAllFields, 1),
+	F (FudgeMsg_getFieldsByName, 2),
+	F (FudgeMsg_getFieldsByOrdinal, 2),
 	F (FudgeMsg_setSerialiseMode, 1),
 	F (Functions_count, 0),
 	F (Functions_getCategory, 1),
