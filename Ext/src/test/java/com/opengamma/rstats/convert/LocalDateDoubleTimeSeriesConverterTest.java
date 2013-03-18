@@ -26,7 +26,7 @@ import com.opengamma.util.timeseries.localdate.LocalDateDoubleTimeSeries;
 /**
  * Tests the {@link LocalDateDoubleTimeSeriesConverter} class.
  */
-@Test
+@Test(groups = "unit")
 public class LocalDateDoubleTimeSeriesConverterTest extends AbstractConverterTest {
 
   private LocalDateDoubleTimeSeries createTimeSeries() {
