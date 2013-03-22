@@ -20,8 +20,8 @@ import com.opengamma.language.invoke.TypeConverterProvider;
 import com.opengamma.language.invoke.TypeConverterProviderBean;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.rstats.data.RDataInfo;
-import com.opengamma.util.timeseries.localdate.ArrayLocalDateDoubleTimeSeries;
-import com.opengamma.util.timeseries.localdate.LocalDateDoubleTimeSeries;
+import com.opengamma.timeseries.localdate.ArrayLocalDateDoubleTimeSeries;
+import com.opengamma.timeseries.localdate.LocalDateDoubleTimeSeries;
 
 /**
  * Tests the {@link LocalDateDoubleTimeSeriesConverter} class.
