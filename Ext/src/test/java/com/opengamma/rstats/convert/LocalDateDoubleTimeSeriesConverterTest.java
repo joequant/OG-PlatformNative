@@ -20,8 +20,8 @@ import com.opengamma.language.invoke.TypeConverterProvider;
 import com.opengamma.language.invoke.TypeConverterProviderBean;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.rstats.data.RDataInfo;
-import com.opengamma.timeseries.localdate.ArrayLocalDateDoubleTimeSeries;
-import com.opengamma.timeseries.localdate.LocalDateDoubleTimeSeries;
+import com.opengamma.timeseries.date.localdate.ImmutableLocalDateDoubleTimeSeries;
+import com.opengamma.timeseries.date.localdate.LocalDateDoubleTimeSeries;
 
 /**
  * Tests the {@link LocalDateDoubleTimeSeriesConverter} class.
@@ -32,7 +32,7 @@ public class LocalDateDoubleTimeSeriesConverterTest extends AbstractConverterTes
   private LocalDateDoubleTimeSeries createTimeSeries() {
     final LocalDate[] dates = new LocalDate[] {LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 4), LocalDate.of(2010, 4, 5) };
     final double[] values = new double[] {4, 5, 6 };
-    return new ArrayLocalDateDoubleTimeSeries(dates, values);
+    return ImmutableLocalDateDoubleTimeSeries.of(dates, values);
   }
 
   private Data createData() {
