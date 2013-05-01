@@ -6,12 +6,11 @@
 
 # Produce a data frame from a Fudge encoded map
 fudgeMsgToDataFrame.Map <- function (x, keyFun = NULL, valueFun = NULL) {
-  fields <- fields.FudgeMsg (x)
   fn <- keyFun
   if (is.null (fn)) {
     fn <- function (x) { x }
   }
-  keys <- sapply (.field.FudgeMsg (fields, 1), fn)
+  keys <- sapply (field.FudgeMsg (x, 1), fn)
   if (is.list (keys)) {
     x
   } else {
@@ -19,7 +18,7 @@ fudgeMsgToDataFrame.Map <- function (x, keyFun = NULL, valueFun = NULL) {
     if (is.null (fn)) {
       fn <- function (x) { x }
     }
-    values <- sapply (.field.FudgeMsg (fields, 2), fn)
+    values <- sapply (field.FudgeMsg (x, 2), fn)
     if (is.list (values)) {
       x
     } else {

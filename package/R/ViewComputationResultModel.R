@@ -87,21 +87,68 @@ calculationDuration.ViewComputationResultModel <- function (msg) {
   eval (parse (text = cmd))
 }
 
-# Converts the results Fudge message payload to a list of data.frame objects
-results.ViewComputationResultModel <- function (msg) {
+# Converts the results from a configuration into a data.frame object
+.configurationResultsMeta.ViewComputationResultModel <- function (msg) {
+  computationTargetType <- c ()
+  computationTargetIdentifier <- c ()
+  values <- list ()
+  for (field in fields.FudgeMsg (msg)) {
+    specification <- field$Value$specification
+    specificationName <- specification$valueName
+    specificationIdentifier <- specification$computationTargetIdentifier
+    specificationType <- specification$computationTargetType
+    specificationProperties <- .toString.ValueProperties (specification$properties)
+    i <- which (computationTargetIdentifier == specificationIdentifier)
+    if (length (i) == 0) {
+      computationTargetIdentifier <- append (computationTargetIdentifier, specificationIdentifier)
+      computationTargetType <- append (computationTargetType, specificationType)
+      i <- length (computationTargetIdentifier)
+    }
+    valueName <- new.ValueRequirement (specificationName, specificationProperties)
+    column <- values[[valueName]]
+    if (is.null (column)) {
+      values[[valueName]] <- NA
+    }
+  }
+  computationTargetIdentifier.length <- length (computationTargetIdentifier);
+  values <- lapply (values, function (x) {
+    rep (NA, computationTargetIdentifier.length)
+  })
+  cmd <- c ("data.frame (identifier = computationTargetIdentifier, type = computationTargetType")
+  cmd <- append (cmd, sapply (names (values), function (valueName) {
+    escaped <- OpenGammaCall ("String_escape", valueName, "\\\"")
+    paste ("`", escaped, "` = values[[\"", escaped, "\"]]", sep = "")
+  }))
+  cmd <- append (cmd, "row.names = \"identifier\", check.names=FALSE)")
+  cmd <- paste (cmd, collapse = ", ")
+  eval (parse (text = cmd))
+}
+
+# Produces a list of data.frame objects, using the callback function to extract each calculation configuration result
+.results.ViewComputationResultModel <- function (msg, configurationResults) {
   configurations <- msg[1]
   results <- msg[2]
   result <- list ()
   if (length (configurations) > 0) {
     if (length (configurations) > 1) {
       for (index in seq (from = 1, to = length (configurations))) {
-        result[[configurations[index]]] <- .configurationResults.ViewComputationResultModel (results[[index]])
+        result[[configurations[index]]] <- configurationResults (results[[index]])
       }
     } else {
-      result[[configurations]] <- .configurationResults.ViewComputationResultModel (results)
+      result[[configurations]] <- configurationResults (results)
     }
   }
   result
+}
+
+# Converts the results Fudge message payload to a list of data.frame objects
+results.ViewComputationResultModel <- function (msg) {
+  .results.ViewComputationResultModel (msg, .configurationResults.ViewComputationResultModel)
+}
+
+# Converts the results Fudge message payload to a list of data.frame objects that don't contain the values
+resultsMeta.ViewComputationResultModel <- function (msg) {
+  .results.ViewComputationResultModel (msg, .configurationResultsMeta.ViewComputationResultModel)
 }
 
 # Find the column names that satisfy a given value requirement name (and properties)
@@ -153,42 +200,15 @@ firstValue.ViewComputationResultModel <- function (row, columns) {
     }
   }
   for (field in fields.FudgeMsg (data)) {
-    computationTargetIdentifier <- NULL
-    specificationProperties <- NULL
-    specificationName <- NULL
-    value <- NULL
-    for (x in fields.FudgeMsg (field$Value)) {
-      name <- x$Name
-      if (name == "specification") {
-        for (y in fields.FudgeMsg (x$Value)) {
-          name <- y$Name
-          if (name == "properties") {
-            specificationProperties <- y$Value
-          } else {
-            if (name == "valueName") {
-              specificationName <- y$Value
-              if (!(specificationName %in% names)) {
-                specificationName <- NULL
-                break
-              }
-            } else {
-              if (name == "computationTargetIdentifier") {
-                computationTargetIdentifier <- y$Value
-              }
-            }
-          }
-        }
-        if (is.null (specificationName)) {
-          break
-        }
-      } else {
-        if (name == "value") {
-          value <- x$Value
-        }
-      }
-    }
+    computedValue <- field$Value
+    specification <- computedValue$specification
+    specificationName <- specification$valueName
     if (!is.null (specificationName)) {
-      valueReq <- new.ValueRequirement (specificationName, .toString.ValueProperties (specificationProperties))
+      computationTargetIdentifier <- specification$computationTargetIdentifier
+      specificationProperties <- .toString.ValueProperties (specification$properties)
+      specificationName <- specification$valueName
+      value <- computedValue$value
+      valueReq <- new.ValueRequirement (specificationName, specificationProperties)
       if (valueReq %in% col) {
         values[[computationTargetIdentifier]] <- value
       }
@@ -269,5 +289,11 @@ Install.ViewComputationResultModel <- function (stub) {
     "Returns the first non-NA value from the row. Typically the columns requested are a subset that can satisfy a given value requirement. This will then return the first usable value found. Values appear in multiple columns because a column is created in the data frame for each value name/properties pair. Differences in, for example, the function identifier may mean that there is not a single column containing all of the desired values requested in a view definition.",
     list (row = "The data frame row", columns = "Vector of column names to look in"),
     "OpenGamma:::firstValue.ViewComputationResultModel (row, columns)")
+  stub.ViewComputationResultModel$func (
+    "resultsMeta",
+    "ViewComputationResultModel results accessor",
+    "Accesses the results field of a ViewComputationResultModel object, but fetches the metadata only - the values are not decoded into the data frames.",
+    list (x = "The object to query"),
+    "OpenGamma:::resultsMeta.ViewComputationResultModel (x@msg$results)")
   stub.ViewComputationResultModel$end ()
 }
