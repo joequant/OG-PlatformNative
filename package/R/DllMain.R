@@ -223,6 +223,7 @@
   Install.Array (stub)
   Install.Bloomberg (stub)
   Install.Currency (stub)
+  Install.DoubleLabelledMatrix2D (stub)
   Install.MarketDataRequirementNames (stub)
   Install.MarketDataSnapshot (stub)
   Install.NotCalculatedSentinel (stub)
