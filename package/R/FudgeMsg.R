@@ -22,6 +22,12 @@ fields.FudgeMsg <- function (x) {
   OpenGammaCall ("FudgeMsg_getAllFields", x@message)
 }
 
+# Get all the values from a Fudge message
+values.FudgeMsg <- function (x) {
+  .assert.FudgeMsg (x)
+  OpenGammaCall ("FudgeMsg_getAllValues", x@message)
+}
+
 # Get one or more named fields of a Fudge message
 .fields.FudgeMsg <- function (x, field) {
   .assert.FudgeMsg (x)

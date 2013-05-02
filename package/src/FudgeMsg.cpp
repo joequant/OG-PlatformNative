@@ -387,6 +387,35 @@ SEXP RFudgeMsg::GetAllFields (SEXP message) {
 	return result;
 }
 
+SEXP RFudgeMsg::GetAllValues (SEXP message) {
+	SEXP result = R_NilValue;
+	FudgeMsg msg = _GetFudgeMsgFromPointer (message);
+	if (msg) {
+		int nFields = FudgeMsg_numFields (msg);
+		FudgeField *aFields = new FudgeField[nFields];
+		if (aFields) {
+			if (FudgeMsg_getFields (aFields, nFields, msg) == nFields) {
+				result = allocVector (VECSXP, nFields);
+				PROTECT (result);
+				int n;
+				for (n = 0; n < nFields; n++) {
+					_GetValue (result, n, aFields + n);
+				}
+				UNPROTECT (1);
+			} else {
+				LOGFATAL (ERR_INTERNAL);
+			}
+			delete aFields;
+		} else {
+			LOGFATAL (ERR_MEMORY);
+		}
+		FudgeMsg_release (msg);
+	} else {
+		LOGERROR (ERR_PARAMETER_VALUE);
+	}
+	return result;
+}
+
 static FudgeString _GetFudgeString (SEXP value) {
 	FudgeString result = NULL;
 	if (TYPEOF (value) == STRSXP) {
