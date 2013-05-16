@@ -262,7 +262,7 @@ Install.ViewComputationResultModel <- function (stub) {
   .object.FudgeMsg (stub.ViewComputationResultModel)
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "viewProcessId")
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "viewCycleId")
-  .field.object.FudgeMsg (stub.ViewComputationResultModel, "valuationTime")
+  .field.object.FudgeMsg (stub.ViewComputationResultModel, "viewCycleExecutionOptions")
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "calculationTime")
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "calculationDuration", "calculationDuration.ViewComputationResultModel")
   .field.object.FudgeMsg (stub.ViewComputationResultModel, "versionCorrection")
@@ -289,6 +289,12 @@ Install.ViewComputationResultModel <- function (stub) {
     "Returns the first non-NA value from the row. Typically the columns requested are a subset that can satisfy a given value requirement. This will then return the first usable value found. Values appear in multiple columns because a column is created in the data frame for each value name/properties pair. Differences in, for example, the function identifier may mean that there is not a single column containing all of the desired values requested in a view definition.",
     list (row = "The data frame row", columns = "Vector of column names to look in"),
     "OpenGamma:::firstValue.ViewComputationResultModel (row, columns)")
+  stub.ViewComputationResultModel$func (
+    "valuationTime",
+    "Get the valuation time of the cycle",
+    "Returns the valuation time from the cycle. This is the same as calling viewCycleExecutionOptions and then extracting the valuationTime field from that.",
+    list (x = "The object to query"),
+    "x@msg$viewCycleExecutionOptions$valuation")
   stub.ViewComputationResultModel$func (
     "resultsMeta",
     "ViewComputationResultModel results accessor",

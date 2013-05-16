@@ -86,10 +86,14 @@ curves <- lapply (curves, function (a) {
   # Apply the curve's interpolator function to adjust the raw nodal points to get values suitable for plotting
   # by creating a matrix where each row is a yield curve, and each column corresponds to the interpolated points
   y.points <- matrix (sapply (a$Curve, function (b) { GetCurveYValues (b, x.points) }), nc = length (x.points), byrow = TRUE)
-  # Create an XTS time series that can be plotted (note the multiply to give us bigger values to plot)
-  curve.dates <- as.Date (a$Date)
-  curve.xts <- xts (y.points * 100, order.by = as.Date (a$Date))
-  colnames (curve.xts) <- x.points
-  a$xts <- curve.xts
+  if (require ("xts")) {
+    # Create an XTS time series that can be plotted (note the multiply to give us bigger values to plot)
+    curve.xts <- xts (y.points * 100, order.by = as.Date (a$Date))
+    colnames (curve.xts) <- x.points
+    a$xts <- curve.xts
+  } else {
+    colnames (y.points) <- x.points
+    a$ts <- ts (y.points)
+  }
   a
 })
