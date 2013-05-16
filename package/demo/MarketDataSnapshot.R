@@ -15,7 +15,7 @@ shiftCurveByPoint <- function (curve, amount) {
     apply (x.data, 1, function (y) {
       v <- y["MarketValue"]
       if (!is.na (v)) {
-        curve <<- SetYieldCurvePoint (curve, y["ValueName"], paste (x.name, y["Identifier"], sep = '~'), as.real (v) + shift)
+        curve <<- SetYieldCurvePoint (curve, y["ValueName"], paste (x.name, y["Identifier"], sep = '~'), as.real (v) + amount)
       }
       invisible (0)
     })
