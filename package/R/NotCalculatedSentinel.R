@@ -7,6 +7,9 @@
 # Functions that weren't executed because of missing inputs
 missingInputs.NotCalculatedSentinel <- "Missing inputs"
 
+# Functions that weren't executed because of missing market data
+missingMarketData.NorCalculatedSentinel <- "Missing market data"
+
 # Functions that were executed but failed to produce one or more results
 evaluationError.NotCalculatedSentinel <- "Evaluation error"
 
@@ -25,7 +28,11 @@ fromFudgeMsg.NotCalculatedSentinel <- function (msg) {
       if (enum == "SUPPRESSED") {
         suppressed.NotCalculatedSentinel
       } else {
-        stop (paste ("Invalid ENUM value", enum))
+        if (enum == "MISSING_MARKET_DATA") {
+          missingMarketData.NotCalculatedSentinel
+        } else {
+          stop (paste ("Invalid ENUM value", enum))
+        }
       }
     }
   }
@@ -33,7 +40,10 @@ fromFudgeMsg.NotCalculatedSentinel <- function (msg) {
 
 # Brings declarations for NotCalculatedSentinel into scope
 Install.NotCalculatedSentinel <- function (stub) {
-  stub.NotCalculatedSentinel <- stub$begin ("NotCalculatedSentinel", Category.VALUE)
-  stub.NotCalculatedSentinel$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.NotCalculatedSentinel (msg)")
-  stub.NotCalculatedSentinel$end ()
+  stub.MissingInput <- stub$begin ("MissingInput", Category.VALUE)
+  stub.MissingInput$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.NotCalculatedSentinel (msg)")
+  stub.MissingInput$end ()
+  stub.MissingOutput <- stub$begin ("MissingOutput", Category.VALUE)
+  stub.MissingOutput$fromFudgeMsg ("OpenGamma:::fromFudgeMsg.NotCalculatedSentinel (msg)")
+  stub.MissingOutput$end ()
 }
