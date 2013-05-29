@@ -1,5 +1,6 @@
-OpenGamma Tools for R
+OpenGamma tools for R
 ---------------------
+This repository contains the R integration project.
 
 This repository contains the code for the OpenGamma R library. We will soon be
 merging this code into the main OG-Platform repository containing all of our
@@ -21,3 +22,6 @@ It is not currently possible to build the R package from a Windows environment
 without configuring R to work with Microsoft Visual Studio. We will soon be
 posting instructions on how to do this, but will be publishing MSI files as
 part of the 1.0 release for those unable to perform a source build.
+
+
+[![OpenGamma](http://developers.opengamma.com/res/display/default/chrome/masthead_logo.png "OpenGamma")](http://developers.opengamma.com)
