@@ -6,10 +6,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.opengamma</groupId>
+    <groupId>com.opengamma.platform</groupId>
     <artifactId>og-parent</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
-    <relativePath>../OG-Parent</relativePath>
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../OG-Platform/projects/OG-Parent</relativePath>
   </parent>
   <artifactId>og-rstats</artifactId>
   <packaging>jar</packaging>
@@ -39,12 +39,19 @@
     <testSourceDirectory>Ext/src/test/java</testSourceDirectory>
   </build>
 
+  <!-- ==================================================================== -->
   <dependencies>
     <dependency>
-      <groupId>com.opengamma</groupId>
+      <groupId>com.opengamma.platform</groupId>
       <artifactId>og-language</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <!-- ==================================================================== -->
+  <properties>
+    <fudge.proto.searchDir>${basedir}/src/main/java</fudge.proto.searchDir>
+    <javadoc.footer.license>Commercial license terms apply</javadoc.footer.license>
+  </properties>
 
 </project>
