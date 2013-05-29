@@ -115,6 +115,11 @@ static R_CallMethodDef g_aMethods[] = {
 	F (ExternalRef_create, 2),
 	F (ExternalRef_fetch, 1),
 	F (FudgeMsg_getAllFields, 1),
+	F (FudgeMsg_getAllValues, 1),
+	F (FudgeMsg_getFieldsByName, 2),
+	F (FudgeMsg_getValuesByName, 2),
+	F (FudgeMsg_getFieldsByOrdinal, 2),
+	F (FudgeMsg_getValuesByOrdinal, 2),
 	F (FudgeMsg_setSerialiseMode, 1),
 	F (Functions_count, 0),
 	F (Functions_getCategory, 1),
@@ -144,6 +149,19 @@ static R_CallMethodDef g_aMethods[] = {
 	{ NULL, NULL, 0 }
 };
 
+/// Shutdown hook (if it has not already been called) for process termination or shared library unload.
+static void _shutdown () {
+	LOGDEBUG (TEXT ("Shutdown hook"));
+	if (Shutdown ()) {
+		LOGINFO (TEXT ("Connector shutdown from termination hook"));
+	} else {
+		int ec = GetLastError ();
+		if (ec != EALREADY) {
+			LOGWARN (TEXT ("Couldn't shut down library, error ") << ec);
+		}
+	}
+}
+
 /// Initialise the OpenGamma package. A connection is established to the Java stack and the repositories
 /// of functions, procedures and livedata sources creates for use by R.
 ///
@@ -170,6 +188,7 @@ void LibExport R_init_OpenGamma (DllInfo *pInfo) {
 		LOGERROR (ERR_INITIALISATION);
 	}
 	R_registerRoutines (pInfo, NULL, g_aMethods, NULL, NULL);
+	atexit (_shutdown);
 }
 
 /// Shuts down the OpenGamma package. The connection to the Java stack is released and any allocated

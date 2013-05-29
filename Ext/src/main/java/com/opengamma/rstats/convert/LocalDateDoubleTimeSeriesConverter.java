@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.time.calendar.LocalDate;
+import org.threeten.bp.LocalDate;
 
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
@@ -24,9 +24,9 @@ import com.opengamma.language.convert.ValueConversionContext;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 import com.opengamma.rstats.data.RDataInfo;
+import com.opengamma.timeseries.date.localdate.ImmutableLocalDateDoubleTimeSeries;
+import com.opengamma.timeseries.date.localdate.LocalDateDoubleTimeSeries;
 import com.opengamma.util.time.DateUtils;
-import com.opengamma.util.timeseries.localdate.ArrayLocalDateDoubleTimeSeries;
-import com.opengamma.util.timeseries.localdate.LocalDateDoubleTimeSeries;
 
 /**
  * Converts a {@link LocalDateDoubleTimeSeries} to/from an R time-series wrapper.
@@ -83,7 +83,7 @@ public class LocalDateDoubleTimeSeriesConverter extends AbstractTypeConverter {
           skip++;
         }
       }
-      conversionContext.setResult(new ArrayLocalDateDoubleTimeSeries(timeSeriesDates, timeSeriesValues));
+      conversionContext.setResult(ImmutableLocalDateDoubleTimeSeries.of(timeSeriesDates, timeSeriesValues));
     } else {
       // Converting from LocalDateDoubleTimeSeries to Data
       final LocalDateDoubleTimeSeries timeSeries = (LocalDateDoubleTimeSeries) value;

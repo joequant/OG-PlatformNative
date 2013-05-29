@@ -15,6 +15,11 @@ private:
 	~RFudgeMsg () { }
 public:
 	static SEXP GetAllFields (SEXP msg);
+	static SEXP GetAllValues (SEXP msg);
+	static SEXP GetFieldsByName (SEXP msg, SEXP name);
+	static SEXP GetValuesByName (SEXP msg, SEXP name);
+	static SEXP GetFieldsByOrdinal (SEXP msg, SEXP ordinal);
+	static SEXP GetValuesByOrdinal (SEXP msg, SEXP ordinal);
 	static SEXP FromFudgeMsg (FudgeMsg msg);
 	static FudgeMsg ToFudgeMsg (const CRCallback *poR, SEXP value);
 	static SEXP SetSerialiseMode (SEXP on);
@@ -25,6 +30,26 @@ extern "C" {
 
 	SEXP RPROC FudgeMsg_getAllFields1 (SEXP msg) {
 		return RFudgeMsg::GetAllFields (msg);
+	}
+
+	SEXP RPROC FudgeMsg_getAllValues1 (SEXP msg) {
+		return RFudgeMsg::GetAllValues (msg);
+	}
+
+	SEXP RPROC FudgeMsg_getFieldsByName2 (SEXP msg, SEXP name) {
+		return RFudgeMsg::GetFieldsByName (msg, name);
+	}
+
+	SEXP RPROC FudgeMsg_getValuesByName2 (SEXP msg, SEXP name) {
+		return RFudgeMsg::GetValuesByName (msg, name);
+	}
+
+	SEXP RPROC FudgeMsg_getFieldsByOrdinal2 (SEXP msg, SEXP ordinal) {
+		return RFudgeMsg::GetFieldsByOrdinal (msg, ordinal);
+	}
+
+	SEXP RPROC FudgeMsg_getValuesByOrdinal2 (SEXP msg, SEXP ordinal) {
+		return RFudgeMsg::GetValuesByOrdinal (msg, ordinal);
 	}
 
 	SEXP RPROC FudgeMsg_setSerialiseMode1 (SEXP on) {

@@ -17,7 +17,7 @@ private:
 	FudgeMsg m_msg;
 
 	/// The binary encoding of the message.
-	void *m_pData;
+	void * volatile m_pData;
 
 	/// The length of the binary encoding in bytes.
 	size_t m_cbData;
@@ -34,20 +34,14 @@ public:
 	/// @return the message
 	FudgeMsg GetMessage () const { FudgeMsg_retain (m_msg); return m_msg; }
 
-	/// Returns the binary encoding of the message.
-	///
-	/// @return the encoding
-	const void *GetData () const { return m_pData; }
-
-	/// Returns the length of the binary encoding of the message in bytes.
-	///
-	/// @return the length in bytes
-	size_t GetLength () const { return m_cbData; }
-
+	const void *GetData ();
+	size_t GetLength ();
 	void Retain ();
 	static void Release (CFudgeMsgInfo *poMessage);
 	static CFudgeMsgInfo *GetMessage (FudgeMsg msg);
 	static CFudgeMsgInfo *GetMessage (const void *pData, size_t cbData);
+	static size_t GetBufferSize ();
+	static size_t GetBufferCount ();
 };
 
 #endif /* ifndef __inc_og_rstats_client_fudgemsgmap_h */

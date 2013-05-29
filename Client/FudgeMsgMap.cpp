@@ -36,114 +36,37 @@ public:
 
 typedef stdext::hash_map<FudgeMsg, CFudgeMsgInfo *, FudgeMsg_hasher> TFudgeMsgMap;
 
-#endif /* ifdef _WIN32 */
-
-/// The underlying map implementation.
-class CMap {
-private:
-	
-	/// Mutex to protect the map and objects within it.
-	CMutex m_oMutex;
-
-#ifdef _WIN32
-
-	/// Underlying hash map.
-	TFudgeMsgMap m_oMap;
-
 #else /* ifdef _WIN32 */
 
-	/// Allocation pool for the hash map
-	apr_pool_t *m_pPool;
+/// Hashes a FudgeMsg
+typedef struct {
+	long operator () (const FudgeMsg &msg) const {
+		return FudgeMsg_hash (msg);
+	}
+} FudgeMsg_hasher;
 
-	/// Underlying hash map
-	apr_hash_t *m_pHash;
+/// Compares two Fudge messages for equality
+typedef struct {
+	bool operator () (const FudgeMsg &a, const FudgeMsg &b) const {
+		return FudgeMsg_compare (a, b) == 0;
+	}
+} FudgeMsg_comparator;
+
+typedef std::tr1::unordered_map<FudgeMsg, CFudgeMsgInfo *, FudgeMsg_hasher, FudgeMsg_comparator> TFudgeMsgMap;
 
 #endif /* ifdef _WIN32 */
 
-public:
-	
-	/// Creates and initialises the map structures.
-	CMap () {
-#ifndef _WIN32
-		m_pPool = NULL;
-		apr_pool_create_core (&m_pPool);
-		m_pHash = apr_hash_make (m_pPool);
-#endif /* ifndef _WIN32 */
-	}
+/// Mutex to protect the map and objects within it.
+static CMutex g_oMutex;
 
-	/// Destroys the map structures.
-	~CMap () {
-		// TODO: should really destroy the objects in the map
-#ifndef _WIN32
-		apr_pool_destroy (m_pPool);
-#endif /* ifndef _WIN32 */
-	}
+/// Underlying hash map containing the already seen/referenced Fudge messages.
+static TFudgeMsgMap g_oMap;
 
-	/// Enters the mutex.
-	void EnterMutex () {
-		m_oMutex.Enter ();
-	}
+/// Count of the total number of bytes allocated and used in the map. This is based on the length of the
+/// Fudge messages plus 32 bytes of overhead for each.
+static volatile size_t g_cbData;
 
-	/// Leaves the mutex.
-	void LeaveMutex () {
-		m_oMutex.Leave ();
-	}
-
-#ifdef _WIN32
-
-	/// Fetch a message from the map. The caller must hold the mutex.
-	///
-	/// @param[in] msg the message to search for
-	/// @return the message structure, or NULL if none is found
-	CFudgeMsgInfo *Get (FudgeMsg msg) const {
-		TFudgeMsgMap::const_iterator itr = m_oMap.find (msg);
-		if (itr == m_oMap.end ()) {
-			return NULL;
-		} else {
-			return itr->second;
-		}
-	}
-
-#else /* ifdef _WIN32 */
-
-	/// Fetch a message from the map. The caller must hold the mutex.
-	///
-	/// @param[in] pData the binary encoding of the message
-	/// @param[in] cbData the length of the binary encoding
-	/// @return the message structure, or NULL if none is found
-	CFudgeMsgInfo *Get (const void *pData, size_t cbData) const {
-		return (CFudgeMsgInfo*)apr_hash_get (m_pHash, pData, cbData);
-	}
-
-#endif /* ifdef _WIN32 */
-
-	/// Stores a message in the map. The caller must hold the mutex.
-	void Put (CFudgeMsgInfo *poMessage) {
-		LOGDEBUG (TEXT ("Adding message to map"));
-#ifdef _WIN32
-		m_oMap.insert (TFudgeMsgMap::value_type (poMessage->GetMessage (), poMessage));
-#else /* ifdef _WIN32 */
-		apr_hash_set (m_pHash, poMessage->GetData (), poMessage->GetLength (), poMessage);
-#endif /* ifdef _WIN32 */
-	}
-
-	/// Removes a message from the map. The caller must hold the mutex.
-	void Remove (CFudgeMsgInfo *poMessage) {
-		LOGDEBUG (TEXT ("Removing message from map"));
-#ifdef _WIN32
-		TFudgeMsgMap::iterator itr = m_oMap.find (poMessage->GetMessage ());
-		if (itr != m_oMap.end ()) {
-			m_oMap.erase (itr);
-		}
-#else /* ifdef _WIN32 */
-		apr_hash_set (m_pHash, poMessage->GetData (), poMessage->GetLength (), NULL);
-#endif /* ifdef _WIN32 */
-	}
-
-};
-
-/// The map implementation instance.
-static CMap g_oMap;
+#define MESSAGE_INFO_OVERHEAD	(16 * sizeof (void *))
 
 /// Creates a new message entry. The initial reference count is 1.
 ///
@@ -162,25 +85,10 @@ CFudgeMsgInfo::CFudgeMsgInfo (FudgeMsg msg, void *pData, size_t cbData) {
 CFudgeMsgInfo::~CFudgeMsgInfo () {
 	assert (m_nRefCount == 0);
 	FudgeMsg_release (m_msg);
-	free (m_pData);
-}
-
-/// Increments the R reference count.
-void CFudgeMsgInfo::Retain () {
-	g_oMap.EnterMutex ();
-	m_nRefCount++;
-	g_oMap.LeaveMutex ();
-}
-
-/// Decrements the R reference count, destroying the object when the count reaches zero.
-void CFudgeMsgInfo::Release (CFudgeMsgInfo *poMessage) {
-	g_oMap.EnterMutex ();
-	LOGDEBUG (TEXT ("Releasing CFudgeMsgInfo, rc=") << poMessage->m_nRefCount);
-	if (--poMessage->m_nRefCount == 0) {
-		g_oMap.Remove (poMessage);
-		delete poMessage;
+	if (m_pData) {
+		free (m_pData);
+		g_cbData -= m_cbData;
 	}
-	g_oMap.LeaveMutex ();
 }
 
 /// Creates a binary encoding of a Fudge message.
@@ -205,6 +113,57 @@ static void *_EncodeFudgeMsg (FudgeMsg msg, size_t *pcbData) {
 	}
 	*pcbData = cbData;
 	return pData;
+}
+
+/// Returns the binary encoding of the message.
+///
+/// @return the encoding
+const void *CFudgeMsgInfo::GetData () {
+	if (!m_pData) {
+		g_oMutex.Enter ();
+		if (!m_pData) {
+			m_pData = _EncodeFudgeMsg (m_msg, &m_cbData);
+		}
+		g_oMutex.Leave ();
+	}
+	return m_pData;
+}
+
+/// Returns the length of the binary encoding of the message in bytes.
+///
+/// @return the length if bytes
+size_t CFudgeMsgInfo::GetLength () {
+	if (!m_pData) {
+		g_oMutex.Enter ();
+		if (!m_pData) {
+			m_pData = _EncodeFudgeMsg (m_msg, &m_cbData);
+		}
+		g_oMutex.Leave ();
+	}
+	return m_cbData;
+}
+
+/// Increments the R reference count.
+void CFudgeMsgInfo::Retain () {
+	g_oMutex.Enter ();
+	m_nRefCount++;
+	g_oMutex.Leave ();
+}
+
+/// Decrements the R reference count, destroying the object when the count reaches zero.
+void CFudgeMsgInfo::Release (CFudgeMsgInfo *poMessage) {
+	g_oMutex.Enter ();
+	LOGDEBUG (TEXT ("Releasing CFudgeMsgInfo, rc=") << poMessage->m_nRefCount);
+	if (--poMessage->m_nRefCount == 0) {
+		TFudgeMsgMap::iterator itr = g_oMap.find (poMessage->m_msg);
+		if (itr != g_oMap.end ()) {
+			LOGDEBUG (TEXT ("Removing message from map (size = ") << (g_oMap.size () - 1) << TEXT (")"));
+			g_oMap.erase (itr);
+			g_cbData -= MESSAGE_INFO_OVERHEAD;
+		}
+		delete poMessage;
+	}
+	g_oMutex.Leave ();
 }
 
 /// Creates a Fudge message from a binary encoding.
@@ -232,42 +191,24 @@ static FudgeMsg _DecodeFudgeMsg (const void *pData, size_t cbData) {
 /// @param[in] the message to look up
 /// @return the message entry
 CFudgeMsgInfo *CFudgeMsgInfo::GetMessage (FudgeMsg msg) {
-	g_oMap.EnterMutex ();
-#ifdef _WIN32
-	CFudgeMsgInfo *poMessage = g_oMap.Get (msg);
-#else /* ifdef _WIN32 */
-	size_t cbData;
-	void *pData = _EncodeFudgeMsg (msg, &cbData);
-	if (!pData) {
-		g_oMap.LeaveMutex ();
-		return NULL;
-	}
-	CFudgeMsgInfo *poMessage = g_oMap.Get (pData, cbData);
-#endif /* ifdef _WIN32 */
-	if (poMessage) {
+	CFudgeMsgInfo *poMessage;
+	g_oMutex.Enter ();
+	TFudgeMsgMap::const_iterator itr = g_oMap.find (msg);
+	if (itr != g_oMap.end ()) {
+		poMessage = itr->second;
 		poMessage->m_nRefCount++;
-		g_oMap.LeaveMutex ();
-#ifndef _WIN32
-		free (pData);
-#endif /* ifndef _WIN32 */
+		g_oMutex.Leave ();
 		return poMessage;
 	}
-#ifdef _WIN32
-	size_t cbData;
-	void *pData = _EncodeFudgeMsg (msg, &cbData);
-	if (!pData) {
-		g_oMap.LeaveMutex ();
-		return NULL;
-	}
-#endif /* ifdef _WIN32 */
-	poMessage = new CFudgeMsgInfo (msg, pData, cbData);
+	poMessage = new CFudgeMsgInfo (msg, NULL, 0);
 	if (poMessage) {
-		g_oMap.Put (poMessage);
+		LOGDEBUG (TEXT ("Adding message to map (size = ") << (g_oMap.size () + 1) << TEXT (")"));
+		g_oMap.insert (TFudgeMsgMap::value_type (msg, poMessage));
+		g_cbData += MESSAGE_INFO_OVERHEAD;
 	} else {
 		LOGFATAL (TEXT ("Out of memory"));
-		free (pData);
 	}
-	g_oMap.LeaveMutex ();
+	g_oMutex.Leave ();
 	return poMessage;
 }
 
@@ -278,21 +219,18 @@ CFudgeMsgInfo *CFudgeMsgInfo::GetMessage (FudgeMsg msg) {
 /// @param[in] pData the binary encoding of the message to lock up
 /// @param[in] cbData the length of the binary encoding in bytes
 CFudgeMsgInfo *CFudgeMsgInfo::GetMessage (const void *pData, size_t cbData) {
-	g_oMap.EnterMutex ();
+	g_oMutex.Enter ();
 	FudgeMsg msg = NULL;
 	CFudgeMsgInfo *poMessage = NULL;
 	void *pDataCopy = NULL;
 	do {
-#ifdef _WIN32
 		msg = _DecodeFudgeMsg (pData, cbData);
 		if (!msg) {
 			break;
 		}
-		poMessage = g_oMap.Get (msg);
-#else /* ifdef _WIN32 */
-		poMessage = g_oMap.Get (pData, cbData);
-#endif /* ifdef _WIN32 */
-		if (poMessage) {
+		TFudgeMsgMap::const_iterator itr = g_oMap.find (msg);
+		if (itr != g_oMap.end ()) {
+			poMessage = itr->second;
 			poMessage->m_nRefCount++;
 			break;
 		}
@@ -302,20 +240,43 @@ CFudgeMsgInfo *CFudgeMsgInfo::GetMessage (const void *pData, size_t cbData) {
 			break;
 		}
 		memcpy (pDataCopy, pData, cbData);
-#ifndef _WIN32
-		msg = _DecodeFudgeMsg (pDataCopy, cbData);
-		if (!msg) {
-			break;
-		}
-#endif /* ifndef _WIN32 */
 		poMessage = new CFudgeMsgInfo (msg, pDataCopy, cbData);
 		if (!poMessage) {
 			LOGFATAL (TEXT ("Out of memory"));
+			break;
 		}
+		LOGDEBUG (TEXT ("Adding message to map (size = ") << (g_oMap.size () + 1) << TEXT (")"));
+		g_oMap.insert (TFudgeMsgMap::value_type (msg, poMessage));
+		g_cbData += cbData + MESSAGE_INFO_OVERHEAD;
 		pDataCopy = NULL;
 	} while (false);
-	g_oMap.LeaveMutex ();
+	g_oMutex.Leave ();
 	if (msg) FudgeMsg_release (msg);
 	if (pDataCopy) free (pDataCopy);
 	return poMessage;
+}
+
+/// Returns an approximation of the amount of memory currently used by the Fudge message map.
+///
+/// This doesn't include the memory actually required for the Fudge message representations. For
+/// example if workspace serialisation is enabled then there are byte vectors allocated for each
+/// message and held in this map. If workspace serialisation is disabled then the map only
+/// contains the Fudge message pointer, so the size returned here is based just on the number of
+/// messages. The ACTUAL memory footprint of the Fudge messages in memory will therefore be at
+/// least twice this value if serialisation is enabled, and significantly bigger if serialisation
+/// is disabled (as this value will be far too low).
+///
+/// @return an approximate number of bytes
+size_t CFudgeMsgInfo::GetBufferSize () {
+	return g_cbData;
+}
+
+/// Returns the number of messages currently in the buffer.
+///
+/// @return the number of messages
+size_t CFudgeMsgInfo::GetBufferCount () {
+	g_oMutex.Enter ();
+	size_t count = g_oMap.size ();
+	g_oMutex.Leave ();
+	return count;
 }

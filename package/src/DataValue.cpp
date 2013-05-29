@@ -32,7 +32,7 @@ static com_opengamma_language_Value *_FudgeMsgValue (FudgeMsg msg) {
 	return pValue;
 }
 
-/// Creates a Value instance descriping the object (either its toFudgeMsg or toString).
+/// Creates a Value instance describing the object (either its toFudgeMsg or toString).
 ///
 /// @param[in] poR callback object representing the original caller's environment
 /// @param[in] obj object to convert
@@ -276,7 +276,7 @@ com_opengamma_language_Data *CData::FromSEXP (const CRCallback *poR, SEXP data) 
 				for (j = 0; j < cols; j++) {
 					pData->_matrix[i][j] = CValue::FromSEXP (poR, data, (j * rows) + i);
 				}
-				pData->_matrix[i][cols] = NULL;
+				pData->_matrix[i][j] = NULL;
 			}
 			pData->_matrix[rows] = NULL;
 		} else if (isTs (data)) {

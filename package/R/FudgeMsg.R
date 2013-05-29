@@ -22,34 +22,35 @@ fields.FudgeMsg <- function (x) {
   OpenGammaCall ("FudgeMsg_getAllFields", x@message)
 }
 
-# Get a named field of a Fudge message
-field.FudgeMsg <- function (x, field) {
-  fields <- fields.FudgeMsg (x)
-  if (length (fields) > 0) {
-    if (length (field) > 1) {
-      sapply (field, function (y) { .field.FudgeMsg (fields, y) })
-    } else {
-      .field.FudgeMsg (fields, field)
-    }
-  } else {
-    fields
-  }
+# Get all the values from a Fudge message
+values.FudgeMsg <- function (x) {
+  .assert.FudgeMsg (x)
+  OpenGammaCall ("FudgeMsg_getAllValues", x@message)
 }
 
-# Returns a vector comparing field names or ordinals
-.isField.FudgeMsg <- function (fields, field) {
+# Get one or more named fields of a Fudge message
+.fields.FudgeMsg <- function (x, field) {
+  .assert.FudgeMsg (x)
   if (is.numeric (field)) {
-    ordinal <- as.integer (field)
-    sapply (fields, function (x) { !is.null (x$Ordinal) && (x$Ordinal == ordinal) })
+    OpenGammaCall ("FudgeMsg_getFieldsByOrdinal", x@message, as.integer (field))
   } else {
-    name <- as.character (field)
-    sapply (fields, function (x) { !is.null (x$Name) && (x$Name == name) })
+    OpenGammaCall ("FudgeMsg_getFieldsByName", x@message, as.character (field))
   }
 }
 
-# Get a named field from a list of fields (e.g. one returned by fields.FudgeMsg)
-.field.FudgeMsg <- function (fields, field) {
-  result <- sapply (fields[.isField.FudgeMsg (fields, field)], function (x) { x$Value })
+# Get one or more named field values of a Fudge message
+.values.FudgeMsg <- function (x, field) {
+  .assert.FudgeMsg (x)
+  if (is.numeric (field)) {
+    OpenGammaCall ("FudgeMsg_getValuesByOrdinal", x@message, as.integer (field))
+  } else {
+    OpenGammaCall ("FudgeMsg_getValuesByName", x@message, as.character (field))
+  }
+}
+
+# Get one or more field values from a Fudge message
+field.FudgeMsg <- function (x, field) {
+  result <- .values.FudgeMsg (x, field)
   if (length (result) == 1) {
     result[[1]]
   } else {
@@ -76,12 +77,11 @@ classNames.FudgeMsg <- function (x) {
 
 # Convert a Fudge message encoding of a map to a data frame
 mapToDataFrame.FudgeMsg <- function (x, keyFun = NULL, valueFun = NULL) {
-  fields <- fields.FudgeMsg (x)
   fn <- keyFun
   if (is.null (fn)) {
     fn <- function (x) { x }
   }
-  keys <- sapply (.field.FudgeMsg (fields, 1), fn)
+  keys <- sapply (field.FudgeMsg (x, 1), fn)
   if (is.list (keys)) {
     x
   } else {
@@ -89,7 +89,7 @@ mapToDataFrame.FudgeMsg <- function (x, keyFun = NULL, valueFun = NULL) {
     if (is.null (fn)) {
       fn <- function (x) { x }
     }
-    values <- sapply (.field.FudgeMsg (fields, 2), fn)
+    values <- sapply (field.FudgeMsg (x, 2), fn)
     if (is.list (values)) {
       x
     } else {
@@ -105,7 +105,7 @@ toObject.FudgeMsg <- function (x, fallbackConstructor = toString) {
   if (existsFunction (constructor)) {
     getFunction (constructor, where = "package:OG")(x)
   } else {
-    LOGWARN ("No constructor", constructor)
+    LOGDEBUG ("No constructor", constructor)
     fallbackConstructor (x)
   }
 }

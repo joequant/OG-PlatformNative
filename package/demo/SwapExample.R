@@ -50,10 +50,9 @@ OpenGamma:::LOGINFO ("Created portfolio", portfolio.id)
 # Create a view on this portfolio
 OpenGamma:::LOGDEBUG ("Creating view")
 requirements <- c (
-  new.ValueRequirement (ValueRequirementNames.Present.Value, "FundingCurve=SECONDARY,ForwardCurve=SECONDARY"),
-  new.ValueRequirement (ValueRequirementNames.PV01, "Curve=SECONDARY,FundingCurve=SECONDARY,ForwardCurve=SECONDARY"))
-  # TODO: It shouldn't be necessary to specify the FundingCurve/ForwardCurve constraints, but the default injection
-  # mechanism was not working when this was wrtten.
+  ValueRequirementNames.Present.Value,
+  new.ValueRequirement (ValueRequirementNames.PV01, "Curve=Discounting"),
+  new.ValueRequirement (ValueRequirementNames.PV01, "Curve=Forward3M"))
 view <- ViewDefinition ("Swap example", portfolio.id, requirements)
 view.id <- StoreViewDefinition (view)
 OpenGamma:::LOGINFO ("Created view", view.id)
@@ -70,46 +69,41 @@ OpenGamma:::LOGDEBUG ("Creating view client")
 view.client <- ViewClient (viewDescriptor = StaticSnapshotViewClient (view.id, unversioned.Identifier (market.data.id)), useSharedProcess = FALSE)
 view.result <- NULL
 
+# Test whether running against OG-Examples or OG-BloombergExamples
+if (!is.null (FetchTimeSeries (dataField = "CLOSE", identifier = "OG_SYNTHETIC_TICKER~USDCASHP2D", maxPoints = 1))) {
+  discounting.tickers <- c ("USDCASHP2D" = 0.0025, "USDOIS_SWAPP1M" = 0.0027, "USDOIS_SWAPP2M" = 0.0027, "USDOIS_SWAPP3M" = 0.0026, "USDOIS_SWAPP4M" = 0.0027, "USDOIS_SWAPP5M" = 0.0030, "USDOIS_SWAPP6M" = 0.0030, "USDOIS_SWAPP9M" = 0.0031, "USDOIS_SWAPP1Y" = 0.0032, "USDOIS_SWAPP2Y" = 0.0035, "USDOIS_SWAPP3Y" = 0.0045, "USDOIS_SWAPP4Y" = 0.0075, "USDOIS_SWAPP5Y" = 0.0010, "USDOIS_SWAPP10Y" = 0.0015)
+  forward3m.tickers <- c ("USDLIBORP7D" = 0.0029, "USDLIBORP1M" = 0.0034, "USDLIBORP2M" = 0.0044, "USDSWAPP2Y" = 0.025, "USDSWAPP3Y" = 0.031, "USDSWAPP4Y" = 0.035, "USDSWAPP5Y" = 0.037, "USDSWAPP6Y" = 0.039, "USDSWAPP7Y" = 0.040, "USDSWAPP8Y" = 0.041, "USDSWAPP9Y" = 0.041, "USDSWAPP10Y" = 0.040, "USDSWAPP15Y" = 0.039, "USDSWAPP20Y" = 0.039, "USDSWAPP25Y" = 0.039, "USDSWAPP30Y" = 0.039)
+  tickers.scheme <- "OG_SYNTHETIC_TICKER"
+} else {
+  if (!is.null (FetchTimeSeries (dataField = "PX_LAST", identifier = "BLOOMBERG_TICKER~USDR2T Curncy", maxPoints = 1))) {
+    discounting.tickers <- c ("USDR2T Curncy" = 0.0025, "USSOA Curncy" = 0.0027, "USSOB Curncy" = 0.0027, "USSOC Curncy" = 0.0026, "USSOD Curncy" = 0.0027, "USSOE Curncy" = 0.0030, "USSOF Curncy" = 0.0030, "USSOI Curncy" = 0.0031, "USSO1 Curncy" = 0.0032, "USSO2 Curncy" = 0.0035, "USSO3 Curncy" = 0.0045, "USSO4 Curncy" = 0.0075, "USSO5 Curncy" = 0.0010, "USSO10 Curncy" = 0.0015)
+    forward3m.tickers <- c ("US0001W Index" = 0.0029, "US0002W Index" = 0.0032, "US0001M Index" = 0.0034, "US0002M Index" = 0.0044, "US0003M Index" = 0.0080, "USSW1 Curncy" = 0.014, "USSW2 Curncy" = 0.025, "USSW3 Curncy" = 0.031, "USSW4 Curncy" = 0.035, "USSW5 Curncy" = 0.037, "USSW6 Curncy" = 0.039, "USSW7 Curncy" = 0.040, "USSW8 Curncy" = 0.041, "USSW9 Curncy" = 0.041, "USSW10 Curncy" = 0.040, "USSW15 Curncy" = 0.039, "USSW20 Curncy" = 0.039, "USSW25 Curncy" = 0.039, "USSW30 Curncy" = 0.039)
+    tickers.scheme <- "BLOOMBERG_TICKER"
+  } else {
+    stop ("Can't find time series tickers")
+  }
+}
+
 # Set the snapshot with necessary market data
 OpenGamma:::LOGDEBUG ("Updating snapshot")
-tickers <- list (
-  "OG_SYNTHETIC_TICKER~USDSWAPP40Y" = 0.032172118,
-  "OG_SYNTHETIC_TICKER~USDCASHP2M" = 0.004125419,
-  "OG_SYNTHETIC_TICKER~USDSWAPP3Y" = 0.028081827,
-  "OG_SYNTHETIC_TICKER~USDCASHP12M" = 0.015572704,
-  "OG_SYNTHETIC_TICKER~USDCASHP6M" = 0.008696717,
-  "OG_SYNTHETIC_TICKER~USDCASHP5M" = 0.006364289,
-  "OG_SYNTHETIC_TICKER~USDSWAPP9Y" = 0.039016326,
-  "OG_SYNTHETIC_TICKER~USDSWAPP20Y" = 0.037136499,
-  "OG_SYNTHETIC_TICKER~USDCASHP3M" = 0.004699534,
-  "OG_SYNTHETIC_TICKER~USDSWAPP15Y" = 0.040911091,
-  "OG_SYNTHETIC_TICKER~USDCASHP11M" = 0.015744525,
-  "OG_SYNTHETIC_TICKER~USDSWAPP10Y" = 0.046078292,
-  "OG_SYNTHETIC_TICKER~USDCASHP10M" = 0.014378368,
-  "OG_SYNTHETIC_TICKER~USDCASHP4M" = 0.006755011,
-  "OG_SYNTHETIC_TICKER~USDCASHP1M" = 0.002773332,
-  "OG_SYNTHETIC_TICKER~USDCASHP7M" = 0.009537775,
-  "OG_SYNTHETIC_TICKER~USDCASHP1D" = 0.002178863,
-  "OG_SYNTHETIC_TICKER~USDSWAPP25Y" = 0.039112661,
-  "OG_SYNTHETIC_TICKER~USDSWAPP2Y" = 0.027865134,
-  "OG_SYNTHETIC_TICKER~USDCASHP9M" = 0.013241200,
-  "OG_SYNTHETIC_TICKER~USDSWAPP6Y" = 0.039671293,
-  "OG_SYNTHETIC_TICKER~USDSWAPP8Y" = 0.040113628,
-  "OG_SYNTHETIC_TICKER~USDSWAPP12Y" = 0.037815631,
-  "OG_SYNTHETIC_TICKER~USDSWAPP30Y" = 0.041970889,
-  "OG_SYNTHETIC_TICKER~USDSWAPP7Y" = 0.034719706,
-  "OG_SYNTHETIC_TICKER~USDSWAPP4Y" = 0.034639707,
-  "OG_SYNTHETIC_TICKER~USDSWAPP5Y" = 0.032331473,
-  "OG_SYNTHETIC_TICKER~USDCASHP8M" = 0.011902323)
-curve <- SnapshotYieldCurve ()
-for (ticker in names (tickers)) {
-  curve <- SetYieldCurvePoint (
-    snapshot = curve,
+discounting.curve <- SnapshotYieldCurve ()
+for (ticker in names (discounting.tickers)) {
+  discounting.curve <- SetYieldCurvePoint (
+    snapshot = discounting.curve,
     valueName = MarketDataRequirementNames.Market.Value,
-    identifier = ticker,
-    marketValue = tickers[[ticker]])
+    identifier = paste (tickers.scheme, ticker, sep = "~"),
+    marketValue = discounting.tickers[[ticker]])
 }
-market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_SECONDARY", yieldCurve = curve)
+forward3m.curve <- SnapshotYieldCurve ()
+for (ticker in names (forward3m.tickers)) {
+  forward3m.curve <- SetYieldCurvePoint (
+    snapshot = forward3m.curve,
+    valueName = MarketDataRequirementNames.Market.Value,
+    identifier = paste (tickers.scheme, ticker, sep = "~"),
+    marketValue = forward3m.tickers[[ticker]])
+}
+market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_Discounting", yieldCurve = discounting.curve)
+market.data <- SetSnapshotYieldCurve (snapshot = market.data, name = "USD_Forward3M", yieldCurve = forward3m.curve)
 market.data.id <- StoreSnapshot (snapshot = market.data, identifier = market.data.id)
 OpenGamma:::LOGINFO ("Snapshot updated to", market.data.id)
 

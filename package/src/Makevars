@@ -22,9 +22,9 @@ endif
 # the LIB and INCLUDE files available. The build environment should provide the correct path to the
 # ServiceRunner in the build folder and set log configuration appropriately. For a production release,
 # the package installer must:
-#    invoke "R CMD install OpenGamma" with OG_LANGUAGE_HOME set
+#    invoke "R CMD INSTALL OpenGamma" with OG_LANGUAGE_HOME set (or OG_LANGUAGE_INCLUDE_DIR and OG_LANGUAGE_LIB_DIR)
 #    place the client extension JAR and configuration documents in $(OG_LANGUAGE_HOME)/ext
-#    write log configuration and path to the service runner into to /etc/OpenGammaLtd/OpenGammaR
+#    write log configuration and any other connection parameters into to /etc/OpenGammaLtd/OpenGammaR
 
 SOLUTION_DIR=../../../..
 
@@ -41,12 +41,6 @@ ifdef OG_LANGUAGE_HOME
 OG_LANGUAGE_LIB_DIR=$(OG_LANGUAGE_HOME)/lib
 else
 OG_LANGUAGE_LIB_DIR=$(SOLUTION_DIR)/lib/lib/$(CONFIGURATION)
-endif
-endif
-
-ifndef OG_LANGUAGE_EXT_DIR
-ifdef OG_LANGUAGE_HOME
-OG_LANGUAGE_EXT_DIR=$(OG_LANGUAGE_HOME)/ext
 endif
 endif
 
