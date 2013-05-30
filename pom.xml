@@ -50,7 +50,7 @@
 
   <!-- ==================================================================== -->
   <properties>
-    <fudge.proto.searchDir>${basedir}/src/main/java</fudge.proto.searchDir>
+    <fudge.proto.searchDir>..{RELATIVE}../OG-Platform/projects/OG-Util/src/main/java;..{RELATIVE}../OG-Platform/projects/OG-Language/Client/src/main/java</fudge.proto.searchDir>
     <javadoc.footer.license>Commercial license terms apply</javadoc.footer.license>
   </properties>
 
