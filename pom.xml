@@ -11,6 +11,7 @@
     <version>1.0.4</version>
     <relativePath></relativePath>
   </parent>  
+  <groupId>com.opengamma.platform</groupId>
   <artifactId>og-platform-native</artifactId>
   <packaging>pom</packaging>
   <name>OG-Platform-Native</name>
