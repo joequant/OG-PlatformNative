@@ -1,5 +1,64 @@
-<project name="og-language" default="compile">
+<project name="og-language" default="compile"
+    xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+  <!-- NOTE: this requires Ant v1.9.1 -->
 
+  <property file="build.properties"/>
+
+  <!-- Install maven artifact tool -->
+  <target name="install">
+    <!-- setup properties and directores -->
+	  <property name="lib.dir" value="${build.dir}/lib" />
+	  <property name="lib.ant.dir" value="${lib.dir}/ant" />
+	  <property name="lib.ant.jar" value="${lib.ant.dir}/maven-ant-tasks-2.1.3.jar" />
+    <property name="lib.runtime.dir" value="${lib.dir}/runtime" />
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${lib.dir}"/>
+	  <mkdir dir="${lib.ant.dir}"/>
+	  <mkdir dir="${lib.runtime.dir}"/>
+    <!-- get ant tasks -->
+	  <available file="${lib.ant.jar}" property="artifact.exists"/>
+    <antcall target="install-get" />
+	  <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant">
+	    <classpath>
+	      <pathelement location="${lib.ant.jar}" />
+	    </classpath>
+	  </typedef>
+    <!-- read pom -->
+	  <artifact:pom id="pom" file="pom.xml" />
+	  <echo message="POM project id: ${pom.groupId}:${pom.artifactId}:${pom.version}"/>
+	  <property name="version" value="${pom.version}" />
+    <!-- get dependencies -->
+    <artifact:dependencies filesetId="dependency.runtime.fileset" useScope="runtime">
+      <pom refid="pom"/>
+    </artifact:dependencies>
+    <copy todir="${lib.runtime.dir}" verbose="true">
+      <fileset refid="dependency.runtime.fileset" />
+      <mapper type="flatten" />
+    </copy>  
+  </target>
+  <target name="install-get" unless="artifact.exists">
+	  <echo message="Installing Maven Ant tasks..."/>
+	  <get src="http://www.eu.apache.org/dist/maven/ant-tasks/2.1.3/binaries/maven-ant-tasks-2.1.3.jar "
+	       dest="${lib.ant.jar}" usetimestamp="true" ignoreerrors="${artifact.exists}"/>
+  </target>
+
+  <target name="init" depends="install" description="Initializes the build">
+  </target>
+
+  <target name="clean" description="Cleans the build">
+    <delete includeemptydirs="true">
+      <fileset dir="${build.dir}">
+        <include name="**/*" />
+        <exclude name="lib/ant/**" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="compile" depends="init" description="Compiles the project">
+    <echo message="TODO" />
+  </target>
+
+<!--
   <import file="${basedir}/build-core.xml" />
   <import file="${basedir}/build-core-deploy.xml" />
   <import file="${basedir}/delete-unused-jars.xml" />
@@ -70,5 +129,5 @@ opengamma.engine.host=${opengamma.engine.host}
   <target name="installer-impl">
     <installer-make build-id="${ai.build.all}" />
   </target>
-
+-->
 </project>
