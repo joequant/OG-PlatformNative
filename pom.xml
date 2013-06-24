@@ -19,6 +19,7 @@
 
   <!-- ==================================================================== -->
   <modules>
+    <module>og-install</module>
     <module>og-language</module>
     <module>og-rstats</module>
   </modules>
