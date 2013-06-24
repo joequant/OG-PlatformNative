@@ -6,8 +6,8 @@
 
 #include <Windows.h>
 #include "service.h"
-#include "Common/param.h"
-#include "Common/errorref.h"
+#include <param.h>
+#include <errorref.h>
 
 static CParamString g_oConfig ("config", NULL, TRUE);
 static CParamString g_oServiceName ("service", NULL, TRUE);

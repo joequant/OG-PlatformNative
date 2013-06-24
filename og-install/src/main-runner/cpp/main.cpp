@@ -9,8 +9,8 @@
 #include "resource.h"
 #include "runmain.h"
 #include "feedback.h"
-#include "Common/param.h"
-#include "Common/errorref.h"
+#include <param.h>
+#include <errorref.h>
 
 static CParamString g_oConfig ("config", NULL, TRUE);
 static CParamFlag g_oSilent ("silent");

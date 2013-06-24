@@ -7,7 +7,7 @@
 #ifndef __inc_servicecontrol_control_h
 #define __inc_servicecontrol_control_h
 
-#include "Common/param.h"
+#include <param.h>
 
 class CControl {
 private:

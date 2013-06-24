@@ -6,7 +6,7 @@
 
 #include <Windows.h>
 #include "service.h"
-#include "Common/errorref.h"
+#include <errorref.h>
 
 #define EXITHOOK_CLASS_NAME	"com/opengamma/install/service/ExitHook"
 

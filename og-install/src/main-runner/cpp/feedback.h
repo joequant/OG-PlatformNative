@@ -7,8 +7,8 @@
 #ifndef __inc_mainrunner_feedback_h
 #define __inc_mainrunner_feedback_h
 
-#include "Common/jvm.h"
-#include "Common/feedbackwindow.h"
+#include <jvm.h>
+#include <feedbackwindow.h>
 
 class CFeedback : public CFeedbackWindow {
 protected:

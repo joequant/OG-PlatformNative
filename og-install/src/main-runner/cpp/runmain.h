@@ -7,7 +7,7 @@
 #ifndef __inc_mainrunner_runmain_h
 #define __inc_mainrunner_runmain_h
 
-#include "Common/jvm.h"
+#include <jvm.h>
 
 class CMain {
 private:

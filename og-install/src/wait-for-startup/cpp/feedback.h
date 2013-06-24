@@ -7,8 +7,8 @@
 #ifndef __inc_waitforstartup_feedback_h
 #define __inc_waitforstartup_feedback_h
 
-#include "Common/feedbackwindow.h"
-#include "Common/param.h"
+#include <feedbackwindow.h>
+#include <param.h>
 
 class CFeedback : public CFeedbackWindow {
 protected:

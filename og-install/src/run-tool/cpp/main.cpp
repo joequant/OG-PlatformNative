@@ -7,9 +7,9 @@
 #include <Windows.h>
 #include <strsafe.h>
 #include "resource.h"
-#include "Common/jvm.h"
-#include "Common/config.h"
-#include "Common/errorref.h"
+#include <jvm.h>
+#include <config.h>
+#include <errorref.h>
 
 static BOOL _ConnectToConsole (int *pargc, char **argv) {
 	if (*pargc < 2) return TRUE;

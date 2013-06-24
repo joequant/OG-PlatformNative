@@ -10,7 +10,7 @@
 #include "autostart.h"
 #include "startstop.h"
 #include "status.h"
-#include "Common/service.h"
+#include <service.h>
 
 #define WINDOW_CLASS		"ServiceControl"
 #define WINDOW_TITLE		"OpenGamma"

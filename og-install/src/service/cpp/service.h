@@ -7,7 +7,7 @@
 #ifndef __inc_service_service_h
 #define __inc_service_service_h
 
-#include "Common/jvm.h"
+#include <jvm.h>
 
 class CService {
 private:

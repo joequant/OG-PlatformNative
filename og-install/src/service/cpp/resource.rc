@@ -6,7 +6,7 @@
 
 #include "resource.h"
 
-IDI_OPENGAMMA	ICON	"..\\..\\..\\..\\Installer\\OpenGamma.ico"
+IDI_OPENGAMMA	ICON	"..\\..\\main\\resources\\OpenGamma.ico"
 
 IDV_OPENGAMMA VERSIONINFO
 	FILEVERSION		1,0,0,0

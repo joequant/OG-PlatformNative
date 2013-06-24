@@ -6,7 +6,7 @@
 
 #include <Windows.h>
 #include "runmain.h"
-#include "Common/errorref.h"
+#include <errorref.h>
 
 static CConfigMultiString g_oArgumentStrings ("count", "arg%d");
 static CConfigEntry *g_apoArgumentSection[1] = { &g_oArgumentStrings };

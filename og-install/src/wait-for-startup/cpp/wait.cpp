@@ -7,7 +7,7 @@
 #include <Windows.h>
 #include <strsafe.h>
 #include "wait.h"
-#include "Common/service.h"
+#include <service.h>
 
 CParamString CWait::s_oServiceName ("s", NULL, TRUE);
 CParamString CWait::s_oHost ("h", "localhost", FALSE);
