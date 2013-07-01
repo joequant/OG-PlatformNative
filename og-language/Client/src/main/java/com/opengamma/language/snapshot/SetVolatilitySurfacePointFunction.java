@@ -3,15 +3,12 @@
  *
  * Please see distribution for license.
  */
-
 package com.opengamma.language.snapshot;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.threeten.bp.Period;
 
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableVolatilitySurfaceSnapshot;
@@ -92,7 +89,7 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
         case DOUBLE:
           return new Double(Double.parseDouble(str));
         case TENOR:
-          return new Tenor(Period.parse(str));
+          return Tenor.parse(str);
         case INTEGER_FXVOLQUOTETYPE_PAIR: {
           final String[] parts = str.split(", ");
           return Pair.of(Integer.parseInt(parts[0]), FXVolQuoteType.valueOf(parts[1]));
