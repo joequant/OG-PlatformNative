@@ -38,9 +38,9 @@
         </executions>
       </plugin>
     </plugins>
-    <directory>../../target</directory>
-    <sourceDirectory>../../src/main/java</sourceDirectory>
-    <testSourceDirectory>../../src/test/java</testSourceDirectory>
+    <directory>${localTarget}</directory>
+    <sourceDirectory>${localSource}/main/java</sourceDirectory>
+    <testSourceDirectory>${localSource}/test/java</testSourceDirectory>
   </build>
 
   <dependencies>

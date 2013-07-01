@@ -1,5 +1,7 @@
 /target/
 /og-*/target/
+/og-*/modules/*/target/
 *.aps
 *.suo
 *.vcxproj.user
+*~

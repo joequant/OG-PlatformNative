@@ -67,23 +67,23 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)build\$(Configuration)$(Platform)\</OutDir>
-    <IntDir>$(Configuration)$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)target\connector-test-objects\$(Configuration)$(Platform)\</IntDir>
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(INCLUDE)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)build\$(Configuration)$(Platform)\</OutDir>
-    <IntDir>$(Configuration)$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)target\connector-test-objects\$(Configuration)$(Platform)\</IntDir>
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(INCLUDE)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)build\$(Configuration)$(Platform)\</OutDir>
-    <IntDir>$(Configuration)$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)target\connector-test-objects\$(Configuration)$(Platform)\</IntDir>
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(INCLUDE)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)build\$(Configuration)$(Platform)\</OutDir>
-    <IntDir>$(Configuration)$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)target\connector-test-objects\$(Configuration)$(Platform)\</IntDir>
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(INCLUDE)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -91,7 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\lib\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)target\lib\include</AdditionalIncludeDirectories>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>

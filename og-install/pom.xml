@@ -19,7 +19,7 @@
 
   <properties>
     <localTarget>../../target</localTarget>
-    <publishTarget>../../../target</publishTarget>
+    <localSource>../../src</localSource>
     <solutionDir>${project.basedir}${file.separator}..${file.separator}..</solutionDir>
     <solutionFile>og-install.sln</solutionFile>
   </properties>
