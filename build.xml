@@ -1,0 +1,134 @@
+<project name="OG-PlatformNative" default="configure-and-install">
+
+  <target name="configure-and-install" depends="configure,mvn-install" />
+  <target name="configure" depends="create-basedir,all-profiles" />
+  <target name="mvn-install" depends="mvn-init">
+    <exec executable="${mvn}" searchpath="true">
+      <arg value="-D" />
+      <arg value="root.dir=${basedir}" />
+      <arg value="install" />
+    </exec>
+  </target>
+
+  <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check">
+  </target>
+  <target name="mvn3-check" unless="mvn">
+    <exec executable="mvn3" resultproperty="mvn3.found" failifexecutionfails="false">
+      <arg value="-v" />
+    </exec>
+    <condition property="mvn" value="mvn3">
+      <isset property="mvn3.found" />
+    </condition>
+  </target>
+  <target name="mvn-check" unless="mvn">
+    <exec executable="mvn" resultproperty="mvn.found" failifexecutionfails="false">
+      <arg value="-v" />
+    </exec>
+    <condition property="mvn" value="mvn">
+      <isset property="mvn.found" />
+    </condition>
+  </target>
+  <target name="mvn.bat-check" unless="mvn">
+    <exec executable="mvn.bat" resultproperty="mvn.bat.found" failifexecutionfails="false">
+      <arg value="-v" />
+    </exec>
+    <condition property="mvn" value="mvn.bat">
+      <isset property="mvn.bat.found" />
+    </condition>
+  </target>
+
+  <target name="all-profiles" depends="windows-profiles" />
+
+  <target name="windows-profiles"
+      depends="enable-windows-profiles,
+               debug-windows-win32-profile,
+               release-windows-win32-profile,
+               debug-windows-x64-profile,
+               release-windows-x64-profile" />
+
+  <target name="enable-windows-profiles" if="profile.windows"
+      depends="enable-debug-windows-profiles,
+               enable-release-windows-profiles,
+               enable-windows-win32-profiles,
+               enable-windows-x64-profiles">
+    <property name="profile.debug.windows.win32" value="true" />
+    <property name="profile.release.windows.win32" value="true" />
+    <property name="profile.debug.windows.x64" value="true" />
+    <property name="profile.release.windows.x64" value="true" />
+  </target>
+  <target name="enable-debug-windows-profiles" if="profile.debug.windows">
+    <property name="profile.debug.windows.win32" value="true" />
+    <property name="profile.debug.windows.x64" value="true" />
+  </target>
+  <target name="enable-release-windows-profiles" if="profile.release.windows">
+    <property name="profile.release.windows.win32" value="true" />
+    <property name="profile.release.windows.x64" value="true" />
+  </target>
+  <target name="enable-windows-win32-profiles" if="profile.windows.win32">
+    <property name="profile.debug.windows.win32" value="true" />
+    <property name="profile.release.windows.win32" value="true" />
+  </target>
+  <target name="enable-windows-x64-profiles" if="profile.windows.x64">
+    <property name="profile.debug.windows.x64" value="true" />
+    <property name="profile.release.windows.x64" value="true" />
+  </target>
+
+  <target name="debug-windows-win32-profile" if="profile.debug.windows.win32">
+    <antcall target="create-profile">
+      <param name="configuration" value="debug" />
+      <param name="family" value="windows" />
+      <param name="platform" value="win32" />
+    </antcall>
+  </target>
+  <target name="release-windows-win32-profile" if="profile.release.windows.win32">
+    <antcall target="create-profile">
+      <param name="configuration" value="release" />
+      <param name="family" value="windows" />
+      <param name="platform" value="win32" />
+    </antcall>
+  </target>
+  <target name="debug-windows-x64-profile" if="profile.debug.windows.x64">
+    <antcall target="create-profile">
+      <param name="configuration" value="debug" />
+      <param name="family" value="windows" />
+      <param name="platform" value="x64" />
+    </antcall>
+  </target>
+  <target name="release-windows-x64-profile" if="profile.release.windows.x64">
+    <antcall target="create-profile">
+      <param name="configuration" value="release" />
+      <param name="family" value="windows" />
+      <param name="platform" value="x64" />
+    </antcall>
+  </target>
+
+  <target name="create-basedir">
+    <mkdir dir="target" />
+    <delete dir="target/profile" failonerror="false" />
+    <mkdir dir="target/profile" />
+  </target>
+
+  <target name="create-profile">
+    <antcall target="create-profile-files"><param name="profile" value="${configuration}" /></antcall>
+    <antcall target="create-profile-files"><param name="profile" value="${family}" /></antcall>
+    <antcall target="create-profile-files"><param name="profile" value="${configuration}-${family}" /></antcall>
+    <antcall target="create-profile-files"><param name="profile" value="${family}-${platform}" /></antcall>
+    <antcall target="create-profile-files"><param name="profile" value="${configuration}-${family}-${platform}" /></antcall>
+  </target>
+  <target name="create-profile-files"
+      depends="create-profile-msvc,
+               create-profile-r,
+               create-profile-ai">
+    <touch file="target/profile/${profile}" />
+  </target>
+  <target name="create-profile-msvc" if="tool.msvc">
+    <touch file="target/profile/${profile}-msvc" />
+  </target>
+  <target name="create-profile-r" if="tool.r">
+    <touch file="target/profile/${profile}-r" />
+  </target>
+  <target name="create-profile-ai" if="tool.ai">
+    <touch file="target/profile/${profile}-ai" />
+  </target>
+
+</project>

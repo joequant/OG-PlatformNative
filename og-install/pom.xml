@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.opengamma.platform</groupId>
+    <artifactId>og-platform-native</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>  
+
+  <artifactId>og-install</artifactId>
+  <packaging>pom</packaging>
+  <name>OG-Install</name>
+  <description>OpenGamma platform installation utilities</description>
+
+  <properties>
+    <localTarget>../../target</localTarget>
+    <publishTarget>../../../target</publishTarget>
+    <solutionDir>${project.basedir}${file.separator}..${file.separator}..</solutionDir>
+    <solutionFile>og-install.sln</solutionFile>
+  </properties>
+
+  <modules>
+    <module>modules/jre</module>
+    <module>modules/main</module>
+    <module>modules/main-runner</module>
+    <module>modules/run-tool</module>
+    <module>modules/service-control</module>
+    <module>modules/service</module>
+    <module>modules/wait-for-startup</module>
+  </modules>
+
+</project>
