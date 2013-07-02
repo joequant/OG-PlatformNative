@@ -492,6 +492,61 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>package-headers-and-resources</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <zip destfile="${localTarget}/headers.zip">
+                  <zipfileset dir="${localSource}/connector/cpp" includes="*.h" prefix="connector/cpp" />
+                  <zipfileset dir="${localSource}/service/cpp" includes="*.h" prefix="service/cpp" />
+                  <zipfileset dir="${localSource}/util/cpp" includes="*.h" prefix="util/cpp" />
+                </zip>
+                <zip destfile="${localTarget}/resources.zip">
+                  <zipfileset dir="${localSource}/util/resources" prefix="util/resources" />
+                </zip>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.8</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>attach-headers-and-resources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/headers.zip</file>
+                  <type>zip</type>
+                  <classifier>headers</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/resources.zip</file>
+                  <type>zip</type>
+                  <classifier>resources</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 

@@ -17,6 +17,33 @@
   <name>OG-Language-ServiceRunner</name>
   <description>Host process for the JVM hosting</description>
 
+  <properties>
+    <publishFile>ServiceRunner</publishFile>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>debug-windows-win32-attach-exe</id>
+          </execution>
+          <execution>
+            <id>release-windows-win32-attach-exe</id>
+          </execution>
+          <execution>
+            <id>debug-windows-x64-attach-exe</id>
+          </execution>
+          <execution>
+            <id>release-windows-x64-attach-exe</id>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>com.opengamma.platform</groupId>

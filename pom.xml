@@ -94,6 +94,27 @@
                     </artifacts>
                   </configuration>
                 </execution>
+                <execution>
+                  <id>debug-windows-win32-attach-lib</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>attach-artifact</goal>
+                  </goals>
+                  <configuration>
+                    <artifacts>
+                      <artifact>
+                        <file>${localTarget}/DebugWin32/${publishFile}.lib</file>
+                        <type>lib</type>
+                        <classifier>debug-windows-win32</classifier>
+                      </artifact>
+                      <artifact>
+                        <file>${localTarget}/DebugWin32/${publishFile}.pdb</file>
+                        <type>pdb</type>
+                        <classifier>debug-windows-win32</classifier>
+                      </artifact>
+                    </artifacts>
+                  </configuration>
+                </execution>
               </executions>
             </plugin>
           </plugins>
@@ -151,6 +172,27 @@
                       <artifact>
                         <file>${localTarget}/Debugx64/${publishFile}.exe</file>
                         <type>exe</type>
+                        <classifier>debug-windows-x64</classifier>
+                      </artifact>
+                      <artifact>
+                        <file>${localTarget}/Debugx64/${publishFile}.pdb</file>
+                        <type>pdb</type>
+                        <classifier>debug-windows-x64</classifier>
+                      </artifact>
+                    </artifacts>
+                  </configuration>
+                </execution>
+                <execution>
+                  <id>debug-windows-x64-attach-lib</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>attach-artifact</goal>
+                  </goals>
+                  <configuration>
+                    <artifacts>
+                      <artifact>
+                        <file>${localTarget}/Debugx64/${publishFile}.lib</file>
+                        <type>lib</type>
                         <classifier>debug-windows-x64</classifier>
                       </artifact>
                       <artifact>
@@ -228,6 +270,27 @@
                     </artifacts>
                   </configuration>
                 </execution>
+                <execution>
+                  <id>release-windows-win32-attach-lib</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>attach-artifact</goal>
+                  </goals>
+                  <configuration>
+                    <artifacts>
+                      <artifact>
+                        <file>${localTarget}/ReleaseWin32/${publishFile}.lib</file>
+                        <type>lib</type>
+                        <classifier>release-windows-win32</classifier>
+                      </artifact>
+                      <artifact>
+                        <file>${localTarget}/ReleaseWin32/${publishFile}.pdb</file>
+                        <type>pdb</type>
+                        <classifier>release-windows-win32</classifier>
+                      </artifact>
+                    </artifacts>
+                  </configuration>
+                </execution>
               </executions>
             </plugin>
           </plugins>
@@ -285,6 +348,27 @@
                       <artifact>
                         <file>${localTarget}/Releasex64/${publishFile}.exe</file>
                         <type>exe</type>
+                        <classifier>release-windows-x64</classifier>
+                      </artifact>
+                      <artifact>
+                        <file>${localTarget}/Releasex64/${publishFile}.pdb</file>
+                        <type>pdb</type>
+                        <classifier>release-windows-x64</classifier>
+                      </artifact>
+                    </artifacts>
+                  </configuration>
+                </execution>
+                <execution>
+                  <id>release-windows-x64-attach-lib</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>attach-artifact</goal>
+                  </goals>
+                  <configuration>
+                    <artifacts>
+                      <artifact>
+                        <file>${localTarget}/Releasex64/${publishFile}.lib</file>
+                        <type>lib</type>
                         <classifier>release-windows-x64</classifier>
                       </artifact>
                       <artifact>

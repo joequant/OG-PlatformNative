@@ -17,6 +17,33 @@
   <name>OG-Language-Connector</name>
   <description>Core native library for connecting to the Java stack</description>
 
+  <properties>
+    <publishFile>Connector</publishFile>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>debug-windows-win32-attach-lib</id>
+          </execution>
+          <execution>
+            <id>release-windows-win32-attach-lib</id>
+          </execution>
+          <execution>
+            <id>debug-windows-x64-attach-lib</id>
+          </execution>
+          <execution>
+            <id>release-windows-x64-attach-lib</id>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>com.opengamma.platform</groupId>
