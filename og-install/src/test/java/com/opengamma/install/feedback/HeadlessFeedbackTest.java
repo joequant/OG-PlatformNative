@@ -9,10 +9,12 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
+import com.opengamma.util.test.TestGroup;
+
 /**
  * Tests the {@link Feedback} class when the native method is not available (which is the case when running as TestNG).
  */
-@Test
+@Test(groups = TestGroup.UNIT)
 public class HeadlessFeedbackTest {
 
   public void testReport() {

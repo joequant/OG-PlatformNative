@@ -12,10 +12,12 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
+import com.opengamma.util.test.TestGroup;
+
 /**
  * Tests the {@link MainRunner} class
  */
-@Test
+@Test(groups = TestGroup.UNIT)
 public class MainRunnerTest {
 
   public static class Main {
