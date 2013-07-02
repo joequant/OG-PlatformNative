@@ -18,14 +18,15 @@
   <description>OpenGamma platform inter-language communication</description>
 
   <properties>
-    <localTarget>../../target</localTarget>
-    <localSource>../../src</localSource>
+    <localTarget>..${file.separator}..${file.separator}target</localTarget>
+    <localSource>..${file.separator}..${file.separator}src</localSource>
     <solutionDir>${project.basedir}${file.separator}..${file.separator}..</solutionDir>
     <solutionFile>og-language.sln</solutionFile>
-    <dependencyDir>${localTarget}/dependency</dependencyDir>
+    <dependencyDir>${localTarget}${file.separator}dependency</dependencyDir>
   </properties>
 
   <modules>
+    <module>modules/base</module>
     <module>modules/client</module>
     <module>modules/connector</module>
     <module>modules/service</module>
