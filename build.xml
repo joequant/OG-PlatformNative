@@ -1,8 +1,13 @@
 <project name="OG-PlatformNative" default="configure-and-install">
 
-  <target name="configure-and-install" depends="configure,mvn-install" />
-  <target name="configure" depends="create-basedir,all-profiles" />
-  <target name="mvn-install" depends="mvn-init">
+  <target name="configure-and-install" depends="configure,install" description="Sets up the build environment and builds the components"/>
+  <target name="configure" depends="create-basedir,all-profiles" description="Sets up the build environment, identifying which components are to be built"/>
+  <target name="clean" depends="mvn-init" description="Calls `mvn clean` to delete any temporary/intermediate build files">
+    <exec executable="${mvn}" searchpath="true">
+      <arg value="clean" />
+    </exec>
+  </target>
+  <target name="install" depends="mvn-init" description="Calls `mvn install` to build all components and deploy them to the local repository">
     <exec executable="${mvn}" searchpath="true">
       <arg value="-D" />
       <arg value="root.dir=${basedir}" />
@@ -37,7 +42,7 @@
     </condition>
   </target>
 
-  <target name="all-profiles" depends="windows-profiles" />
+  <target name="all-profiles" depends="windows-profiles,nix-profiles" />
 
   <target name="windows-profiles"
       depends="enable-windows-profiles,
@@ -102,6 +107,39 @@
     </antcall>
   </target>
 
+  <target name="nix-profiles"
+      depends="enable-nix-profiles,
+               debug-nix-profile,
+               release-nix-profile" />
+
+  <target name="enable-nix-profiles" if="profile.nix"
+      depends="enable-debug-nix-profile,
+               enable-release-nix-profile">
+    <property name="profile.debug.nix" value="true" />
+    <property name="profile.release.nix" value="true" />
+  </target>
+  <target name="enable-debug-nix-profile" if="profile.debug.nix">
+    <property name="profile.debug.nix" value="true" />
+  </target>
+  <target name="enable-release-nix-profile" if="profile.release.nix">
+    <property name="profile.release.nix" value="true" />
+  </target>
+
+  <target name="debug-nix-profile" if="profile.debug.nix">
+    <antcall target="create-profile">
+      <param name="configuration" value="debug" />
+      <param name="family" value="nix" />
+      <param name="platform" value="${os.arch}" />
+    </antcall>
+  </target>
+  <target name="release-nix-profile" if="profile.release.nix">
+    <antcall target="create-profile">
+      <param name="configuration" value="release" />
+      <param name="family" value="nix" />
+      <param name="platform" value="${os.arch}" />
+    </antcall>
+  </target>
+
   <target name="create-basedir">
     <mkdir dir="target" />
     <delete dir="target/profile" failonerror="false" />
@@ -117,12 +155,16 @@
   </target>
   <target name="create-profile-files"
       depends="create-profile-msvc,
+               create-profile-cpptasks,
                create-profile-r,
                create-profile-ai">
     <touch file="target/profile/${profile}" />
   </target>
   <target name="create-profile-msvc" if="tool.msvc">
     <touch file="target/profile/${profile}-msvc" />
+  </target>
+  <target name="create-profile-cpptasks" if="tool.cpptasks">
+    <touch file="target/profile/${profile}-cpptasks" />
   </target>
   <target name="create-profile-r" if="tool.r">
     <touch file="target/profile/${profile}-r" />

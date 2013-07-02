@@ -13,14 +13,14 @@ started, run `ant configure` with one or more of the following parameters to
 set up the local environment.
 
 <dl>
-  <dt>-Dprofile.posix=true</dt>
+  <dt>-Dprofile.nix=true</dt>
   <dd>Build all Posix-style artifacts (for Max and Linux users)</dd>
   <dt>-Dprofile.windows=true</dt>
   <dd>Build all Windows artifacts</dd>
   <dt>-Dtool.ai=true</dt>
   <dd>Advanced Installer is available for building Windows installation packages</dd>
-  <dt>-Dtool.gcc=true</dt>
-  <dd>A GCC style compiler is available for C/C++ compilation</dd>
+  <dt>-Dtool.cpptasks=true</dt>
+  <dd>The Ant CPPTasks component is available for C/C++ compilation</dd>
   <dt>-Dtool.msvc=true</dt>
   <dd>Microsoft Visual Studio is available for C/C++ compilation</dd>
   <dt>-Dtool.r=true</dt>
@@ -32,7 +32,7 @@ targets, for example `profile.debug.windows` please refer to the `build.xml`
 file.
 
 After the `configure` task has been run, Maven can be invoked with the correct
-parameters using `ant mvn-install`.
+parameters using `ant install`.
 
 Note that the default build target will perform the `configure` action before
 launching Maven to perform its `install` action to compile and deploy the
