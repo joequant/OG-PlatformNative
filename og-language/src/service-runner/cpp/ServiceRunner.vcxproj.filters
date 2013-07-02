@@ -34,7 +34,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ServiceRunner.rc">
+    <ResourceCompile Include="..\resources\ServiceRunner.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

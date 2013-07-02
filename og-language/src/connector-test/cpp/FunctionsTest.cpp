@@ -9,7 +9,7 @@
 
 // Test the function methods
 
-#include "Connector/Functions.h"
+#include <connector/cpp/Functions.h>
 
 LOGGING (com.opengamma.language.connector.FunctionsTest);
 

@@ -8,7 +8,7 @@
 
 // Test the functions and objects in Connector/JVM.cpp
 
-#include "Connector/JVM.h"
+#include <connector/cpp/JVM.h>
 
 LOGGING (com.opengamma.language.connector.JVMTest);
 

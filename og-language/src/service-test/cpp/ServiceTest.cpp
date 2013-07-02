@@ -8,11 +8,11 @@
 
 // Test the functions and objects in Service/Service.cpp
 
-#include "Service/Public.h"
-#include "Service/Service.h"
-#include "Service/Settings.h"
-#include <Util/Thread.h>
-#include <Util/NamedPipe.h>
+#include <service/cpp/Public.h>
+#include <service/cpp/Service.h>
+#include <service/cpp/Settings.h>
+#include <util/cpp/Thread.h>
+#include <util/cpp/NamedPipe.h>
 
 LOGGING (com.opengamma.language.service.ServiceTest);
 

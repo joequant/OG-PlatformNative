@@ -8,7 +8,7 @@
 
 // Test the procedure methods
 
-#include "Connector/Procedures.h"
+#include <connector/cpp/Procedures.h>
 
 LOGGING (com.opengamma.language.connector.ProceduresTest);
 

@@ -5,7 +5,7 @@
  */
 
 #include "stdafx.h"
-#include "Util/Asynchronous.h"
+#include <util/cpp/Asynchronous.h>
 
 LOGGING (com.opengamma.language.util.AsynchronousTest);
 

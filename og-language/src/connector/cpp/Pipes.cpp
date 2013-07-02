@@ -7,8 +7,8 @@
 #include "stdafx.h"
 #include "Pipes.h"
 #include "Settings.h"
-#include <Util/String.h>
-#include <Util/Error.h>
+#include <util/cpp/String.h>
+#include <util/cpp/Error.h>
 
 LOGGING (com.opengamma.language.connector.Pipes);
 

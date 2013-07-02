@@ -8,12 +8,12 @@
 #define __inc_og_language_connector_connector_h
 
 #include <assert.h>
-#include <Util/Asynchronous.h>
-#include <Util/Fudge.h>
+#include <util/cpp/Asynchronous.h>
+#include <util/cpp/Fudge.h>
 #include "Client.h"
 #include "SynchronousCalls.h"
 #ifdef _WIN32
-#include <Util/Library.h>
+#include <util/cpp/Library.h>
 #endif /* ifdef _WIN32 */
 
 /// Main interface to the library. Most of the functionality is obtained through working with

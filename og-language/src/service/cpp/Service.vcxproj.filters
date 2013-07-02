@@ -42,6 +42,9 @@
     <ClInclude Include="ClientConnect.h">
       <Filter>Header Files\Fudge</Filter>
     </ClInclude>
+    <ClInclude Include="ErrorFeedback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -61,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="ClientConnect.c">
       <Filter>Source Files\Fudge</Filter>
+    </ClCompile>
+    <ClCompile Include="ErrorFeedback.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

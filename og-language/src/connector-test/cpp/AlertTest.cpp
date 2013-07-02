@@ -8,8 +8,8 @@
 
 // Test the functions and objects in Connector/Alert.cpp
 
-#include "Connector/Alert.h"
-#include <Util/Thread.h>
+#include <connector/cpp/Alert.h>
+#include <util/cpp/Thread.h>
 
 LOGGING (com.opengamma.language.connector.AlertTest);
 

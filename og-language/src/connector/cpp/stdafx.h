@@ -23,8 +23,8 @@
 
 #include <assert.h>
 
-#include <Util/Fudge.h>
-#include <Util/Logging.h>
-#include <Util/String.h>
+#include <util/cpp/Fudge.h>
+#include <util/cpp/Logging.h>
+#include <util/cpp/String.h>
 
 #endif /* ifdef STDAFX_H */

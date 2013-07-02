@@ -21,7 +21,7 @@
 #endif
 #include <assert.h>
 
-#include <Util/Fudge.h>
-#include <Util/Logging.h>
+#include <util/cpp/Fudge.h>
+#include <util/cpp/Logging.h>
 
 #endif /* ifndef STDAFX_H */

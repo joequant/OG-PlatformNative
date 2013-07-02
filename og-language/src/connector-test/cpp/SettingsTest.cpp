@@ -8,7 +8,7 @@
 
 // Test the functions and objects in Connector/Settings.cpp
 
-#include "Connector/Settings.h"
+#include <connector/cpp/Settings.h>
 
 LOGGING (com.opengamma.language.connector.SettingsTest);
 

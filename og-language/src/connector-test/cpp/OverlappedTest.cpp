@@ -8,9 +8,9 @@
 
 // Tests overlapped calls to Functions, LiveData and Procedures
 
-#include "Connector/Functions.h"
-#include "Connector/LiveData.h"
-#include "Connector/Procedures.h"
+#include <connector/cpp/Functions.h>
+#include <connector/cpp/LiveData.h>
+#include <connector/cpp/Procedures.h>
 
 LOGGING (com.opengamma.language.connector.OverlappedTest);
 

@@ -22,7 +22,7 @@
 #endif
 #include <assert.h>
 
-#include <Util/Unicode.h>
-#include <Util/AbstractTest.h>
+#include <util/cpp/Unicode.h>
+#include <util/cpp/AbstractTest.h>
 
 #endif /* ifndef STDAFX_H */

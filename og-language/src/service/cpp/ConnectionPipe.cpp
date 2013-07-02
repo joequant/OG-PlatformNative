@@ -9,7 +9,7 @@
 #define _INTERNAL
 #include "ConnectionPipe.h"
 #include "Settings.h"
-#include <Util/BufferedInput.h>
+#include <util/cpp/BufferedInput.h>
 
 LOGGING (com.opengamma.language.service.ConnectionPipe);
 

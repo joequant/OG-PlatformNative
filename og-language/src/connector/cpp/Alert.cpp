@@ -8,10 +8,10 @@
 #include "Alert.h"
 #include "Settings.h"
 #ifdef _WIN32
-#include <Util/DllVersion.h>
+#include <util/cpp/DllVersion.h>
 #endif /* ifdef _WIN32 */
-#include <Util/Mutex.h>
-#include <Util/String.h>
+#include <util/cpp/Mutex.h>
+#include <util/cpp/String.h>
 
 LOGGING (com.opengamma.language.connector.Alert);
 

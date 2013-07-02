@@ -6,14 +6,14 @@
 
 #include "stdafx.h"
 #include "Settings.h"
-#include <Util/Atomic.h>
+#include <util/cpp/Atomic.h>
 #ifdef _WIN32
-#include <Util/DllVersion.h>
+#include <util/cpp/DllVersion.h>
 #endif /* ifdef _WIN32 */
-#include <Util/File.h>
-#include <Util/Process.h>
-#include <Util/Error.h>
-#include <Util/Quote.h>
+#include <util/cpp/File.h>
+#include <util/cpp/Process.h>
+#include <util/cpp/Error.h>
+#include <util/cpp/Quote.h>
 
 LOGGING (com.opengamma.language.connector.Settings);
 

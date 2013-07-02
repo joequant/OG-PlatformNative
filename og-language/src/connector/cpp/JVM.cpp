@@ -8,9 +8,9 @@
 #include "JVM.h"
 #include "Settings.h"
 #ifdef _WIN32
-#include <Util/DllVersion.h>
+#include <util/cpp/DllVersion.h>
 #endif
-#include <Util/Error.h>
+#include <util/cpp/Error.h>
 
 LOGGING (com.opengamma.language.connector.JVM);
 

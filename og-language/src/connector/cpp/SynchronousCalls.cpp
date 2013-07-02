@@ -6,8 +6,8 @@
 
 #include "stdafx.h"
 #include "SynchronousCalls.h"
-#include <Util/Thread.h>
-#include <Util/Error.h>
+#include <util/cpp/Thread.h>
+#include <util/cpp/Error.h>
 
 LOGGING (com.opengamma.language.connector.SynchronousCalls);
 

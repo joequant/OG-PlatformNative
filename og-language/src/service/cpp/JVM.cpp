@@ -8,8 +8,13 @@
 
 #include "JVM.h"
 #include "Service.h"
-#include <Util/File.h>
-#include <Util/Library.h>
+#include <util/cpp/File.h>
+#include <util/cpp/Library.h>
+
+#ifdef _WIN32
+// It's this or disable warning C4996
+#define strdup _strdup
+#endif /* ifdef _WIN32 */
 
 LOGGING(com.opengamma.language.service.JVM);
 

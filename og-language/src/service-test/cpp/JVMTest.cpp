@@ -8,7 +8,7 @@
 
 // Test the functions and objects in Service/JVM.cpp
 
-#include "Service/JVM.h"
+#include <service/cpp/JVM.h>
 
 LOGGING (com.opengamma.language.service.JVMTest);
 

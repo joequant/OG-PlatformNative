@@ -7,7 +7,7 @@
 #ifndef __inc_og_language_connector_jvm_h
 #define __inc_og_language_connector_jvm_h
 
-#include <Util/Process.h>
+#include <util/cpp/Process.h>
 
 /// JVM host process management. The hosted JVM will run the client Java stack.
 class CClientJVM {

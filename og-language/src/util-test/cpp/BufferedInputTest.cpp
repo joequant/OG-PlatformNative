@@ -6,7 +6,7 @@
 
 #include "stdafx.h"
 #define _INTERNAL
-#include "Util/BufferedInput.h"
+#include <util/cpp/BufferedInput.h>
 
 LOGGING (com.opengamma.language.util.BufferedInputTest);
 

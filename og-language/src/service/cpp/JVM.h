@@ -7,9 +7,9 @@
 #ifndef __inc_og_language_service_jvm_h
 #define __inc_og_language_service_jvm_h
 
-#include <Util/Library.h>
-#include <Util/Mutex.h>
-#include <Util/Thread.h>
+#include <util/cpp/Library.h>
+#include <util/cpp/Mutex.h>
+#include <util/cpp/Thread.h>
 #include "Settings.h"
 #include "ErrorFeedback.h"
 

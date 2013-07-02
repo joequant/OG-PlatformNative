@@ -8,9 +8,9 @@
 
 // Test the functions and objects in Service/ConnectionPipe.cpp
 
-#include "Service/ConnectionPipe.h"
-#include "Service/Settings.h"
-#include <Util/Thread.h>
+#include <service/cpp/ConnectionPipe.h>
+#include <service/cpp/Settings.h>
+#include <util/cpp/Thread.h>
 
 LOGGING (com.opengamma.language.service.ConnectionPipeTest);
 

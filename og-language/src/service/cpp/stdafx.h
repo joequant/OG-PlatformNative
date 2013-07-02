@@ -31,9 +31,9 @@
 
 #include <jni.h>
 
-#include <Util/Fudge.h>
-#include <Util/Logging.h>
-#include <Util/String.h>
-#include <Util/Error.h>
+#include <util/cpp/Fudge.h>
+#include <util/cpp/Logging.h>
+#include <util/cpp/String.h>
+#include <util/cpp/Error.h>
 
 #endif /* ifndef STDAFX_H */

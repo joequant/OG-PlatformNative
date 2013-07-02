@@ -9,9 +9,9 @@
 
 // Blocking slots for synchronous calls
 
-#include <Util/Atomic.h>
-#include <Util/Mutex.h>
-#include <Util/Semaphore.h>
+#include <util/cpp/Atomic.h>
+#include <util/cpp/Mutex.h>
+#include <util/cpp/Semaphore.h>
 
 class CSynchronousCalls;
 

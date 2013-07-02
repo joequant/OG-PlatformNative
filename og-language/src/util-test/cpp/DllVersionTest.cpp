@@ -6,7 +6,7 @@
 
 #include "stdafx.h"
 #include "DllVersionInfo.h"
-#include "Util/DllVersion.h"
+#include <util/cpp/DllVersion.h>
 
 LOGGING (com.opengamma.language.util.DllVersionTest);
 

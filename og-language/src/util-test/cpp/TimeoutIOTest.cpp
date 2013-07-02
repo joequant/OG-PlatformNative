@@ -11,7 +11,7 @@
 #include <netdb.h>
 #endif /* ifndef _WIN32 */
 
-#include "Util/TimeoutIO.h"
+#include <util/cpp/TimeoutIO.h>
 
 LOGGING (com.opengamma.language.util.TimeoutIOTest);
 

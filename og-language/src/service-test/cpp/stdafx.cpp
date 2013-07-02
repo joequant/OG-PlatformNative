@@ -5,7 +5,7 @@
  */
 
 #include "stdafx.h"
-#include "Service/Service.h"
+#include <service/cpp/Service.h>
 
 #ifndef __cplusplus_cli
 int main (int argc, char **argv) {

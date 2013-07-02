@@ -8,7 +8,7 @@
 #define __inc_og_language_service_connectionpipe_h
 
 #include "Public.h"
-#include <Util/NamedPipe.h>
+#include <util/cpp/NamedPipe.h>
 
 /// Implementation of the IPC connection for incoming requests.
 class CConnectionPipe {

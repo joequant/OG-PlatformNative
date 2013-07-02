@@ -5,10 +5,10 @@
  */
 
 #include "stdafx.h"
-#include "Util/NamedPipe.h"
-#include "Util/String.h"
-#include "Util/Thread.h"
-#include "Util/Error.h"
+#include <util/cpp/NamedPipe.h>
+#include <util/cpp/String.h>
+#include <util/cpp/Thread.h>
+#include <util/cpp/Error.h>
 
 LOGGING (com.opengamma.language.util.NamedPipeTest);
 

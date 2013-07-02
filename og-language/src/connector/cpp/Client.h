@@ -9,9 +9,9 @@
 
 #include "JVM.h"
 #include "Pipes.h"
-#include <Util/Mutex.h>
-#include <Util/Semaphore.h>
-#include <Util/Thread.h>
+#include <util/cpp/Mutex.h>
+#include <util/cpp/Semaphore.h>
+#include <util/cpp/Thread.h>
 
 /// States the client execution stack can be in. This is a subset of the states that a CConnector
 /// instance can be in - as that allows an additional "no current client" state.

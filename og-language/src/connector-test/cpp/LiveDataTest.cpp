@@ -8,7 +8,7 @@
 
 // Test the livedata methods
 
-#include "Connector/LiveData.h"
+#include <connector/cpp/LiveData.h>
 
 LOGGING (com.opengamma.language.connector.LiveDataTest);
 

@@ -7,7 +7,7 @@
 #ifndef __inc_og_language_connector_settings_h
 #define __inc_og_language_connector_settings_h
 
-#include <Service/Public.h>
+#include <service/cpp/Public.h>
 
 #define SETTINGS_CONNECTION_PIPE			SERVICE_SETTINGS_CONNECTION_PIPE
 #define SETTINGS_CONNECT_TIMEOUT			TEXT ("connectTimeout")

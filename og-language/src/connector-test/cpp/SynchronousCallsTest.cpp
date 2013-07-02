@@ -16,8 +16,8 @@
 #endif /* ifdef _UNICODE */
 #endif /* ifdef _M_CEE */
 
-#include "Connector/SynchronousCalls.h"
-#include <Util/Thread.h>
+#include <connector/cpp/SynchronousCalls.h>
+#include <util/cpp/Thread.h>
 
 LOGGING (com.opengamma.language.connector.SynchronousCallsTest);
 

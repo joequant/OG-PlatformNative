@@ -8,7 +8,7 @@
 
 // Test the functions and objects in Service/Settings.cpp
 
-#include "Service/Settings.h"
+#include <service/cpp/Settings.h>
 
 LOGGING (com.opengamma.language.service.SettingsTest);
 

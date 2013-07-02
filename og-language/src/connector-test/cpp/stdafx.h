@@ -20,7 +20,7 @@
 
 #include <assert.h>
 
-#include <Util/Fudge.h>
-#include <Util/AbstractTest.h>
+#include <util/cpp/Fudge.h>
+#include <util/cpp/AbstractTest.h>
 
 #endif /* ifndef STDAFX_H */

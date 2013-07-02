@@ -5,7 +5,7 @@
  */
 
 #include "stdafx.h"
-#include "Util/AbstractSettings.h"
+#include <util/cpp/AbstractSettings.h>
 
 LOGGING (com.opengamma.language.util.AbstractSettingsTest);
 

@@ -147,6 +147,27 @@
     <ClInclude Include="com_opengamma_language_procedure_Custom.h">
       <Filter>Header Files\Fudge</Filter>
     </ClInclude>
+    <ClInclude Include="com_opengamma_language_livedata_Connect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CLInclude Include="com_opengamma_language_livedata_Disconnect.h">
+      <Filter>Header Files</Filter>
+    </CLInclude>
+    <ClInclude Include="com_opengamma_language_livedata_QueryValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="com_opengamma_language_livedata_Result.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="com_opengamma_language_procedure_Invoke.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="com_opengamma_language_procedure_Result.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Errors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -262,6 +283,27 @@
     </ClCompile>
     <ClCompile Include="com_opengamma_language_procedure_Custom.c">
       <Filter>Source Files\Fudge</Filter>
+    </ClCompile>
+    <ClCompile Include="com_opengamma_language_livedata_Connect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="com_opengamma_language_livedata_Disconnect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="com_opengamma_language_livedata_QueryValue.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="com_opengamma_language_livedata_Result.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="com_opengamma_language_procedure_Invoke.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="com_opengamma_language_procedure_Result.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Errors.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -7,8 +7,8 @@
 #ifndef __inc_og_language_connector_pipes_h
 #define __inc_og_language_connector_pipes_h
 
-#include <Util/BufferedInput.h>
-#include <Util/NamedPipe.h>
+#include <util/cpp/BufferedInput.h>
+#include <util/cpp/NamedPipe.h>
 
 /// Composes a pair of unidirectional pipes to the Java client stack for bi-directional
 /// communication.

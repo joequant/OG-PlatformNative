@@ -6,9 +6,9 @@
 
 #include "stdafx.h"
 #include "Settings.h"
-#include <Util/File.h>
-#include <Util/Process.h>
-#include <Util/Quote.h>
+#include <util/cpp/File.h>
+#include <util/cpp/Process.h>
+#include <util/cpp/Quote.h>
 
 LOGGING(com.opengamma.language.service.Settings);
 

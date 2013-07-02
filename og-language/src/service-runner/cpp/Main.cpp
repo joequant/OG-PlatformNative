@@ -5,8 +5,8 @@
  */
 
 #include "stdafx.h"
-#include <Service/Service.h>
-#include <Service/Settings.h>
+#include <service/cpp/Service.h>
+#include <service/cpp/Settings.h>
 
 /// Suppress the warnings that come from the LOGGING macros.
 static CSuppressLoggingWarning g_oSuppressLoggingWarning;

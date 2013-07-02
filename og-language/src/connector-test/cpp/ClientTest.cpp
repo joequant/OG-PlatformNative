@@ -8,10 +8,10 @@
 
 // Test the functions and objects in Connector/Client.cpp
 
-#include "Connector/Client.h"
+#include <connector/cpp/Client.h>
 #define FUDGE_NO_NAMESPACE
-#include "Connector/com_opengamma_language_connector_Test.h"
-#include "Connector/com_opengamma_language_connector_UserMessage.h"
+#include <connector/cpp/com_opengamma_language_connector_Test.h>
+#include <connector/cpp/com_opengamma_language_connector_UserMessage.h>
 
 LOGGING (com.opengamma.language.connector.ClientTest);
 

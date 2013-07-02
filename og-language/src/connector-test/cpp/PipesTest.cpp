@@ -8,7 +8,7 @@
 
 // Test the functions and objects in Connector/Pipes.cpp
 
-#include "Connector/Pipes.h"
+#include <connector/cpp/Pipes.h>
 
 LOGGING (com.opengamma.language.connector.PipesTest);
 

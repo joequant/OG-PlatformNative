@@ -20,7 +20,7 @@
 
 #include <jni.h>
 
-#include <Util/AbstractTest.h>
-#include <Util/Fudge.h>
+#include <util/cpp/AbstractTest.h>
+#include <util/cpp/Fudge.h>
 
 #endif /* ifndef STDAFX_H */
