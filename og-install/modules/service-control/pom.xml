@@ -19,30 +19,8 @@
 
   <properties>
     <publishFile>ServiceControl</publishFile>
+    <skip.attach-exe>false</skip.attach-exe>
   </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>debug-windows-win32-attach-exe</id>
-          </execution>
-          <execution>
-            <id>release-windows-win32-attach-exe</id>
-          </execution>
-          <execution>
-            <id>debug-windows-x64-attach-exe</id>
-          </execution>
-          <execution>
-            <id>release-windows-x64-attach-exe</id>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>

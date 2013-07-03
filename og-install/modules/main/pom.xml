@@ -17,27 +17,11 @@
   <name>OG-Install-Main</name>
   <description>Core support library</description>
 
+  <properties>
+    <skip.msbuild>false</skip.msbuild>
+  </properties>
+
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>debug-windows-win32-msbuild</id>
-          </execution>
-          <execution>
-            <id>release-windows-win32-msbuild</id>
-          </execution>
-          <execution>
-            <id>debug-windows-x64-msbuild</id>
-          </execution>
-          <execution>
-            <id>release-windows-x64-msbuild</id>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
     <directory>${localTarget}</directory>
     <sourceDirectory>${localSource}/main/java</sourceDirectory>
     <testSourceDirectory>${localSource}/test/java</testSourceDirectory>

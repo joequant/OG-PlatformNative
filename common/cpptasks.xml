@@ -1,0 +1,95 @@
+<!--
+  Copyright (C) 2012 - present by OpenGamma Inc. and the OpenGamma group of companies
+
+  Please see distribution for license.
+-->
+<project name="cpptasks">
+
+  <!--
+    CPPTasks support for C/C++ projects.
+  -->
+
+  <property name="cpp.optimization.debug" value="none" />
+  <property name="cpp.optimization.release" value="speed" />
+  <property name="cpp.warnings" value="diagnostic" />
+  <property name="cpp.runtime" value="dynamic" />
+  <property name="cpp.subsystem" value="console" />
+  <property name="cpp.have_pthread" value="true" />
+  <property name="cpp.platform.cflags" value="-fPIC" />
+  <property name="jni.base.include.dir" value="/etc/alternatives/java_sdk/include" />
+  <property name="jni.native.include.dir" value="${jni.base.include.dir}/linux" />
+
+  <target name="cpp-defines">
+    <cc>
+      <defineset id="cpp.defines" />
+    </cc>
+  </target>
+  <target name="cpp-includes">
+    <cc>
+      <includepath id="cpp.includes" />
+    </cc>
+  </target>
+
+  <!--
+     cpp.debug:         Define for DEBUG build
+     cpp.outtype:       Specify the output/linkage type
+     cpp.cflags:        Additional compiler arguments
+     cpp.defines:       Additional defineset identifier (override cpp-defines target)
+     cpp.includes:      Additional includepath identifier (override cpp-includes target)
+     cpp.source.dir:    Directory to read source C/C++ files from
+     cpp.lib.local:     Optional libraries from the current build path to link against
+     cpp.lib.deps:      Optional libraries from dependencies to link against
+     cpp.lib.platform:  Optional platform provided libraries to link against
+  -->
+  <target name="compile" depends="settings-debug,settings-ndebug,cpp-defines,cpp-includes">
+    <mkdir dir="${localTarget}" />
+    <mkdir dir="${localTarget}/${cpp.configuration}" />
+    <mkdir dir="${localTarget}/${publishFile}-objects" />
+    <mkdir dir="${localTarget}/${publishFile}-objects/${cpp.configuration}" />
+    <cc debug="${cpp.debug.value}"
+        multithreaded="true"
+        objdir="${localTarget}/${publishFile}-objects/${cpp.configuration}"
+        optimize="${cpp.optimization}"
+        outtype="${cpp.outtype}"
+        warnings="${cpp.warnings}"
+        runtime="${cpp.runtime}"
+        subsystem="${cpp.subsystem}"
+        outfile="${localTarget}/${cpp.configuration}/${publishFile}">
+      <compilerarg value="${cpp.cflags}" if="cpp.cflags" />
+      <compilerarg value="${cpp.platform.cflags}" />
+      <defineset>
+        <define name="_DEBUG" if="cpp.debug" />
+        <define name="NDEBUG" unless="cpp.debug" />
+        <define name="HAVE_PTHREAD" />
+      </defineset>
+      <defineset refid="cpp.defines" />
+      <includepath>
+        <pathelement path="${localTarget}" />
+        <pathelement path="${localTarget}/dependency/include" />
+        <pathelement path="${localSource}" />
+        <pathelement path="${jni.base.include.dir}" />
+        <pathelement path="${jni.native.include.dir}" />
+      </includepath>
+      <includepath refid="cpp.includes" />
+      <fileset dir="${cpp.source.dir}">
+        <include name="*.c" />
+        <include name="*.cpp" />
+      </fileset>
+      <libset dir="${localTarget}/${cpp.configuration}" libs="${cpp.lib.internal}" if="cpp.lib.internal" />
+      <libset dir="${localTarget}/dependency/lib/${cpp.configuration}" libs="${cpp.lib.external}" if="cpp.lib.external" />
+      <libset libs="${cpp.lib.platform}" if="cpp.lib.platform" />
+    </cc>
+  </target>
+
+  <target name="settings-debug" if="cpp.debug">
+    <property name="cpp.debug.value" value="true" />
+    <property name="cpp.configuration" value="Debug" />
+    <property name="cpp.optimization" value="${cpp.optimization.debug}" />
+  </target>
+  <target name="settings-ndebug" unless="cpp.debug">
+    <property name="cpp.debug.value" value="false" />
+    <property name="cpp.configuration" value="Release" />
+    <property name="cpp.optimization" value="${cpp.optimization.release}" />
+  </target>
+
+</project>

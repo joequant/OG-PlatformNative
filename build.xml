@@ -1,5 +1,7 @@
 <project name="OG-PlatformNative" default="configure-and-install">
 
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
   <target name="configure-and-install" depends="configure,install" description="Sets up the build environment and builds the components"/>
   <target name="configure" depends="create-basedir,all-profiles" description="Sets up the build environment, identifying which components are to be built"/>
   <target name="clean" depends="mvn-init" description="Calls `mvn clean` to delete any temporary/intermediate build files">
@@ -8,9 +10,12 @@
     </exec>
   </target>
   <target name="install" depends="mvn-init" description="Calls `mvn install` to build all components and deploy them to the local repository">
+    <osfamily property="os.family" />
     <exec executable="${mvn}" searchpath="true">
       <arg value="-D" />
       <arg value="root.dir=${basedir}" />
+      <arg value="-D" />
+      <arg value="os.family=${os.family}" />
       <arg value="install" />
     </exec>
   </target>

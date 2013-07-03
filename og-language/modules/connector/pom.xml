@@ -19,30 +19,11 @@
 
   <properties>
     <publishFile>Connector</publishFile>
+    <skip.cpptasks-build>false</skip.cpptasks-build>
+    <skip.attach-lib>false</skip.attach-lib>
+    <cpp.outtype>static</cpp.outtype>
+    <cpp.source.dir>${localSource}/connector/cpp</cpp.source.dir>
   </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>debug-windows-win32-attach-lib</id>
-          </execution>
-          <execution>
-            <id>release-windows-win32-attach-lib</id>
-          </execution>
-          <execution>
-            <id>debug-windows-x64-attach-lib</id>
-          </execution>
-          <execution>
-            <id>release-windows-x64-attach-lib</id>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>

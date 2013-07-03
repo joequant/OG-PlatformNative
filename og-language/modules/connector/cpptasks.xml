@@ -1,0 +1,13 @@
+<project name="cpptasks-config">
+ 
+  <import file="${root.dir}/common/cpptasks.xml" />
+
+  <target name="cpp-defines">
+    <cc>
+      <defineset id="cpp.defines">
+        <define name="DEAFULT_PIPE_FOLDER" value="TEXT (QUOTE (${defaults.pipe.folder}))" if="defaults.pipe.folder" />
+      </defineset>
+    </cc>
+  </target>
+
+</project>
