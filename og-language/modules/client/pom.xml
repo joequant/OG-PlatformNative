@@ -17,6 +17,11 @@
   <name>OG-Language-Client</name>
   <description>Core Java client stack</description>
 
+  <properties>
+    <skip.unit-tests-java>false</skip.unit-tests-java>
+    <skip.unit-tests-integration>false</skip.unit-tests-integration>
+  </properties>
+
   <build>
     <directory>${localTarget}</directory>
     <sourceDirectory>${localSource}/client/java</sourceDirectory>
@@ -38,6 +43,25 @@
                 <zip destfile="${localTarget}/config.zip">
                   <zipfileset dir="${localSource}/client/config" prefix="" />
                 </zip>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>integration-test-init</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${localTarget}/run" />
+                <mkdir dir="${localTarget}/run/ext" />
+                <echo>TODO: Copy file(s) into EXT folder</echo>
+                <echo>TODO: Copy logback.xml into run folder</echo>
+                <mkdir dir="${localTarget}/run/jar" />
+                <echo>TODO: Make sure all of the JAR dependencies are downloaded</echo>
+                <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" tofile="${localTarget}/run/client.jar" />
+                <echo>TODO: Create OpenGamma.properties file</echo>
               </target>
             </configuration>
           </execution>
@@ -71,18 +95,6 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>com.opengamma.platform</groupId>
-      <artifactId>og-language-connector</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-    </dependency>
-    <dependency>
-      <groupId>com.opengamma.platform</groupId>
-      <artifactId>og-language-service-runner</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-    </dependency>
     <dependency>
       <groupId>com.opengamma.platform</groupId>
       <artifactId>og-financial</artifactId>

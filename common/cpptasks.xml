@@ -16,8 +16,8 @@
   <property name="cpp.subsystem" value="console" />
   <property name="cpp.have_pthread" value="true" />
   <property name="cpp.platform.cflags" value="-fPIC" />
-  <property name="jni.base.include.dir" value="/etc/alternatives/java_sdk/include" />
-  <property name="jni.native.include.dir" value="${jni.base.include.dir}/linux" />
+  <property name="cpp.jni.include.dir" value="/etc/alternatives/java_sdk/include" />
+  <property name="cpp.jni.include.native.dir" value="${cpp.jni.include.dir}/linux" />
 
   <target name="cpp-defines">
     <cc>
@@ -67,8 +67,8 @@
         <pathelement path="${localTarget}" />
         <pathelement path="${localTarget}/dependency/include" />
         <pathelement path="${localSource}" />
-        <pathelement path="${jni.base.include.dir}" />
-        <pathelement path="${jni.native.include.dir}" />
+        <pathelement path="${cpp.jni.include.dir}" />
+        <pathelement path="${cpp.jni.include.native.dir}" />
       </includepath>
       <includepath refid="cpp.includes" />
       <fileset dir="${cpp.source.dir}">

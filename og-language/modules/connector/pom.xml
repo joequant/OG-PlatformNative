@@ -28,7 +28,7 @@
   <dependencies>
     <dependency>
       <groupId>com.opengamma.platform</groupId>
-      <artifactId>og-language-service</artifactId>
+      <artifactId>og-language-service-runner</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
     </dependency>

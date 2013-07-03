@@ -1,23 +1,37 @@
 <project name="OG-PlatformNative" default="configure-and-install">
 
-  <target name="configure-and-install" depends="configure,install" description="Sets up the build environment and builds the components"/>
-  <target name="configure" depends="create-basedir,all-profiles" description="Sets up the build environment, identifying which components are to be built"/>
+  <target name="configure-and-install" depends="configure,install" description="Sets up the build environment and builds the components" />
+
+  <target name="configure" depends="create-profile-dir,all-profiles" description="Sets up the build environment, identifying which components are to be built" />
   <target name="clean" depends="mvn-init" description="Calls `mvn clean` to delete any temporary/intermediate build files">
     <exec executable="${mvn}" searchpath="true">
       <arg value="clean" />
     </exec>
   </target>
+
   <target name="install" depends="mvn-init,os-family" description="Calls `mvn install` to build all components and deploy them to the local repository">
+    <property name="properties.dir" value="${basedir}/local" />
+    <property name="properties.file" value="default.properties" />
     <exec executable="${mvn}" searchpath="true">
       <arg value="-D" />
       <arg value="root.dir=${basedir}" />
       <arg value="-D" />
       <arg value="os.family=${os.family}" />
+      <arg value="-D" />
+      <arg value="properties.file=${properties.dir}/${properties.file}" />
       <arg value="install" />
     </exec>
   </target>
 
-  <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check">
+  <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check"> 
+    <mkdir dir="target" />
+    <echoproperties destfile="target/command-line.properties">
+      <propertyset>
+        <propertyref prefix="cpp." />
+        <propertyref prefix="site." />
+        <propertyref prefix="cmd." />
+      </propertyset>
+    </echoproperties>
   </target>
   <target name="mvn3-check" unless="mvn">
     <exec executable="mvn3" resultproperty="mvn3.found" failifexecutionfails="false">
@@ -142,10 +156,10 @@
     </antcall>
   </target>
 
-  <target name="create-basedir">
-    <mkdir dir="target" />
-    <delete dir="target/profile" failonerror="false" />
-    <mkdir dir="target/profile" />
+  <target name="create-profile-dir">
+    <mkdir dir="local" />
+    <delete dir="local/profile" failonerror="false" />
+    <mkdir dir="local/profile" />
   </target>
 
   <target name="create-profile">
@@ -160,19 +174,19 @@
                create-profile-cpptasks,
                create-profile-r,
                create-profile-ai">
-    <touch file="target/profile/${profile}" />
+    <touch file="local/profile/${profile}" />
   </target>
   <target name="create-profile-msvc" if="tool.msvc">
-    <touch file="target/profile/${profile}-msvc" />
+    <touch file="local/profile/${profile}-msvc" />
   </target>
   <target name="create-profile-cpptasks" if="tool.cpptasks">
-    <touch file="target/profile/${profile}-cpptasks" />
+    <touch file="local/profile/${profile}-cpptasks" />
   </target>
   <target name="create-profile-r" if="tool.r">
-    <touch file="target/profile/${profile}-r" />
+    <touch file="local/profile/${profile}-r" />
   </target>
   <target name="create-profile-ai" if="tool.ai">
-    <touch file="target/profile/${profile}-ai" />
+    <touch file="local/profile/${profile}-ai" />
   </target>
 
   <target name="os-family" depends="os-family-unix,os-family-windows" unless="os.family">

@@ -25,9 +25,6 @@
   </modules>
 
   <properties>
-    <!-- C/C++ Compilation -->
-    <cmd.msbuild>msbuild</cmd.msbuild>
-    <!-- Dependencies -->
     <version.fudge-c>0.2</version.fudge-c>
     <version.log4cxx>0.10.0</version.log4cxx>
     <version.apr>1.4.2</version.apr>
@@ -39,12 +36,15 @@
     <version.build-helper-maven-plugin>1.8</version.build-helper-maven-plugin>
     <version.paranamer>2.3</version.paranamer>
     <version.cpptasks>1.0b5</version.cpptasks>
-    <!-- Execution control -->
+    <version.properties-maven-plugin>1.0-alpha-1</version.properties-maven-plugin>
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.attach-exe>true</skip.attach-exe>
     <skip.attach-lib>true</skip.attach-lib>
-    <skip.tests>false</skip.tests>
+    <skip.unit-tests-java>true</skip.unit-tests-java>
+    <skip.unit-tests-native>true</skip.unit-tests-native>
+    <skip.integration-tests-java>true</skip.integration-tests-java>
+    <skip.integration-tests-native>true</skip.integration-tests-native>
     <skip.generate-version-header>true</skip.generate-version-header>
   </properties>
 
@@ -53,7 +53,7 @@
       <id>debug-windows-win32-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/debug-windows-win32-msvc</exists>
+          <exists>${root.dir}/local/profile/debug-windows-win32-msvc</exists>
         </file>
       </activation>
       <build>
@@ -142,7 +142,7 @@
       <id>debug-windows-x64-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/debug-windows-x64-msvc</exists>
+          <exists>${root.dir}/local/profile/debug-windows-x64-msvc</exists>
         </file>
       </activation>
       <build>
@@ -231,7 +231,7 @@
       <id>release-windows-win32-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/release-windows-win32-msvc</exists>
+          <exists>${root.dir}/local/profile/release-windows-win32-msvc</exists>
         </file>
       </activation>
       <build>
@@ -320,7 +320,7 @@
       <id>release-windows-x64-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/release-windows-x64-msvc</exists>
+          <exists>${root.dir}/local/profile/release-windows-x64-msvc</exists>
         </file>
       </activation>
       <build>
@@ -409,7 +409,7 @@
       <id>debug-nix-cpptasks</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/debug-nix-cpptasks</exists>
+          <exists>${root.dir}/local/profile/debug-nix-cpptasks</exists>
         </file>
       </activation>
       <build>
@@ -484,7 +484,7 @@
       <id>release-nix-cpptasks</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/release-nix-cpptasks</exists>
+          <exists>${root.dir}/local/profile/release-nix-cpptasks</exists>
         </file>
       </activation>
       <build>
@@ -562,16 +562,35 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${version.maven-surefire-plugin}</version>
         <configuration>
-          <skipTests>${skip.tests}</skipTests>
+          <skipTests>true</skipTests>
           <argLine>-Dlogback.configurationFile=com/opengamma/util/warn-logback.xml</argLine>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
           <parallel>classes</parallel>
           <threadCount>4</threadCount>
-          <groups>unit</groups>
-          <excludedGroups>integration,unitdb,unitslow</excludedGroups>
         </configuration>
+        <executions>
+          <execution>
+            <id>tests-unit</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skipTests>${skip.unit-tests-java}</skipTests>
+              <groups>unit</groups>
+            </configuration>
+          </execution>
+          <execution>
+            <id>tests-integration</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skipTests>${skip.integration-tests-java}</skipTests>
+              <groups>integration</groups>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -588,6 +607,27 @@
               <target unless="${skip.generate-version-header}">
                 <ant antfile="${root.dir}/common/version.xml" target="version-cpp-header" />
               </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>${version.properties-maven-plugin}</version>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>read-project-properties</goal>
+            </goals>
+            <configuration>
+              <files>
+                <file>${root.dir}/default.properties</file>
+                <file>${properties.file}</file>
+                <file>${root.dir}/target/command-line.properties</file>
+              </files>
+              <quiet>true</quiet>
             </configuration>
           </execution>
         </executions>

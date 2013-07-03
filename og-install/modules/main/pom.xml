@@ -19,12 +19,14 @@
 
   <properties>
     <skip.msbuild>false</skip.msbuild>
+    <skip.unit-tests-java>false</skip.unit-tests-java>
+    <skip.integration-tests-java>false</skip.integration-tests-java>
   </properties>
 
   <build>
     <directory>${localTarget}</directory>
     <sourceDirectory>${localSource}/main/java</sourceDirectory>
-    <testSourceDirectory>${localSource}/test/java</testSourceDirectory>
+    <testSourceDirectory>${localSource}/main-test/java</testSourceDirectory>
   </build>
 
   <dependencies>

@@ -27,7 +27,7 @@
       <id>windows-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/windows-msvc</exists>
+          <exists>${root.dir}/local/profile/windows-msvc</exists>
         </file>
       </activation>
       <dependencies>
@@ -95,7 +95,7 @@
       <id>debug-windows-win32-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/debug-windows-win32-msvc</exists>
+          <exists>${root.dir}/local/profile/debug-windows-win32-msvc</exists>
         </file>
       </activation>
       <dependencies>
@@ -177,7 +177,7 @@
       <id>debug-windows-x64-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/debug-windows-x64-msvc</exists>
+          <exists>${root.dir}/local/profile/debug-windows-x64-msvc</exists>
         </file>
       </activation>
       <dependencies>
@@ -259,7 +259,7 @@
       <id>release-windows-win32-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/release-windows-win32-msvc</exists>
+          <exists>${root.dir}/local/profile/release-windows-win32-msvc</exists>
         </file>
       </activation>
       <dependencies>
@@ -341,7 +341,7 @@
       <id>release-windows-x64-msvc</id>
       <activation>
         <file>
-          <exists>${root.dir}/target/profile/release-windows-x64-msvc</exists>
+          <exists>${root.dir}/local/profile/release-windows-x64-msvc</exists>
         </file>
       </activation>
       <dependencies>
@@ -510,12 +510,12 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>target/headers.zip</file>
+                  <file>local/headers.zip</file>
                   <type>zip</type>
                   <classifier>headers</classifier>
                 </artifact>
                 <artifact>
-                  <file>target/resources.zip</file>
+                  <file>local/resources.zip</file>
                   <type>zip</type>
                   <classifier>resources</classifier>
                 </artifact>

@@ -1,5 +1,6 @@
 /history.xml
 /target/
+/local/
 /og-*/target/
 /og-*/modules/*/target/
 *.aps
