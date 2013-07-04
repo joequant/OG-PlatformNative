@@ -23,6 +23,7 @@
     <solutionDir>${project.basedir}${file.separator}..${file.separator}..</solutionDir>
     <solutionFile>og-language.sln</solutionFile>
     <dependencyDir>${localTarget}${file.separator}dependency</dependencyDir>
+    <cpp.lib.platform>log4cxx,apr-1,fudgec,pthread,stdc++,rt</cpp.lib.platform>
   </properties>
 
   <modules>

@@ -20,9 +20,13 @@
   <properties>
     <publishFile>Service</publishFile>
     <skip.cpptasks-build>false</skip.cpptasks-build>
+    <skip.cpptasks-build-tests>false</skip.cpptasks-build-tests>
     <skip.attach-lib>false</skip.attach-lib>
+    <cpp.project>service</cpp.project>
     <cpp.outtype>static</cpp.outtype>
     <cpp.source.dir>${localSource}/service/cpp</cpp.source.dir>
+    <cpp.lib.internal>Service,Util</cpp.lib.internal>
+    <cpp.test-source.dir>${localSource}/service-test/cpp</cpp.test-source.dir>
   </properties>
 
   <dependencies>

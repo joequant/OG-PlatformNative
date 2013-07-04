@@ -9,18 +9,46 @@
     </exec>
   </target>
 
-  <target name="install" depends="mvn-init,os-family" description="Calls `mvn install` to build all components and deploy them to the local repository">
-    <property name="properties.dir" value="${basedir}/local" />
-    <property name="properties.file" value="default.properties" />
-    <exec executable="${mvn}" searchpath="true">
-      <arg value="-D" />
-      <arg value="root.dir=${basedir}" />
-      <arg value="-D" />
-      <arg value="os.family=${os.family}" />
-      <arg value="-D" />
-      <arg value="properties.file=${properties.dir}/${properties.file}" />
-      <arg value="install" />
-    </exec>
+  <target name="compile" description="Calls `mvn compile` to build all components">
+    <antcall target="mvn-call">
+      <param name="phase" value="compile" />
+    </antcall>
+  </target>
+
+  <target name="test-compile" description="Calls `mvn test-compile` to build all components and testing source code">
+    <antcall target="mvn-call">
+      <param name="phase" value="test-compile" />
+    </antcall>
+  </target>
+
+  <target name="test" description="Calls `mvn test` to build and unit test all components">
+    <antcall target="mvn-call">
+      <param name="phase" value="test" />
+    </antcall>
+  </target>
+
+  <target name="package" description="Calls `mvn package` to build a packaged deployment of the components">
+    <antcall target="mvn-call">
+      <param name="phase" value="package" />
+    </antcall>
+  </target>
+
+  <target name="integration-test" description="Calls `mvn integration-test` to build, and test, a packaged deployment of the components">
+    <antcall target="mvn-call">
+      <param name="phase" value="integration-test" />
+    </antcall>
+  </target>
+
+  <target name="install" description="Calls `mvn install` to build all components and deploy them to the local repository">
+    <antcall target="mvn-call">
+      <param name="phase" value="install" />
+    </antcall>
+  </target>
+
+  <target name="deploy" description="Calls `mvn deploy` to build all components and deploy them to the remote repository">
+    <antcall target="mvn-call">
+      <param name="phase" value="deploy" />
+    </antcall>
   </target>
 
   <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check"> 
@@ -56,6 +84,19 @@
     <condition property="mvn" value="mvn.bat">
       <isset property="mvn.bat.found" />
     </condition>
+  </target>
+  <target name="mvn-call" depends="mvn-init,os-family">
+    <property name="properties.dir" value="${basedir}/local" />
+    <property name="properties.file" value="default.properties" />
+    <exec executable="${mvn}" searchpath="true">
+      <arg value="-D" />
+      <arg value="root.dir=${basedir}" />
+      <arg value="-D" />
+      <arg value="os.family=${os.family}" />
+      <arg value="-D" />
+      <arg value="properties.file=${properties.dir}/${properties.file}" />
+      <arg value="${phase}" />
+    </exec> 
   </target>
 
   <target name="all-profiles" depends="windows-profiles,nix-profiles" />

@@ -136,3 +136,99 @@ void CAbstractTest::InitialiseLogs () {
 #endif /* ifdef _WIN32 */
 	LoggingInitImpl (pszConfigurationFile, false);
 }
+
+class CTestGroup {
+private:
+
+	/// The number of groups to execute
+	int m_nGroups;
+
+	/// The array of test groups
+	TCHAR *m_apszGroups[4];
+
+	void InitGroups () {
+		m_nGroups = 0;
+#ifdef _WIN32
+		TCHAR szGroups[MAX_PATH];
+		if (GetEnvironmentVariable (TEXT ("TEST_GROUPS"), szGroups, MAX_PATH) == 0) {
+			LOGINFO (TEXT ("No TEST_GROUPS environment variable set, all tests enabled"));
+			return;
+		}
+		if ((szGroups[0] == '*') && !szGroups[1]) {
+			LOGINFO (TEXT ("All test groups enabled"));
+			return;
+		}
+		LOGDEBUG (TEXT ("Got TEST_GROUPS = ") << szGroups);
+#define PSZ_GROUPS szGroups
+#else /* ifdef _WIN32 */
+		const char *pszGroups = getenv ("TEST_GROUPS");
+		if (!pszGroups) {
+			LOGINFO (TEXT ("No TEST_GROUPS environment variable set, all tests enabled"));
+			return;
+		}
+		if ((pszGroups[0] == '*') && !pszGroups[1]) {
+			LOGINFO (TEXT ("All test groups enabled"));
+			return;
+		}
+		char *pszGroupsCopy = strdup (pszGroups);
+		if (!pszGroupsCopy) {
+			LOGFATAL (TEXT ("Out of memory"));
+			return;
+		}
+#define PSZ_GROUPS pszGroupsCopy
+#endif /* ifdef _WIN32 */
+		TCHAR *pszContext;
+		TCHAR *psz = _tcstok_s (PSZ_GROUPS, TEXT (","), &pszContext);
+#undef PSZ_GROUPS
+		while (psz) {
+			if (m_nGroups > (int)(sizeof (m_apszGroups) / sizeof (TCHAR*))) {
+				LOGFATAL (TEXT ("Too many test groups (") << m_nGroups << TEXT (") specified"));
+				break;
+			}
+			psz = _tcsdup (psz);
+			if (!psz) {
+				LOGFATAL (TEXT ("Out of memory"));
+				break;
+			}
+			LOGINFO (TEXT ("Enabling test ") << psz);
+			m_apszGroups[m_nGroups++] = psz;
+			psz = _tcstok_s (NULL, TEXT (","), &pszContext);
+		}
+#ifndef _WIN32
+		free (pszGroupsCopy);
+#endif /* ifndef _WIN32 */
+	}
+
+public:
+
+	CTestGroup () {
+		m_nGroups = -1;
+	}
+
+	~CTestGroup () {
+		int i;
+		for (i = 0; i < m_nGroups; i++) {
+			free (m_apszGroups[i]);
+		}
+	}
+
+	bool IsGroup (const TCHAR *pszGroup) {
+		if (m_nGroups < 0) InitGroups ();
+		if (m_nGroups == 0) return true;
+		int i;
+		for (i = 0; i < m_nGroups; i++) {
+			if (!_tcscmp (pszGroup, m_apszGroups[i])) return true;
+		}
+		return false;
+	}
+
+};
+
+static CTestGroup g_oTestGroup;
+
+/// Tests whether a given test "group" is active or not. By default, all groups are active.
+///
+/// @return TRUE if the group is active, FALSE otherwise
+bool CAbstractTest::IsGroup (const TCHAR *pszGroup) {
+	return g_oTestGroup.IsGroup (pszGroup);
+}

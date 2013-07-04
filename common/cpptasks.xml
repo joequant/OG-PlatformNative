@@ -31,6 +31,7 @@
   </target>
 
   <!--
+     cpp.project:       Project specifier (should match the artifact identifier)
      cpp.debug:         Define for DEBUG build
      cpp.outtype:       Specify the output/linkage type
      cpp.cflags:        Additional compiler arguments
@@ -39,16 +40,16 @@
      cpp.source.dir:    Directory to read source C/C++ files from
      cpp.lib.local:     Optional libraries from the current build path to link against
      cpp.lib.deps:      Optional libraries from dependencies to link against
-     cpp.lib.platform:  Optional platform provided libraries to link against
+     cpp.lib.platform:  Platform provided libraries to link against
   -->
   <target name="compile" depends="settings-debug,settings-ndebug,cpp-defines,cpp-includes">
     <mkdir dir="${localTarget}" />
     <mkdir dir="${localTarget}/${cpp.configuration}" />
-    <mkdir dir="${localTarget}/${publishFile}-objects" />
-    <mkdir dir="${localTarget}/${publishFile}-objects/${cpp.configuration}" />
+    <mkdir dir="${localTarget}/${cpp.project}-objects" />
+    <mkdir dir="${localTarget}/${cpp.project}-objects/${cpp.configuration}" />
     <cc debug="${cpp.debug.value}"
         multithreaded="true"
-        objdir="${localTarget}/${publishFile}-objects/${cpp.configuration}"
+        objdir="${localTarget}/${cpp.project}-objects/${cpp.configuration}"
         optimize="${cpp.optimization}"
         outtype="${cpp.outtype}"
         warnings="${cpp.warnings}"
@@ -77,7 +78,7 @@
       </fileset>
       <libset dir="${localTarget}/${cpp.configuration}" libs="${cpp.lib.internal}" if="cpp.lib.internal" />
       <libset dir="${localTarget}/dependency/lib/${cpp.configuration}" libs="${cpp.lib.external}" if="cpp.lib.external" />
-      <libset libs="${cpp.lib.platform}" if="cpp.lib.platform" />
+      <libset libs="${cpp.lib.platform}" />
     </cc>
   </target>
 

@@ -20,9 +20,13 @@
   <properties>
     <publishFile>Util</publishFile>
     <skip.cpptasks-build>false</skip.cpptasks-build>
+    <skip.cpptasks-build-tests>false</skip.cpptasks-build-tests>
     <skip.attach-lib>false</skip.attach-lib>
+    <cpp.project>util</cpp.project>
     <cpp.outtype>static</cpp.outtype>
     <cpp.source.dir>${localSource}/util/cpp</cpp.source.dir>
+    <cpp.lib.internal>Util</cpp.lib.internal>
+    <cpp.test-source.dir>${localSource}/util-test/cpp</cpp.test-source.dir>
   </properties>
 
   <dependencies>

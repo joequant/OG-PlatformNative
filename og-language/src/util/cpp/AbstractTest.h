@@ -70,19 +70,30 @@ public:
 	}
 
 	static void InitialiseLogs ();
+	static bool IsGroup (const TCHAR *pszGroup);
 };
 
-/// Asserts the truth of an expression. This is the fundamental component of testing, with all
-/// test methods under a scenario creating such assertions to validate the results of executed
-/// code. If the assertial fails, the location is written to the log and CAbstractTest::Fail
-/// called.
-///
-/// @param[in] _expr_ the expression to test
+// Asserts the truth of an expression. This is the fundamental component of testing, with all
+// test methods under a scenario creating such assertions to validate the results of executed
+// code. If the assertial fails, the location is written to the log and CAbstractTest::Fail
+// called.
+//
+// @param[in] _expr_ the expression to test
 #define ASSERT(_expr_) \
 	if (!(_expr_)) { \
 		LOGFATAL (TEXT ("Assertion ") << __LINE__ << TEXT (" failed")); \
 		CAbstractTest::Fail (); \
 	}
+
+// Constant that indicates whether a unit-style test should be run.
+#ifndef UNIT_TEST
+# define UNIT_TEST CAbstractTest::IsGroup (TEXT ("unit"))
+#endif /* ifndef UNIT_TEST */
+
+// Constant that indicates whether an integration-style test should be run.
+#ifndef INTEGRATION_TEST
+# define INTEGRATION_TEST CAbstractTest::IsGroup (TEXT ("integration"))
+#endif /* ifndef INTEGRATION_TEST */
 
 #ifdef __cplusplus_cli
 

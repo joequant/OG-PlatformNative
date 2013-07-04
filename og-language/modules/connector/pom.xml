@@ -20,9 +20,13 @@
   <properties>
     <publishFile>Connector</publishFile>
     <skip.cpptasks-build>false</skip.cpptasks-build>
+    <skip.cpptasks-build-tests>false</skip.cpptasks-build-tests>
     <skip.attach-lib>false</skip.attach-lib>
+    <cpp.project>connector</cpp.project>
     <cpp.outtype>static</cpp.outtype>
     <cpp.source.dir>${localSource}/connector/cpp</cpp.source.dir>
+    <cpp.lib.internal>Connector,Service,Util</cpp.lib.internal>
+    <cpp.test-source.dir>${localSource}/connector-test/cpp</cpp.test-source.dir>
   </properties>
 
   <dependencies>
