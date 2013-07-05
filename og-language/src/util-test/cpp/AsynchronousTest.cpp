@@ -159,8 +159,8 @@ static void ThreadRecycling () {
 
 /// Tests the functions and objects in Util/Asynchronous.cpp
 BEGIN_TESTS (AsynchronousTest)
-	TEST (BasicOperations)
-	TEST (VitalOperations)
-	TEST (ThreadIdleTimeout)
-	TEST (ThreadRecycling)
+	UNIT_TEST (BasicOperations)
+	UNIT_TEST (VitalOperations)
+	UNIT_TEST (ThreadIdleTimeout)
+	UNIT_TEST (ThreadRecycling)
 END_TESTS

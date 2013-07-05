@@ -54,5 +54,5 @@ static void StartStop () {
 #endif /* ifndef RUN_TESTS */
 
 BEGIN_TESTS (JVMTest)
-	TEST (StartStop)
+	INTEGRATION_TEST (StartStop)
 END_TESTS

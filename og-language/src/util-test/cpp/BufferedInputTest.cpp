@@ -89,6 +89,6 @@ static void ReadSequence () {
 
 /// Tests the functions and objects in Util/BufferedInput.cpp
 BEGIN_TESTS (BufferedInputTest)
-	TEST (EmptyState)
-	TEST (ReadSequence)
+	UNIT_TEST (EmptyState)
+	UNIT_TEST (ReadSequence)
 END_TESTS

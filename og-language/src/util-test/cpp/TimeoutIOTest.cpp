@@ -141,7 +141,7 @@ static void LazyCloseDuringIO () {
 
 // Tests the functions and objects in Util/TimeoutIO.cpp
 BEGIN_TESTS (TimeoutIOTest)
-	TEST (LazyCloseBeforeIO1)
-	TEST (LazyCloseBeforeIO2)
-	TEST (LazyCloseDuringIO)
+	UNIT_TEST (LazyCloseBeforeIO1)
+	UNIT_TEST (LazyCloseBeforeIO2)
+	UNIT_TEST (LazyCloseDuringIO)
 END_TESTS

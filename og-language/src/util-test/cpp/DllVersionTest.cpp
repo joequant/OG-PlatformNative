@@ -27,5 +27,5 @@ static void DefaultValues () {
 
 /// Test the functions and objects in Util/DllVersion.cpp
 BEGIN_TESTS (DllVersionTest)
-	TEST (DefaultValues)
+	UNIT_TEST (DefaultValues)
 END_TESTS

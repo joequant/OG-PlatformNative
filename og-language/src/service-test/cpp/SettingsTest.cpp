@@ -69,7 +69,7 @@ static void PublicCommandHelpers () {
 }
 
 BEGIN_TESTS (ServiceSettingsTest)
-	TEST (InternalDefaults);
-	TEST (PublicDefaults);
-	TEST (PublicCommandHelpers);
+	UNIT_TEST (InternalDefaults);
+	UNIT_TEST (PublicDefaults);
+	UNIT_TEST (PublicCommandHelpers);
 END_TESTS

@@ -39,6 +39,6 @@ static void DefaultInitialisation () {
 
 /// Tests the functions and objects in Util/Logging.cpp
 BEGIN_TESTS (LoggingTest)
-	TEST (InitialisationFromPath)
-	TEST (DefaultInitialisation)
+	UNIT_TEST (InitialisationFromPath)
+	UNIT_TEST (DefaultInitialisation)
 END_TESTS

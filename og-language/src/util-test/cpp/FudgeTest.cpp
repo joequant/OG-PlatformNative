@@ -112,6 +112,6 @@ static void Compare () {
 }
 
 BEGIN_TESTS (FudgeTest)
-	TEST (Hash)
-	TEST (Compare)
+	UNIT_TEST (Hash)
+	UNIT_TEST (Compare)
 END_TESTS

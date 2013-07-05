@@ -192,10 +192,10 @@ static void Stash () {
 // The messaging is tested by the tests for Connector
 
 BEGIN_TESTS (ClientTest)
-	TEST (StartStop)
-	TEST (Heartbeat)
-	TEST (Message)
-	TEST (Stash)
+	INTEGRATION_TEST (StartStop)
+	INTEGRATION_TEST (Heartbeat)
+	INTEGRATION_TEST (Message)
+	INTEGRATION_TEST (Stash)
 	BEFORE_TEST (Start)
 	AFTER_TEST (Stop)
 END_TESTS

@@ -109,5 +109,5 @@ static void RunConnectStop () {
 #endif /* ifndef RUN_TESTS */
 
 BEGIN_TESTS (ServiceTest)
-	TEST (RunConnectStop)
+	INTEGRATION_TEST (RunConnectStop)
 END_TESTS

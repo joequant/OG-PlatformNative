@@ -37,5 +37,5 @@ static void Defaults () {
 }
 
 BEGIN_TESTS (ConnectorSettingsTest)
-	TEST (Defaults);
+	UNIT_TEST (Defaults);
 END_TESTS

@@ -57,11 +57,11 @@ static void CreateOutputFail () {
 }
 
 BEGIN_TESTS (PipesTest)
-	TEST (Create)
-	TEST (CreateInput1)
-	TEST (CreateInput2)
-	TEST (CreateInputFail)
-	TEST (CreateOutput1)
-	TEST (CreateOutput2)
-	TEST (CreateOutputFail)
+	UNIT_TEST (Create)
+	UNIT_TEST (CreateInput1)
+	UNIT_TEST (CreateInput2)
+	UNIT_TEST (CreateInputFail)
+	UNIT_TEST (CreateOutput1)
+	UNIT_TEST (CreateOutput2)
+	UNIT_TEST (CreateOutputFail)
 END_TESTS

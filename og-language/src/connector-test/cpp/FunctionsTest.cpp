@@ -61,9 +61,9 @@ static void InvokeInvalid () {
 }
 
 BEGIN_TESTS(FunctionsTest)
-	TEST (QueryAvailableFirst)
-	TEST (InvokeInvalid)
-	TEST (QueryAvailableSecond)
+	INTEGRATION_TEST (QueryAvailableFirst)
+	INTEGRATION_TEST (InvokeInvalid)
+	INTEGRATION_TEST (QueryAvailableSecond)
 	BEFORE_TEST (StartConnector)
 	AFTER_TEST (StopConnector)
 END_TESTS

@@ -79,7 +79,7 @@
       <arg value="/detail:stdout" />
       <arg value="/detail:stderr" />
       <arg value="/runconfig:${solutionDir}\\Local.testsettings" />
-      <env key="TEST_GROUPS" value="${test.groups}" />
+      <arg value="/category:${test.groups}" />
     </exec>
   </target>
 

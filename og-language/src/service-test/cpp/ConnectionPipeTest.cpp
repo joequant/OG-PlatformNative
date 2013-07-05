@@ -124,5 +124,5 @@ static void NormalOperation () {
 // Note: The lazy cancellation behaviour and timeouts are built on Util components already tested
 
 BEGIN_TESTS (ConnectionPipeTest)
-	TEST (NormalOperation)
+	UNIT_TEST (NormalOperation)
 END_TESTS

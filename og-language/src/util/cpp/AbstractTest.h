@@ -70,7 +70,9 @@ public:
 	}
 
 	static void InitialiseLogs ();
+#ifndef __cplusplus_cli
 	static bool IsGroup (const TCHAR *pszGroup);
+#endif /* ifndef __cplusplus_cli */
 };
 
 // Asserts the truth of an expression. This is the fundamental component of testing, with all
@@ -84,16 +86,6 @@ public:
 		LOGFATAL (TEXT ("Assertion ") << __LINE__ << TEXT (" failed")); \
 		CAbstractTest::Fail (); \
 	}
-
-// Constant that indicates whether a unit-style test should be run.
-#ifndef UNIT_TEST
-# define UNIT_TEST CAbstractTest::IsGroup (TEXT ("unit"))
-#endif /* ifndef UNIT_TEST */
-
-// Constant that indicates whether an integration-style test should be run.
-#ifndef INTEGRATION_TEST
-# define INTEGRATION_TEST CAbstractTest::IsGroup (TEXT ("integration"))
-#endif /* ifndef INTEGRATION_TEST */
 
 #ifdef __cplusplus_cli
 
@@ -120,9 +112,11 @@ public:
 
 // Marks a function (in global scope) as a test method for execution within this scenario.
 //
+// @param[in] group the test group
 // @param[in] proc the test method
-#define TEST(proc) \
+#define TEST(group, proc) \
 		[TestMethod] \
+		[TestCategory(group)] \
 		void Test##proc () { \
 			CAbstractTest::InitialiseLogs (); \
 			if (!s_bAutomatic) { \
@@ -232,13 +226,16 @@ public:
 
 // Marks a function (in global scope) as a test method for execution within this scenario.
 //
+// @param[in] group the test group
 // @param[in] proc the test method
-#define TEST(proc) \
-			LOGINFO (TEXT ("Running test ") << TEXT (#proc)); \
-			Before (); \
-			::proc (); \
-			After (); \
-			LOGINFO (TEXT ("Test ") << TEXT (#proc) << TEXT (" complete"));
+#define TEST(group, proc) \
+			if (IsGroup (group)) { \
+				LOGINFO (TEXT ("Running test ") << TEXT (#proc)); \
+				Before (); \
+				::proc (); \
+				After (); \
+				LOGINFO (TEXT ("Test ") << TEXT (#proc) << TEXT (" complete")); \
+			}
 
 // Marks a function (in global scope) for execution before each test method. This may only be used
 // once within the testing scenario and must be placed after the test methods.
@@ -293,5 +290,8 @@ public:
 	} g_o##__LINE__;
 
 #endif /* ifdef __cplusplus_cli */
+
+#define UNIT_TEST(proc) TEST("unit", proc)
+#define INTEGRATION_TEST(proc) TEST("integration", proc)
 
 #endif /* ifndef __inc_og_language_util_abstracttest_h */

@@ -21,5 +21,5 @@ static void CreateStop () {
 }
 
 BEGIN_TESTS (ClientJVMTest)
-	TEST (CreateStop)
+	INTEGRATION_TEST (CreateStop)
 END_TESTS

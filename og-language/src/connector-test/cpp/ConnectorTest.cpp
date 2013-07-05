@@ -212,13 +212,13 @@ static void JVMHang () {
 }
 
 BEGIN_TESTS (ConnectorTest)
-	TEST (StartStop)
-	TEST (SyncCall)
-	TEST (AsyncCall)
-	TEST (SyncCallWithAsyncCallback)
-	TEST (AsyncCallWithAsyncCallback)
-	TEST (JVMCrash)
-	TEST (JVMHang)
+	INTEGRATION_TEST (StartStop)
+	INTEGRATION_TEST (SyncCall)
+	INTEGRATION_TEST (AsyncCall)
+	INTEGRATION_TEST (SyncCallWithAsyncCallback)
+	INTEGRATION_TEST (AsyncCallWithAsyncCallback)
+	INTEGRATION_TEST (JVMCrash)
+	INTEGRATION_TEST (JVMHang)
 	BEFORE_TEST (StartConnector)
 	AFTER_TEST (StopConnector)
 END_TESTS

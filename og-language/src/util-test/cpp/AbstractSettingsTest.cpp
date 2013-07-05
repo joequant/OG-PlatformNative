@@ -159,9 +159,9 @@ static void Enumerate () {
 
 /// Tests the functions and objects in Util/AbstractSettings.cpp
 BEGIN_TESTS (AbstractSettingsTest)
-	TEST (Location)
-	TEST (Caching)
-	TEST (Provider)
-	TEST (DefaultSetting)
-	TEST (Enumerate)
+	UNIT_TEST (Location)
+	UNIT_TEST (Caching)
+	UNIT_TEST (Provider)
+	UNIT_TEST (DefaultSetting)
+	UNIT_TEST (Enumerate)
 END_TESTS

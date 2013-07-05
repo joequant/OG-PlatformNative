@@ -29,5 +29,5 @@ static void EnableDisable () {
 }
 
 BEGIN_TESTS (AlertTest)
-	TEST (EnableDisable)
+	UNIT_TEST (EnableDisable)
 END_TESTS

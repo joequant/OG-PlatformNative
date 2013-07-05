@@ -101,8 +101,8 @@ static void DoQueryAvailableInline () {
 #endif
 
 BEGIN_TESTS(OverlappedTest)
-	TEST (DoQueryAvailableOverlapped)
-	TEST (DoQueryAvailableInline)
+	INTEGRATION_TEST (DoQueryAvailableOverlapped)
+	INTEGRATION_TEST (DoQueryAvailableInline)
 	BEFORE_TEST (StartConnector)
 	AFTER_TEST (StopConnector)
 END_TESTS

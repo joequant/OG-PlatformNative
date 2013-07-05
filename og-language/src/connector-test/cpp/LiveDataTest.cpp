@@ -62,9 +62,9 @@ static void ConnectInvalid () {
 }
 
 BEGIN_TESTS(LiveDataTest)
-	TEST (QueryAvailableFirst)
-	TEST (ConnectInvalid)
-	TEST (QueryAvailableSecond)
+	INTEGRATION_TEST (QueryAvailableFirst)
+	INTEGRATION_TEST (ConnectInvalid)
+	INTEGRATION_TEST (QueryAvailableSecond)
 	BEFORE_TEST (StartConnector)
 	AFTER_TEST (StopConnector)
 END_TESTS

@@ -275,7 +275,7 @@ static void RapidCalls () {
 }
 
 BEGIN_TESTS (SynchronousCallsTest)
-	TEST (AllocateAndRelease)
-	TEST (PostAndWait)
-	TEST (RapidCalls)
+	UNIT_TEST (AllocateAndRelease)
+	UNIT_TEST (PostAndWait)
+	UNIT_TEST (RapidCalls)
 END_TESTS
