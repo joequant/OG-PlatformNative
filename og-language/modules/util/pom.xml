@@ -21,6 +21,8 @@
     <publishFile>Util</publishFile>
     <skip.cpptasks-build>false</skip.cpptasks-build>
     <skip.cpptasks-build-tests>false</skip.cpptasks-build-tests>
+    <skip.unit-tests-native>false</skip.unit-tests-native>
+    <skip.integration-tests-native>false</skip.integration-tests-native>
     <skip.attach-lib>false</skip.attach-lib>
     <cpp.project>util</cpp.project>
     <cpp.outtype>static</cpp.outtype>

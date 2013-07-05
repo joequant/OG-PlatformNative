@@ -15,13 +15,13 @@
     </antcall>
   </target>
 
-  <target name="test-compile" description="Calls `mvn test-compile` to build all components and testing source code">
+  <target name="compile-tests" description="Calls `mvn test-compile` to build all components and testing source code">
     <antcall target="mvn-call">
       <param name="phase" value="test-compile" />
     </antcall>
   </target>
 
-  <target name="test" description="Calls `mvn test` to build and unit test all components">
+  <target name="tests" description="Calls `mvn test` to build and unit test all components">
     <antcall target="mvn-call">
       <param name="phase" value="test" />
     </antcall>
@@ -33,7 +33,7 @@
     </antcall>
   </target>
 
-  <target name="integration-test" description="Calls `mvn integration-test` to build, and test, a packaged deployment of the components">
+  <target name="integration-tests" description="Calls `mvn integration-test` to build, and test, a packaged deployment of the components">
     <antcall target="mvn-call">
       <param name="phase" value="integration-test" />
     </antcall>

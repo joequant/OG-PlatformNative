@@ -407,6 +407,17 @@
       </build>
     </profile>
     <profile>
+      <id>windows-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/windows-msvc</exists>
+        </file>
+      </activation>
+      <properties>
+        <test.profile.msvc>true</test.profile.msvc>
+      </properties>
+    </profile>
+    <profile>
       <id>debug-nix-cpptasks</id>
       <activation>
         <file>
@@ -450,6 +461,35 @@
                       <property name="cpp.source.dir" value="${cpp.test-source.dir}" />
                       <property name="publishFile" value="${publishFile}Test" />
                       <property name="cpp.project" value="${cpp.project}-test" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-nix-cpptasks-unit-tests</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.unit-tests-native}">
+                    <property name="maven.classpath" refid="maven.test.classpath" />
+                    <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                      <property name="test.configuration" value="Debug" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-nix-cpptasks-integration-tests</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.integration-tests-native}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                      <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
                 </configuration>
@@ -544,6 +584,35 @@
                   </target>
                 </configuration>
               </execution>
+              <execution>
+                <id>release-nix-cpptasks-unit-tests</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.unit-tests-native}">
+                    <property name="maven.classpath" refid="maven.test.classpath" />
+                    <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                      <property name="test.configuration" value="Release" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-nix-cpptasks-integration-tests</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.integration-tests-native}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                      <property name="test.configuration" value="Release" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -590,6 +659,17 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>nix-cpptasks</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/nix-cpptasks</exists>
+        </file>
+      </activation>
+      <properties>
+        <test.profile.nix>true</test.profile.nix>
+      </properties>
+    </profile>
   </profiles>
 
   <build>
@@ -614,6 +694,7 @@
             <configuration>
               <skipTests>${skip.unit-tests-java}</skipTests>
               <groups>unit</groups>
+              <reportsDirectory>${localTarget}/${project.artifactId}-unit-tests-java</reportsDirectory>
             </configuration>
           </execution>
           <execution>
@@ -625,6 +706,7 @@
             <configuration>
               <skipTests>${skip.integration-tests-java}</skipTests>
               <groups>integration</groups>
+              <reportsDirectory>${localTarget}/${project.artifactId}-integration-tests-java</reportsDirectory>
             </configuration>
           </execution>
         </executions>
@@ -676,12 +758,19 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>ant-contrib</groupId>
       <artifactId>cpptasks</artifactId>
       <version>${version.cpptasks}</version>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-util</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

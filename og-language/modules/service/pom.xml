@@ -21,6 +21,8 @@
     <publishFile>Service</publishFile>
     <skip.cpptasks-build>false</skip.cpptasks-build>
     <skip.cpptasks-build-tests>false</skip.cpptasks-build-tests>
+    <skip.unit-tests-native>false</skip.unit-tests-native>
+    <skip.integration-tests-native>false</skip.integration-tests-native>
     <skip.attach-lib>false</skip.attach-lib>
     <cpp.project>service</cpp.project>
     <cpp.outtype>static</cpp.outtype>
