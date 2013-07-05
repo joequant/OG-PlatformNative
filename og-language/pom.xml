@@ -18,9 +18,9 @@
   <description>OpenGamma platform inter-language communication</description>
 
   <properties>
-    <localTarget>..${file.separator}..${file.separator}target</localTarget>
-    <localSource>..${file.separator}..${file.separator}src</localSource>
     <solutionDir>${project.basedir}${file.separator}..${file.separator}..</solutionDir>
+    <localTarget>${solutionDir}${file.separator}target</localTarget>
+    <localSource>${solutionDir}${file.separator}src</localSource>
     <solutionFile>og-language.sln</solutionFile>
     <dependencyDir>${localTarget}${file.separator}dependency</dependencyDir>
     <cpp.lib.platform>log4cxx,apr-1,fudgec,pthread,stdc++,rt</cpp.lib.platform>
@@ -30,6 +30,7 @@
     <module>modules/base</module>
     <module>modules/client</module>
     <module>modules/connector</module>
+    <module>modules/package</module>
     <module>modules/service</module>
     <module>modules/service-runner</module>
     <module>modules/util</module>

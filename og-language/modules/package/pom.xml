@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.opengamma.platform</groupId>
+    <artifactId>og-language</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
+  </parent>
+
+  <artifactId>og-language-package</artifactId>
+  <packaging>pom</packaging>
+  <name>OG-Language-Package</name>
+  <description>Final compilation stage</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${version.maven-surefire-plugin}</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>report-only</goal>
+            </goals>
+            <configuration>
+              <reportsDirectories>
+                <reportDirectory>${localTarget}/og-language-client-unit-tests-java</reportDirectory>
+                <reportDirectory>${localTarget}/og-language-client-integration-tests-java</reportDirectory>
+                <reportDirectory>${localTarget}/og-language-connector-unit-tests-native</reportDirectory>
+                <reportDirectory>${localTarget}/og-language-connector-integration-tests-native</reportDirectory>
+                <reportDirectory>${localTarget}/og-language-service-unit-tests-native</reportDirectory>
+                <reportDirectory>${localTarget}/og-language-service-integration-tests-native</reportDirectory>
+                <reportDirectory>${localTarget}/og-language-util-unit-tests-native</reportDirectory>
+                <reportDirectory>${localTarget}/og-language-util-integration-tests-native</reportDirectory>
+              </reportsDirectories>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-language-connector</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+
+</project>
