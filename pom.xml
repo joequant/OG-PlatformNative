@@ -488,6 +488,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
+                    <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
                       <property name="test.configuration" value="Debug" />
                     </ant>
@@ -607,6 +608,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
+                    <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
                       <property name="test.configuration" value="Release" />
                     </ant>

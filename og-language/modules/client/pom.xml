@@ -75,6 +75,24 @@ language.annotationCachePath=${localTarget}/run
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>tests-integration</id>
+            <configuration>
+              <additionalClasspathElements>
+                <additionalClasspathElement>${localTarget}/run</additionalClasspathElement>
+              </additionalClasspathElements>
+              <systemPropertyVariables>
+                <opengamma.engine.host>${site.opengamma.test-server.address}</opengamma.engine.host>
+                <language.ext.path>${localTarget}/run/ext</language.ext.path>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>${version.build-helper-maven-plugin}</version>
@@ -106,6 +124,17 @@ language.annotationCachePath=${localTarget}/run
       <groupId>com.opengamma.platform</groupId>
       <artifactId>og-financial</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-util</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.paranamer</groupId>

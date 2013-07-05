@@ -58,6 +58,7 @@
         <propertyref prefix="cpp." />
         <propertyref prefix="site." />
         <propertyref prefix="cmd." />
+        <propertyref prefix="skip." />
       </propertyset>
     </echoproperties>
   </target>
