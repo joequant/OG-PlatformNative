@@ -3,7 +3,7 @@
   <import file="${root.dir}/common/cpptasks.xml" />
 
   <target name="cpp-defines">
-    <cc>
+    <cc objdir="${localTarget}">
       <defineset id="cpp.defines">
         <define name="DEFAULT_CONFIG_FOLDER" value="TEXT (QUOTE (${defaults.config.folder}))" if="defaults.config.folder" />
         <define name="DEFAULT_CONFIG_BASE" value="TEXT (QUOTE (${defaults.config.base}))" if="defaults.config.base" />

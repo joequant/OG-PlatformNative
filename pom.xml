@@ -441,6 +441,7 @@
                   <target unless="${skip.cpptasks-build}">
                     <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath" />
                     <ant antfile="${project.basedir}/cpptasks.xml" target="compile">
+                      <property name="skip" value="cpptasks-build" />
                       <property name="cpp.debug" value="true" />
                     </ant>
                   </target>
@@ -456,6 +457,7 @@
                   <target unless="${skip.cpptasks-build-tests}">
                     <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath" />
                     <ant antfile="${project.basedir}/cpptasks.xml" target="compile">
+                      <property name="skip" value="cpptasks-build-tests" />
                       <property name="cpp.debug" value="true" />
                       <property name="cpp.outtype" value="executable" />
                       <property name="cpp.source.dir" value="${cpp.test-source.dir}" />
@@ -475,6 +477,7 @@
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                      <property name="skip" value="unit-tests-native" />
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -490,6 +493,7 @@
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -564,7 +568,9 @@
                 <configuration>
                   <target unless="${skip.cpptasks-build}">
                     <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath" />
-                    <ant antfile="${project.basedir}/cpptasks.xml" target="compile" />
+                    <ant antfile="${project.basedir}/cpptasks.xml" target="compile">
+                      <property name="skip" value="cpptasks-build" />
+                    </ant>
                   </target>
                 </configuration>
               </execution>
@@ -578,6 +584,7 @@
                   <target unless="${skip.cpptasks-build-tests}">
                     <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath" />
                     <ant antfile="${project.basedir}/cpptasks.xml" target="compile">
+                      <property name="skip" value="cpptasks-build-tests" />
                       <property name="cpp.outtype" value="executable" />
                       <property name="cpp.source.dir" value="${cpp.test-source.dir}" />
                       <property name="publishFile" value="${publishFile}Test" />
@@ -595,6 +602,7 @@
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                      <property name="skip" value="unit-tests-native" />
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>
@@ -610,6 +618,7 @@
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>

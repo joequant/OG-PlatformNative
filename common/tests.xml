@@ -9,12 +9,17 @@
      Unit and integration test support for native projects
   -->
 
+  <import file="skip.xml" />
+
   <property name="test.dir" value="${localTarget}${file.separator}${test.configuration}" />
 
   <!--
      test.configuration:  The build configuration to test
   -->
-  <target name="unit-test" depends="unit-test-conf,configure,unit-test-nix,unit-test-msvc,report" />
+  <target name="unit-test" unless="${skipped}" depends="skippable">
+    <antcall target="unit-test-impl" />
+  </target>
+  <target name="unit-test-impl" depends="unit-test-conf,configure,unit-test-nix,unit-test-msvc,report" />
   <target name="unit-test-conf">
     <property name="test.identifier" value="UnitTest" />
     <property name="test.groups" value="unit" />
@@ -23,7 +28,10 @@
   <!--
      test.configuration:  The build configuration to test
   -->
-  <target name="integration-test" depends="integration-test-conf,configure,integration-test-nix,integration-test-msvc,report" />
+  <target name="integration-test" unless="${skipped}" depends="skippable">
+    <antcall target="integration-test-impl" />
+  </target>
+  <target name="integration-test-impl" depends="integration-test-conf,configure,integration-test-nix,integration-test-msvc,report" />
   <target name="integration-test-conf">
     <property name="test.identifier" value="IntegrationTest" />
     <property name="test.groups" value="integration" />

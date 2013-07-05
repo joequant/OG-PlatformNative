@@ -1,0 +1,26 @@
+<!--
+  Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+
+  Please see distribution for license.
+-->
+<project name="skip">
+
+  <!--
+    Macros for supporting Maven skip properties. Property expansion in plugin configurations
+    seems to be handled based on defaults before the custom properties have been loaded so
+    the "skip" is passed by reference.
+  -->
+
+  <macrodef name="expand-property">
+    <attribute name="name" />
+    <attribute name="property" />
+    <sequential>
+      <property name="@{property}" value="${@{name}}" />
+    </sequential>
+  </macrodef>
+
+  <target name="skippable">
+    <expand-property name="skip.${skip}" property="skipped" />
+  </target>
+
+</project>
