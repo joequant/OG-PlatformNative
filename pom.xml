@@ -37,6 +37,7 @@
     <version.paranamer>2.3</version.paranamer>
     <version.cpptasks>1.0b5</version.cpptasks>
     <version.properties-maven-plugin>1.0-alpha-1</version.properties-maven-plugin>
+    <version.ant-junit>1.6.5</version.ant-junit>
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.cpptasks-build-tests>true</skip.cpptasks-build-tests>

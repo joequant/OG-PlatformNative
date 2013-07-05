@@ -21,28 +21,58 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>${version.maven-surefire-plugin}</version>
+        <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
+            <id>og-language-test-report</id>
             <phase>verify</phase>
             <goals>
-              <goal>report-only</goal>
+              <goal>run</goal>
             </goals>
             <configuration>
-              <reportsDirectories>
-                <reportDirectory>${localTarget}/og-language-client-unit-tests-java</reportDirectory>
-                <reportDirectory>${localTarget}/og-language-client-integration-tests-java</reportDirectory>
-                <reportDirectory>${localTarget}/og-language-connector-unit-tests-native</reportDirectory>
-                <reportDirectory>${localTarget}/og-language-connector-integration-tests-native</reportDirectory>
-                <reportDirectory>${localTarget}/og-language-service-unit-tests-native</reportDirectory>
-                <reportDirectory>${localTarget}/og-language-service-integration-tests-native</reportDirectory>
-                <reportDirectory>${localTarget}/og-language-util-unit-tests-native</reportDirectory>
-                <reportDirectory>${localTarget}/og-language-util-integration-tests-native</reportDirectory>
-              </reportsDirectories>
+              <target>
+                <mkdir dir="${localTarget}/test-reports" />
+                <mkdir dir="${localTarget}/test-reports/xml" />
+                <mkdir dir="${localTarget}/test-reports/html" />
+                <junitreport tofile="TESTS-TestSuites.xml" todir="${localTarget}/test-reports/xml">
+                  <fileset dir="${localTarget}/og-language-client-unit-tests-java/junitreports">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-language-client-integration-tests-java/junitreports">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-language-connector-unit-tests-native">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-language-connector-integration-tests-native">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-language-service-unit-tests-native">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-language-service-integration-tests-native">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-language-util-unit-tests-native">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-language-util-integration-tests-native">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <report format="frames" todir="${localTarget}/test-reports/html" />
+                </junitreport>
+              </target>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>${version.ant-junit}</version>
+            <optional>true</optional> 
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
