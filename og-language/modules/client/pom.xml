@@ -66,10 +66,27 @@ language.annotationCachePath=${localTarget}/run
 </echo>
                 <mkdir dir="${localTarget}/run/ext" />
                 <copy file="${localSource}/client/config/0og-language.xml" todir="${localTarget}/run/ext" />
-                <mkdir dir="${localTarget}/run/jar" />
-                <echo>TODO: Make sure all of the JAR dependencies are downloaded</echo>
                 <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" tofile="${localTarget}/run/client.jar" />
               </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${version.maven-dependency-plugin}</version>
+        <executions>
+          <execution>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <prependGroupId>true</prependGroupId>
+              <stripVersion>true</stripVersion>
+              <outputDirectory>${localTarget}/run/jar</outputDirectory>
+              <includeTypes>jar</includeTypes>
             </configuration>
           </execution>
         </executions>

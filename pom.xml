@@ -137,6 +137,75 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${version.maven-antrun-plugin}</version>
+            <executions>
+              <execution>
+                <id>debug-windows-win32-unit-tests</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.unit-tests-native}">
+                    <property name="maven.classpath" refid="maven.test.classpath" />
+                    <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                      <property name="skip" value="unit-tests-native" />
+                      <property name="test.configuration" value="DebugWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-windows-win32-integration-tests-attach</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.attach-exe}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
+                      <property name="skip" value="attach-exe" />
+                      <property name="test.configuration" value="DebugWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-windows-win32-integration-tests-init</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.integration-tests-native}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
+                      <property name="skip" value="integration-tests-native" />
+                      <property name="test.configuration" value="DebugWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-windows-win32-integration-tests</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.integration-tests-native}">
+                    <property name="maven.classpath" refid="maven.test.classpath" />
+                    <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                      <property name="skip" value="integration-tests-native" />
+                      <property name="test.configuration" value="DebugWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -315,6 +384,75 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${version.maven-antrun-plugin}</version>
+            <executions>
+              <execution>
+                <id>release-windows-win32-unit-tests</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.unit-tests-native}">
+                    <property name="maven.classpath" refid="maven.test.classpath" />
+                    <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                      <property name="skip" value="unit-tests-native" />
+                      <property name="test.configuration" value="ReleaseWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-windows-win32-integration-tests-attach</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.attach-exe}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
+                      <property name="skip" value="attach-exe" />
+                      <property name="test.configuration" value="ReleaseWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-windows-win32-integration-tests-init</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.integration-tests-native}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
+                      <property name="skip" value="integration-tests-native" />
+                      <property name="test.configuration" value="ReleaseWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-windows-win32-integration-tests</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.integration-tests-native}">
+                    <property name="maven.classpath" refid="maven.test.classpath" />
+                    <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                      <property name="skip" value="integration-tests-native" />
+                      <property name="test.configuration" value="ReleaseWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -485,6 +623,36 @@
                 </configuration>
               </execution>
               <execution>
+                <id>debug-nix-cpptasks-integration-tests-attach</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.attach-exe}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
+                      <property name="skip" value="attach-exe" />
+                      <property name="test.configuration" value="Debug" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-nix-cpptasks-integration-tests-init</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.integration-tests-native}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
+                      <property name="skip" value="integration-tests-native" />
+                      <property name="test.configuration" value="Debug" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
                 <id>debug-nix-cpptasks-integration-tests</id>
                 <phase>integration-test</phase>
                 <goals>
@@ -604,6 +772,36 @@
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
                       <property name="skip" value="unit-tests-native" />
+                      <property name="test.configuration" value="Release" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-nix-cpptasks-integration-tests-attach</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.attach-exe}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
+                      <property name="skip" value="attach-exe" />
+                      <property name="test.configuration" value="Release" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-nix-cpptasks-integration-tests-init</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.integration-tests-native}">
+                    <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
+                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>

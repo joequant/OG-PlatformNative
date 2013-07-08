@@ -168,6 +168,26 @@
                   </target>
                 </configuration>
               </execution>
+              <execution>
+                <id>debug-windows-win32-integration-copy-deps</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <mkdir dir="${localTarget}/run/DebugWin32" />
+                    <copy todir="${localTarget}/run/DebugWin32">
+                      <fileset dir="${localTarget}/DebugWin32">
+                        <include name="apr.dll" />
+                        <include name="aprutil.dll" />
+                        <include name="libfudgecd.dll" />
+                        <include name="log4cxx.dll" />
+                      </fileset>
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
         </plugins>
@@ -247,6 +267,26 @@
                     <mkdir dir="${dependencyDir}/lib/Debugx64" />
                     <copy file="${dependencyDir}/fudge-c-debug-windows-x64.lib" tofile="${dependencyDir}/lib/Debugx64/libfudgec.lib" />
                     <copy file="${dependencyDir}/log4cxx-debug-windows-x64.lib" tofile="${dependencyDir}/lib/Debugx64/log4cxx.lib" />
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-windows-x64-integration-copy-deps</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <mkdir dir="${localTarget}/run/Debugx64" />
+                    <copy todir="${localTarget}/run/Debugx64">
+                      <fileset dir="${localTarget}/Debugx64">
+                        <include name="apr.dll" />
+                        <include name="aprutil.dll" />
+                        <include name="libfudgecX64d.dll" />
+                        <include name="log4cxx.dll" />
+                      </fileset>
+                    </copy>
                   </target>
                 </configuration>
               </execution>
@@ -332,6 +372,26 @@
                   </target>
                 </configuration>
               </execution>
+              <execution>
+                <id>release-windows-win32-integration-copy-deps</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <mkdir dir="${localTarget}/run/ReleaseWin32" />
+                    <copy todir="${localTarget}/run/ReleaseWin32">
+                      <fileset dir="${localTarget}/ReleaseWin32">
+                        <include name="apr.dll" />
+                        <include name="aprutil.dll" />
+                        <include name="libfudgec.dll" />
+                        <include name="log4cxx.dll" />
+                      </fileset>
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
         </plugins>
@@ -411,6 +471,26 @@
                     <mkdir dir="${dependencyDir}/lib/Releasex64" />
                     <copy file="${dependencyDir}/fudge-c-release-windows-x64.lib" tofile="${dependencyDir}/lib/Releasex64/libfudgec.lib" />
                     <copy file="${dependencyDir}/log4cxx-release-windows-x64.lib" tofile="${dependencyDir}/lib/Releasex64/log4cxx.lib" />
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-windows-x64-integration-copy-deps</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <mkdir dir="${localTarget}/run/Releasex64" />
+                    <copy todir="${localTarget}/run/Releasex64">
+                      <fileset dir="${localTarget}/Releasex64">
+                        <include name="apr.dll" />
+                        <include name="aprutil.dll" />
+                        <include name="libfudgecX64.dll" />
+                        <include name="log4cxx.dll" />
+                      </fileset>
+                    </copy>
                   </target>
                 </configuration>
               </execution>
