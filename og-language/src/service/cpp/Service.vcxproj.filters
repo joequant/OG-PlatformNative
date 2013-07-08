@@ -39,11 +39,11 @@
     <ClInclude Include="ConnectionPipe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ClientConnect.h">
-      <Filter>Header Files\Fudge</Filter>
-    </ClInclude>
     <ClInclude Include="ErrorFeedback.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\target\generated-sources\service\cpp\ClientConnect.h">
+      <Filter>Header Files\Fudge</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,11 +62,11 @@
     <ClCompile Include="ConnectionPipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ClientConnect.c">
-      <Filter>Source Files\Fudge</Filter>
-    </ClCompile>
     <ClCompile Include="ErrorFeedback.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\service\cpp\ClientConnect.c">
+      <Filter>Source Files\Fudge</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

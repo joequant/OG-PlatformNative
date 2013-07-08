@@ -41,8 +41,7 @@
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.cpptasks-build-tests>true</skip.cpptasks-build-tests>
-    <skip.attach-exe>true</skip.attach-exe>
-    <skip.attach-lib>true</skip.attach-lib>
+    <skip.attach-native>true</skip.attach-native>
     <skip.unit-tests-java>true</skip.unit-tests-java>
     <skip.unit-tests-native>true</skip.unit-tests-native>
     <skip.integration-tests-java>true</skip.integration-tests-java>
@@ -92,44 +91,17 @@
             <version>${version.build-helper-maven-plugin}</version>
             <executions>
               <execution>
-                <id>debug-windows-win32-attach-exe</id>
+                <id>debug-windows-win32-attach-native</id>
                 <phase>package</phase>
                 <goals>
                   <goal>attach-artifact</goal>
                 </goals>
                 <configuration>
-                  <skipAttach>${skip.attach-exe}</skipAttach>
+                  <skipAttach>${skip.attach-native}</skipAttach>
                   <artifacts>
                     <artifact>
-                      <file>${localTarget}/DebugWin32/${publishFile}.exe</file>
-                      <type>exe</type>
-                      <classifier>debug-windows-win32</classifier>
-                    </artifact>
-                    <artifact>
-                      <file>${localTarget}/DebugWin32/${publishFile}.pdb</file>
-                      <type>pdb</type>
-                      <classifier>debug-windows-win32</classifier>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-              <execution>
-                <id>debug-windows-win32-attach-lib</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <configuration>
-                  <skipAttach>${skip.attach-lib}</skipAttach>
-                  <artifacts>
-                    <artifact>
-                      <file>${localTarget}/DebugWin32/${publishFile}.lib</file>
-                      <type>lib</type>
-                      <classifier>debug-windows-win32</classifier>
-                    </artifact>
-                    <artifact>
-                      <file>${localTarget}/DebugWin32/${publishFile}.pdb</file>
-                      <type>pdb</type>
+                      <file>${localTarget}/DebugWin32.zip</file>
+                      <type>zip</type>
                       <classifier>debug-windows-win32</classifier>
                     </artifact>
                   </artifacts>
@@ -152,8 +124,21 @@
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
-                      <property name="skip" value="unit-tests-native" />
                       <property name="test.configuration" value="DebugWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-windows-win32-archive-native</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.attach-native}">
+                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                      <property name="archive.configuration" value="DebugWin32" />
                     </ant>
                   </target>
                 </configuration>
@@ -165,9 +150,8 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target unless="${skip.attach-exe}">
+                  <target unless="${skip.integration-tests-native}">
                     <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
-                      <property name="skip" value="attach-exe" />
                       <property name="test.configuration" value="DebugWin32" />
                     </ant>
                   </target>
@@ -182,7 +166,6 @@
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
                     <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
-                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="DebugWin32" />
                     </ant>
                   </target>
@@ -198,7 +181,6 @@
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
-                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="DebugWin32" />
                     </ant>
                   </target>
@@ -250,47 +232,41 @@
             <version>${version.build-helper-maven-plugin}</version>
             <executions>
               <execution>
-                <id>debug-windows-x64-attach-exe</id>
+                <id>debug-windows-x64-attach-native</id>
                 <phase>package</phase>
                 <goals>
                   <goal>attach-artifact</goal>
                 </goals>
                 <configuration>
-                  <skipAttach>${skip.attach-exe}</skipAttach>
+                  <skipAttach>${skip.attach-native}</skipAttach>
                   <artifacts>
                     <artifact>
-                      <file>${localTarget}/Debugx64/${publishFile}.exe</file>
-                      <type>exe</type>
-                      <classifier>debug-windows-x64</classifier>
-                    </artifact>
-                    <artifact>
-                      <file>${localTarget}/Debugx64/${publishFile}.pdb</file>
-                      <type>pdb</type>
+                      <file>${localTarget}/Debugx64.zip</file>
+                      <type>zip</type>
                       <classifier>debug-windows-x64</classifier>
                     </artifact>
                   </artifacts>
                 </configuration>
               </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${version.maven-antrun-plugin}</version>
+            <executions>
               <execution>
-                <id>debug-windows-x64-attach-lib</id>
-                <phase>package</phase>
+                <id>debug-windows-x64-archive-native</id>
+                <phase>prepare-package</phase>
                 <goals>
-                  <goal>attach-artifact</goal>
+                  <goal>run</goal>
                 </goals>
                 <configuration>
-                  <skipAttach>${skip.attach-lib}</skipAttach>
-                  <artifacts>
-                    <artifact>
-                      <file>${localTarget}/Debugx64/${publishFile}.lib</file>
-                      <type>lib</type>
-                      <classifier>debug-windows-x64</classifier>
-                    </artifact>
-                    <artifact>
-                      <file>${localTarget}/Debugx64/${publishFile}.pdb</file>
-                        <type>pdb</type>
-                        <classifier>debug-windows-x64</classifier>
-                    </artifact>
-                  </artifacts>
+                  <target unless="${skip.attach-native}">
+                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                      <property name="archive.configuration" value="Debugx64" />
+                    </ant>
+                  </target>
                 </configuration>
               </execution>
             </executions>
@@ -339,44 +315,17 @@
             <version>${version.build-helper-maven-plugin}</version>
             <executions>
               <execution>
-                <id>release-windows-win32-attach-exe</id>
+                <id>release-windows-win32-attach-native</id>
                 <phase>package</phase>
                 <goals>
                   <goal>attach-artifact</goal>
                 </goals>
                 <configuration>
-                  <skipAttach>${skip.attach-exe}</skipAttach>
+                  <skipAttach>${skip.attach-native}</skipAttach>
                   <artifacts>
                     <artifact>
-                      <file>${localTarget}/ReleaseWin32/${publishFile}.exe</file>
-                      <type>exe</type>
-                      <classifier>release-windows-win32</classifier>
-                    </artifact>
-                    <artifact>
-                      <file>${localTarget}/ReleaseWin32/${publishFile}.pdb</file>
-                      <type>pdb</type>
-                      <classifier>release-windows-win32</classifier>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-              <execution>
-                <id>release-windows-win32-attach-lib</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <configuration>
-                  <skipAttach>${skip.attach-lib}</skipAttach>
-                  <artifacts>
-                    <artifact>
-                      <file>${localTarget}/ReleaseWin32/${publishFile}.lib</file>
-                      <type>lib</type>
-                      <classifier>release-windows-win32</classifier>
-                    </artifact>
-                    <artifact>
-                      <file>${localTarget}/ReleaseWin32/${publishFile}.pdb</file>
-                      <type>pdb</type>
+                      <file>${localTarget}/ReleaseWin32.zip</file>
+                      <type>zip</type>
                       <classifier>release-windows-win32</classifier>
                     </artifact>
                   </artifacts>
@@ -399,8 +348,21 @@
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
-                      <property name="skip" value="unit-tests-native" />
                       <property name="test.configuration" value="ReleaseWin32" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-windows-win32-archive-native</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.attach-native}">
+                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                      <property name="archive.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
                 </configuration>
@@ -412,9 +374,8 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target unless="${skip.attach-exe}">
+                  <target unless="${skip.integration-tests-native}">
                     <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
-                      <property name="skip" value="attach-exe" />
                       <property name="test.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
@@ -429,7 +390,6 @@
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
                     <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
-                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
@@ -445,7 +405,6 @@
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
-                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
@@ -497,47 +456,41 @@
             <version>${version.build-helper-maven-plugin}</version>
             <executions>
               <execution>
-                <id>release-windows-x64-attach-exe</id>
+                <id>release-windows-x64-attach-native</id>
                 <phase>package</phase>
                 <goals>
                   <goal>attach-artifact</goal>
                 </goals>
                 <configuration>
-                  <skipAttach>${skip.attach-exe}</skipAttach>
+                  <skipAttach>${skip.attach-native}</skipAttach>
                   <artifacts>
                     <artifact>
-                      <file>${localTarget}/Releasex64/${publishFile}.exe</file>
-                      <type>exe</type>
-                      <classifier>release-windows-x64</classifier>
-                    </artifact>
-                    <artifact>
-                      <file>${localTarget}/Releasex64/${publishFile}.pdb</file>
-                      <type>pdb</type>
+                      <file>${localTarget}/Releasex64.zip</file>
+                      <type>zip</type>
                       <classifier>release-windows-x64</classifier>
                     </artifact>
                   </artifacts>
                 </configuration>
               </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${version.maven-antrun-plugin}</version>
+            <executions>
               <execution>
-                <id>release-windows-x64-attach-lib</id>
-                <phase>package</phase>
+                <id>release-windows-x64-archive-native</id>
+                <phase>prepare-package</phase>
                 <goals>
-                  <goal>attach-artifact</goal>
+                  <goal>run</goal>
                 </goals>
                 <configuration>
-                  <skipAttach>${skip.attach-lib}</skipAttach>
-                  <artifacts>
-                    <artifact>
-                      <file>${localTarget}/Releasex64/${publishFile}.lib</file>
-                      <type>lib</type>
-                      <classifier>release-windows-x64</classifier>
-                    </artifact>
-                    <artifact>
-                      <file>${localTarget}/Releasex64/${publishFile}.pdb</file>
-                      <type>pdb</type>
-                      <classifier>release-windows-x64</classifier>
-                    </artifact>
-                  </artifacts>
+                  <target unless="${skip.attach-native}">
+                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                      <property name="archive.configuration" value="Releasex64" />
+                    </ant>
+                  </target>
                 </configuration>
               </execution>
             </executions>
@@ -553,7 +506,7 @@
         </file>
       </activation>
       <properties>
-        <test.profile.msvc>true</test.profile.msvc>
+        <profile.windows.msvc>true</profile.windows.msvc>
       </properties>
     </profile>
     <profile>
@@ -580,7 +533,6 @@
                   <target unless="${skip.cpptasks-build}">
                     <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath" />
                     <ant antfile="${project.basedir}/cpptasks.xml" target="compile">
-                      <property name="skip" value="cpptasks-build" />
                       <property name="cpp.debug" value="true" />
                     </ant>
                   </target>
@@ -596,7 +548,6 @@
                   <target unless="${skip.cpptasks-build-tests}">
                     <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath" />
                     <ant antfile="${project.basedir}/cpptasks.xml" target="compile">
-                      <property name="skip" value="cpptasks-build-tests" />
                       <property name="cpp.debug" value="true" />
                       <property name="cpp.outtype" value="executable" />
                       <property name="cpp.source.dir" value="${cpp.test-source.dir}" />
@@ -616,8 +567,21 @@
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
-                      <property name="skip" value="unit-tests-native" />
                       <property name="test.configuration" value="Debug" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-nix-cpptasks-archive-native</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.attach-native}">
+                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                      <property name="archive.configuration" value="Debug" />
                     </ant>
                   </target>
                 </configuration>
@@ -629,9 +593,8 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target unless="${skip.attach-exe}">
+                  <target unless="${skip.integration-tests-native}">
                     <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
-                      <property name="skip" value="attach-exe" />
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -646,7 +609,6 @@
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
                     <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
-                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -662,7 +624,6 @@
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
-                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -676,34 +637,17 @@
             <version>${version.build-helper-maven-plugin}</version>
             <executions>
               <execution>
-                <id>debug-nix-cpptasks-attach-exe</id>
+                <id>debug-nix-cpptasks-attach-native</id>
                 <phase>package</phase>
                 <goals>
                   <goal>attach-artifact</goal>
                 </goals>
                 <configuration>
-                  <skipAttach>${skip.attach-exe}</skipAttach>
+                  <skipAttach>${skip.attach-native}</skipAttach>
                   <artifacts>
                     <artifact>
-                      <file>${localTarget}/Debug/${publishFile}</file>
-                      <type>exe</type>
-                      <classifier>debug-${os.family}-${os.arch}</classifier>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-              <execution>
-                <id>debug-nix-cpptasks-attach-lib</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <configuration>
-                  <skipAttach>${skip.attach-lib}</skipAttach>
-                  <artifacts>
-                    <artifact>
-                      <file>${localTarget}/Debug/lib${publishFile}.a</file>
-                      <type>lib</type>
+                      <file>${localTarget}/Debug.zip</file>
+                      <type>zip</type>
                       <classifier>debug-${os.family}-${os.arch}</classifier>
                     </artifact>
                   </artifacts>
@@ -737,9 +681,7 @@
                 <configuration>
                   <target unless="${skip.cpptasks-build}">
                     <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath" />
-                    <ant antfile="${project.basedir}/cpptasks.xml" target="compile">
-                      <property name="skip" value="cpptasks-build" />
-                    </ant>
+                    <ant antfile="${project.basedir}/cpptasks.xml" target="compile" />
                   </target>
                 </configuration>
               </execution>
@@ -753,7 +695,6 @@
                   <target unless="${skip.cpptasks-build-tests}">
                     <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath" />
                     <ant antfile="${project.basedir}/cpptasks.xml" target="compile">
-                      <property name="skip" value="cpptasks-build-tests" />
                       <property name="cpp.outtype" value="executable" />
                       <property name="cpp.source.dir" value="${cpp.test-source.dir}" />
                       <property name="publishFile" value="${publishFile}Test" />
@@ -771,8 +712,21 @@
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
-                      <property name="skip" value="unit-tests-native" />
                       <property name="test.configuration" value="Release" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-nix-cpptasks-archive-native</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="${skip.attach-native}">
+                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                      <property name="archive.configuration" value="Release" />
                     </ant>
                   </target>
                 </configuration>
@@ -784,9 +738,8 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target unless="${skip.attach-exe}">
+                  <target unless="${skip.integration-tests-native}">
                     <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
-                      <property name="skip" value="attach-exe" />
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>
@@ -801,7 +754,6 @@
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
                     <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
-                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>
@@ -817,7 +769,6 @@
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
                     <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
-                      <property name="skip" value="integration-tests-native" />
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>
@@ -831,34 +782,17 @@
             <version>${version.build-helper-maven-plugin}</version>
             <executions>
               <execution>
-                <id>release-nix-cpptasks-attach-exe</id>
+                <id>release-nix-cpptasks-attach-native</id>
                 <phase>package</phase>
                 <goals>
                   <goal>attach-artifact</goal>
                 </goals>
                 <configuration>
-                  <skipAttach>${skip.attach-exe}</skipAttach>
+                  <skipAttach>${skip.attach-native}</skipAttach>
                   <artifacts>
                     <artifact>
-                      <file>${localTarget}/Release/${publishFile}</file>
-                      <type>exe</type>
-                      <classifier>release-${os.family}-${os.arch}</classifier>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-              <execution>
-                <id>release-nix-cpptasks-attach-lib</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <configuration>
-                  <skipAttach>${skip.attach-lib}</skipAttach>
-                  <artifacts>
-                    <artifact>
-                      <file>${localTarget}/Release/lib${publishFile}.a</file>
-                      <type>lib</type>
+                      <file>${localTarget}/Release.zip</file>
+                      <type>zip</type>
                       <classifier>release-${os.family}-${os.arch}</classifier>
                     </artifact>
                   </artifacts>
@@ -877,7 +811,7 @@
         </file>
       </activation>
       <properties>
-        <test.profile.nix>true</test.profile.nix>
+        <profile.nix.cpptasks>true</profile.nix.cpptasks>
       </properties>
     </profile>
   </profiles>

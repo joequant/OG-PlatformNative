@@ -1,0 +1,52 @@
+<!--
+  Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+
+  Please see distribution for license.
+-->
+<project name="archive">
+
+  <!--
+    Create an archive of the compiled files (and any immediate dependencies)
+  -->
+
+  <!--
+     archive.configuration:     The build configuration to archive
+  -->
+
+  <target name="create-archive">
+    <antcall target="create-archive-impl" />
+  </target>
+  <target name="create-archive-impl" if="dir.exists" depends="test-source-dir">
+    <antcall target="archive" />
+  </target>
+  <target name="test-source-dir">
+    <available type="dir" file="${localTarget}/${archive.configuration}" property="dir.exists" />
+  </target>
+  <target name="archive" depends="archive-msvc,archive-nix" />
+
+  <target name="archive-msvc" if="profile.windows.msvc">
+    <zip destfile="${localTarget}/${archive.configuration}.zip">
+      <zipfileset dir="${localTarget}/${archive.configuration}" prefix="${archive.configuration}">
+        <include name="*.dll" />
+        <include name="*.exe" />
+        <include name="*.lib" />
+        <include name="*.pdb" />
+        <exclude name="*Test.*" />
+      </zipfileset>
+    </zip>
+  </target>
+  <target name="archive-nix" if="profile.nix.cpptasks">
+    <zip destfile="${localTarget}/${archive.configuration}.zip">
+      <zipfileset dir="${localTarget}/${archive.configuration}" prefix="${archive.configuration}" filemode="755">
+        <include name="*" />
+        <exclude name="lib*" />
+        <exclude name="history.xml" />
+        <exclude name="*Test" />
+      </zipfileset>
+      <zipfileset dir="${localTarget}/${archive.configuration}" prefix="${archive.configuration}" filemode="664">
+        <include name="lib*" />
+      </zipfileset>
+    </zip>
+  </target>
+
+</project>

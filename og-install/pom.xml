@@ -27,11 +27,6 @@
   <modules>
     <module>modules/jre</module>
     <module>modules/main</module>
-    <module>modules/main-runner</module>
-    <module>modules/run-tool</module>
-    <module>modules/service-control</module>
-    <module>modules/service</module>
-    <module>modules/wait-for-startup</module>
   </modules>
 
 </project>

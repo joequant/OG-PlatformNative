@@ -86,7 +86,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)target\dependency\include;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\dependency\include;$(SolutionDir)src;$(SolutionDir)target\generated-sources\connector\cpp</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -103,7 +103,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)target\dependency\include;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\dependency\include;$(SolutionDir)src;$(SolutionDir)target\generated-sources\connector\cpp</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -120,7 +120,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)target\dependency\include;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\dependency\include;$(SolutionDir)src;$(SolutionDir)target\generated-sources\connector\cpp</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -137,7 +137,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)target\dependency\include;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\dependency\include;$(SolutionDir)src;$(SolutionDir)target\generated-sources\connector\cpp</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -152,41 +152,41 @@
   <ItemGroup>
     <ClInclude Include="Alert.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="com_opengamma_language_connector_ConnectorMessage.h" />
-    <ClInclude Include="com_opengamma_language_connector_Custom.h" />
-    <ClInclude Include="com_opengamma_language_connector_Function.h" />
-    <ClInclude Include="com_opengamma_language_connector_LiveData.h" />
-    <ClInclude Include="com_opengamma_language_connector_Procedure.h" />
-    <ClInclude Include="com_opengamma_language_connector_Test.h" />
-    <ClInclude Include="com_opengamma_language_connector_UserMessage.h" />
-    <ClInclude Include="com_opengamma_language_connector_UserMessagePayload.h" />
-    <ClInclude Include="com_opengamma_language_Data.h" />
-    <ClInclude Include="com_opengamma_language_definition_Definition.h" />
-    <ClInclude Include="com_opengamma_language_definition_Parameter.h" />
-    <ClInclude Include="com_opengamma_language_function_Available.h" />
-    <ClInclude Include="com_opengamma_language_function_Available_Entry.h" />
-    <ClInclude Include="com_opengamma_language_function_Custom.h" />
-    <ClInclude Include="com_opengamma_language_function_Definition.h" />
-    <ClInclude Include="com_opengamma_language_function_Invoke.h" />
-    <ClInclude Include="com_opengamma_language_function_QueryAvailable.h" />
-    <ClInclude Include="com_opengamma_language_function_Result.h" />
-    <ClInclude Include="com_opengamma_language_livedata_Available.h" />
-    <ClInclude Include="com_opengamma_language_livedata_Available_Entry.h" />
-    <ClInclude Include="com_opengamma_language_livedata_Connect.h" />
-    <ClInclude Include="com_opengamma_language_livedata_Custom.h" />
-    <CLInclude Include="com_opengamma_language_livedata_Disconnect.h" />
-    <ClInclude Include="com_opengamma_language_livedata_Definition.h" />
-    <ClInclude Include="com_opengamma_language_livedata_QueryAvailable.h" />
-    <ClInclude Include="com_opengamma_language_livedata_QueryValue.h" />
-    <ClInclude Include="com_opengamma_language_livedata_Result.h" />
-    <ClInclude Include="com_opengamma_language_procedure_Available.h" />
-    <ClInclude Include="com_opengamma_language_procedure_Available_Entry.h" />
-    <ClInclude Include="com_opengamma_language_procedure_Custom.h" />
-    <ClInclude Include="com_opengamma_language_procedure_Definition.h" />
-    <ClInclude Include="com_opengamma_language_procedure_Invoke.h" />
-    <ClInclude Include="com_opengamma_language_procedure_QueryAvailable.h" />
-    <ClInclude Include="com_opengamma_language_procedure_Result.h" />
-    <ClInclude Include="com_opengamma_language_Value.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_ConnectorMessage.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Custom.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Function.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_LiveData.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Procedure.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Test.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessage.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessagePayload.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_Data.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_definition_Definition.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_definition_Parameter.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Available.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Available_Entry.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Custom.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Definition.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Invoke.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_QueryAvailable.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Result.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Available.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Available_Entry.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Connect.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Custom.h" />
+    <CLInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Disconnect.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Definition.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_QueryAvailable.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_QueryValue.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Result.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Available.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Available_Entry.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Custom.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Definition.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Invoke.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_QueryAvailable.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Result.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_Value.h" />
     <ClInclude Include="Errors.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="JVM.h" />
@@ -203,109 +203,109 @@
   <ItemGroup>
     <ClCompile Include="Alert.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="com_opengamma_language_connector_ConnectorMessage.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_ConnectorMessage.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_connector_Custom.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Custom.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_connector_Function.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Function.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_connector_LiveData.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_LiveData.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_connector_Procedure.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Procedure.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_connector_Test.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Test.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_connector_UserMessage.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessage.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_connector_UserMessagePayload.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessagePayload.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_Data.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_Data.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_definition_Definition.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_definition_Definition.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_definition_Parameter.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_definition_Parameter.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_function_Available.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Available.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_function_Available_Entry.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Available_Entry.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_function_Custom.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Custom.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_function_Definition.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Definition.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_function_Invoke.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Invoke.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_function_QueryAvailable.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_QueryAvailable.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_function_Result.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_function_Result.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_Available.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Available.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_Available_Entry.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Available_Entry.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_Connect.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Connect.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_Custom.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Custom.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_Definition.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Definition.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_Disconnect.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Disconnect.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_QueryAvailable.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_QueryAvailable.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_QueryValue.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_QueryValue.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_livedata_Result.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_livedata_Result.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_procedure_Available.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Available.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_procedure_Available_Entry.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Available_Entry.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_procedure_Custom.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Custom.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_procedure_Definition.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Definition.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_procedure_Invoke.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Invoke.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_procedure_QueryAvailable.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_QueryAvailable.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_procedure_Result.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Result.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="com_opengamma_language_Value.c">
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_Value.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="Connector.cpp" />

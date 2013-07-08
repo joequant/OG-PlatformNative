@@ -64,7 +64,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\resouces\ConnectorTest.rc">
+    <ResourceCompile Include="..\resources\ConnectorTest.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

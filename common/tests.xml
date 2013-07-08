@@ -9,53 +9,39 @@
      Unit and integration test support for native projects
   -->
 
-  <import file="skip.xml" />
-
   <!--
      test.configuration:  The build configuration to test
   -->
 
-  <target name="unit-test" unless="${skipped}" depends="skippable">
-    <antcall target="unit-test-impl" />
-  </target>
-  <target name="unit-test-impl" depends="unit-test-conf,configure,unit-test-nix,unit-test-msvc,report" />
+  <target name="unit-test" depends="unit-test-conf,configure,unit-test-nix,unit-test-msvc,report" />
   <target name="unit-test-conf">
     <property name="test.identifier" value="UnitTest" />
     <property name="test.groups" value="unit" />
     <property name="test.dir" value="${localTarget}${file.separator}${test.configuration}" />
   </target>
 
-  <target name="integration-test" unless="${skipped}" depends="skippable">
-    <antcall target="integration-test-impl" />
-  </target>
-  <target name="integration-test-impl" depends="integration-test-conf,configure,integration-test-nix,integration-test-msvc,report" />
+  <target name="integration-test" depends="integration-test-conf,configure,integration-test-nix,integration-test-msvc,report" />
   <target name="integration-test-conf">
     <property name="test.identifier" value="IntegrationTest" />
     <property name="test.groups" value="integration" />
     <property name="test.dir" value="${localTarget}${file.separator}run${file.separator}${test.configuration}" />
   </target>
 
-  <target name="attach-exe" unless="${skipped}" depends="skippable">
-    <antcall target="attach-exe-impl" />
-  </target>
-  <target name="attach-exe-impl" depends="attach-exe-msvc,attach-exe-nix" />
-  <target name="attach-exe-nix" if="test.profile.nix">
+  <target name="attach-exe" depends="attach-exe-msvc,attach-exe-nix" />
+  <target name="attach-exe-nix" if="profile.nix.cpptasks">
     <available file="${localTarget}/${test.configuration}/${publishFile}" property="copy.file.name" value="${publishFile}" />
     <antcall target="copy-file-nix" />
   </target>
-  <target name="attach-exe-msvc" if="test.profile.msvc">
+  <target name="attach-exe-msvc" if="profile.windows.msvc">
     <available file="${localTarget}/${test.configuration}/${publishFile}.exe" property="copy.file.name" value="${publishFile}.exe" />
     <antcall target="copy-file-msvc" />
   </target>
-  <target name="copy-integration-test" unless="${skipped}" depends="skippable">
-    <antcall target="copy-integration-test-impl" />
-  </target>
-  <target name="copy-integration-test-impl" depends="copy-integration-test-msvc,copy-integration-test-nix" />
-  <target name="copy-integration-test-nix" if="test.profile.nix">
+  <target name="copy-integration-test" depends="copy-integration-test-msvc,copy-integration-test-nix" />
+  <target name="copy-integration-test-nix" if="profile.nix.cpptasks">
     <available file="${localTarget}/${test.configuration}/${publishFile}Test" property="copy.file.name" value="${publishFile}Test" />
     <antcall target="copy-file-nix" />
   </target>
-  <target name="copy-integration-test-msvc" if="test.profile.msvc">
+  <target name="copy-integration-test-msvc" if="profile.windows.msvc">
     <available file="${localTarget}/${test.configuration}/${publishFile}Test.dll" property="copy.file.name" value="${publishFile}Test.dll" />
     <antcall target="copy-file-msvc" />
   </target>
@@ -75,23 +61,23 @@
     <mkdir dir="${test.reports.dir}" />
     <property name="test.log.path" value="${test.reports.dir}${file.separator}${test.log.file}" />
   </target>
-  <target name="configure-nix" if="test.profile.nix">
+  <target name="configure-nix" if="profile.nix.cpptasks">
     <property name="test.file" value="${publishFile}Test" />
     <property name="test.log.file" value="${publishFile}-${test.configuration}-${test.identifier}.log" />
     <property name="test.reporter" value="com.opengamma.util.test.CPPLogToJUnit" />
   </target>
-  <target name="configure-msvc" if="test.profile.msvc">
+  <target name="configure-msvc" if="profile.windows.msvc">
     <property name="test.file" value="${publishFile}Test.dll" />
     <property name="test.log.file" value="${publishFile}-${test.configuration}-${test.identifier}.trx" />
     <property name="test.reporter" value="com.opengamma.util.test.MSTestToJUnit" />
   </target>
 
-  <target name="unit-test-nix" if="test.profile.nix">
+  <target name="unit-test-nix" if="profile.nix.cpptasks">
     <antcall target="test-nix">
       <param name="test.groups" value="unit" />
     </antcall>
   </target>
-  <target name="integration-test-nix" if="test.profile.nix">
+  <target name="integration-test-nix" if="profile.nix.cpptasks">
     <antcall target="test-nix">
       <param name="test.groups" value="integration" />
     </antcall>
@@ -103,12 +89,12 @@
     <!-- TODO: If this has failed, fail the build after the reports have been run -->
   </target>
 
-  <target name="unit-test-msvc" if="test.profile.msvc">
+  <target name="unit-test-msvc" if="profile.windows.msvc">
     <antcall target="test-msvc">
       <param name="test.groups" value="unit" />
     </antcall>
   </target>
-  <target name="integration-test-msvc" if="test.profile.msvc">
+  <target name="integration-test-msvc" if="profile.windows.msvc">
     <antcall target="test-msvc">
       <param name="test.groups" value="integration" />
     </antcall>

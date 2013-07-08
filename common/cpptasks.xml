@@ -9,8 +9,6 @@
     CPPTasks support for C/C++ projects.
   -->
 
-  <import file="skip.xml" />
-
   <property name="cpp.optimization.debug" value="none" />
   <property name="cpp.optimization.release" value="speed" />
   <property name="cpp.warnings" value="diagnostic" />
@@ -44,10 +42,7 @@
      cpp.lib.deps:      Optional libraries from dependencies to link against
      cpp.lib.platform:  Platform provided libraries to link against
   -->
-  <target name="compile" unless="${skipped}" depends="skippable">
-    <antcall target="compile-impl" />
-  </target>
-  <target name="compile-impl" depends="settings-debug,settings-ndebug,cpp-defines,cpp-includes">
+  <target name="compile" depends="settings-debug,settings-ndebug,cpp-defines,cpp-includes">
     <mkdir dir="${localTarget}" />
     <mkdir dir="${localTarget}/${cpp.configuration}" />
     <mkdir dir="${localTarget}/${cpp.project}-objects" />

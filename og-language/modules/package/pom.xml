@@ -17,6 +17,10 @@
   <name>OG-Language-Package</name>
   <description>Final compilation stage</description>
 
+  <properties>
+    <skip.attach-native>false</skip.attach-native>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -35,28 +39,28 @@
                 <mkdir dir="${localTarget}/test-reports/xml" />
                 <mkdir dir="${localTarget}/test-reports/html" />
                 <junitreport tofile="TESTS-TestSuites.xml" todir="${localTarget}/test-reports/xml">
-                  <fileset dir="${localTarget}/og-language-client-unit-tests-java/junitreports">
+                  <fileset dir="${localTarget}/og-language-client-unit-tests-java/junitreports" erroronmissingdir="false">
                     <include name="TEST-*.xml" />
                   </fileset>
-                  <fileset dir="${localTarget}/og-language-client-integration-tests-java/junitreports">
+                  <fileset dir="${localTarget}/og-language-client-integration-tests-java/junitreports" erroronmissingdir="false">
                     <include name="TEST-*.xml" />
                   </fileset>
-                  <fileset dir="${localTarget}/og-language-connector-unit-tests-native">
+                  <fileset dir="${localTarget}/og-language-connector-unit-tests-native" erroronmissingdir="false">
                     <include name="TEST-*.xml" />
                   </fileset>
-                  <fileset dir="${localTarget}/og-language-connector-integration-tests-native">
+                  <fileset dir="${localTarget}/og-language-connector-integration-tests-native" erroronmissingdir="false">
                     <include name="TEST-*.xml" />
                   </fileset>
-                  <fileset dir="${localTarget}/og-language-service-unit-tests-native">
+                  <fileset dir="${localTarget}/og-language-service-unit-tests-native" erroronmissingdir="false">
                     <include name="TEST-*.xml" />
                   </fileset>
-                  <fileset dir="${localTarget}/og-language-service-integration-tests-native">
+                  <fileset dir="${localTarget}/og-language-service-integration-tests-native" erroronmissingdir="false">
                     <include name="TEST-*.xml" />
                   </fileset>
-                  <fileset dir="${localTarget}/og-language-util-unit-tests-native">
+                  <fileset dir="${localTarget}/og-language-util-unit-tests-native" erroronmissingdir="false">
                     <include name="TEST-*.xml" />
                   </fileset>
-                  <fileset dir="${localTarget}/og-language-util-integration-tests-native">
+                  <fileset dir="${localTarget}/og-language-util-integration-tests-native" erroronmissingdir="false">
                     <include name="TEST-*.xml" />
                   </fileset>
                   <report format="frames" todir="${localTarget}/test-reports/html" />

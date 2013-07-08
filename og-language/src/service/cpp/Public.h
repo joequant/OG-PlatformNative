@@ -23,6 +23,6 @@ TCHAR *ServiceCreateStartCmd (const TCHAR *pszName);
 TCHAR *ServiceCreateStopCmd (const TCHAR *pszName);
 #endif /* ifndef _WIN32 */
 
-#include "ClientConnect.h"
+#include <service/cpp/ClientConnect.h>
 
 #endif /* ifndef __inc_og_language_service_public_h */

@@ -82,7 +82,6 @@
                     <mkdir dir="${dependencyDir}/include" />
                     <unzip src="${dependencyDir}/log4cxx-headers.zip" dest="${dependencyDir}/include" />
                     <unzip src="${dependencyDir}/fudge-c-headers.zip" dest="${dependencyDir}/include" />
-                    <mkdir dir="${dependencyDir}/lib" />
                   </target>
                 </configuration>
               </execution>
@@ -162,9 +161,6 @@
                     <copy file="${dependencyDir}/apr-util-debug-windows-win32.dll" tofile="${localTarget}/DebugWin32/aprutil.dll" />
                     <copy file="${dependencyDir}/fudge-c-debug-windows-win32.dll" tofile="${localTarget}/DebugWin32/libfudgecd.dll" />
                     <copy file="${dependencyDir}/log4cxx-debug-windows-win32.dll" tofile="${localTarget}/DebugWin32/log4cxx.dll" />
-                    <mkdir dir="${dependencyDir}/lib/DebugWin32" />
-                    <copy file="${dependencyDir}/fudge-c-debug-windows-win32.lib" tofile="${dependencyDir}/lib/DebugWin32/libfudgec.lib" />
-                    <copy file="${dependencyDir}/log4cxx-debug-windows-win32.lib" tofile="${dependencyDir}/lib/DebugWin32/log4cxx.lib" />
                   </target>
                 </configuration>
               </execution>
@@ -264,9 +260,6 @@
                     <copy file="${dependencyDir}/apr-util-debug-windows-x64.dll" tofile="${localTarget}/Debugx64/aprutil.dll" />
                     <copy file="${dependencyDir}/fudge-c-debug-windows-x64.dll" tofile="${localTarget}/Debugx64/libfudgecX64d.dll" />
                     <copy file="${dependencyDir}/log4cxx-debug-windows-x64.dll" tofile="${localTarget}/Debugx64/log4cxx.dll" />
-                    <mkdir dir="${dependencyDir}/lib/Debugx64" />
-                    <copy file="${dependencyDir}/fudge-c-debug-windows-x64.lib" tofile="${dependencyDir}/lib/Debugx64/libfudgec.lib" />
-                    <copy file="${dependencyDir}/log4cxx-debug-windows-x64.lib" tofile="${dependencyDir}/lib/Debugx64/log4cxx.lib" />
                   </target>
                 </configuration>
               </execution>
@@ -366,9 +359,6 @@
                     <copy file="${dependencyDir}/apr-util-release-windows-win32.dll" tofile="${localTarget}/ReleaseWin32/aprutil.dll" />
                     <copy file="${dependencyDir}/fudge-c-release-windows-win32.dll" tofile="${localTarget}/ReleaseWin32/libfudgec.dll" />
                     <copy file="${dependencyDir}/log4cxx-release-windows-win32.dll" tofile="${localTarget}/ReleaseWin32/log4cxx.dll" />
-                    <mkdir dir="${dependencyDir}/lib/ReleaseWin32" />
-                    <copy file="${dependencyDir}/fudge-c-release-windows-win32.lib" tofile="${dependencyDir}/lib/ReleaseWin32/libfudgec.lib" />
-                    <copy file="${dependencyDir}/log4cxx-release-windows-win32.lib" tofile="${dependencyDir}/lib/ReleaseWin32/log4cxx.lib" />
                   </target>
                 </configuration>
               </execution>
@@ -468,9 +458,6 @@
                     <copy file="${dependencyDir}/apr-util-release-windows-x64.dll" tofile="${localTarget}/Releasex64/aprutil.dll" />
                     <copy file="${dependencyDir}/fudge-c-release-windows-x64.dll" tofile="${localTarget}/Releasex64/libfudgecX64.dll" />
                     <copy file="${dependencyDir}/log4cxx-release-windows-x64.dll" tofile="${localTarget}/Releasex64/log4cxx.dll" />
-                    <mkdir dir="${dependencyDir}/lib/Releasex64" />
-                    <copy file="${dependencyDir}/fudge-c-release-windows-x64.lib" tofile="${dependencyDir}/lib/Releasex64/libfudgec.lib" />
-                    <copy file="${dependencyDir}/log4cxx-release-windows-x64.lib" tofile="${dependencyDir}/lib/Releasex64/log4cxx.lib" />
                   </target>
                 </configuration>
               </execution>
@@ -516,15 +503,19 @@
             </goals>
             <configuration>
               <target>
+                <mkdir dir="${localTarget}/generated-sources/service/cpp" />
+                <copy file="${localSource}/service/cpp/stdafx.h" todir="${localTarget}/generated-sources/service/cpp" />
                 <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
-                  <arg value="-d${localSource}/service/cpp" />
+                  <arg value="-d${localTarget}/generated-sources/service/cpp" />
                   <arg value="-s${localSource}/service/cpp" />
                   <arg value="-lC" />
                   <arg value="-Xinclude=stdafx.h" />
                   <arg value="ClientConnect.proto" />
                 </java>
+                <mkdir dir="${localTarget}/generated-sources/connector/cpp" />
+                <copy file="${localSource}/connector/cpp/stdafx.h" todir="${localTarget}/generated-sources/connector/cpp" />
                 <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
-                  <arg value="-d${localSource}/connector/cpp" />
+                  <arg value="-d${localTarget}/generated-sources/connector/cpp" />
                   <arg value="-s${localSource}/client/java" />
                   <arg value="-lC" />
                   <arg value="-Xinclude=stdafx.h" />
@@ -564,7 +555,9 @@
               <target>
                 <zip destfile="${localTarget}/headers.zip">
                   <zipfileset dir="${localSource}/connector/cpp" includes="*.h" prefix="connector/cpp" />
+                  <zipfileset dir="${localTarget}/generated-sources/connector/cpp" includes="*.h" prefix="connector/cpp" />
                   <zipfileset dir="${localSource}/service/cpp" includes="*.h" prefix="service/cpp" />
+                  <zipfileset dir="${localTarget}/generated-sources/service/cpp" includes="*.h" prefix="service/cpp" />
                   <zipfileset dir="${localSource}/util/cpp" includes="*.h" prefix="util/cpp" />
                 </zip>
                 <zip destfile="${localTarget}/resources.zip">
@@ -590,12 +583,12 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>local/headers.zip</file>
+                  <file>${localTarget}/headers.zip</file>
                   <type>zip</type>
                   <classifier>headers</classifier>
                 </artifact>
                 <artifact>
-                  <file>local/resources.zip</file>
+                  <file>${localTarget}/resources.zip</file>
                   <type>zip</type>
                   <classifier>resources</classifier>
                 </artifact>

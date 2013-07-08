@@ -51,14 +51,13 @@
     </antcall>
   </target>
 
-  <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check"> 
+  <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check,skip-tests"> 
     <mkdir dir="target" />
     <echoproperties destfile="target/command-line.properties">
       <propertyset>
         <propertyref prefix="cpp." />
         <propertyref prefix="site." />
         <propertyref prefix="cmd." />
-        <propertyref prefix="skip." />
       </propertyset>
     </echoproperties>
   </target>
@@ -96,8 +95,42 @@
       <arg value="os.family=${os.family}" />
       <arg value="-D" />
       <arg value="properties.file=${properties.dir}/${properties.file}" />
-      <arg value="${phase}" />
+      <arg line="${skip.tests.arg}${phase}" />
     </exec> 
+  </target>
+
+  <target name="skip-tests" depends="skip-all-tests">
+    <property name="skip.unit-tests-java.arg" value="" />
+    <property name="skip.unit-tests-native.arg" value="" />
+    <property name="skip.integration-tests-java.arg" value="" />
+    <property name="skip.integration-tests-native.arg" value="" />
+    <property name="skip.tests.arg" value="${skip.unit-tests-java.arg}${skip.unit-tests-native.arg}${skip.integration-tests-java.arg}${skip.integration-tests-native.arg}" />
+  </target>
+  <target name="skip-all-tests" if="skip.tests" depends="skip-unit-tests,skip-integration-tests">
+    <property name="skip.unit-tests-java.arg" value="-Dskip.unit-tests-java=${skip.tests} " />
+    <property name="skip.unit-tests-native.arg" value="-Dskip.unit-tests-native=${skip.tests} " />
+    <property name="skip.integration-tests-java.arg" value="-Dskip.integration-tests-java=${skip.tests} " />
+    <property name="skip.integration-tests-native.arg" value="-Dskip.integration-tests-native=${skip.tests} " />
+  </target>
+  <target name="skip-unit-tests" if="skip.unit-tests" depends="skip-unit-tests-java,skip-unit-tests-native">
+    <property name="skip.unit-tests-java.arg" value="-Dskip.unit-tests-java=${skip.unit-tests} " />
+    <property name="skip.unit-tests-native.arg" value="-Dskip.unit-tests-native=${skip.unit-tests} " />
+  </target>
+  <target name="skip-unit-tests-java" if="skip.unit-tests-java">
+    <property name="skip.unit-tests-java.arg" value="-Dskip.unit-tests-java=${skip.unit-tests-java} " />
+  </target>
+  <target name="skip-unit-tests-native" if="skip.unit-tests-native">
+    <property name="skip.unit-tests-native.arg" value="-Dskip.unit-tests-native=${skip.unit-tests-native} " />
+  </target>
+  <target name="skip-integration-tests" if="skip.integration-tests" depends="skip-integration-tests-java,skip-integration-tests-native">
+    <property name="skip.integration-tests-java.arg" value="-Dskip.integration-tests-java=${skip.integration-tests} " />
+    <property name="skip.integration-tests-native.arg" value="-Dskip.integration-tests-native=${skip.integration-tests} " />
+  </target>
+  <target name="skip-integration-tests-java" if="skip.integration-tests-java">
+    <property name="skip.integration-tests-java.arg" value="-Dskip.integration-tests-java=${skip.integration-tests-java} " />
+  </target>
+  <target name="skip-integration-tests-native" if="skip.integration-tests-native">
+    <property name="skip.integration-tests-native.arg" value="-Dskip.integration-tests-native=${skip.integration-tests-native} " />
   </target>
 
   <target name="all-profiles" depends="windows-profiles,nix-profiles" />

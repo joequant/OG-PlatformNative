@@ -20,7 +20,6 @@
   <properties>
     <publishFile>ServiceRunner</publishFile>
     <skip.cpptasks-build>false</skip.cpptasks-build>
-    <skip.attach-exe>false</skip.attach-exe>
     <cpp.project>service-runner</cpp.project>
     <cpp.outtype>executable</cpp.outtype>
     <cpp.lib.internal>Service,Util</cpp.lib.internal>
