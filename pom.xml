@@ -38,6 +38,7 @@
     <version.cpptasks>1.0b5</version.cpptasks>
     <version.properties-maven-plugin>1.0-alpha-1</version.properties-maven-plugin>
     <version.ant-junit>1.6.5</version.ant-junit>
+    <version.activemq>5.3.0</version.activemq>
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.cpptasks-build-tests>true</skip.cpptasks-build-tests>
@@ -998,6 +999,7 @@
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <scope>test</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>ant-contrib</groupId>

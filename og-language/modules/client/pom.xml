@@ -158,6 +158,11 @@ language.annotationCachePath=${localTarget}/run
       <artifactId>paranamer</artifactId>
       <version>${version.paranamer}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-core</artifactId>
+      <version>${version.activemq}</version>
+    </dependency>
   </dependencies>
 
 </project>
