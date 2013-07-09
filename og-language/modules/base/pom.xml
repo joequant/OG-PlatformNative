@@ -496,7 +496,7 @@
         <version>${version.maven-antrun-plugin}</version>
         <executions>
           <execution>
-            <id>generate-fudge-proto-c</id>
+            <id>generate-fudge-proto</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>run</goal>
@@ -519,6 +519,38 @@
                   <arg value="-s${localSource}/client/java" />
                   <arg value="-lC" />
                   <arg value="-Xinclude=stdafx.h" />
+                  <arg value="com/opengamma/language/Data.proto" />
+                  <arg value="com/opengamma/language/connector/Custom.proto" />
+                  <arg value="com/opengamma/language/connector/ConnectorMessage.proto" />
+                  <arg value="com/opengamma/language/connector/UserMessage.proto" />
+                  <arg value="com/opengamma/language/connector/Test.proto" />
+                  <arg value="com/opengamma/language/function/Available.proto" />
+                  <arg value="com/opengamma/language/function/Custom.proto" />
+                  <arg value="com/opengamma/language/function/Invoke.proto" />
+                  <arg value="com/opengamma/language/function/QueryAvailable.proto" />
+                  <arg value="com/opengamma/language/function/Result.proto" />
+                  <arg value="com/opengamma/language/livedata/Available.proto" />
+                  <arg value="com/opengamma/language/livedata/Connect.proto" />
+                  <arg value="com/opengamma/language/livedata/Custom.proto" />
+                  <arg value="com/opengamma/language/livedata/Disconnect.proto" />
+                  <arg value="com/opengamma/language/livedata/QueryAvailable.proto" />
+                  <arg value="com/opengamma/language/livedata/QueryValue.proto" />
+                  <arg value="com/opengamma/language/livedata/Result.proto" />
+                  <arg value="com/opengamma/language/procedure/Available.proto" />
+                  <arg value="com/opengamma/language/procedure/Custom.proto" />
+                  <arg value="com/opengamma/language/procedure/Invoke.proto" />
+                  <arg value="com/opengamma/language/procedure/QueryAvailable.proto" />
+                  <arg value="com/opengamma/language/procedure/Result.proto" />
+                </java>
+                <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
+                  <arg value="-d${localSource}/client/java" />
+                  <arg value="-s${localSource}/client/java" />
+                  <arg value="-lJava" />
+                  <arg value="-Xhash" />
+                  <arg value="-Xequals" />
+                  <arg value="-Xstring" />
+                  <arg value="-XfileFooter=///CLOVER:ON - CSON" />
+                  <arg value="-XfileHeader=///CLOVER:OFF - CSOFF" />
                   <arg value="com/opengamma/language/Data.proto" />
                   <arg value="com/opengamma/language/connector/Custom.proto" />
                   <arg value="com/opengamma/language/connector/ConnectorMessage.proto" />
