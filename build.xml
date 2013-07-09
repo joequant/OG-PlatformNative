@@ -1,5 +1,10 @@
 <project name="OG-PlatformNative" default="configure-and-install">
 
+  <property name="root.dir" value="${basedir}" />
+  <property name="local.dir" value="${root.dir}/local" />
+  <property name="properties.dir" value="${local.dir}" />
+  <property name="properties.file" value="default.properties" />
+
   <target name="configure-and-install" depends="configure,install" description="Sets up the build environment and builds the components" />
 
   <target name="configure" depends="create-profile-dir,all-profiles" description="Sets up the build environment, identifying which components are to be built" />
@@ -86,11 +91,9 @@
     </condition>
   </target>
   <target name="mvn-call" depends="mvn-init,os-family">
-    <property name="properties.dir" value="${basedir}/local" />
-    <property name="properties.file" value="default.properties" />
     <exec executable="${mvn}" searchpath="true">
       <arg value="-D" />
-      <arg value="root.dir=${basedir}" />
+      <arg value="root.dir=${root.dir}" />
       <arg value="-D" />
       <arg value="os.family=${os.family}" />
       <arg value="-D" />
@@ -232,9 +235,9 @@
   </target>
 
   <target name="create-profile-dir">
-    <mkdir dir="local" />
-    <delete dir="local/profile" failonerror="false" />
-    <mkdir dir="local/profile" />
+    <mkdir dir="${local.dir}" />
+    <delete dir="${local.dir}/profile" failonerror="false" />
+    <mkdir dir="${local.dir}/profile" />
   </target>
 
   <target name="create-profile">
@@ -249,19 +252,19 @@
                create-profile-cpptasks,
                create-profile-r,
                create-profile-ai">
-    <touch file="local/profile/${profile}" />
+    <touch file="${local.dir}/profile/${profile}" />
   </target>
   <target name="create-profile-msvc" if="tool.msvc">
-    <touch file="local/profile/${profile}-msvc" />
+    <touch file="${local.dir}/profile/${profile}-msvc" />
   </target>
   <target name="create-profile-cpptasks" if="tool.cpptasks">
-    <touch file="local/profile/${profile}-cpptasks" />
+    <touch file="${local.dir}/profile/${profile}-cpptasks" />
   </target>
   <target name="create-profile-r" if="tool.r">
-    <touch file="local/profile/${profile}-r" />
+    <touch file="${local.dir}/profile/${profile}-r" />
   </target>
   <target name="create-profile-ai" if="tool.ai">
-    <touch file="local/profile/${profile}-ai" />
+    <touch file="${local.dir}/profile/${profile}-ai" />
   </target>
 
   <target name="os-family" depends="os-family-unix,os-family-windows" unless="os.family">

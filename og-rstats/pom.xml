@@ -29,7 +29,9 @@
     <dependencyDir>${localTarget}/dependency</dependencyDir>
     <skip.cpptasks-build>false</skip.cpptasks-build>
     <skip.cpptasks-build-tests>false</skip.cpptasks-build-tests>
+    <skip.unit-tests-java>false</skip.unit-tests-java>
     <skip.unit-tests-native>false</skip.unit-tests-native>
+    <skip.integration-tests-java>false</skip.integration-tests-java>
     <skip.integration-tests-native>false</skip.integration-tests-native>
     <cpp.project>main</cpp.project>
     <cpp.outtype>static</cpp.outtype>
@@ -264,6 +266,19 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>compile-java</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>${version.maven-dependency-plugin}</version>
         <executions>
@@ -347,7 +362,8 @@
             </goals>
             <configuration>
               <target>
-                <move file="${localTarget}/og-language-client.jar" tofile="${localTarget}/client.jar" />
+                <mkdir dir="${localTarget}/run" />
+                <move file="${localTarget}/og-language-client.jar" tofile="${localTarget}/run/client.jar" />
                 <mkdir dir="${localTarget}/generated-sources/main/cpp" />
                 <copy todir="${localTarget}/generated-sources/main/cpp">
                   <fileset dir="${localTarget}/dependency/include/connector/cpp">
@@ -362,7 +378,7 @@
                   <arg value="-s${localSource}/main/java" />
                   <arg value="-lC" />
                   <arg value="-Xinclude=stdafx.h" />
-                  <arg value="-p${localTarget}/client.jar" />
+                  <arg value="-p${localTarget}/run/client.jar" />
                   <arg value="com/opengamma/rstats/msg/DataInfo.proto" />
                   <arg value="com/opengamma/rstats/msg/FunctionResult.proto" />
                   <arg value="com/opengamma/rstats/msg/LiveDataResult.proto" />
@@ -371,6 +387,12 @@
               </target>
             </configuration>
           </execution>
+          <!-- TODO: Unpack the zipped config to run -->
+          <!-- TODO: Copy log4cxx.connector.properties to run -->
+          <!-- TODO: Write a site configuration file -->
+          <!-- TODO: Move 0og-language.xml to run/ext -->
+          <!-- TODO: Move R.xml to run/ext -->
+          <!-- TODO: Copy the JAVA dependencies into run/jar -->
         </executions>
       </plugin>
     </plugins>

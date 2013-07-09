@@ -39,6 +39,7 @@
     <version.properties-maven-plugin>1.0-alpha-1</version.properties-maven-plugin>
     <version.ant-junit>1.6.5</version.ant-junit>
     <version.activemq>5.3.0</version.activemq>
+    <version.ehcache>2.6.3</version.ehcache>
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.cpptasks-build-tests>true</skip.cpptasks-build-tests>
@@ -51,6 +52,115 @@
   </properties>
 
   <profiles>
+    <profile>
+      <id>og-platformnative-member</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/.og-platformnative</exists>
+        </file>
+      </activation>
+      <properties>
+        <common.dir>${root.dir}/common</common.dir>
+      </properties>
+    </profile>
+    <profile>
+      <id>og-platformnative-parent</id>
+      <activation>
+        <file>
+          <exists>.og-platformnative</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${version.maven-antrun-plugin}</version>
+            <executions>
+              <execution>
+                <id>package-ant-common</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="common/archive.xml" target="archive-ant" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${version.build-helper-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>attach-ant-common</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>target/ant-common.zip</file>
+                      <type>zip</type>
+                      <classifier>ant-common</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>og-platformnative-child</id>
+      <activation>
+        <file>
+          <missing>${root.dir}/.og-platformnative</missing>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.opengamma.platform</groupId>
+          <artifactId>og-platform-native</artifactId>
+          <version>${project.version}</version>
+          <type>zip</type>
+          <classifier>ant-common</classifier>
+        </dependency>
+      </dependencies>
+      <properties>
+        <common.dir>${localTarget}/dependency/ant-common</common.dir>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>${version.maven-dependency-plugin}</version>
+            <executions>
+              <execution>
+                <id>consume-ant-common</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>unpack-dependencies</goal>
+                </goals>
+                <configuration>
+                  <includeArtifactIds>og-platform-native</includeArtifactIds>
+                  <includeTypes>zip</includeTypes>
+                  <outputDirectory>${localTarget}/dependency/ant-common</outputDirectory>
+                  <classifier>ant-common</classifier>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>debug-windows-win32-msvc</id>
       <activation>
@@ -124,7 +234,7 @@
                 <configuration>
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
-                    <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                    <ant antfile="${common.dir}/tests.xml" target="unit-test">
                       <property name="test.configuration" value="DebugWin32" />
                     </ant>
                   </target>
@@ -138,7 +248,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.attach-native}">
-                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                    <ant antfile="${common.dir}/archive.xml" target="create-archive">
                       <property name="archive.configuration" value="DebugWin32" />
                     </ant>
                   </target>
@@ -151,8 +261,8 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target unless="${skip.integration-tests-native}">
-                    <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
+                  <target>
+                    <ant antfile="${common.dir}/tests.xml" target="attach-exe">
                       <property name="test.configuration" value="DebugWin32" />
                     </ant>
                   </target>
@@ -166,7 +276,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
-                    <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
+                    <ant antfile="${common.dir}/tests.xml" target="copy-integration-test">
                       <property name="test.configuration" value="DebugWin32" />
                     </ant>
                   </target>
@@ -181,7 +291,7 @@
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
-                    <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                    <ant antfile="${common.dir}/tests.xml" target="integration-test">
                       <property name="test.configuration" value="DebugWin32" />
                     </ant>
                   </target>
@@ -264,7 +374,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.attach-native}">
-                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                    <ant antfile="${common.dir}/archive.xml" target="create-archive">
                       <property name="archive.configuration" value="Debugx64" />
                     </ant>
                   </target>
@@ -348,7 +458,7 @@
                 <configuration>
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
-                    <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                    <ant antfile="${common.dir}/tests.xml" target="unit-test">
                       <property name="test.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
@@ -362,7 +472,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.attach-native}">
-                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                    <ant antfile="${common.dir}/archive.xml" target="create-archive">
                       <property name="archive.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
@@ -375,8 +485,8 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target unless="${skip.integration-tests-native}">
-                    <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
+                  <target>
+                    <ant antfile="${common.dir}/tests.xml" target="attach-exe">
                       <property name="test.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
@@ -390,7 +500,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
-                    <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
+                    <ant antfile="${common.dir}/tests.xml" target="copy-integration-test">
                       <property name="test.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
@@ -405,7 +515,7 @@
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
-                    <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                    <ant antfile="${common.dir}/tests.xml" target="integration-test">
                       <property name="test.configuration" value="ReleaseWin32" />
                     </ant>
                   </target>
@@ -488,7 +598,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.attach-native}">
-                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                    <ant antfile="${common.dir}/archive.xml" target="create-archive">
                       <property name="archive.configuration" value="Releasex64" />
                     </ant>
                   </target>
@@ -567,7 +677,7 @@
                 <configuration>
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
-                    <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                    <ant antfile="${common.dir}/tests.xml" target="unit-test">
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -581,7 +691,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.attach-native}">
-                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                    <ant antfile="${common.dir}/archive.xml" target="create-archive">
                       <property name="archive.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -594,8 +704,8 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target unless="${skip.integration-tests-native}">
-                    <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
+                  <target>
+                    <ant antfile="${common.dir}/tests.xml" target="attach-exe">
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -609,7 +719,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
-                    <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
+                    <ant antfile="${common.dir}/tests.xml" target="copy-integration-test">
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -624,7 +734,7 @@
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
-                    <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                    <ant antfile="${common.dir}/tests.xml" target="integration-test">
                       <property name="test.configuration" value="Debug" />
                     </ant>
                   </target>
@@ -712,7 +822,7 @@
                 <configuration>
                   <target unless="${skip.unit-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
-                    <ant antfile="${root.dir}/common/tests.xml" target="unit-test">
+                    <ant antfile="${common.dir}/tests.xml" target="unit-test">
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>
@@ -726,7 +836,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.attach-native}">
-                    <ant antfile="${root.dir}/common/archive.xml" target="create-archive">
+                    <ant antfile="${common.dir}/archive.xml" target="create-archive">
                       <property name="archive.configuration" value="Release" />
                     </ant>
                   </target>
@@ -739,8 +849,8 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target unless="${skip.integration-tests-native}">
-                    <ant antfile="${root.dir}/common/tests.xml" target="attach-exe">
+                  <target>
+                    <ant antfile="${common.dir}/tests.xml" target="attach-exe">
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>
@@ -754,7 +864,7 @@
                 </goals>
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
-                    <ant antfile="${root.dir}/common/tests.xml" target="copy-integration-test">
+                    <ant antfile="${common.dir}/tests.xml" target="copy-integration-test">
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>
@@ -769,7 +879,7 @@
                 <configuration>
                   <target unless="${skip.integration-tests-native}">
                     <property name="maven.classpath" refid="maven.test.classpath" />
-                    <ant antfile="${root.dir}/common/tests.xml" target="integration-test">
+                    <ant antfile="${common.dir}/tests.xml" target="integration-test">
                       <property name="test.configuration" value="Release" />
                     </ant>
                   </target>
@@ -814,101 +924,6 @@
       <properties>
         <profile.nix.cpptasks>true</profile.nix.cpptasks>
       </properties>
-    </profile>
-    <profile>
-      <id>og-platformnative-parent</id>
-      <activation>
-        <file>
-          <exists>.og-platformnative</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>${version.maven-antrun-plugin}</version>
-            <executions>
-              <execution>
-                <id>package-ant-common</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target>
-                    <ant antfile="common/archive.xml" target="archive-ant" />
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <version>${version.build-helper-maven-plugin}</version>
-            <executions>
-              <execution>
-                <id>attach-ant-common</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <configuration>
-                  <artifacts>
-                    <artifact>
-                      <file>target/ant-common.zip</file>
-                      <type>zip</type>
-                      <classifier>ant-common</classifier>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>og-platformnative-child</id>
-      <activation>
-        <file>
-          <missing>${root.dir}/.og-platformnative</missing>
-        </file>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.opengamma.platform</groupId>
-          <artifactId>og-platform-native</artifactId>
-          <version>${project.version}</version>
-          <type>zip</type>
-          <classifier>ant-common</classifier>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>${version.maven-dependency-plugin}</version>
-            <executions>
-              <execution>
-                <id>consume-ant-common</id>
-                <phase>initialize</phase>
-                <goals>
-                  <goal>unpack-dependencies</goal>
-                </goals>
-                <configuration>
-                  <includeArtifactIds>og-platform-native</includeArtifactIds>
-                  <includeTypes>zip</includeTypes>
-                  <outputDirectory>${localTarget}/dependency/ant-common</outputDirectory>
-                  <classifier>ant-common</classifier>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
   </profiles>
 
@@ -964,7 +979,7 @@
             </goals>
             <configuration>
               <target unless="${skip.generate-version-header}">
-                <ant antfile="${root.dir}/common/version.xml" target="version-cpp-header" />
+                <ant antfile="${common.dir}/version.xml" target="version-cpp-header" />
               </target>
             </configuration>
           </execution>

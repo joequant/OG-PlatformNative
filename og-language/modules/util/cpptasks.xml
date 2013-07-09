@@ -1,6 +1,6 @@
 <project name="cpptasks-config">
  
-  <import file="${root.dir}/common/cpptasks.xml" />
+  <import file="${common.dir}/cpptasks.xml" />
 
   <target name="cpp-defines">
     <cc objdir="${localTarget}">

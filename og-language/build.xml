@@ -1,4 +1,4 @@
-<project name="OG-RStats">
+<project name="OG-Language">
 
   <property name="root.dir" value="${basedir}${file.separator}.." />
 

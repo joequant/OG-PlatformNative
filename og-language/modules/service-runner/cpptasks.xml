@@ -1,5 +1,5 @@
 <project name="cpptasks-config">
  
-  <import file="${root.dir}/common/cpptasks.xml" />
+  <import file="${common.dir}/cpptasks.xml" />
 
 </project>

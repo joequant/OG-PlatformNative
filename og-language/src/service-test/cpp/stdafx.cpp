@@ -7,6 +7,9 @@
 #include "stdafx.h"
 #include <service/cpp/Service.h>
 
+/// Suppress the warnings that come from the LOGGING macros.
+static CSuppressLoggingWarning g_oSuppressLoggingWarning;
+
 #ifndef __cplusplus_cli
 int main (int argc, char **argv) {
 	if ((argc == 3) && !strcmp (argv[1], "jvm")) {
