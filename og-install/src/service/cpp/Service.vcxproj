@@ -67,6 +67,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IntDir>$(SolutionDir)target\service-objects\$(Configuration)$(Platform)\</IntDir>
     <IncludePath>$(INCLUDE);$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
@@ -74,16 +75,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(SolutionDir)target\service-objects\$(Configuration)$(Platform)\</IntDir>
     <IncludePath>$(INCLUDE);$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)target\service-objects\$(Configuration)$(Platform)\</IntDir>
     <IncludePath>$(INCLUDE);$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)target\service-objects\$(Configuration)$(Platform)\</IntDir>
     <IncludePath>$(INCLUDE);$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -98,8 +102,17 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>signtool sign $(OutDir)$(TargetName)$(TargetExt)</Command>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -114,8 +127,17 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>signtool sign $(OutDir)$(TargetName)$(TargetExt)</Command>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -134,8 +156,17 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>signtool sign $(OutDir)$(TargetName)$(TargetExt)</Command>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -154,9 +185,17 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
-      <Outputs>$(OutDir)$(TargetName)$(TargetExt)</Outputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

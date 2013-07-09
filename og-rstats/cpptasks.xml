@@ -1,0 +1,14 @@
+<project name="cpptasks-config">
+ 
+  <import file="${root.dir}/common/cpptasks.xml" />
+
+  <target name="cpp-includes">
+    <cc objdir="${localTarget}">
+      <includepath id="cpp.includes">
+        <pathelement path="${localTarget}/generated-sources/main/cpp" />
+        <pathelement path="${localSource}/main/cpp" />
+      </includepath>
+    </cc>
+  </target>
+
+</project>

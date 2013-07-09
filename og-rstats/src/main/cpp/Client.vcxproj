@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\generated-sources\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
@@ -64,7 +64,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\generated-sources\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
@@ -74,10 +74,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_DataInfo.h" />
-    <ClInclude Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_FunctionResult.h" />
-    <ClInclude Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_LiveDataResult.h" />
-    <ClInclude Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_ProcedureResult.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\main\cpp\com_opengamma_rstats_msg_DataInfo.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\main\cpp\com_opengamma_rstats_msg_FunctionResult.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\main\cpp\com_opengamma_rstats_msg_LiveDataResult.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\main\cpp\com_opengamma_rstats_msg_ProcedureResult.h" />
     <ClInclude Include="Connector.h" />
     <ClInclude Include="DataUtil.h" />
     <ClInclude Include="DllVersionInfo.h" />
@@ -93,16 +93,16 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_DataInfo.c">
+    <ClCompile Include="..\..\..\target\generated-sources\main\cpp\com_opengamma_rstats_msg_DataInfo.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_FunctionResult.c">
+    <ClCompile Include="..\..\..\target\generated-sources\main\cpp\com_opengamma_rstats_msg_FunctionResult.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_LiveDataResult.c">
+    <ClCompile Include="..\..\..\target\generated-sources\main\cpp\com_opengamma_rstats_msg_LiveDataResult.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_ProcedureResult.c">
+    <ClCompile Include="..\..\..\target\generated-sources\main\cpp\com_opengamma_rstats_msg_ProcedureResult.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="DataUtil.cpp" />

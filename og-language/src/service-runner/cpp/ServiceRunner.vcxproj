@@ -99,10 +99,19 @@
     </Link>
     <PostBuildEvent>
       <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+      <Message>Sign artifacts</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -126,10 +135,19 @@
     </Link>
     <PostBuildEvent>
       <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+      <Message>Sign artifacts</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -149,10 +167,19 @@
     </Link>
     <PostBuildEvent>
       <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+      <Message>Sign artifacts</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -176,10 +203,19 @@
     </Link>
     <PostBuildEvent>
       <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+      <Message>Sign artifacts</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />

@@ -18,14 +18,24 @@
   <description>OpenGamma platform R language integration</description>
 
   <properties>
+    <publishFile>Client</publishFile>
     <solutionDir>${project.basedir}</solutionDir>
     <localTarget>${solutionDir}${file.separator}target</localTarget>
     <localSource>${solutionDir}${file.separator}src</localSource>
     <solutionFile>og-rstats.sln</solutionFile>
-    <cpp.lib.platform>log4cxx,apr-1,fudgec,pthread,stdc++,rt</cpp.lib.platform> <!-- ,m ? -->
+    <cpp.lib.platform>log4cxx,apr-1,fudgec,pthread,stdc++,rt,m</cpp.lib.platform>
     <skip.generate-version-header>false</skip.generate-version-header>
     <skip.msbuild>false</skip.msbuild>
     <dependencyDir>${localTarget}/dependency</dependencyDir>
+    <skip.cpptasks-build>false</skip.cpptasks-build>
+    <skip.cpptasks-build-tests>false</skip.cpptasks-build-tests>
+    <skip.unit-tests-native>false</skip.unit-tests-native>
+    <skip.integration-tests-native>false</skip.integration-tests-native>
+    <cpp.project>main</cpp.project>
+    <cpp.outtype>static</cpp.outtype>
+    <cpp.source.dir>${localSource}/main/cpp</cpp.source.dir>
+    <cpp.lib.internal>Client,Connector,Service,Util</cpp.lib.internal>
+    <cpp.test-source.dir>${localSource}/test/cpp</cpp.test-source.dir>
   </properties>
 
   <profiles>
@@ -338,8 +348,8 @@
             <configuration>
               <target>
                 <move file="${localTarget}/og-language-client.jar" tofile="${localTarget}/client.jar" />
-                <mkdir dir="${localTarget}/generated-sources" />
-                <copy todir="${localTarget}/generated-sources">
+                <mkdir dir="${localTarget}/generated-sources/main/cpp" />
+                <copy todir="${localTarget}/generated-sources/main/cpp">
                   <fileset dir="${localTarget}/dependency/include/connector/cpp">
                     <include name="com_opengamma_language_*.h" />
                   </fileset>
@@ -348,7 +358,7 @@
                   </fileset>
                 </copy>
                 <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
-                  <arg value="-d${localTarget}/generated-sources" />
+                  <arg value="-d${localTarget}/generated-sources/main/cpp" />
                   <arg value="-s${localSource}/main/java" />
                   <arg value="-lC" />
                   <arg value="-Xinclude=stdafx.h" />

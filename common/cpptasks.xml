@@ -65,8 +65,8 @@
       </defineset>
       <defineset refid="cpp.defines" />
       <includepath>
-        <pathelement path="${localTarget}" />
         <pathelement path="${localTarget}/dependency/include" />
+        <pathelement path="${localTarget}/generated-sources" />
         <pathelement path="${localSource}" />
         <pathelement path="${cpp.jni.include.dir}" />
         <pathelement path="${cpp.jni.include.native.dir}" />
@@ -75,6 +75,9 @@
       <fileset dir="${cpp.source.dir}">
         <include name="*.c" />
         <include name="*.cpp" />
+      </fileset>
+      <fileset dir="${localTarget}/generated-sources/${cpp.project}/cpp" erroronmissingdir="false">
+        <include name="*.c" />
       </fileset>
       <libset dir="${localTarget}/${cpp.configuration}" libs="${cpp.lib.internal}" if="cpp.lib.internal" />
       <libset dir="${localTarget}/dependency/lib/${cpp.configuration}" libs="${cpp.lib.external}" if="cpp.lib.external" />

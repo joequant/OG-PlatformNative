@@ -102,8 +102,22 @@
       <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;psapi.lib;log4cxx-debug-windows-win32.lib;fudge-c-debug-windows-win32.lib;Util.lib;Service.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -125,8 +139,22 @@
       <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;psapi.lib;log4cxx-release-windows-win32.lib;fudge-c-release-windows-win32.lib;Util.lib;Service.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -144,8 +172,22 @@
       <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;psapi.lib;log4cxx-debug-windows-x64.lib;fudge-c-debug-windows-x64.lib;Util.lib;Service.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -167,8 +209,22 @@
       <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;psapi.lib;log4cxx-release-windows-x64.lib;fudge-c-release-windows-x64.lib;Util.lib;Service.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)target;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DllVersionInfo.h" />

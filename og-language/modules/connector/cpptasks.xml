@@ -5,8 +5,16 @@
   <target name="cpp-defines">
     <cc objdir="${localTarget}">
       <defineset id="cpp.defines">
-        <define name="DEAFULT_PIPE_FOLDER" value="TEXT (QUOTE (${defaults.pipe.folder}))" if="defaults.pipe.folder" />
+        <define name="DEFAULT_PIPE_FOLDER" value="TEXT (QUOTE (${defaults.pipe.folder}))" if="defaults.pipe.folder" />
       </defineset>
+    </cc>
+  </target>
+
+  <target name="cpp-includes">
+    <cc objdir="${localTarget}">
+      <includepath id="cpp.includes">
+        <pathelement path="${localTarget}/generated-sources/connector/cpp" />
+      </includepath>
     </cc>
   </target>
 

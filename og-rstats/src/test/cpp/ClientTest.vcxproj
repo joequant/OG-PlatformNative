@@ -95,7 +95,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\generated-sources\main\cpp;$(SolutionDir)src\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -109,13 +109,27 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\generated-sources\main\cpp;$(SolutionDir)src\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -129,6 +143,20 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -137,7 +165,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\generated-sources\main\cpp;$(SolutionDir)src\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -153,6 +181,20 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -161,7 +203,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)target\generated-sources\main\cpp;$(SolutionDir)src\main\cpp;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -177,6 +219,20 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>signtool sign "$(OutDir)$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign artifacts</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
