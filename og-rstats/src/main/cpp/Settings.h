@@ -9,7 +9,7 @@
 
 #define SETTINGS_STARTUP_TIMEOUT	TEXT ("startupTimeout")
 
-#include <Connector/Settings.h>
+#include <connector/cpp/Settings.h>
 #undef CSettings
 #define CSettings CClientSettings
 

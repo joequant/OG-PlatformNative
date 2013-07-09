@@ -7,7 +7,7 @@
 #ifndef __inc_og_rstats_client_connector_h
 #define __inc_og_rstats_client_connector_h
 
-#include <Connector/Connector.h>
+#include <connector/cpp/Connector.h>
 
 const CConnector *ConnectorInstance ();
 

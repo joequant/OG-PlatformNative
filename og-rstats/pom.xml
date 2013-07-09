@@ -7,51 +7,393 @@
 
   <parent>
     <groupId>com.opengamma.platform</groupId>
-    <artifactId>og-parent</artifactId>
+    <artifactId>og-platform-native</artifactId>
     <version>2.0.0-SNAPSHOT</version>
-    <relativePath>../../OG-Platform/projects/OG-Parent</relativePath>
+    <relativePath>../</relativePath>
   </parent>
+
   <artifactId>og-rstats</artifactId>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
   <name>OG-RStats</name>
   <description>OpenGamma platform R language integration</description>
 
-  <!-- ==================================================================== -->
-  <issueManagement>
-    <system>Jira</system>
-    <url>http://jira.opengamma.com/browse/RSTAT</url>
-  </issueManagement>
-  <licenses>
-    <license>
-      <name>Proprietary OpenGamma licensing</name>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <scm>
-    <connection>scm:git:https://github.com/OpenGamma/OG-RStats.git</connection>
-    <developerConnection>scm:git:https://github.com/OpenGamma/OG-RStats.git</developerConnection>
-    <url>https://github.com/OpenGamma/OG-RStats</url>
-  </scm>
+  <properties>
+    <solutionDir>${project.basedir}</solutionDir>
+    <localTarget>${solutionDir}${file.separator}target</localTarget>
+    <localSource>${solutionDir}${file.separator}src</localSource>
+    <solutionFile>og-rstats.sln</solutionFile>
+    <cpp.lib.platform>log4cxx,apr-1,fudgec,pthread,stdc++,rt</cpp.lib.platform> <!-- ,m ? -->
+    <skip.generate-version-header>false</skip.generate-version-header>
+    <skip.msbuild>false</skip.msbuild>
+    <dependencyDir>${localTarget}/dependency</dependencyDir>
+  </properties>
 
-  <!-- ==================================================================== -->
+  <profiles>
+    <profile>
+      <id>debug-windows-win32-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/debug-windows-win32-msvc</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.opengamma.platform</groupId>
+          <artifactId>og-language-package</artifactId>
+          <version>${project.version}</version>
+          <type>zip</type>
+          <classifier>debug-windows-win32</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.apache</groupId>
+          <artifactId>log4cxx</artifactId>
+          <version>${version.log4cxx}</version>
+          <type>lib</type>
+          <classifier>debug-windows-win32</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.fudgemsg</groupId>
+          <artifactId>fudge-c</artifactId>
+          <version>${version.fudge-c}</version>
+          <type>lib</type>
+          <classifier>debug-windows-win32</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>release-windows-win32-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/release-windows-win32-msvc</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.opengamma.platform</groupId>
+          <artifactId>og-language-package</artifactId>
+          <version>${project.version}</version>
+          <type>zip</type>
+          <classifier>release-windows-win32</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.apache</groupId>
+          <artifactId>log4cxx</artifactId>
+          <version>${version.log4cxx}</version>
+          <type>lib</type>
+          <classifier>release-windows-win32</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.fudgemsg</groupId>
+          <artifactId>fudge-c</artifactId>
+          <version>${version.fudge-c}</version>
+          <type>lib</type>
+          <classifier>release-windows-win32</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>debug-windows-x64-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/debug-windows-x64-msvc</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.opengamma.platform</groupId>
+          <artifactId>og-language-package</artifactId>
+          <version>${project.version}</version>
+          <type>zip</type>
+          <classifier>debug-windows-x64</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.apache</groupId>
+          <artifactId>log4cxx</artifactId>
+          <version>${version.log4cxx}</version>
+          <type>lib</type>
+          <classifier>debug-windows-x64</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.fudgemsg</groupId>
+          <artifactId>fudge-c</artifactId>
+          <version>${version.fudge-c}</version>
+          <type>lib</type>
+          <classifier>debug-windows-x64</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>release-windows-x64-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/release-windows-x64-msvc</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.opengamma.platform</groupId>
+          <artifactId>og-language-package</artifactId>
+          <version>${project.version}</version>
+          <type>zip</type>
+          <classifier>release-windows-x64</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.apache</groupId>
+          <artifactId>log4cxx</artifactId>
+          <version>${version.log4cxx}</version>
+          <type>lib</type>
+          <classifier>release-windows-x64</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.fudgemsg</groupId>
+          <artifactId>fudge-c</artifactId>
+          <version>${version.fudge-c}</version>
+          <type>lib</type>
+          <classifier>release-windows-x64</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>windows-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/windows-msvc</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache</groupId>
+          <artifactId>log4cxx</artifactId>
+          <version>${version.log4cxx}</version>
+          <type>zip</type>
+          <classifier>headers</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.fudgemsg</groupId>
+          <artifactId>fudge-c</artifactId>
+          <version>${version.fudge-c}</version>
+          <type>zip</type>
+          <classifier>headers</classifier>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>${version.maven-dependency-plugin}</version>
+            <executions>
+              <execution>
+                <id>windows-msvc-copy-dependencies</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <includeArtifactIds>log4cxx,fudge-c</includeArtifactIds>
+                  <stripVersion>true</stripVersion>
+                  <outputDirectory>${localTarget}/dependency</outputDirectory>
+                  <includeTypes>lib</includeTypes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>windows-msvc-unpack</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>unpack-dependencies</goal>
+                </goals>
+                <configuration>
+                  <includeArtifactIds>log4cxx,fudge-c</includeArtifactIds>
+                  <includeTypes>zip</includeTypes>
+                  <outputDirectory>${localTarget}/dependency/include</outputDirectory>
+                  <classifier>headers</classifier>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>debug-nix-cpptasks</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/debug-nix-cpptasks</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.opengamma.platform</groupId>
+          <artifactId>og-language-package</artifactId>
+          <version>${project.version}</version>
+          <type>zip</type>
+          <classifier>debug-${os.family}-${os.arch}</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>release-nix-cpptasks</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/release-nix-cpptasks</exists>
+        </file>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.opengamma.platform</groupId>
+          <artifactId>og-language-package</artifactId>
+          <version>${project.version}</version>
+          <type>zip</type>
+          <classifier>release-${os.family}-${os.arch}</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
   <build>
-    <sourceDirectory>Ext/src/main/java</sourceDirectory>
-    <testSourceDirectory>Ext/src/test/java</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${version.maven-dependency-plugin}</version>
+        <executions>
+          <execution>
+            <id>unpack-native</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>og-language-package</includeArtifactIds>
+              <includeTypes>zip</includeTypes>
+              <outputDirectory>${localTarget}</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-headers</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>og-language-base</includeArtifactIds>
+              <includeTypes>zip</includeTypes>
+              <outputDirectory>${localTarget}/dependency/include</outputDirectory>
+              <classifier>headers</classifier>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-resources</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>og-language-base</includeArtifactIds>
+              <includeTypes>zip</includeTypes>
+              <outputDirectory>${localTarget}/dependency/resources</outputDirectory>
+              <classifier>resources</classifier>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-config</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>og-language-client</includeArtifactIds>
+              <includeTypes>zip</includeTypes>
+              <outputDirectory>${localTarget}/dependency/config</outputDirectory>
+              <classifier>config</classifier>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-client</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>og-language-client</includeArtifactIds>
+              <includeTypes>jar</includeTypes>
+              <outputDirectory>${localTarget}</outputDirectory>
+              <stripClassifier>true</stripClassifier>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>${version.maven-antrun-plugin}</version>
+        <executions>
+          <execution>
+            <id>generate-fudge-proto-c</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <move file="${localTarget}/og-language-client.jar" tofile="${localTarget}/client.jar" />
+                <mkdir dir="${localTarget}/generated-sources" />
+                <copy todir="${localTarget}/generated-sources">
+                  <fileset dir="${localTarget}/dependency/include/connector/cpp">
+                    <include name="com_opengamma_language_*.h" />
+                  </fileset>
+                  <fileset dir="${localSource}/main/cpp">
+                    <include name="stdafx.h" />
+                  </fileset>
+                </copy>
+                <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
+                  <arg value="-d${localTarget}/generated-sources" />
+                  <arg value="-s${localSource}/main/java" />
+                  <arg value="-lC" />
+                  <arg value="-Xinclude=stdafx.h" />
+                  <arg value="-p${localTarget}/client.jar" />
+                  <arg value="com/opengamma/rstats/msg/DataInfo.proto" />
+                  <arg value="com/opengamma/rstats/msg/FunctionResult.proto" />
+                  <arg value="com/opengamma/rstats/msg/LiveDataResult.proto" />
+                  <arg value="com/opengamma/rstats/msg/ProcedureResult.proto" />
+                </java>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
-  <!-- ==================================================================== -->
   <dependencies>
     <dependency>
       <groupId>com.opengamma.platform</groupId>
-      <artifactId>og-language</artifactId>
+      <artifactId>og-language-base</artifactId>
       <version>${project.version}</version>
+      <type>zip</type>
+      <classifier>headers</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-language-base</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <classifier>resources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-language-client</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <classifier>config</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-language-client</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
     </dependency>
   </dependencies>
-
-  <!-- ==================================================================== -->
-  <properties>
-    <fudge.proto.searchDir>..{RELATIVE}../OG-Platform/projects/OG-Util/src/main/java;..{RELATIVE}../og-language/Client/src/main/java</fudge.proto.searchDir>
-    <javadoc.footer.license>Commercial license terms apply</javadoc.footer.license>
-  </properties>
 
 </project>

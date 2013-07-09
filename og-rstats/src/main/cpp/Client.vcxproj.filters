@@ -31,6 +31,24 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FudgeMsgMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StringUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_DataInfo.c">
+      <Filter>Source Files\Fudge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_FunctionResult.c">
+      <Filter>Source Files\Fudge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_LiveDataResult.c">
+      <Filter>Source Files\Fudge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_ProcedureResult.c">
+      <Filter>Source Files\Fudge</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -38,6 +56,12 @@
     </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{ada0da16-b00e-4e6c-8640-9c6fb882d30f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Fudge">
+      <UniqueIdentifier>{c6b0b8f8-3111-4a0a-9da7-093ac9a3ccf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Fudge">
+      <UniqueIdentifier>{9e4665c9-0cfe-48ac-a0b7-021be24cccb8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +100,21 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FudgeMsgMap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_DataInfo.h">
+      <Filter>Header Files\Fudge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_FunctionResult.h">
+      <Filter>Header Files\Fudge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_LiveDataResult.h">
+      <Filter>Header Files\Fudge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\target\generated-sources\com_opengamma_rstats_msg_ProcedureResult.h">
+      <Filter>Header Files\Fudge</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

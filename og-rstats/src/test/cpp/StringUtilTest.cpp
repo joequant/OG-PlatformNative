@@ -8,7 +8,7 @@
 
 // Test the objects and functions in Client/StringUtil.cpp
 
-#include "Client/StringUtil.h"
+#include "StringUtil.h"
 
 LOGGING (com.opengamma.rstats.client.StringUtil);
 
@@ -27,6 +27,6 @@ static void EscapedA () {
 }
 
 BEGIN_TESTS (StringUtilTest)
-	TEST (UnescapedA)
-	TEST (EscapedA)
+	UNIT_TEST (UnescapedA)
+	UNIT_TEST (EscapedA)
 END_TESTS

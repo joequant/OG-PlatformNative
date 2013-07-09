@@ -8,9 +8,9 @@
 
 // Test the objects and functions in Client/Functions.cpp
 
-#include "Client/Connector.h"
-#include "Client/Functions.h"
-#include "Client/Initialise.h"
+#include "Connector.h"
+#include "Functions.h"
+#include "Initialise.h"
 
 LOGGING (com.opengamma.rstats.client.FunctionsTest);
 
@@ -38,7 +38,7 @@ static void QueryAvailable () {
 }
 
 BEGIN_TESTS (FunctionsTest)
-	TEST (QueryAvailable)
+	INTEGRATION_TEST (QueryAvailable)
 	BEFORE_TEST (Initialise)
 	AFTER_TEST (Shutdown)
 END_TESTS

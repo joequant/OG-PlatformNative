@@ -22,11 +22,11 @@
 
 #include <assert.h>
 
-#include <Util/Fudge.h>
+#include <util/cpp/Fudge.h>
 #ifdef __cplusplus
-#include <Connector/Connector.h>
-#include <Util/Logging.h>
-#include <Util/String.h>
+#include <connector/cpp/Connector.h>
+#include <util/cpp/Logging.h>
+#include <util/cpp/String.h>
 #ifdef _WIN32
 #include <hash_map>
 #else /* ifdef _WIN32 */

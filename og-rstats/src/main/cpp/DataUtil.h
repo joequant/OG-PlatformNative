@@ -7,7 +7,7 @@
 #ifndef __inc_og_rstats_client_datautil_h
 #define __inc_og_rstats_client_datautil_h
 
-#include <Connector/com_opengamma_language_Data.h>
+#include <connector/cpp/com_opengamma_language_Data.h>
 
 #define DATATYPE_BOOLEAN		0x0001
 #define DATATYPE_INTEGER		0x0002

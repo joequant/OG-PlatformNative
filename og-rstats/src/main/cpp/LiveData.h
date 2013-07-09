@@ -9,7 +9,7 @@
 
 #include "com_opengamma_rstats_msg_LiveDataResult.h"
 #define CLASS_com_opengamma_language_livedata_Result com_opengamma_rstats_msg_LiveDataResult
-#include <Connector/LiveData.h>
+#include <connector/cpp/LiveData.h>
 #include Client(Entities.h)
 
 class CLiveDataEntry : public CEntityEntry {

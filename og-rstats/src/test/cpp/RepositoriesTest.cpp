@@ -8,9 +8,9 @@
 
 // Test the objects and functions in Client/Repositories.cpp
 
-#include "Client/Connector.h"
-#include "Client/Repositories.h"
-#include "Client/Initialise.h"
+#include "Connector.h"
+#include "Repositories.h"
+#include "Initialise.h"
 
 LOGGING (com.opengamma.rstats.client.RepositoriesTest);
 
@@ -31,7 +31,7 @@ static void Construct () {
 }
 
 BEGIN_TESTS (RepositoriesTest)
-	TEST (Construct)
+	INTEGRATION_TEST (Construct)
 	BEFORE_TEST (Initialise)
 	AFTER_TEST (Shutdown)
 END_TESTS

@@ -7,7 +7,7 @@
 #ifndef __inc_og_rstats_client_repositories_h
 #define __inc_og_rstats_client_repositories_h
 
-#include <Connector/Connector.h>
+#include <connector/cpp/Connector.h>
 #include Client(Functions.h)
 #include Client(LiveData.h)
 #include Client(Procedures.h)

@@ -9,7 +9,7 @@
 
 #include "com_opengamma_rstats_msg_ProcedureResult.h"
 #define CLASS_com_opengamma_language_procedure_Result com_opengamma_rstats_msg_ProcedureResult
-#include <Connector/Procedures.h>
+#include <connector/cpp/Procedures.h>
 #include Client(Entities.h)
 
 class CProcedureEntry : public CEntityEntry {

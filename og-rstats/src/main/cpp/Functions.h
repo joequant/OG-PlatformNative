@@ -9,7 +9,7 @@
 
 #include "com_opengamma_rstats_msg_FunctionResult.h"
 #define CLASS_com_opengamma_language_function_Result com_opengamma_rstats_msg_FunctionResult
-#include <Connector/Functions.h>
+#include <connector/cpp/Functions.h>
 #include Client(Entities.h)
 
 class CFunctionEntry : public CEntityEntry {

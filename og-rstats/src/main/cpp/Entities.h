@@ -7,8 +7,8 @@
 #ifndef __inc_og_rstats_client_entities_h
 #define __inc_og_rstats_client_entities_h
 
-#include <Connector/com_opengamma_language_definition_Definition.h>
-#include <Util/Atomic.h>
+#include <connector/cpp/com_opengamma_language_definition_Definition.h>
+#include <util/cpp/Atomic.h>
 #include Client(Parameter.h)
 
 class CEntityEntry {

@@ -8,7 +8,7 @@
 
 // Test the functions in Client/Initialise.cpp
 
-#include "Client/Initialise.h"
+#include "Initialise.h"
 
 LOGGING (com.opengamma.rstats.client.InitialiseTest);
 
@@ -17,5 +17,5 @@ static void CallInitialise () {
 }
 
 BEGIN_TESTS (InitialiseTest)
-	TEST (CallInitialise)
+	INTEGRATION_TEST (CallInitialise)
 END_TESTS

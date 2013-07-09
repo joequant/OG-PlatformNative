@@ -15,7 +15,7 @@
 #define GetMessage	GetMessageA
 #endif /* ifdef _UNICODE */
 #endif /* ifdef _WIN32 */
-#include "Client/FudgeMsgMap.h"
+#include "FudgeMsgMap.h"
 
 LOGGING (com.opengamma.rstats.client.FudgeMsgMapTest);
 
@@ -53,5 +53,5 @@ static void GetAndRelease () {
 }
 
 BEGIN_TESTS (FudgeMsgMapTest)
-	TEST (GetAndRelease)
+	UNIT_TEST (GetAndRelease)
 END_TESTS

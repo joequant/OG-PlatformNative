@@ -9,7 +9,7 @@
 #include Client(DllVersionInfo.h)
 #endif /* ifndef _WIN32 */
 #include Client(Settings.h)
-#include <Util/DllVersion.h>
+#include <util/cpp/DllVersion.h>
 
 LOGGING (com.opengamma.rstats.client.Initialise);
 

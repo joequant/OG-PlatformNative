@@ -8,7 +8,7 @@
 
 // Test the objects and functions in Client/DataUtil.cpp
 
-#include "Client/DataUtil.h"
+#include "DataUtil.h"
 
 LOGGING (com.opengamma.rstats.client.DataUtilTest);
 
@@ -181,8 +181,8 @@ static void Coerce () {
 }
 
 BEGIN_TESTS (DataUtilTest)
-	TEST (TypeOf)
-	TEST (SingleType)
-	TEST (CanCoerce)
-	TEST (Coerce)
+	UNIT_TEST (TypeOf)
+	UNIT_TEST (SingleType)
+	UNIT_TEST (CanCoerce)
+	UNIT_TEST (Coerce)
 END_TESTS

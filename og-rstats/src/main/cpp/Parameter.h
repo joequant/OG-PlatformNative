@@ -7,7 +7,7 @@
 #ifndef __inc_og_rstats_client_parameter_h
 #define __inc_og_rstats_client_parameter_h
 
-#include <Connector/com_opengamma_language_definition_Parameter.h>
+#include <connector/cpp/com_opengamma_language_definition_Parameter.h>
 
 #define PARAMETER_FLAG_OPTIONAL		1
 
