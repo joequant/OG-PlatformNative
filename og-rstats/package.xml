@@ -105,6 +105,8 @@ LazyLoad: true</echo>
       <arg value="build" />
       <arg value="--binary" />
       <arg value="${localTarget}/package-build/OpenGamma" />
+      <env key="CONFIGURATION" value="Release" />
+      <env key="OG_RSTATS_TARGET" value="${localTarget}" />
     </exec>
   </target>
 
