@@ -57,12 +57,14 @@
   </target>
 
   <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check,skip-tests"> 
+    <property name="mvn.args" value="" />
     <mkdir dir="target" />
-    <echoproperties destfile="target/command-line.properties">
+    <echoproperties destfile="${root.dir}/target/command-line.properties">
       <propertyset>
         <propertyref prefix="cpp." />
         <propertyref prefix="site." />
         <propertyref prefix="cmd." />
+        <propertyref prefix="build.number." />
       </propertyset>
     </echoproperties>
   </target>
@@ -99,6 +101,7 @@
       <arg value="-D" />
       <arg value="properties.file=${properties.dir}/${properties.file}" />
       <arg line="${skip.tests.arg}${phase}" />
+      <arg line="${mvn.args}" />
     </exec> 
   </target>
 

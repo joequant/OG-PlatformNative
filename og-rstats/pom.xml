@@ -13,7 +13,7 @@
   </parent>
 
   <artifactId>og-rstats</artifactId>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
   <name>OG-RStats</name>
   <description>OpenGamma platform R language integration</description>
 
@@ -266,24 +266,11 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>compile-java</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>${version.maven-dependency-plugin}</version>
         <executions>
           <execution>
-            <id>unpack-native</id>
+            <id>unpack-native-build</id>
             <phase>initialize</phase>
             <goals>
               <goal>unpack-dependencies</goal>
@@ -292,6 +279,19 @@
               <includeArtifactIds>og-language-package</includeArtifactIds>
               <includeTypes>zip</includeTypes>
               <outputDirectory>${localTarget}</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-native-integration</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>og-language-package</includeArtifactIds>
+              <includeTypes>zip</includeTypes>
+              <outputDirectory>${localTarget}/run</outputDirectory>
+              <markersDirectory>${localTarget}/run/dependency-maven-plugin-markers</markersDirectory>
             </configuration>
           </execution>
           <execution>
@@ -347,6 +347,19 @@
               <stripVersion>true</stripVersion>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <prependGroupId>true</prependGroupId>
+              <stripVersion>true</stripVersion>
+              <outputDirectory>${localTarget}/run/jar</outputDirectory>
+              <includeTypes>jar</includeTypes>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -355,7 +368,7 @@
         <version>${version.maven-antrun-plugin}</version>
         <executions>
           <execution>
-            <id>generate-fudge-proto-c</id>
+            <id>generate-fudge-proto</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>run</goal>
@@ -384,16 +397,86 @@
                   <arg value="com/opengamma/rstats/msg/LiveDataResult.proto" />
                   <arg value="com/opengamma/rstats/msg/ProcedureResult.proto" />
                 </java>
+                <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
+                  <arg value="-d${localSource}/main/java" />
+                  <arg value="-s${localSource}/main/java" />
+                  <arg value="-lJava" />
+                  <arg value="-p${localTarget}/run/client.jar" />
+                  <arg value="-Xhash" />
+                  <arg value="-Xequals" />
+                  <arg value="-Xstring" />
+                  <arg value="-XfileFooter=///CLOVER:ON - CSON" />
+                  <arg value="-XfileHeader=///CLOVER:OFF - CSOFF" />
+                  <arg value="com/opengamma/rstats/msg/DataInfo.proto" />
+                  <arg value="com/opengamma/rstats/msg/FunctionResult.proto" />
+                  <arg value="com/opengamma/rstats/msg/LiveDataResult.proto" />
+                  <arg value="com/opengamma/rstats/msg/ProcedureResult.proto" />
+                </java>
               </target>
             </configuration>
           </execution>
-          <!-- TODO: Unpack the zipped config to run -->
-          <!-- TODO: Copy log4cxx.connector.properties to run -->
-          <!-- TODO: Write a site configuration file -->
-          <!-- TODO: Move 0og-language.xml to run/ext -->
-          <!-- TODO: Move R.xml to run/ext -->
-          <!-- TODO: Copy the JAVA dependencies into run/jar -->
+          <execution>
+            <id>integration-test-init</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy file="${localTarget}/dependency/config/log4cxx.service.properties" todir="${localTarget}/run" />
+                <copy file="${localSource}/main/config/log4cxx.connector.properties" todir="${localTarget}/run" />
+                <copy file="${localTarget}/dependency/config/logback.xml" todir="${localTarget}/run" />
+                <echo file="${localTarget}/run/OpenGamma.properties"># Site configuration
+opengamma.configuration.url=${site.opengamma.test-server.url}
+opengamma.configuration.failOnInvalid=true
+opengamma.configuration.failOnMissing=false
+language.annotationCachePath=${localTarget}/run
+</echo>
+                <mkdir dir="${localTarget}/run/ext" />
+                <copy file="${localTarget}/dependency/config/0og-language.xml" todir="${localTarget}/run/ext" />
+                <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
+                <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>og-rstats-test-report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${localTarget}/test-reports" />
+                <mkdir dir="${localTarget}/test-reports/xml" />
+                <mkdir dir="${localTarget}/test-reports/html" />
+                <junitreport tofile="TESTS-TestSuites.xml" todir="${localTarget}/test-reports/xml">
+                  <fileset dir="${localTarget}/og-rstats-unit-tests-java/junitreports" erroronmissingdir="false">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-rstats-integration-tests-java/junitreports" erroronmissingdir="false">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-rstats-unit-tests-native" erroronmissingdir="false">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <fileset dir="${localTarget}/og-rstats-integration-tests-native" erroronmissingdir="false">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <report format="frames" todir="${localTarget}/test-reports/html" />
+                </junitreport>
+              </target>
+            </configuration>
+          </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>${version.ant-junit}</version>
+            <optional>true</optional>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
@@ -424,7 +507,11 @@
       <groupId>com.opengamma.platform</groupId>
       <artifactId>og-language-client</artifactId>
       <version>${project.version}</version>
-      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.fudgemsg</groupId>
+      <artifactId>fudge-proto</artifactId>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 
