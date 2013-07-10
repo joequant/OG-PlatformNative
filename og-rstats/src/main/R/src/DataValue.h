@@ -7,7 +7,7 @@
 #ifndef __inc_og_rstats_package_datavalue_h
 #define __inc_og_rstats_package_datavalue_h
 
-#include <Connector/com_opengamma_language_Data.h>
+#include <connector/cpp/com_opengamma_language_Data.h>
 #include "RCallback.h"
 
 /// Helper functions for converting between the OG-Language Value type and R's SEXP type

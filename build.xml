@@ -93,7 +93,7 @@
     </condition>
   </target>
   <target name="mvn-call" depends="mvn-init,os-family">
-    <exec executable="${mvn}" searchpath="true">
+    <exec executable="${mvn}" searchpath="true" failonerror="true">
       <arg value="-D" />
       <arg value="root.dir=${root.dir}" />
       <arg value="-D" />

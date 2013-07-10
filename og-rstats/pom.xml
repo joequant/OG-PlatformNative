@@ -260,6 +260,84 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>nix-r</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/nix-r</exists>
+        </file>
+      </activation>
+      <properties>
+        <profile.r>true</profile.r>
+        <profile.nix.r>true</profile.nix.r>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${version.build-helper-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>nix-r-attach-package</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${localTarget}/OpenGamma.tgz</file>
+                      <type>tgz</type>
+                      <classifier>source-package</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>windows-r</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/windows-r</exists>
+        </file>
+      </activation>
+      <properties>
+        <profile.r>true</profile.r>
+        <profile.windows.r>true</profile.windows.r>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${version.build-helper-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>windows-r-attach-package</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${localTarget}/OpenGamma.zip</file>
+                      <type>zip</type>
+                      <classifier>binary-package</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
@@ -368,50 +446,39 @@
         <version>${version.maven-antrun-plugin}</version>
         <executions>
           <execution>
-            <id>generate-fudge-proto</id>
+            <id>generate-rstats-sources</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>run</goal>
             </goals>
             <configuration>
               <target>
-                <mkdir dir="${localTarget}/run" />
-                <move file="${localTarget}/og-language-client.jar" tofile="${localTarget}/run/client.jar" />
-                <mkdir dir="${localTarget}/generated-sources/main/cpp" />
-                <copy todir="${localTarget}/generated-sources/main/cpp">
-                  <fileset dir="${localTarget}/dependency/include/connector/cpp">
-                    <include name="com_opengamma_language_*.h" />
-                  </fileset>
-                  <fileset dir="${localSource}/main/cpp">
-                    <include name="stdafx.h" />
-                  </fileset>
-                </copy>
-                <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
-                  <arg value="-d${localTarget}/generated-sources/main/cpp" />
-                  <arg value="-s${localSource}/main/java" />
-                  <arg value="-lC" />
-                  <arg value="-Xinclude=stdafx.h" />
-                  <arg value="-p${localTarget}/run/client.jar" />
-                  <arg value="com/opengamma/rstats/msg/DataInfo.proto" />
-                  <arg value="com/opengamma/rstats/msg/FunctionResult.proto" />
-                  <arg value="com/opengamma/rstats/msg/LiveDataResult.proto" />
-                  <arg value="com/opengamma/rstats/msg/ProcedureResult.proto" />
-                </java>
-                <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
-                  <arg value="-d${localSource}/main/java" />
-                  <arg value="-s${localSource}/main/java" />
-                  <arg value="-lJava" />
-                  <arg value="-p${localTarget}/run/client.jar" />
-                  <arg value="-Xhash" />
-                  <arg value="-Xequals" />
-                  <arg value="-Xstring" />
-                  <arg value="-XfileFooter=///CLOVER:ON - CSON" />
-                  <arg value="-XfileHeader=///CLOVER:OFF - CSOFF" />
-                  <arg value="com/opengamma/rstats/msg/DataInfo.proto" />
-                  <arg value="com/opengamma/rstats/msg/FunctionResult.proto" />
-                  <arg value="com/opengamma/rstats/msg/LiveDataResult.proto" />
-                  <arg value="com/opengamma/rstats/msg/ProcedureResult.proto" />
-                </java>
+                <property name="maven.classpath" refid="maven.compile.classpath" />
+                <ant antfile="${solutionDir}/package.xml" target="generate-sources" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>prepare-rstats-package</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <ant antfile="${solutionDir}/package.xml" target="prepare-package" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>package-rstats</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <ant antfile="${solutionDir}/package.xml" target="package" />
               </target>
             </configuration>
           </execution>
@@ -423,19 +490,19 @@
             </goals>
             <configuration>
               <target>
-                <copy file="${localTarget}/dependency/config/log4cxx.service.properties" todir="${localTarget}/run" />
-                <copy file="${localSource}/main/config/log4cxx.connector.properties" todir="${localTarget}/run" />
-                <copy file="${localTarget}/dependency/config/logback.xml" todir="${localTarget}/run" />
-                <echo file="${localTarget}/run/OpenGamma.properties"># Site configuration
-opengamma.configuration.url=${site.opengamma.test-server.url}
-opengamma.configuration.failOnInvalid=true
-opengamma.configuration.failOnMissing=false
-language.annotationCachePath=${localTarget}/run
-</echo>
-                <mkdir dir="${localTarget}/run/ext" />
-                <copy file="${localTarget}/dependency/config/0og-language.xml" todir="${localTarget}/run/ext" />
-                <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
-                <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar" />
+                <ant antfile="${solutionDir}/package.xml" target="pre-integration-test" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>og-rstats-integration-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <ant antfile="${solutionDir}/package.xml" target="integration-test" />
               </target>
             </configuration>
           </execution>
@@ -477,6 +544,29 @@ language.annotationCachePath=${localTarget}/run
             <optional>true</optional>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${version.build-helper-maven-plugin}</version>
+        <executions>
+          <execution>
+            <id>r-attach-metadata</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${localSource}/main/config/R.xml</file>
+                  <type>xml</type>
+                  <classifier>config</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

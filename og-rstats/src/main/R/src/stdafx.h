@@ -7,7 +7,7 @@
 #ifndef STDAFX_H
 #define STDAFX_H
 
-#include <Util/Quote.h>
+#include <util/cpp/Quote.h>
 #define Client(path)	QUOTE_(Client_##path)
 
 #undef STDAFX_H

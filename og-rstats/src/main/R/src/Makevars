@@ -4,9 +4,18 @@
  # Please see distribution for license.
  ##
 
-# Note that we can only build either a Release or Debug configuration. If CONFIGURATION isn't specified
-# this will be Release. The system must have Fudge-C and log4cxx installed, but these are pre-requisites
-# for OG-Language.
+# The build environment may define the following:
+#
+#   CONFIGURATION:        Either "Release" or "Debug" (defaults to "Release")
+#   OG_LANGUAGE_HOME:     The installation folder for OG-Language (if installed)
+#   OG_RSTATS_TARGET:     The build folder for OG-RStats (if building as part of Maven)
+#   OG_LANGUAGE_LIB:      The lib folder for OG-Language (defaults to OG_LANGUAGE_HOME/lib or OG_RSTATS_TARGET/CONFIGURATION)
+#   OG_LANGUAGE_INCLUDE:  The include folder for OG-Language (defaults to OG_LANGUAGE_HOME/include or OG_RSTATS_TARGET/dependency/include)
+#
+# log4cxx and Fudge-c must be available
+#
+# The client extension JAR must be installed in OG_LANGUAGE_HOME/jar
+# The client extension XML must be installed in OG_LANGUAGE_HOME/ext
 
 ifndef CONFIGURATION
 CONFIGURATION=Release
@@ -18,31 +27,29 @@ else
 DEBUG_FLAG=_NDEBUG
 endif
 
-# If build from the OG-RStats project, SOLUTION_DIR will be valid and the ANT build system will make
-# the LIB and INCLUDE files available. The build environment should provide the correct path to the
-# ServiceRunner in the build folder and set log configuration appropriately. For a production release,
-# the package installer must:
-#    invoke "R CMD INSTALL OpenGamma" with OG_LANGUAGE_HOME set (or OG_LANGUAGE_INCLUDE_DIR and OG_LANGUAGE_LIB_DIR)
-#    place the client extension JAR and configuration documents in $(OG_LANGUAGE_HOME)/ext
-#    write log configuration and any other connection parameters into to /etc/OpenGammaLtd/OpenGammaR
-
-SOLUTION_DIR=../../../..
-
-ifndef OG_LANGUAGE_INCLUDE_DIR
+ifndef OG_LANGUAGE_INCLUDE
 ifdef OG_LANGUAGE_HOME
-OG_LANGUAGE_INCLUDE_DIR=$(OG_LANGUAGE_HOME)/include
+OG_LANGUAGE_INCLUDE=$(OG_LANGUAGE_HOME)/include
 else
-OG_LANGUAGE_INCLUDE_DIR=$(SOLUTION_DIR)/lib/include
+ifdef OG_RSTATS_TARGET
+OG_LANGUAGE_INCLUDE=$(OG_RSTATS_TARGET)/dependency/include
+else
+OG_LANGUAGE_INCLUDE=./include
+endif
 endif
 endif
 
-ifndef OG_LANGUAGE_LIB_DIR
+ifndef OG_LANGUAGE_LIB
 ifdef OG_LANGUAGE_HOME
-OG_LANGUAGE_LIB_DIR=$(OG_LANGUAGE_HOME)/lib
+OG_LANGUAGE_LIB=$(OG_LANGUAGE_HOME)/lib
 else
-OG_LANGUAGE_LIB_DIR=$(SOLUTION_DIR)/lib/lib/$(CONFIGURATION)
+ifdef OG_RSTATS_TARGET
+OG_LANGUAGE_LIB=$(OG_RSTATS_TARGET)/$(CONFIGURATION)
+else
+OG_LANGUAGE_LIB=./lib
+endif
 endif
 endif
 
-PKG_CPPFLAGS=-I$(OG_LANGUAGE_INCLUDE_DIR) -I. -D$(DEBUG_FLAG) -DHAVE_PTHREAD=1
-PKG_LIBS=-L$(OG_LANGUAGE_LIB_DIR) -lConnector -lService -lUtil -lfudgec -llog4cxx -lrt
+PKG_CPPFLAGS=-I$(OG_LANGUAGE_INCLUDE) -I. -D$(DEBUG_FLAG) -DHAVE_PTHREAD=1
+PKG_LIBS=-L$(OG_LANGUAGE_LIB) -lConnector -lService -lUtil -lfudgec -llog4cxx -lrt

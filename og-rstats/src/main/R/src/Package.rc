@@ -6,5 +6,5 @@
 
 #include "Client_resource.h"
 #include "DllVersionInfo.h"
-#include <Util/DllVersionInfo.h>
-#include <Util/OpenGamma.rc>
+#include <util/cpp/DllVersionInfo.h>
+#include <util/resource/OpenGamma.rc>

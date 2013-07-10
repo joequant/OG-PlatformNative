@@ -1,0 +1,150 @@
+<project name="OG-RStats">
+
+  <import file="${common.dir}/version.xml" />
+
+  <target name="generate-sources">
+    <!-- Copy files from dependencies into build-tree -->
+    <mkdir dir="${localTarget}/run" />
+    <move file="${localTarget}/og-language-client.jar" tofile="${localTarget}/run/client.jar" />
+    <mkdir dir="${localTarget}/generated-sources/main/cpp" />
+    <copy todir="${localTarget}/generated-sources/main/cpp">
+      <fileset dir="${localTarget}/dependency/include/connector/cpp">
+        <include name="com_opengamma_language_*.h" />
+      </fileset>
+      <fileset dir="${localSource}/main/cpp">
+        <include name="stdafx.h" />
+      </fileset>
+    </copy>
+    <!-- Fudge proto files -->
+    <java classname="org.fudgemsg.proto.CommandLine" classpath="${maven.classpath}" fork="true">
+      <arg value="-d${localTarget}/generated-sources/main/cpp" />
+      <arg value="-s${localSource}/main/java" />
+      <arg value="-lC" />
+      <arg value="-Xinclude=stdafx.h" />
+      <arg value="-p${localTarget}/run/client.jar" />
+      <arg value="com/opengamma/rstats/msg/DataInfo.proto" />
+      <arg value="com/opengamma/rstats/msg/FunctionResult.proto" />
+      <arg value="com/opengamma/rstats/msg/LiveDataResult.proto" />
+      <arg value="com/opengamma/rstats/msg/ProcedureResult.proto" />
+    </java>
+    <java classname="org.fudgemsg.proto.CommandLine" classpath="${maven.classpath}" fork="true">
+      <arg value="-d${localSource}/main/java" />
+      <arg value="-s${localSource}/main/java" />
+      <arg value="-lJava" />
+      <arg value="-p${localTarget}/run/client.jar" />
+      <arg value="-Xhash" />
+      <arg value="-Xequals" />
+      <arg value="-Xstring" />
+      <arg value="-XfileFooter=///CLOVER:ON - CSON" />
+      <arg value="-XfileHeader=///CLOVER:OFF - CSOFF" />
+      <arg value="com/opengamma/rstats/msg/DataInfo.proto" />
+      <arg value="com/opengamma/rstats/msg/FunctionResult.proto" />
+      <arg value="com/opengamma/rstats/msg/LiveDataResult.proto" />
+      <arg value="com/opengamma/rstats/msg/ProcedureResult.proto" />
+    </java>
+  </target>
+
+  <target name="prepare-package" depends="module-version-numbers">
+    <!-- Prepare R package source -->
+    <mkdir dir="${localTarget}/package/OpenGamma" />
+    <copy todir="${localTarget}/package/OpenGamma">
+      <fileset dir="${localSource}/main/R">
+        <exclude name="demo/00Index.pl" />
+      </fileset>
+    </copy>
+    <tstamp>
+      <format property="now.yyyy.mm.dd" pattern="yyyy-MM-dd" />
+    </tstamp>
+    <copy file="${root.dir}/LICENSE.txt" tofile="${localTarget}/package/OpenGamma/LICENSE" />
+    <!-- TODO: Generate the DESCRIPTION from C so that it gets the same header files that drive DllInfo -->
+    <echo file="${localTarget}/package/OpenGamma/DESCRIPTION">Package: OpenGamma
+Version: ${module.version}
+Date: ${now.yyyy.mm.dd}
+Title: OpenGamma for R
+Author: OpenGamma Ltd
+Maintainer: OpenGamma Ltd &lt;info@opengamma.com&gt;
+Depends: R (>= 2.11.1), methods, utils
+Enhances: OG, xts
+Description: Connects to the OpenGamma platform for access to risk analytics from running views, market data feeds, the time series database, security and portfolio data
+License: file LICENSE
+URL: http://www.opengamma.com/R, http://www.github.com/OpenGamma/OG-PlatformNative/og-rstats
+BugReports: http://jira.opengamma.com/browse/RSTAT
+LazyLoad: true</echo>
+    <exec executable="perl"
+          output="${localTarget}/package/OpenGamma/demo/00Index"
+          dir="${localSource}/main/R/demo">
+      <arg value="00Index.pl" />
+    </exec>
+    <copy todir="${localTarget}/package/OpenGamma/src">
+      <fileset dir="${localSource}/main/cpp">
+        <include name="*.cpp" />
+        <include name="*.h" />
+      </fileset>
+      <mapper type="glob" from="*" to="Client_*" />
+    </copy>
+    <copy todir="${localTarget}/package/OpenGamma/src">
+      <fileset dir="${localTarget}/generated-sources/main/cpp">
+        <include name="com_opengamma_*" />
+      </fileset>
+    </copy>
+    <copy file="${localTarget}/generated-sources/version.h" todir="${localTarget}/package/OpenGamma/src" />
+  </target>
+
+  <target name="package" depends="source-package,binary-package" />
+  <target name="source-package">
+    <tar destfile="${localTarget}/OpenGamma.tgz" basedir="${localTarget}/package" compression="gzip" />
+  </target>
+  <target name="binary-package" if="profile.windows.r">
+    <mkdir dir="${localTarget}/package-build" />
+    <copy todir="${localTarget}/package-build">
+      <fileset dir="${localTarget}/package" />
+    </copy>
+    <exec executable="${cmd.r}" failonerror="true">
+      <arg value="CMD" />
+      <arg value="build" />
+      <arg value="--binary" />
+      <arg value="${localTarget}/package-build/OpenGamma" />
+    </exec>
+  </target>
+
+  <target name="pre-integration-test">
+    <copy file="${localTarget}/dependency/config/log4cxx.service.properties" todir="${localTarget}/run" />
+    <copy file="${localSource}/main/config/log4cxx.connector.properties" todir="${localTarget}/run" />
+    <copy file="${localTarget}/dependency/config/logback.xml" todir="${localTarget}/run" />
+    <echo file="${localTarget}/run/OpenGamma.properties"># Site configuration
+opengamma.configuration.url=${site.opengamma.test-server.url}
+opengamma.configuration.failOnInvalid=true
+opengamma.configuration.failOnMissing=false
+language.annotationCachePath=${localTarget}/run
+</echo>
+    <mkdir dir="${localTarget}/run/ext" />
+    <copy file="${localTarget}/dependency/config/0og-language.xml" todir="${localTarget}/run/ext" />
+    <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
+    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar" />
+  </target>
+
+  <target name="integration-test" depends="integration-test-nix,integration-test-windows" />
+  <target name="integration-test-nix" if="profile.nix.r">
+    <mkdir dir="${localTarget}/Rcheck" />
+    <exec executable="${cmd.r}" failonerror="true">
+      <arg value="CMD" />
+      <arg value="check" />
+      <arg value="-o" />
+      <arg value="${localTarget}${file.separator}Rcheck" />
+      <arg value="${localTarget}${file.separator}OpenGamma.tgz" />
+      <env key="CONFIGURATION" value="Debug" />
+      <env key="OG_RSTATS_TARGET" value="${localTarget}" />
+    </exec>
+  </target>
+  <target name="integration-test-windows" if="profile.windows.r">
+    <mkdir dir="${localTarget}/Rcheck" />
+    <exec executable="${cmd.r}" failonerror="true">
+      <arg value="CMD" />
+      <arg value="check" />
+      <arg value="-o" />
+      <arg value="${localTarget}${file.separator}Rcheck" />
+      <arg value="${localTarget}${file.separator}OpenGamma.zip" />
+    </exec>
+  </target>
+
+</project>

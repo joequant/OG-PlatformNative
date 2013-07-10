@@ -7,7 +7,7 @@
 #ifndef __inc_og_rstats_package_errorvalue_h
 #define __inc_og_rstats_package_errorvalue_h
 
-#include <Connector/com_opengamma_language_Value.h>
+#include <connector/cpp/com_opengamma_language_Value.h>
 
 class RErrorValue {
 private:
