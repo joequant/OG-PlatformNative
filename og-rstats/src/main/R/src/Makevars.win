@@ -4,10 +4,19 @@
  # Please see distribution for license.
  ##
 
-# Note that we can only build either a Release or Debug configuration. If CONFIGURATION isn't specified
-# this will be Release. The target platform is determined by the CL.EXE instance being used. I.e. use
-# the 32-bit MSVC tools for a Win32, and 64-bit for x64. Note that the R installation must be configured
-# to work with Visual Studio and not the GNUWIN32 toolchain.
+# The build environment may define the following:
+#
+#   CONFIGURATION:      Either "Release" or "Debug" (defaults to "Release")
+#   OG_RSTATS_TARGET:   The target file if this is building as part of Maven
+#
+# Note that the target platform is determined by the CL.EXE instance being used. Ie use the 32-bit MSVC
+# fools for a Win32, and 64-bit for x64. Note that the R installation must be configured to work with
+# Visual Studio and not the GNUWIN32 toolchain.
+#
+# This package is not suitable for a source installation. This file is geared for producing binary files
+# for the Windows platforms as part of the main build. An external installer must place the client
+# extension JAR and XML document in the OG-Language installation, configure any necessary registry entries
+# for the target environment, and then register the binary R package.
 
 ifndef CONFIGURATION
 CONFIGURATION=Release
@@ -36,24 +45,16 @@ endif
 endif
 LOG4CXX_RUNTIME=log4cxx.dll
 
-# Note that this package is not suitable for a source installation. A correctly set up build environment
-# will create a binary zip file (either i386 or x64 depending on the environment) from the "dist" target
-# that the installer should unpack in the correct folder in the target system's R installation before
-# placing the client extension JAR and configuration document in the OG-Language installation folder and
-# making any necessary registry entries for the target environment/configuration.
+OG_LANGUAGE_INCLUDE=$(OG_RSTATS_TARGET)\dependency\include
+OG_LANGUAGE_LIB=$(OG_RSTATS_TARGET)\dependency
+OG_LANGUAGE_DLL=$(OG_RSTATS_TARGET)\$(CONFIGURATION)$(PLATFORM)
 
-SOLUTION_DIR=..\..\..\..
-OG_LANGUAGE_INCLUDE_DIR=$(SOLUTION_DIR)\lib\include
-OG_LANGUAGE_BUILD_DIR=$(SOLUTION_DIR)\build\og-language
-OG_LANGUAGE_LIB_DIR=$(SOLUTION_DIR)\lib\lib\$(CONFIGURATION)$(PLATFORM)
-OG_LANGUAGE_DLL_DIR=$(SOLUTION_DIR)\lib\dll\$(CONFIGURATION)$(PLATFORM)
-
-PKG_CPPFLAGS=/I$(OG_LANGUAGE_INCLUDE_DIR) /I. /UNICODE /D_UNICODE /DUNICODE
-PKG_RCFLAGS=/I$(OG_LANGUAGE_BUILD_DIR) /I. /I$(OG_LANGUAGE_INCLUDE_DIR)
+PKG_CPPFLAGS=/I$(OG_LANGUAGE_INCLUDE) /I. /UNICODE /D_UNICODE /DUNICODE
+PKG_RCFLAGS=/I$(OG_LANGUAGE_INCLUDE) /I.
 LANGUAGE_LIBS=Connector.lib Service.lib Util.lib
-REPOSITORY_LIBS=libfudgec.lib log4cxx.lib
+REPOSITORY_LIBS=fudge-c-$(CONFIGURATION)-windows-$(PLATFORM).lib log4cxx-$(CONFIGURATION)-windows-$(PLATFORM).lib
 WINDOWS_LIBS=shell32.lib version.lib user32.lib advapi32.lib psapi.lib
-PKG_LIBS=/LIBPATH:$(OG_LANGUAGE_LIB_DIR) $(LANGUAGE_LIBS) $(REPOSITORY_LIBS) $(WINDOWS_LIBS)
+PKG_LIBS=/LIBPATH:$(OG_LANGUAGE_LIB) $(LANGUAGE_LIBS) $(REPOSITORY_LIBS) $(WINDOWS_LIBS)
 
 OBJECTS=Package.res \
 	Client_DataUtil.obj \
@@ -87,10 +88,10 @@ OBJECTS=Package.res \
 
 all:	Client_stdafx.obj \
 	$(SHLIB)
-	$(CP) $(OG_LANGUAGE_DLL_DIR)\$(FUDGE_RUNTIME) $(FUDGE_RUNTIME)
-	$(CP) $(OG_LANGUAGE_DLL_DIR)\$(LOG4CXX_RUNTIME) $(LOG4CXX_RUNTIME)
-	$(CP) $(OG_LANGUAGE_DLL_DIR)\$(APR_RUNTIME) $(APR_RUNTIME)
-	$(CP) $(OG_LANGUAGE_DLL_DIR)\$(APR_UTIL_RUNTIME) $(APR_UTIL_RUNTIME)
+	$(CP) $(OG_LANGUAGE_DLL)\$(FUDGE_RUNTIME) $(FUDGE_RUNTIME)
+	$(CP) $(OG_LANGUAGE_DLL)\$(LOG4CXX_RUNTIME) $(LOG4CXX_RUNTIME)
+	$(CP) $(OG_LANGUAGE_DLL)\$(APR_RUNTIME) $(APR_RUNTIME)
+	$(CP) $(OG_LANGUAGE_DLL)\$(APR_UTIL_RUNTIME) $(APR_UTIL_RUNTIME)
 
 Client_stdafx.obj : Client_stdafx.cpp
 	$(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) /c Client_stdafx.cpp /FoClient_stdafx.obj /Ycstdafx.h

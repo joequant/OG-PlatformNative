@@ -6,7 +6,7 @@
 
 #include "stdafx.h"
 #include "ErrorValue.h"
-#include <Connector/Errors.h>
+#include <connector/cpp/Errors.h>
 #include "RCallback.h"
 #include "Errors.h"
 
