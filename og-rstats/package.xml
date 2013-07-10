@@ -46,6 +46,12 @@
 
   <target name="prepare-package" depends="module-version-numbers">
     <!-- Prepare R package source -->
+    <exec executable="perl"
+          output="${localTarget}/package/OpenGamma/demo/00Index"
+          dir="${localSource}/main/R/demo"
+          failifexecutionfails="false">
+      <arg value="00Index.pl" />
+    </exec>
     <mkdir dir="${localTarget}/package/OpenGamma" />
     <copy todir="${localTarget}/package/OpenGamma">
       <fileset dir="${localSource}/main/R">
@@ -70,11 +76,6 @@ License: file LICENSE
 URL: http://www.opengamma.com/R, http://www.github.com/OpenGamma/OG-PlatformNative/og-rstats
 BugReports: http://jira.opengamma.com/browse/RSTAT
 LazyLoad: true</echo>
-    <exec executable="perl"
-          output="${localTarget}/package/OpenGamma/demo/00Index"
-          dir="${localSource}/main/R/demo">
-      <arg value="00Index.pl" />
-    </exec>
     <copy todir="${localTarget}/package/OpenGamma/src">
       <fileset dir="${localSource}/main/cpp">
         <include name="*.cpp" />
