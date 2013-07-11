@@ -95,7 +95,7 @@ LazyLoad: true</echo>
   <target name="source-package">
     <tar destfile="${localTarget}/OpenGamma.tgz" basedir="${localTarget}/package" compression="gzip" />
   </target>
-  <target name="binary-package" if="profile.windows.r">
+  <target name="binary-package" if="profile.windows.r" depends="r-configuration">
     <mkdir dir="${localTarget}/package-build" />
     <copy todir="${localTarget}/package-build">
       <fileset dir="${localTarget}/package" />
@@ -105,7 +105,7 @@ LazyLoad: true</echo>
       <arg value="build" />
       <arg value="--binary" />
       <arg value="${localTarget}/package-build/OpenGamma" />
-      <env key="CONFIGURATION" value="Release" />
+      <env key="CONFIGURATION" value="${r.configuration}" />
       <env key="OG_RSTATS_TARGET" value="${localTarget}" />
     </exec>
     <move tofile="${localTarget}/OpenGamma.zip">
@@ -132,7 +132,7 @@ language.annotationCachePath=${localTarget}/run
   </target>
 
   <target name="integration-test" depends="integration-test-nix,integration-test-windows" />
-  <target name="integration-test-nix" if="profile.nix.r">
+  <target name="integration-test-nix" if="profile.nix.r" depends="r-configuration">
     <mkdir dir="${localTarget}/Rcheck" />
     <exec executable="${cmd.r}" failonerror="true">
       <arg value="CMD" />
@@ -140,7 +140,7 @@ language.annotationCachePath=${localTarget}/run
       <arg value="-o" />
       <arg value="${localTarget}${file.separator}Rcheck" />
       <arg value="${localTarget}${file.separator}OpenGamma.tgz" />
-      <env key="CONFIGURATION" value="Debug" />
+      <env key="CONFIGURATION" value="${r.configuration}" />
       <env key="OG_RSTATS_TARGET" value="${localTarget}" />
     </exec>
   </target>
@@ -153,6 +153,14 @@ language.annotationCachePath=${localTarget}/run
       <arg value="${localTarget}${file.separator}Rcheck" />
       <arg value="${localTarget}${file.separator}OpenGamma.zip" />
     </exec>
+  </target>
+
+  <target name="r-configuration" depends="r-configuration-debug,r-configuration-release" />
+  <target name="r-configuration-debug" if="profile.debug.r">
+    <property name="r.configuration" value="Debug" />
+  </target>
+  <target name="r-configuration-release" if="profile.release.r">
+    <property name="r.configuration" value="Release" />
   </target>
 
 </project>

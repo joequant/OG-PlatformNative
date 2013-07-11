@@ -261,6 +261,28 @@
       </dependencies>
     </profile>
     <profile>
+      <id>debug-r</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/debug-r</exists>
+        </file>
+      </activation>
+      <properties>
+        <profile.debug.r>true</profile.debug.r>
+      </properties>
+    </profile>
+    <profile>
+      <id>release-r</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/release-r</exists>
+        </file>
+      </activation>
+      <properties>
+        <profile.release.r>true</profile.release.r>
+      </properties>
+    </profile>
+    <profile>
       <id>nix-r</id>
       <activation>
         <file>
