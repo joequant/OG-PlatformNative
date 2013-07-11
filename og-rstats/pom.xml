@@ -318,6 +318,27 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${version.exec-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>nix-r-integration-tests-kill</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>exe-kill</executable>
+                  <arguments>
+                    <argument>${localTarget}/run/Debug/ServiceRunner</argument>
+                    <argument>${localTarget}/run/Release/ServiceRunner</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
