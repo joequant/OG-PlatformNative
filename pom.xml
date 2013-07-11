@@ -40,6 +40,7 @@
     <version.ant-junit>1.6.5</version.ant-junit>
     <version.ehcache>2.6.3</version.ehcache>
     <version.activemq>5.3.0</version.activemq>
+    <version.ant-contrib>1.0b3</version.ant-contrib>
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.cpptasks-build-tests>true</skip.cpptasks-build-tests>
@@ -984,6 +985,19 @@
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>${version.ant-contrib}</version>
+            <exclusions>
+              <exclusion>
+                <groupId>ant</groupId>
+                <artifactId>ant</artifactId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
