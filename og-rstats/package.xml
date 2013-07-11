@@ -108,6 +108,11 @@ LazyLoad: true</echo>
       <env key="CONFIGURATION" value="Release" />
       <env key="OG_RSTATS_TARGET" value="${localTarget}" />
     </exec>
+    <move tofile="${localTarget}/OpenGamma.zip">
+      <fileset dir=".">
+        <include name="OpenGamma_*.zip" />
+      </fileset>
+    </move>
   </target>
 
   <target name="pre-integration-test">
