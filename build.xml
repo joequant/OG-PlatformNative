@@ -64,7 +64,7 @@
         <propertyref prefix="cpp." />
         <propertyref prefix="site." />
         <propertyref prefix="cmd." />
-        <propertyref prefix="build.number." />
+        <propertyref prefix="build." />
       </propertyset>
     </echoproperties>
   </target>
