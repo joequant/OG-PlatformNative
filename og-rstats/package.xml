@@ -131,8 +131,7 @@ language.annotationCachePath=${localTarget}/run
     <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar" />
   </target>
 
-  <target name="integration-test" depends="integration-test-nix,integration-test-windows" />
-  <target name="integration-test-nix" if="profile.nix.r" depends="r-configuration">
+  <target name="integration-test" if="profile.r" depends="r-configuration">
     <mkdir dir="${localTarget}/Rcheck" />
     <exec executable="${cmd.r}" failonerror="true">
       <arg value="CMD" />
@@ -142,16 +141,6 @@ language.annotationCachePath=${localTarget}/run
       <arg value="${localTarget}${file.separator}OpenGamma.tgz" />
       <env key="CONFIGURATION" value="${r.configuration}" />
       <env key="OG_RSTATS_TARGET" value="${localTarget}" />
-    </exec>
-  </target>
-  <target name="integration-test-windows" if="profile.windows.r">
-    <mkdir dir="${localTarget}/Rcheck" />
-    <exec executable="${cmd.r}" failonerror="true">
-      <arg value="CMD" />
-      <arg value="check" />
-      <arg value="-o" />
-      <arg value="${localTarget}${file.separator}Rcheck" />
-      <arg value="${localTarget}${file.separator}OpenGamma.zip" />
     </exec>
   </target>
 
