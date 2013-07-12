@@ -1,0 +1,17 @@
+<project name="install">
+
+  <import file="${common.dir}/advanced-installer.xml" />
+  
+  <target name="compile" depends="compile-core,compile-service32,compile-service64" />
+
+  <target name="compile-core" if="profile.windows.msvc">
+    <ai-build file="${localSource}/connector/ai/Core.aip" />
+  </target>
+  <target name="compile-service32" if="profile.windows.msvc">
+    <ai-build file="${localSource}/connector/ai/Service32.aip" />
+  </target>
+  <target name="compile-service64" if="profile.windows.msvc">
+    <ai-build file="${localSource}/connector/ai/Service64.aip" />
+  </target>
+
+</project>

@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="9.4" Modules="msm" RootPath="." Language="en" Id="{5BB63EDA-65BC-4E8E-839C-0FA177AB6571}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="9.4" Modules="msm" RootPath="..\..\.." Language="en" Id="{5BB63EDA-65BC-4E8E-839C-0FA177AB6571}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_ModuleId" Value="4E5453BD_4404_4F15_AC48_815D7107864A"/>
-    <ROW Property="LANG_FILE" Value="Language Integration Service"/>
-    <ROW Property="LANG_REG64" Value="LanguageIntegration"/>
-    <ROW Property="M_FILE" Value="OpenGamma Ltd"/>
-    <ROW Property="M_REG64" Value="OpenGammaLtd"/>
-    <ROW Property="M_START" Value="OpenGamma"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="." IsPseudoRoot="1"/>
-    <ROW Directory="M_FILE__Dir" Directory_Parent="ProgramFiles64Folder" DefaultDir="OpenGa~1|[|M_FILE]"/>
-    <ROW Directory="M_START__Dir" Directory_Parent="ProgramMenuFolder" DefaultDir="OpenGa~1|[|M_START]"/>
+    <ROW Directory="M_FILE__Dir" Directory_Parent="ProgramFiles64Folder" DefaultDir="OpenGa~2|OpenGamma Ltd"/>
+    <ROW Directory="M_START__Dir" Directory_Parent="ProgramMenuFolder" DefaultDir="OpenGa~2|OpenGamma"/>
     <ROW Directory="New_Folder_Dir" Directory_Parent="P_FILE__Dir" DefaultDir="x64"/>
-    <ROW Directory="P_FILE__Dir" Directory_Parent="M_FILE__Dir" DefaultDir="Langua~1|[|LANG_FILE]"/>
+    <ROW Directory="P_FILE__Dir" Directory_Parent="M_FILE__Dir" DefaultDir="Langua~1|Language Integration Service"/>
     <ROW Directory="ProgramFiles64Folder" Directory_Parent="TARGETDIR" DefaultDir="Progra~2|ProgramFiles64Folder" IsPseudoRoot="1"/>
     <ROW Directory="ProgramMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="Progra~1|ProgramMenuFolder" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
@@ -27,11 +22,15 @@
     <ATTRIBUTE name="CurrentFeature" value="TargetFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="ServiceRunner.exe" Component_="ServiceRunner.exe" FileName="Servic~1.exe|ServiceRunner.exe" Attributes="0" SourcePath="..\build\Releasex64\ServiceRunner.exe" SelfReg="false" FileNameLocId="og_language.xml"/>
+    <ROW File="ServiceRunner.exe" Component_="ServiceRunner.exe" FileName="Servic~1.exe|ServiceRunner.exe" Attributes="0" SourcePath="target\Releasex64\ServiceRunner.exe" SelfReg="false" FileNameLocId="og_language.xml"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="..\build" PackageFileName="OG-Language-x64" Languages="en" InstallationType="4" MsiPackageType="x64"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="target\installer" PackageFileName="Service64" Languages="en" InstallationType="4" MsiPackageType="x64"/>
     <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.CacheComponent">
+    <ATTRIBUTE name="CacheIndex" value="Service64.txt"/>
+    <ATTRIBUTE name="Folder" value="target\installer"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
@@ -48,7 +47,7 @@
     <ROW Action="Configure" Type="3106" Source="P_FILE__Dir" Target="&quot;[#ServiceRunner.exe]&quot; configure"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
-    <ROW Registry="serviceSDDL" Root="2" Key="SOFTWARE\[M_REG64]\[LANG_REG64]" Name="serviceSDDL" Value="D:(A;;GA;;;WD)" Component_="Reg"/>
+    <ROW Registry="serviceSDDL" Root="2" Key="SOFTWARE\OpenGammaLtd\LanguageIntegration" Name="serviceSDDL" Value="D:(A;;GA;;;WD)" Component_="Reg"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
     <ROW ServiceControl="ServiceRunner.exe" Name="OpenGammaLanguageAPI" Event="161" Wait="0" Component_="ServiceRunner.exe"/>
@@ -66,6 +65,6 @@
     <ROW Action="Configure" BaseAction="RegisterProduct" After="1" Condition="( NOT Installed ) AND ( UILevel=&quot;5&quot; AND $ServiceRunner.exe=3 )"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
-    <ROW ModuleID="OG_Language64" Version="1.0.1" GUID="4E5453BD_4404_4F15_AC48_815D7107864A" Name="Language Integration 64-bit Service" Manufacturer="OpenGamma Ltd" Comments="The service installation for use with 64-bit Java"/>
+    <ROW ModuleID="OG_Language64" Version="2.0.0" GUID="4E5453BD_4404_4F15_AC48_815D7107864A" Name="Language Integration 64-bit Service" Manufacturer="OpenGamma Ltd" Comments="The service installation for use with 64-bit Java"/>
   </COMPONENT>
 </DOCUMENT>

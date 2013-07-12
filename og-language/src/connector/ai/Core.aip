@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="9.4" Modules="msm" RootPath="..\..\.." Language="en" Id="{87EFA329-FEB3-4D2F-882C-85759C0E3464}">
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_ModuleId" Value="BFBD8D7F_3845_4E0F_AF95_4B3CCBC4AD60"/>
+    <ROW Property="CONFIGURATION_URL" Value="http://localhost:8080/jax/configuration/0/"/>
+    <ROW Property="M_REG32" Value="OpenGammaLtd"/>
+    <ROW Property="M_REG64" Value="OpenGammaLtd"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="." IsPseudoRoot="1"/>
+    <ROW Directory="CommonAppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="Common~1|CommonAppDataFolder" IsPseudoRoot="1"/>
+    <ROW Directory="M_FILE__1_Dir" Directory_Parent="ProgramFiles64Folder" DefaultDir="OpenGa~2|OpenGamma Ltd"/>
+    <ROW Directory="M_FILE__Dir" Directory_Parent="ProgramFilesFolder" DefaultDir="OpenGa~2|OpenGamma Ltd"/>
+    <ROW Directory="M_START__Dir" Directory_Parent="ProgramMenuFolder" DefaultDir="OpenGa~2|OpenGamma"/>
+    <ROW Directory="Manufacturer__Dir" Directory_Parent="CommonAppDataFolder" DefaultDir="OpenGa~1|OpenGamma Ltd"/>
+    <ROW Directory="P_FILE__1_Dir" Directory_Parent="M_FILE__1_Dir" DefaultDir="Langua~2|Language Integration Service"/>
+    <ROW Directory="P_FILE__Dir" Directory_Parent="M_FILE__Dir" DefaultDir="Langua~2|Language Integration Service"/>
+    <ROW Directory="ProductName__Dir" Directory_Parent="Manufacturer__Dir" DefaultDir="Langua~1|Language Integration Service"/>
+    <ROW Directory="ProgramFiles64Folder" Directory_Parent="TARGETDIR" DefaultDir="Progra~2|ProgramFiles64Folder" IsPseudoRoot="1"/>
+    <ROW Directory="ProgramFilesFolder" Directory_Parent="TARGETDIR" DefaultDir="Progra~1|ProgramFilesFolder" IsPseudoRoot="1"/>
+    <ROW Directory="ProgramMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="Progra~3|ProgramMenuFolder" IsPseudoRoot="1"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="connector_Dir" Directory_Parent="include_Dir" DefaultDir="connec~1|connector"/>
+    <ROW Directory="cpp_3_Dir" Directory_Parent="util_Dir" DefaultDir="cpp"/>
+    <ROW Directory="cpp_4_Dir" Directory_Parent="connector_Dir" DefaultDir="cpp"/>
+    <ROW Directory="cpp_Dir" Directory_Parent="service_Dir" DefaultDir="cpp"/>
+    <ROW Directory="ext_Dir" Directory_Parent="ProductName__Dir" DefaultDir="ext"/>
+    <ROW Directory="i386_Dir" Directory_Parent="P_FILE__Dir" DefaultDir="i386"/>
+    <ROW Directory="include_Dir" Directory_Parent="ProductName__Dir" DefaultDir="include"/>
+    <ROW Directory="jar_Dir" Directory_Parent="ProductName__Dir" DefaultDir="jar"/>
+    <ROW Directory="log_Dir" Directory_Parent="ProductName__Dir" DefaultDir="log"/>
+    <ROW Directory="service_Dir" Directory_Parent="include_Dir" DefaultDir="service"/>
+    <ROW Directory="util_Dir" Directory_Parent="include_Dir" DefaultDir="util"/>
+    <ROW Directory="x64_Dir" Directory_Parent="P_FILE__1_Dir" DefaultDir="x64"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="Reg32" ComponentId="{1B4CE3A3-0776-4DC4-B3AF-61B06365EEBE}" Directory_="APPDIR" Attributes="4" KeyPath="exts"/>
+    <ROW Component="Reg64" ComponentId="{2D4AD7E2-42EC-43A0-9CD0-DC07EDBF9341}" Directory_="APPDIR" Attributes="260" Condition="VersionNT64" KeyPath="exts_1"/>
+    <ROW Component="Root" ComponentId="{F21725FC-76B6-430A-A60D-0CEDCEB90B22}" Directory_="ProductName__Dir" Attributes="0" KeyPath="client.jar" Type="0"/>
+    <ROW Component="StartMenu" ComponentId="{8A45A3AC-824F-4C05-8467-8E9E44AD177A}" Directory_="M_START__Dir" Attributes="0"/>
+    <ROW Component="i386" ComponentId="{3248C875-81D8-403C-B2A2-085D54788A63}" Directory_="i386_Dir" Attributes="0" KeyPath="Service.lib" Type="0"/>
+    <ROW Component="include_connector" ComponentId="{13B340EA-5CCC-488C-9B44-FF9FE2E30BDF}" Directory_="cpp_4_Dir" Attributes="0" KeyPath="com_opengamma_language_definitio" Type="0"/>
+    <ROW Component="include_service" ComponentId="{CFF2763A-2880-49FA-BC85-CD95DC755BBE}" Directory_="cpp_Dir" Attributes="0" KeyPath="Settings.h" Type="0"/>
+    <ROW Component="include_util" ComponentId="{37284D11-B653-4DF6-9976-0CDFD2514795}" Directory_="cpp_3_Dir" Attributes="0" KeyPath="Thread.h" Type="0"/>
+    <ROW Component="jars" ComponentId="{2B84283A-1F20-4071-88D0-691FE004CF01}" Directory_="jar_Dir" Attributes="0" KeyPath="com.thoughtworks.paranamer.paran" Type="0"/>
+    <ROW Component="log" ComponentId="{111FBFC3-2762-4519-8FA9-19CD0CBDD292}" Directory_="log_Dir" Attributes="0"/>
+    <ROW Component="og_language.xml" ComponentId="{01A94B88-20D9-4C80-9E93-606966E4D7AF}" Directory_="ext_Dir" Attributes="0" KeyPath="og_language.xml" Type="0"/>
+    <ROW Component="x64" ComponentId="{3D0B7223-4141-496A-B2AB-BF6694486AB1}" Directory_="x64_Dir" Attributes="0" KeyPath="Service.lib_1" Type="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="TargetFeature" Title="TargetFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Reg32 Reg64 Root StartMenu i386 include_connector include_service include_util jars log og_language.xml x64"/>
+    <ATTRIBUTE name="CurrentFeature" value="TargetFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="AbstractSettings.h" Component_="include_util" FileName="Abstra~2.h|AbstractSettings.h" Attributes="0" SourcePath="target\run\include\util\cpp\AbstractSettings.h" SelfReg="false" NextFile="Library.h"/>
+    <ROW File="AbstractTest.h" Component_="include_util" FileName="Abstra~1.h|AbstractTest.h" Attributes="0" SourcePath="target\run\include\util\cpp\AbstractTest.h" SelfReg="false" NextFile="DllVersion.h"/>
+    <ROW File="Alert.h" Component_="include_connector" FileName="Alert.h" Attributes="0" SourcePath="target\run\include\connector\cpp\Alert.h" SelfReg="false" NextFile="com_opengamma_language_procedu_2"/>
+    <ROW File="Asynchronous.h" Component_="include_util" FileName="Asynch~1.h|Asynchronous.h" Attributes="0" SourcePath="target\run\include\util\cpp\Asynchronous.h" SelfReg="false" NextFile="BufferedInput.h"/>
+    <ROW File="Atomic.h" Component_="include_util" FileName="Atomic.h" Attributes="0" SourcePath="target\run\include\util\cpp\Atomic.h" SelfReg="false" NextFile="NamedPipe.h"/>
+    <ROW File="BufferedInput.h" Component_="include_util" FileName="Buffer~1.h|BufferedInput.h" Attributes="0" SourcePath="target\run\include\util\cpp\BufferedInput.h" SelfReg="false" NextFile="AbstractSettings.h"/>
+    <ROW File="Client.h" Component_="include_connector" FileName="Client.h" Attributes="0" SourcePath="target\run\include\connector\cpp\Client.h" SelfReg="false" NextFile="com_opengamma_language_procedu_4"/>
+    <ROW File="ClientConnect.h" Component_="include_service" FileName="Client~1.h|ClientConnect.h" Attributes="0" SourcePath="target\run\include\service\cpp\ClientConnect.h" SelfReg="false" NextFile="Public.h"/>
+    <ROW File="ConnectionPipe.h" Component_="include_service" FileName="Connec~1.h|ConnectionPipe.h" Attributes="0" SourcePath="target\run\include\service\cpp\ConnectionPipe.h" SelfReg="false" NextFile="ClientConnect.h"/>
+    <ROW File="Connector.h" Component_="include_connector" FileName="Connec~1.h|Connector.h" Attributes="0" SourcePath="target\run\include\connector\cpp\Connector.h" SelfReg="false" NextFile="com_opengamma_language_livedat_8"/>
+    <ROW File="Connector.lib" Component_="i386" FileName="Connec~1.lib|Connector.lib" Attributes="0" SourcePath="target\ReleaseWin32\Connector.lib" SelfReg="false" NextFile="aprutil.dll_2"/>
+    <ROW File="Connector.lib_1" Component_="x64" FileName="Connec~1.lib|Connector.lib" Attributes="0" SourcePath="target\Releasex64\Connector.lib" SelfReg="false" NextFile="apr.dll"/>
+    <ROW File="DllVersion.h" Component_="include_util" FileName="DllVer~1.h|DllVersion.h" Attributes="0" SourcePath="target\run\include\util\cpp\DllVersion.h" SelfReg="false" NextFile="Asynchronous.h"/>
+    <ROW File="DllVersionInfo.h" Component_="include_util" FileName="DllVer~2.h|DllVersionInfo.h" Attributes="0" SourcePath="target\run\include\util\cpp\DllVersionInfo.h" SelfReg="false" NextFile="File.h"/>
+    <ROW File="Error.h" Component_="include_util" FileName="Error.h" Attributes="0" SourcePath="target\run\include\util\cpp\Error.h" SelfReg="false" NextFile="Unicode.h"/>
+    <ROW File="ErrorFeedback.h" Component_="include_service" FileName="ErrorF~1.h|ErrorFeedback.h" Attributes="0" SourcePath="target\run\include\service\cpp\ErrorFeedback.h" SelfReg="false" NextFile="ConnectionPipe.h"/>
+    <ROW File="Errors.h" Component_="include_connector" FileName="Errors.h" Attributes="0" SourcePath="target\run\include\connector\cpp\Errors.h" SelfReg="false" NextFile="com_opengamma_language_procedu_1"/>
+    <ROW File="File.h" Component_="include_util" FileName="File.h" Attributes="0" SourcePath="target\run\include\util\cpp\File.h" SelfReg="false" NextFile="Semaphore.h"/>
+    <ROW File="Fudge.h" Component_="include_util" FileName="Fudge.h" Attributes="0" SourcePath="target\run\include\util\cpp\Fudge.h" SelfReg="false" NextFile="Error.h"/>
+    <ROW File="Functions.h" Component_="include_connector" FileName="Functi~1.h|Functions.h" Attributes="0" SourcePath="target\run\include\connector\cpp\Functions.h" SelfReg="false" NextFile="com_opengamma_language_connect_6"/>
+    <ROW File="JVM.h" Component_="include_service" FileName="JVM.h" Attributes="0" SourcePath="target\run\include\service\cpp\JVM.h" SelfReg="false" NextFile="Service.h"/>
+    <ROW File="JVM.h_1" Component_="include_connector" FileName="JVM.h" Attributes="0" SourcePath="target\run\include\connector\cpp\JVM.h" SelfReg="false" NextFile="Functions.h"/>
+    <ROW File="Library.h" Component_="include_util" FileName="Library.h" Attributes="0" SourcePath="target\run\include\util\cpp\Library.h" SelfReg="false" NextFile="Process.h"/>
+    <ROW File="LiveData.h" Component_="include_connector" FileName="LiveData.h" Attributes="0" SourcePath="target\run\include\connector\cpp\LiveData.h" SelfReg="false" NextFile="Procedures.h"/>
+    <ROW File="Logging.h" Component_="include_util" FileName="Logging.h" Attributes="0" SourcePath="target\run\include\util\cpp\Logging.h" SelfReg="false" NextFile="Atomic.h"/>
+    <ROW File="MemoryPool.h" Component_="include_util" FileName="Memory~1.h|MemoryPool.h" Attributes="0" SourcePath="target\run\include\util\cpp\MemoryPool.h" SelfReg="false" NextFile="DllVersionInfo.h"/>
+    <ROW File="MessageDirectives.h" Component_="include_connector" FileName="Messag~1.h|MessageDirectives.h" Attributes="0" SourcePath="target\run\include\connector\cpp\MessageDirectives.h" SelfReg="false" NextFile="Alert.h"/>
+    <ROW File="Mutex.h" Component_="include_util" FileName="Mutex.h" Attributes="0" SourcePath="target\run\include\util\cpp\Mutex.h" SelfReg="false" NextFile="Logging.h"/>
+    <ROW File="NamedPipe.h" Component_="include_util" FileName="NamedP~1.h|NamedPipe.h" Attributes="0" SourcePath="target\run\include\util\cpp\NamedPipe.h" SelfReg="false" NextFile="TimeoutIO.h"/>
+    <ROW File="Pipes.h" Component_="include_connector" FileName="Pipes.h" Attributes="0" SourcePath="target\run\include\connector\cpp\Pipes.h" SelfReg="false" NextFile="Errors.h"/>
+    <ROW File="Procedures.h" Component_="include_connector" FileName="Proced~1.h|Procedures.h" Attributes="0" SourcePath="target\run\include\connector\cpp\Procedures.h" SelfReg="false" NextFile="RequestBuilder.h"/>
+    <ROW File="Process.h" Component_="include_util" FileName="Process.h" Attributes="0" SourcePath="target\run\include\util\cpp\Process.h" SelfReg="false" NextFile="Fudge.h"/>
+    <ROW File="Public.h" Component_="include_service" FileName="Public.h" Attributes="0" SourcePath="target\run\include\service\cpp\Public.h" SelfReg="false" NextFile="JVM.h"/>
+    <ROW File="Quote.h" Component_="include_util" FileName="Quote.h" Attributes="0" SourcePath="target\run\include\util\cpp\Quote.h" SelfReg="false" NextFile="MemoryPool.h"/>
+    <ROW File="RequestBuilder.h" Component_="include_connector" FileName="Reques~1.h|RequestBuilder.h" Attributes="0" SourcePath="target\run\include\connector\cpp\RequestBuilder.h" SelfReg="false" NextFile="com_opengamma_language_procedu_3"/>
+    <ROW File="Semaphore.h" Component_="include_util" FileName="Semaph~1.h|Semaphore.h" Attributes="0" SourcePath="target\run\include\util\cpp\Semaphore.h" SelfReg="false" NextFile="com_opengamma_language_definitio"/>
+    <ROW File="Service.h" Component_="include_service" FileName="Service.h" Attributes="0" SourcePath="target\run\include\service\cpp\Service.h" SelfReg="false" NextFile="Thread.h"/>
+    <ROW File="Service.lib" Component_="i386" FileName="Service.lib" Attributes="0" SourcePath="target\ReleaseWin32\Service.lib" SelfReg="false" NextFile="log4cxx.dll_2"/>
+    <ROW File="Service.lib_1" Component_="x64" FileName="Service.lib" Attributes="0" SourcePath="target\Releasex64\Service.lib" SelfReg="false" NextFile="Util.lib_1"/>
+    <ROW File="Settings.h" Component_="include_service" FileName="Settings.h" Attributes="0" SourcePath="target\run\include\service\cpp\Settings.h" SelfReg="false" NextFile="stdafx.h"/>
+    <ROW File="Settings.h_1" Component_="include_connector" FileName="Settings.h" Attributes="0" SourcePath="target\run\include\connector\cpp\Settings.h" SelfReg="false" NextFile="com_opengamma_language_connector"/>
+    <ROW File="String.h" Component_="include_util" FileName="String.h" Attributes="0" SourcePath="target\run\include\util\cpp\String.h" SelfReg="false" NextFile="Version.h"/>
+    <ROW File="SynchronousCalls.h" Component_="include_connector" FileName="Synchr~1.h|SynchronousCalls.h" Attributes="0" SourcePath="target\run\include\connector\cpp\SynchronousCalls.h" SelfReg="false" NextFile="com_opengamma_language_livedat_2"/>
+    <ROW File="Thread.h" Component_="include_util" FileName="Thread.h" Attributes="0" SourcePath="target\run\include\util\cpp\Thread.h" SelfReg="false" NextFile="stdafx.h_1"/>
+    <ROW File="TimeoutIO.h" Component_="include_util" FileName="Timeou~1.h|TimeoutIO.h" Attributes="0" SourcePath="target\run\include\util\cpp\TimeoutIO.h" SelfReg="false" NextFile="String.h"/>
+    <ROW File="Unicode.h" Component_="include_util" FileName="Unicode.h" Attributes="0" SourcePath="target\run\include\util\cpp\Unicode.h" SelfReg="false" NextFile="Mutex.h"/>
+    <ROW File="Util.lib" Component_="i386" FileName="Util.lib" Attributes="0" SourcePath="target\ReleaseWin32\Util.lib" SelfReg="false" NextFile="Connector.lib"/>
+    <ROW File="Util.lib_1" Component_="x64" FileName="Util.lib" Attributes="0" SourcePath="target\Releasex64\Util.lib" SelfReg="false" NextFile="Connector.lib_1"/>
+    <ROW File="Version.h" Component_="include_util" FileName="Version.h" Attributes="0" SourcePath="target\run\include\util\cpp\Version.h" SelfReg="false" NextFile="Quote.h"/>
+    <ROW File="ant.ant.jar" Component_="jars" FileName="antant~1.jar|ant.ant.jar" Attributes="0" SourcePath="target\run\jar\ant.ant.jar" SelfReg="false" NextFile="com.opengamma.external.json.json"/>
+    <ROW File="antcontrib.cpptasks.jar" Component_="jars" FileName="ant-co~1.jar|ant-contrib.cpptasks.jar" Attributes="0" SourcePath="target\run\jar\ant-contrib.cpptasks.jar" SelfReg="false" NextFile="com.opengamma.platform.ogsecurit"/>
+    <ROW File="antlr.antlr.jar" Component_="jars" FileName="antlra~1.jar|antlr.antlr.jar" Attributes="0" SourcePath="target\run\jar\antlr.antlr.jar" SelfReg="false" NextFile="org.apache.activemq.kahadb.jar"/>
+    <ROW File="aopalliance.aopalliance.jar" Component_="jars" FileName="aopall~1.jar|aopalliance.aopalliance.jar" Attributes="0" SourcePath="target\run\jar\aopalliance.aopalliance.jar" SelfReg="false" NextFile="com.opengamma.platform.ogcore.ja"/>
+    <ROW File="apr.dll" Component_="x64" FileName="apr.dll" Attributes="0" SourcePath="target\Releasex64\apr.dll" SelfReg="false" NextFile="log4cxx.dll"/>
+    <ROW File="apr.dll_2" Component_="i386" FileName="apr.dll" Attributes="0" SourcePath="target\ReleaseWin32\apr.dll" SelfReg="false" NextFile="Service.lib"/>
+    <ROW File="aprutil.dll" Component_="x64" FileName="aprutil.dll" Attributes="0" SourcePath="target\Releasex64\aprutil.dll" SelfReg="false" NextFile="Settings.h"/>
+    <ROW File="aprutil.dll_2" Component_="i386" FileName="aprutil.dll" Attributes="0" SourcePath="target\ReleaseWin32\aprutil.dll" SelfReg="false" NextFile="libfudgec.dll"/>
+    <ROW File="asm.asm.jar" Component_="jars" FileName="asmasm~1.jar|asm.asm.jar" Attributes="0" SourcePath="target\run\jar\asm.asm.jar" SelfReg="false" NextFile="com.sleepycat.je.jar"/>
+    <ROW File="ch.qos.logback.logbackclassic.ja" Component_="jars" FileName="chqosl~1.jar|ch.qos.logback.logback-classic.jar" Attributes="0" SourcePath="target\run\jar\ch.qos.logback.logback-classic.jar" SelfReg="false" NextFile="org.antlr.stringtemplate.jar"/>
+    <ROW File="ch.qos.logback.logbackcore.jar" Component_="jars" FileName="chqosl~2.jar|ch.qos.logback.logback-core.jar" Attributes="0" SourcePath="target\run\jar\ch.qos.logback.logback-core.jar" SelfReg="false" NextFile="javax.jms.jmsapi.jar"/>
+    <ROW File="client.jar" Component_="Root" FileName="client.jar" Attributes="0" SourcePath="target\run\client.jar" SelfReg="false" NextFile="log4cxx.properties" FileNameLocId="Connector.lib"/>
+    <ROW File="colt.colt.jar" Component_="jars" FileName="coltco~1.jar|colt.colt.jar" Attributes="0" SourcePath="target\run\jar\colt.colt.jar" SelfReg="false" NextFile="com.opengamma.platform.ogengine."/>
+    <ROW File="com.beust.jcommander.jar" Component_="jars" FileName="combeu~1.jar|com.beust.jcommander.jar" Attributes="0" SourcePath="target\run\jar\com.beust.jcommander.jar" SelfReg="false" NextFile="com.sun.jersey.jerseyserver.jar"/>
+    <ROW File="com.codahale.metrics.metricscore" Component_="jars" FileName="comcod~1.jar|com.codahale.metrics.metrics-core.jar" Attributes="0" SourcePath="target\run\jar\com.codahale.metrics.metrics-core.jar" SelfReg="false" NextFile="org.springframework.springbeans."/>
+    <ROW File="com.codahale.metrics.metricsgang" Component_="jars" FileName="comcod~2.jar|com.codahale.metrics.metrics-ganglia.jar" Attributes="0" SourcePath="target\run\jar\com.codahale.metrics.metrics-ganglia.jar" SelfReg="false" NextFile="org.apache.commons.commonsmath.j"/>
+    <ROW File="com.google.guava.guava.jar" Component_="jars" FileName="comgoo~2.jar|com.google.guava.guava.jar" Attributes="0" SourcePath="target\run\jar\com.google.guava.guava.jar" SelfReg="false" NextFile="com.opengamma.ogregiondata.jar"/>
+    <ROW File="com.googlecode.jsonsimple.jsonsi" Component_="jars" FileName="comgoo~1.jar|com.googlecode.json-simple.json-simple.jar" Attributes="0" SourcePath="target\run\jar\com.googlecode.json-simple.json-simple.jar" SelfReg="false" NextFile="com.beust.jcommander.jar"/>
+    <ROW File="com.jolbox.bonecp.jar" Component_="jars" FileName="comjol~1.jar|com.jolbox.bonecp.jar" Attributes="0" SourcePath="target\run\jar\com.jolbox.bonecp.jar" SelfReg="false" NextFile="it.unimi.dsi.fastutil.jar"/>
+    <ROW File="com.opengamma.elsql.jar" Component_="jars" FileName="comope~6.jar|com.opengamma.elsql.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.elsql.jar" SelfReg="false" NextFile="org.joda.jodaconvert.jar"/>
+    <ROW File="com.opengamma.external.json.json" Component_="jars" FileName="comop~10.jar|com.opengamma.external.json.json.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.external.json.json.jar" SelfReg="false" NextFile="commonscollections.commonscollec"/>
+    <ROW File="com.opengamma.lambdava.jar" Component_="jars" FileName="comope~5.jar|com.opengamma.lambdava.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.lambdava.jar" SelfReg="false" NextFile="de.odysseus.juel.juelimpl.jar"/>
+    <ROW File="com.opengamma.ogregiondata.jar" Component_="jars" FileName="comop~12.jar|com.opengamma.og-region-data.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.og-region-data.jar" SelfReg="false" NextFile="ch.qos.logback.logbackcore.jar"/>
+    <ROW File="com.opengamma.platform.oganalyti" Component_="jars" FileName="comop~14.jar|com.opengamma.platform.og-analytics.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-analytics.jar" SelfReg="false" NextFile="org.springframework.springaop.ja"/>
+    <ROW File="com.opengamma.platform.ogcore.ja" Component_="jars" FileName="comope~2.jar|com.opengamma.platform.og-core.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-core.jar" SelfReg="false" NextFile="org.apache.activemq.activemqpool"/>
+    <ROW File="com.opengamma.platform.ogengine." Component_="jars" FileName="comope~3.jar|com.opengamma.platform.og-engine.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-engine.jar" SelfReg="false" NextFile="org.springframework.springorm.ja"/>
+    <ROW File="com.opengamma.platform.ogfinanci" Component_="jars" FileName="comop~11.jar|com.opengamma.platform.og-financial.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-financial.jar" SelfReg="false" NextFile="de.odysseus.juel.juelapi.jar"/>
+    <ROW File="com.opengamma.platform.oglivedat" Component_="jars" FileName="comope~9.jar|com.opengamma.platform.og-livedata.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-livedata.jar" SelfReg="false" NextFile="org.apache.activemq.protobuf.act"/>
+    <ROW File="com.opengamma.platform.ogmaster." Component_="jars" FileName="comop~16.jar|com.opengamma.platform.og-master.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-master.jar" SelfReg="false" NextFile="apr.dll_2"/>
+    <ROW File="com.opengamma.platform.ogprovide" Component_="jars" FileName="comope~7.jar|com.opengamma.platform.og-provider.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-provider.jar" SelfReg="false" NextFile="com.opengamma.platform.ogutildb."/>
+    <ROW File="com.opengamma.platform.ogsecurit" Component_="jars" FileName="comope~4.jar|com.opengamma.platform.og-security.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-security.jar" SelfReg="false" NextFile="org.apache.activemq.activeiocore"/>
+    <ROW File="com.opengamma.platform.ogtimeser" Component_="jars" FileName="comop~15.jar|com.opengamma.platform.og-timeseries.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-timeseries.jar" SelfReg="false" NextFile="dom4j.dom4j.jar"/>
+    <ROW File="com.opengamma.platform.ogutil.ja" Component_="jars" FileName="comop~13.jar|com.opengamma.platform.og-util.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-util.jar" SelfReg="false" NextFile="com.opengamma.platform.oganalyti"/>
+    <ROW File="com.opengamma.platform.ogutildb." Component_="jars" FileName="comope~8.jar|com.opengamma.platform.og-utildb.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.platform.og-utildb.jar" SelfReg="false" NextFile="org.springframework.springtest.j"/>
+    <ROW File="com.opengamma.tools.scripts.jar" Component_="jars" FileName="comope~1.jar|com.opengamma.tools.scripts.jar" Attributes="0" SourcePath="target\run\jar\com.opengamma.tools.scripts.jar" SelfReg="false" NextFile="org.jvnet.mimepull.jar"/>
+    <ROW File="com.sleepycat.je.jar" Component_="jars" FileName="comsle~1.jar|com.sleepycat.je.jar" Attributes="0" SourcePath="target\run\jar\com.sleepycat.je.jar" SelfReg="false" NextFile="concurrent.concurrent.jar"/>
+    <ROW File="com.sun.jersey.contribs.jerseymu" Component_="jars" FileName="comsun~2.jar|com.sun.jersey.contribs.jersey-multipart.jar" Attributes="0" SourcePath="target\run\jar\com.sun.jersey.contribs.jersey-multipart.jar" SelfReg="false" NextFile="com.opengamma.elsql.jar"/>
+    <ROW File="com.sun.jersey.contribs.jerseysp" Component_="jars" FileName="comsun~5.jar|com.sun.jersey.contribs.jersey-spring.jar" Attributes="0" SourcePath="target\run\jar\com.sun.jersey.contribs.jersey-spring.jar" SelfReg="false" NextFile="org.hibernate.hibernatecore.jar"/>
+    <ROW File="com.sun.jersey.jerseyclient.jar" Component_="jars" FileName="comsun~6.jar|com.sun.jersey.jersey-client.jar" Attributes="0" SourcePath="target\run\jar\com.sun.jersey.jersey-client.jar" SelfReg="false" NextFile="net.sf.scannotation.scannotation"/>
+    <ROW File="com.sun.jersey.jerseycore.jar" Component_="jars" FileName="comsun~4.jar|com.sun.jersey.jersey-core.jar" Attributes="0" SourcePath="target\run\jar\com.sun.jersey.jersey-core.jar" SelfReg="false" NextFile="ch.qos.logback.logbackclassic.ja"/>
+    <ROW File="com.sun.jersey.jerseyserver.jar" Component_="jars" FileName="comsun~3.jar|com.sun.jersey.jersey-server.jar" Attributes="0" SourcePath="target\run\jar\com.sun.jersey.jersey-server.jar" SelfReg="false" NextFile="org.freemarker.freemarker.jar"/>
+    <ROW File="com.sun.jersey.jerseyservlet.jar" Component_="jars" FileName="comsun~1.jar|com.sun.jersey.jersey-servlet.jar" Attributes="0" SourcePath="target\run\jar\com.sun.jersey.jersey-servlet.jar" SelfReg="false" NextFile="aopalliance.aopalliance.jar"/>
+    <ROW File="com.thoughtworks.paranamer.paran" Component_="jars" FileName="comtho~1.jar|com.thoughtworks.paranamer.paranamer.jar" Attributes="0" SourcePath="target\run\jar\com.thoughtworks.paranamer.paranamer.jar" SelfReg="false" NextFile="net.sf.ehcache.ehcachecore.jar"/>
+    <ROW File="com_opengamma_language_Data.h" Component_="include_connector" FileName="com_o~24.h|com_opengamma_language_Data.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_Data.h" SelfReg="false" NextFile="Client.h"/>
+    <ROW File="com_opengamma_language_Value.h" Component_="include_connector" FileName="com_o~12.h|com_opengamma_language_Value.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_Value.h" SelfReg="false" NextFile="com_opengamma_language_connect_3"/>
+    <ROW File="com_opengamma_language_connect_1" Component_="include_connector" FileName="com_op~7.h|com_opengamma_language_connector_Custom.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_connector_Custom.h" SelfReg="false" NextFile="com_opengamma_language_livedata_"/>
+    <ROW File="com_opengamma_language_connect_2" Component_="include_connector" FileName="com_op~9.h|com_opengamma_language_connector_Test.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_connector_Test.h" SelfReg="false" NextFile="com_opengamma_language_definit_1"/>
+    <ROW File="com_opengamma_language_connect_3" Component_="include_connector" FileName="com_o~13.h|com_opengamma_language_connector_UserMessagePayload.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_connector_UserMessagePayload.h" SelfReg="false" NextFile="com_opengamma_language_functio_2"/>
+    <ROW File="com_opengamma_language_connect_4" Component_="include_connector" FileName="com_o~27.h|com_opengamma_language_connector_ConnectorMessage.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_connector_ConnectorMessage.h" SelfReg="false" NextFile="com_opengamma_language_procedu_6"/>
+    <ROW File="com_opengamma_language_connect_5" Component_="include_connector" FileName="com_o~30.h|com_opengamma_language_connector_LiveData.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_connector_LiveData.h" SelfReg="false" NextFile="com_opengamma_language_functio_5"/>
+    <ROW File="com_opengamma_language_connect_6" Component_="include_connector" FileName="com_o~32.h|com_opengamma_language_connector_Procedure.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_connector_Procedure.h" SelfReg="false" NextFile="com_opengamma_language_connect_7"/>
+    <ROW File="com_opengamma_language_connect_7" Component_="include_connector" FileName="com_o~33.h|com_opengamma_language_connector_UserMessage.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_connector_UserMessage.h" SelfReg="false" NextFile="com_opengamma_language_functio_6"/>
+    <ROW File="com_opengamma_language_connector" Component_="include_connector" FileName="com_op~2.h|com_opengamma_language_connector_Function.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_connector_Function.h" SelfReg="false" NextFile="com_opengamma_language_function_"/>
+    <ROW File="com_opengamma_language_definit_1" Component_="include_connector" FileName="com_o~10.h|com_opengamma_language_definition_Definition.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_definition_Definition.h" SelfReg="false" NextFile="com_opengamma_language_livedat_1"/>
+    <ROW File="com_opengamma_language_definitio" Component_="include_connector" FileName="com_op~1.h|com_opengamma_language_definition_Parameter.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_definition_Parameter.h" SelfReg="false" NextFile="Settings.h_1"/>
+    <ROW File="com_opengamma_language_functio_1" Component_="include_connector" FileName="com_op~6.h|com_opengamma_language_function_Available.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_function_Available.h" SelfReg="false" NextFile="com_opengamma_language_connect_1"/>
+    <ROW File="com_opengamma_language_functio_2" Component_="include_connector" FileName="com_o~14.h|com_opengamma_language_function_Result.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_function_Result.h" SelfReg="false" NextFile="SynchronousCalls.h"/>
+    <ROW File="com_opengamma_language_functio_3" Component_="include_connector" FileName="com_o~20.h|com_opengamma_language_function_Invoke.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_function_Invoke.h" SelfReg="false" NextFile="com_opengamma_language_livedat_5"/>
+    <ROW File="com_opengamma_language_functio_4" Component_="include_connector" FileName="com_o~22.h|com_opengamma_language_function_Custom.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_function_Custom.h" SelfReg="false" NextFile="com_opengamma_language_livedat_6"/>
+    <ROW File="com_opengamma_language_functio_5" Component_="include_connector" FileName="com_o~31.h|com_opengamma_language_function_Available_Entry.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_function_Available_Entry.h" SelfReg="false" NextFile="JVM.h_1"/>
+    <ROW File="com_opengamma_language_functio_6" Component_="include_connector" FileName="com_o~34.h|com_opengamma_language_function_QueryAvailable.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_function_QueryAvailable.h" SelfReg="false" NextFile="Connector.h"/>
+    <ROW File="com_opengamma_language_function_" Component_="include_connector" FileName="com_op~3.h|com_opengamma_language_function_Definition.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_function_Definition.h" SelfReg="false" NextFile="com_opengamma_language_procedure"/>
+    <ROW File="com_opengamma_language_livedat_1" Component_="include_connector" FileName="com_o~11.h|com_opengamma_language_livedata_Disconnect.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_Disconnect.h" SelfReg="false" NextFile="com_opengamma_language_Value.h"/>
+    <ROW File="com_opengamma_language_livedat_2" Component_="include_connector" FileName="com_o~15.h|com_opengamma_language_livedata_QueryAvailable.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_QueryAvailable.h" SelfReg="false" NextFile="com_opengamma_language_livedat_3"/>
+    <ROW File="com_opengamma_language_livedat_3" Component_="include_connector" FileName="com_o~16.h|com_opengamma_language_livedata_Available_Entry.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_Available_Entry.h" SelfReg="false" NextFile="MessageDirectives.h"/>
+    <ROW File="com_opengamma_language_livedat_4" Component_="include_connector" FileName="com_o~18.h|com_opengamma_language_livedata_Custom.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_Custom.h" SelfReg="false" NextFile="LiveData.h"/>
+    <ROW File="com_opengamma_language_livedat_5" Component_="include_connector" FileName="com_o~21.h|com_opengamma_language_livedata_Connect.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_Connect.h" SelfReg="false" NextFile="com_opengamma_language_functio_4"/>
+    <ROW File="com_opengamma_language_livedat_6" Component_="include_connector" FileName="com_o~23.h|com_opengamma_language_livedata_Result.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_Result.h" SelfReg="false" NextFile="com_opengamma_language_Data.h"/>
+    <ROW File="com_opengamma_language_livedat_7" Component_="include_connector" FileName="com_o~29.h|com_opengamma_language_livedata_QueryValue.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_QueryValue.h" SelfReg="false" NextFile="com_opengamma_language_connect_5"/>
+    <ROW File="com_opengamma_language_livedat_8" Component_="include_connector" FileName="com_o~35.h|com_opengamma_language_livedata_Available.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_Available.h" SelfReg="false"/>
+    <ROW File="com_opengamma_language_livedata_" Component_="include_connector" FileName="com_op~8.h|com_opengamma_language_livedata_Definition.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_livedata_Definition.h" SelfReg="false" NextFile="com_opengamma_language_connect_2"/>
+    <ROW File="com_opengamma_language_procedu_1" Component_="include_connector" FileName="com_op~5.h|com_opengamma_language_procedure_Definition.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_procedure_Definition.h" SelfReg="false" NextFile="com_opengamma_language_functio_1"/>
+    <ROW File="com_opengamma_language_procedu_2" Component_="include_connector" FileName="com_o~17.h|com_opengamma_language_procedure_Custom.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_procedure_Custom.h" SelfReg="false" NextFile="com_opengamma_language_livedat_4"/>
+    <ROW File="com_opengamma_language_procedu_3" Component_="include_connector" FileName="com_o~19.h|com_opengamma_language_procedure_Result.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_procedure_Result.h" SelfReg="false" NextFile="com_opengamma_language_functio_3"/>
+    <ROW File="com_opengamma_language_procedu_4" Component_="include_connector" FileName="com_o~25.h|com_opengamma_language_procedure_Available.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_procedure_Available.h" SelfReg="false" NextFile="com_opengamma_language_procedu_5"/>
+    <ROW File="com_opengamma_language_procedu_5" Component_="include_connector" FileName="com_o~26.h|com_opengamma_language_procedure_Available_Entry.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_procedure_Available_Entry.h" SelfReg="false" NextFile="com_opengamma_language_connect_4"/>
+    <ROW File="com_opengamma_language_procedu_6" Component_="include_connector" FileName="com_o~28.h|com_opengamma_language_procedure_QueryAvailable.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_procedure_QueryAvailable.h" SelfReg="false" NextFile="com_opengamma_language_livedat_7"/>
+    <ROW File="com_opengamma_language_procedure" Component_="include_connector" FileName="com_op~4.h|com_opengamma_language_procedure_Invoke.h" Attributes="0" SourcePath="target\run\include\connector\cpp\com_opengamma_language_procedure_Invoke.h" SelfReg="false" NextFile="stdafx.h_2"/>
+    <ROW File="commonsbeanutils.commonsbeanutil" Component_="jars" FileName="common~2.jar|commons-beanutils.commons-beanutils.jar" Attributes="0" SourcePath="target\run\jar\commons-beanutils.commons-beanutils.jar" SelfReg="false" NextFile="org.antlr.antlrruntime.jar"/>
+    <ROW File="commonscli.commonscli.jar" Component_="jars" FileName="common~4.jar|commons-cli.commons-cli.jar" Attributes="0" SourcePath="target\run\jar\commons-cli.commons-cli.jar" SelfReg="false" NextFile="org.hamcrest.hamcrestcore.jar"/>
+    <ROW File="commonscodec.commonscodec.jar" Component_="jars" FileName="common~7.jar|commons-codec.commons-codec.jar" Attributes="0" SourcePath="target\run\jar\commons-codec.commons-codec.jar" SelfReg="false" NextFile="com.opengamma.platform.ogtimeser"/>
+    <ROW File="commonscollections.commonscollec" Component_="jars" FileName="common~3.jar|commons-collections.commons-collections.jar" Attributes="0" SourcePath="target\run\jar\commons-collections.commons-collections.jar" SelfReg="false" NextFile="org.springframework.springcont_1"/>
+    <ROW File="commonsio.commonsio.jar" Component_="jars" FileName="common~5.jar|commons-io.commons-io.jar" Attributes="0" SourcePath="target\run\jar\commons-io.commons-io.jar" SelfReg="false" NextFile="org.hibernate.hibernateehcache.j"/>
+    <ROW File="commonslang.commonslang.jar" Component_="jars" FileName="common~6.jar|commons-lang.commons-lang.jar" Attributes="0" SourcePath="target\run\jar\commons-lang.commons-lang.jar" SelfReg="false" NextFile="com.google.guava.guava.jar"/>
+    <ROW File="commonspool.commonspool.jar" Component_="jars" FileName="common~1.jar|commons-pool.commons-pool.jar" Attributes="0" SourcePath="target\run\jar\commons-pool.commons-pool.jar" SelfReg="false" NextFile="com.jolbox.bonecp.jar"/>
+    <ROW File="concurrent.concurrent.jar" Component_="jars" FileName="concur~1.jar|concurrent.concurrent.jar" Attributes="0" SourcePath="target\run\jar\concurrent.concurrent.jar" SelfReg="false" NextFile="com.sun.jersey.contribs.jerseysp"/>
+    <ROW File="de.odysseus.juel.juelapi.jar" Component_="jars" FileName="deodys~2.jar|de.odysseus.juel.juel-api.jar" Attributes="0" SourcePath="target\run\jar\de.odysseus.juel.juel-api.jar" SelfReg="false" NextFile="org.antlr.antlr.jar"/>
+    <ROW File="de.odysseus.juel.juelimpl.jar" Component_="jars" FileName="deodys~1.jar|de.odysseus.juel.juel-impl.jar" Attributes="0" SourcePath="target\run\jar\de.odysseus.juel.juel-impl.jar" SelfReg="false" NextFile="net.sf.opencsv.opencsv.jar"/>
+    <ROW File="dom4j.dom4j.jar" Component_="jars" FileName="dom4jd~1.jar|dom4j.dom4j.jar" Attributes="0" SourcePath="target\run\jar\dom4j.dom4j.jar" SelfReg="false" NextFile="com.opengamma.platform.ogmaster."/>
+    <ROW File="info.ganglia.gmetric4j.gmetric4j" Component_="jars" FileName="infoga~1.jar|info.ganglia.gmetric4j.gmetric4j.jar" Attributes="0" SourcePath="target\run\jar\info.ganglia.gmetric4j.gmetric4j.jar" SelfReg="false" NextFile="org.antlr.ST4.jar"/>
+    <ROW File="it.unimi.dsi.fastutil.jar" Component_="jars" FileName="itunim~1.jar|it.unimi.dsi.fastutil.jar" Attributes="0" SourcePath="target\run\jar\it.unimi.dsi.fastutil.jar" SelfReg="false" NextFile="com.opengamma.tools.scripts.jar"/>
+    <ROW File="javassist.javassist.jar" Component_="jars" FileName="javass~1.jar|javassist.javassist.jar" Attributes="0" SourcePath="target\run\jar\javassist.javassist.jar" SelfReg="false" NextFile="org.slf4j.log4joverslf4j.jar"/>
+    <ROW File="javax.jms.jmsapi.jar" Component_="jars" FileName="javaxj~1.jar|javax.jms.jms-api.jar" Attributes="0" SourcePath="target\run\jar\javax.jms.jms-api.jar" SelfReg="false" NextFile="org.mindrot.jbcrypt.jar"/>
+    <ROW File="javax.servlet.javax.servletapi.j" Component_="jars" FileName="javaxs~1.jar|javax.servlet.javax.servlet-api.jar" Attributes="0" SourcePath="target\run\jar\javax.servlet.javax.servlet-api.jar" SelfReg="false" NextFile="org.apache.activemq.activemqcore"/>
+    <ROW File="javax.transaction.jta.jar" Component_="jars" FileName="javaxt~1.jar|javax.transaction.jta.jar" Attributes="0" SourcePath="target\run\jar\javax.transaction.jta.jar" SelfReg="false" NextFile="com.sun.jersey.jerseycore.jar"/>
+    <ROW File="junit.junit.jar" Component_="jars" FileName="junitj~1.jar|junit.junit.jar" Attributes="0" SourcePath="target\run\jar\junit.junit.jar" SelfReg="false" NextFile="org.testng.testng.jar"/>
+    <ROW File="libfudgec.dll" Component_="i386" FileName="libfud~1.dll|libfudgec.dll" Attributes="0" SourcePath="target\ReleaseWin32\libfudgec.dll" SelfReg="false" NextFile="Service.lib_1"/>
+    <ROW File="libfudgecX64.dll" Component_="x64" FileName="libfud~1.dll|libfudgecX64.dll" Attributes="0" SourcePath="target\Releasex64\libfudgecX64.dll" SelfReg="false" NextFile="aprutil.dll"/>
+    <ROW File="log4cxx.dll" Component_="x64" FileName="log4cxx.dll" Attributes="0" SourcePath="target\Releasex64\log4cxx.dll" SelfReg="false" NextFile="libfudgecX64.dll"/>
+    <ROW File="log4cxx.dll_2" Component_="i386" FileName="log4cxx.dll" Attributes="0" SourcePath="target\ReleaseWin32\log4cxx.dll" SelfReg="false" NextFile="Util.lib"/>
+    <ROW File="log4cxx.properties" Component_="Root" FileName="log4cx~2.pro|log4cxx.connector.properties" Attributes="0" SourcePath="src\connector\ai\log4cxx.properties" SelfReg="false" NextFile="log4cxx.properties_1"/>
+    <ROW File="log4cxx.properties_1" Component_="Root" FileName="log4cx~3.pro|log4cxx.service.properties" Attributes="0" SourcePath="src\connector\ai\log4cxx.properties" SelfReg="false" NextFile="logback.xml"/>
+    <ROW File="logback.xml" Component_="Root" FileName="logback.xml" Attributes="0" SourcePath="src\connector\ai\logback.xml" SelfReg="false" NextFile="og_language.xml"/>
+    <ROW File="net.sf.ehcache.ehcachecore.jar" Component_="jars" FileName="netsfe~1.jar|net.sf.ehcache.ehcache-core.jar" Attributes="0" SourcePath="target\run\jar\net.sf.ehcache.ehcache-core.jar" SelfReg="false" NextFile="commonspool.commonspool.jar"/>
+    <ROW File="net.sf.opencsv.opencsv.jar" Component_="jars" FileName="netsfo~1.jar|net.sf.opencsv.opencsv.jar" Attributes="0" SourcePath="target\run\jar\net.sf.opencsv.opencsv.jar" SelfReg="false" NextFile="xmlapis.xmlapis.jar"/>
+    <ROW File="net.sf.scannotation.scannotation" Component_="jars" FileName="netsfs~1.jar|net.sf.scannotation.scannotation.jar" Attributes="0" SourcePath="target\run\jar\net.sf.scannotation.scannotation.jar" SelfReg="false" NextFile="org.springframework.springjms.ja"/>
+    <ROW File="net.sourceforge.jtransforms.jtra" Component_="jars" FileName="netsou~1.jar|net.sourceforge.jtransforms.jtransforms.jar" Attributes="0" SourcePath="target\run\jar\net.sourceforge.jtransforms.jtransforms.jar" SelfReg="false" NextFile="com.opengamma.platform.ogfinanci"/>
+    <ROW File="og_language.xml" Component_="og_language.xml" FileName="0og-la~1.xml|0og-language.xml" Attributes="0" SourcePath="target\run\ext\0og-language.xml" SelfReg="false" NextFile="com.thoughtworks.paranamer.paran"/>
+    <ROW File="org.acplt.oncrpc.jar" Component_="jars" FileName="orgacp~1.jar|org.acplt.oncrpc.jar" Attributes="0" SourcePath="target\run\jar\org.acplt.oncrpc.jar" SelfReg="false" NextFile="com.opengamma.platform.ogprovide"/>
+    <ROW File="org.antlr.ST4.jar" Component_="jars" FileName="organt~2.jar|org.antlr.ST4.jar" Attributes="0" SourcePath="target\run\jar\org.antlr.ST4.jar" SelfReg="false" NextFile="org.springframework.springtx.jar"/>
+    <ROW File="org.antlr.antlr.jar" Component_="jars" FileName="organt~4.jar|org.antlr.antlr.jar" Attributes="0" SourcePath="target\run\jar\org.antlr.antlr.jar" SelfReg="false" NextFile="com.codahale.metrics.metricsgang"/>
+    <ROW File="org.antlr.antlrruntime.jar" Component_="jars" FileName="organt~1.jar|org.antlr.antlr-runtime.jar" Attributes="0" SourcePath="target\run\jar\org.antlr.antlr-runtime.jar" SelfReg="false" NextFile="com.opengamma.platform.oglivedat"/>
+    <ROW File="org.antlr.stringtemplate.jar" Component_="jars" FileName="organt~3.jar|org.antlr.stringtemplate.jar" Attributes="0" SourcePath="target\run\jar\org.antlr.stringtemplate.jar" SelfReg="false" NextFile="commonscli.commonscli.jar"/>
+    <ROW File="org.apache.activemq.activeiocore" Component_="jars" FileName="orgapa~2.jar|org.apache.activemq.activeio-core.jar" Attributes="0" SourcePath="target\run\jar\org.apache.activemq.activeio-core.jar" SelfReg="false" NextFile="com.opengamma.lambdava.jar"/>
+    <ROW File="org.apache.activemq.activemqcore" Component_="jars" FileName="orgapa~3.jar|org.apache.activemq.activemq-core.jar" Attributes="0" SourcePath="target\run\jar\org.apache.activemq.activemq-core.jar" SelfReg="false" NextFile="org.acplt.oncrpc.jar"/>
+    <ROW File="org.apache.activemq.activemqpool" Component_="jars" FileName="orgapa~1.jar|org.apache.activemq.activemq-pool.jar" Attributes="0" SourcePath="target\run\jar\org.apache.activemq.activemq-pool.jar" SelfReg="false" NextFile="colt.colt.jar"/>
+    <ROW File="org.apache.activemq.kahadb.jar" Component_="jars" FileName="orgapa~5.jar|org.apache.activemq.kahadb.jar" Attributes="0" SourcePath="target\run\jar\org.apache.activemq.kahadb.jar" SelfReg="false" NextFile="commonsbeanutils.commonsbeanutil"/>
+    <ROW File="org.apache.activemq.protobuf.act" Component_="jars" FileName="orgapa~6.jar|org.apache.activemq.protobuf.activemq-protobuf.jar" Attributes="0" SourcePath="target\run\jar\org.apache.activemq.protobuf.activemq-protobuf.jar" SelfReg="false" NextFile="redis.clients.jedis.jar"/>
+    <ROW File="org.apache.commons.commonsmath.j" Component_="jars" FileName="orgapa~8.jar|org.apache.commons.commons-math.jar" Attributes="0" SourcePath="target\run\jar\org.apache.commons.commons-math.jar" SelfReg="false" NextFile="org.slf4j.jcloverslf4j.jar"/>
+    <ROW File="org.apache.geronimo.specs.geroni" Component_="jars" FileName="orgapa~4.jar|org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec.jar" Attributes="0" SourcePath="target\run\jar\org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec.jar" SelfReg="false" NextFile="org.fudgemsg.fudgejava.jar"/>
+    <ROW File="org.apache.httpcomponents.http_1" Component_="jars" FileName="orgap~10.jar|org.apache.httpcomponents.httpcore-nio.jar" Attributes="0" SourcePath="target\run\jar\org.apache.httpcomponents.httpcore-nio.jar" SelfReg="false" NextFile="org.joda.jodabeans.jar"/>
+    <ROW File="org.apache.httpcomponents.httpcl" Component_="jars" FileName="orgap~11.jar|org.apache.httpcomponents.httpclient.jar" Attributes="0" SourcePath="target\run\jar\org.apache.httpcomponents.httpclient.jar" SelfReg="false" NextFile="asm.asm.jar"/>
+    <ROW File="org.apache.httpcomponents.httpco" Component_="jars" FileName="orgapa~9.jar|org.apache.httpcomponents.httpcore.jar" Attributes="0" SourcePath="target\run\jar\org.apache.httpcomponents.httpcore.jar" SelfReg="false" NextFile="org.springframework.security.spr"/>
+    <ROW File="org.apache.poi.poi.jar" Component_="jars" FileName="orgapa~7.jar|org.apache.poi.poi.jar" Attributes="0" SourcePath="target\run\jar\org.apache.poi.poi.jar" SelfReg="false" NextFile="info.ganglia.gmetric4j.gmetric4j"/>
+    <ROW File="org.freemarker.freemarker.jar" Component_="jars" FileName="orgfre~1.jar|org.freemarker.freemarker.jar" Attributes="0" SourcePath="target\run\jar\org.freemarker.freemarker.jar" SelfReg="false" NextFile="antlr.antlr.jar"/>
+    <ROW File="org.fudgemsg.fudgejava.jar" Component_="jars" FileName="orgfud~1.jar|org.fudgemsg.fudge-java.jar" Attributes="0" SourcePath="target\run\jar\org.fudgemsg.fudge-java.jar" SelfReg="false" NextFile="org.springframework.springcore.j"/>
+    <ROW File="org.hamcrest.hamcrestcore.jar" Component_="jars" FileName="orgham~1.jar|org.hamcrest.hamcrest-core.jar" Attributes="0" SourcePath="target\run\jar\org.hamcrest.hamcrest-core.jar" SelfReg="false" NextFile="junit.junit.jar"/>
+    <ROW File="org.hibernate.hibernatecore.jar" Component_="jars" FileName="orghib~2.jar|org.hibernate.hibernate-core.jar" Attributes="0" SourcePath="target\run\jar\org.hibernate.hibernate-core.jar" SelfReg="false" NextFile="commonslang.commonslang.jar"/>
+    <ROW File="org.hibernate.hibernateehcache.j" Component_="jars" FileName="orghib~1.jar|org.hibernate.hibernate-ehcache.jar" Attributes="0" SourcePath="target\run\jar\org.hibernate.hibernate-ehcache.jar" SelfReg="false" NextFile="org.apache.httpcomponents.http_1"/>
+    <ROW File="org.joda.jodabeans.jar" Component_="jars" FileName="orgjod~2.jar|org.joda.joda-beans.jar" Attributes="0" SourcePath="target\run\jar\org.joda.joda-beans.jar" SelfReg="false" NextFile="org.apache.httpcomponents.httpcl"/>
+    <ROW File="org.joda.jodaconvert.jar" Component_="jars" FileName="orgjod~1.jar|org.joda.joda-convert.jar" Attributes="0" SourcePath="target\run\jar\org.joda.joda-convert.jar" SelfReg="false" NextFile="javax.servlet.javax.servletapi.j"/>
+    <ROW File="org.jvnet.mimepull.jar" Component_="jars" FileName="orgjvn~1.jar|org.jvnet.mimepull.jar" Attributes="0" SourcePath="target\run\jar\org.jvnet.mimepull.jar" SelfReg="false" NextFile="com.codahale.metrics.metricscore"/>
+    <ROW File="org.mindrot.jbcrypt.jar" Component_="jars" FileName="orgmin~1.jar|org.mindrot.jbcrypt.jar" Attributes="0" SourcePath="target\run\jar\org.mindrot.jbcrypt.jar" SelfReg="false" NextFile="com.opengamma.platform.ogutil.ja"/>
+    <ROW File="org.slf4j.jcloverslf4j.jar" Component_="jars" FileName="orgslf~2.jar|org.slf4j.jcl-over-slf4j.jar" Attributes="0" SourcePath="target\run\jar\org.slf4j.jcl-over-slf4j.jar" SelfReg="false" NextFile="org.apache.httpcomponents.httpco"/>
+    <ROW File="org.slf4j.log4joverslf4j.jar" Component_="jars" FileName="orgslf~1.jar|org.slf4j.log4j-over-slf4j.jar" Attributes="0" SourcePath="target\run\jar\org.slf4j.log4j-over-slf4j.jar" SelfReg="false" NextFile="com.sun.jersey.jerseyservlet.jar"/>
+    <ROW File="org.slf4j.slf4japi.jar" Component_="jars" FileName="orgslf~3.jar|org.slf4j.slf4j-api.jar" Attributes="0" SourcePath="target\run\jar\org.slf4j.slf4j-api.jar" SelfReg="false" NextFile="commonsio.commonsio.jar"/>
+    <ROW File="org.springframework.security.spr" Component_="jars" FileName="orgspr~9.jar|org.springframework.security.spring-security-core.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.security.spring-security-core.jar" SelfReg="false" NextFile="org.springframework.springweb.ja"/>
+    <ROW File="org.springframework.springaop.ja" Component_="jars" FileName="orgsp~11.jar|org.springframework.spring-aop.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-aop.jar" SelfReg="false" NextFile="org.springframework.springjdbc.j"/>
+    <ROW File="org.springframework.springbeans." Component_="jars" FileName="orgspr~1.jar|org.springframework.spring-beans.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-beans.jar" SelfReg="false" NextFile="javassist.javassist.jar"/>
+    <ROW File="org.springframework.springcont_1" Component_="jars" FileName="orgspr~6.jar|org.springframework.spring-context-support.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-context-support.jar" SelfReg="false" NextFile="org.apache.poi.poi.jar"/>
+    <ROW File="org.springframework.springcontex" Component_="jars" FileName="orgspr~3.jar|org.springframework.spring-context.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-context.jar" SelfReg="false" NextFile="antcontrib.cpptasks.jar"/>
+    <ROW File="org.springframework.springcore.j" Component_="jars" FileName="orgspr~5.jar|org.springframework.spring-core.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-core.jar" SelfReg="false" NextFile="xerces.xercesImpl.jar"/>
+    <ROW File="org.springframework.springexpres" Component_="jars" FileName="orgspr~8.jar|org.springframework.spring-expression.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-expression.jar" SelfReg="false" NextFile="javax.transaction.jta.jar"/>
+    <ROW File="org.springframework.springjdbc.j" Component_="jars" FileName="orgsp~12.jar|org.springframework.spring-jdbc.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-jdbc.jar" SelfReg="false" NextFile="com.sun.jersey.jerseyclient.jar"/>
+    <ROW File="org.springframework.springjms.ja" Component_="jars" FileName="orgsp~13.jar|org.springframework.spring-jms.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-jms.jar" SelfReg="false" NextFile="commonscodec.commonscodec.jar"/>
+    <ROW File="org.springframework.springorm.ja" Component_="jars" FileName="orgspr~2.jar|org.springframework.spring-orm.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-orm.jar" SelfReg="false" NextFile="org.springframework.springcontex"/>
+    <ROW File="org.springframework.springtest.j" Component_="jars" FileName="orgspr~4.jar|org.springframework.spring-test.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-test.jar" SelfReg="false" NextFile="org.apache.geronimo.specs.geroni"/>
+    <ROW File="org.springframework.springtx.jar" Component_="jars" FileName="orgspr~7.jar|org.springframework.spring-tx.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-tx.jar" SelfReg="false" NextFile="org.springframework.springexpres"/>
+    <ROW File="org.springframework.springweb.ja" Component_="jars" FileName="orgsp~10.jar|org.springframework.spring-web.jar" Attributes="0" SourcePath="target\run\jar\org.springframework.spring-web.jar" SelfReg="false" NextFile="org.slf4j.slf4japi.jar"/>
+    <ROW File="org.testng.testng.jar" Component_="jars" FileName="orgtes~1.jar|org.testng.testng.jar" Attributes="0" SourcePath="target\run\jar\org.testng.testng.jar" SelfReg="false" NextFile="net.sourceforge.jtransforms.jtra"/>
+    <ROW File="org.threeten.threetenbp.jar" Component_="jars" FileName="orgthr~1.jar|org.threeten.threetenbp.jar" Attributes="0" SourcePath="target\run\jar\org.threeten.threetenbp.jar" SelfReg="false" NextFile="com.googlecode.jsonsimple.jsonsi"/>
+    <ROW File="redis.clients.jedis.jar" Component_="jars" FileName="redisc~1.jar|redis.clients.jedis.jar" Attributes="0" SourcePath="target\run\jar\redis.clients.jedis.jar" SelfReg="false" NextFile="ant.ant.jar"/>
+    <ROW File="stdafx.h" Component_="include_service" FileName="stdafx.h" Attributes="0" SourcePath="target\run\include\service\cpp\stdafx.h" SelfReg="false" NextFile="ErrorFeedback.h"/>
+    <ROW File="stdafx.h_1" Component_="include_util" FileName="stdafx.h" Attributes="0" SourcePath="target\run\include\util\cpp\stdafx.h" SelfReg="false" NextFile="AbstractTest.h"/>
+    <ROW File="stdafx.h_2" Component_="include_connector" FileName="stdafx.h" Attributes="0" SourcePath="target\run\include\connector\cpp\stdafx.h" SelfReg="false" NextFile="Pipes.h"/>
+    <ROW File="xerces.xercesImpl.jar" Component_="jars" FileName="xerces~1.jar|xerces.xercesImpl.jar" Attributes="0" SourcePath="target\run\jar\xerces.xercesImpl.jar" SelfReg="false" NextFile="org.threeten.threetenbp.jar"/>
+    <ROW File="xmlapis.xmlapis.jar" Component_="jars" FileName="xml-ap~1.jar|xml-apis.xml-apis.jar" Attributes="0" SourcePath="target\run\jar\xml-apis.xml-apis.jar" SelfReg="false" NextFile="com.sun.jersey.contribs.jerseymu"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="target\installer" PackageFileName="Core" Languages="en" InstallationType="4"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.CacheComponent">
+    <ATTRIBUTE name="CacheIndex" value="Core.txt"/>
+    <ATTRIBUTE name="Folder" value="target\installer"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="MSMSequences.aip" Path="&lt;AI_FRAGS&gt;MSMSequences.aip"/>
+    <ROW Fragment="MsmValidation.aip" Path="&lt;AI_FRAGS&gt;MsmValidation.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="REG_CONFIGURATION_URL" Signature_="AppSearchSign"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="log_Dir" Component_="log"/>
+    <ROW Directory_="M_START__Dir" Component_="StartMenu"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="ConfigurationURL" Type="51" Source="CONFIGURATION_URL" Target="[REG_CONFIGURATION_URL]"/>
+    <ROW Action="ConfigurationURLUI" Type="51" Source="CONFIGURATION_URL" Target="[REG_CONFIGURATION_URL]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
+    <ROW IniFile="URL" FileName="Docume~1.url|Documentation (online).url" DirProperty="M_START__Dir" Section="InternetShortcut" Key="URL" Value="http://docs.opengamma.com/" Action="0" Component_="StartMenu"/>
+    <ROW IniFile="WorkingDirectory" FileName="Docume~1.url|Documentation (online).url" DirProperty="M_START__Dir" Section="InternetShortcut" Key="WorkingDirectory" Value="[OpenGamma_Dir]" Action="0" Component_="StartMenu"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AppSearchSign" Root="2" Key="SOFTWARE\[M_REG32]\LanguageIntegration" Name="jvmProperty.opengamma.configuration.url" Type="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="exts" Root="2" Key="SOFTWARE\[M_REG32]\LanguageIntegration" Name="exts" Value="[ext_Dir]" Component_="Reg32"/>
+    <ROW Registry="exts_1" Root="2" Key="SOFTWARE\[M_REG64]\LanguageIntegration" Name="exts" Value="[ext_Dir]" Component_="Reg64"/>
+    <ROW Registry="jars" Root="2" Key="SOFTWARE\[M_REG32]\LanguageIntegration" Name="jars" Value="[ProductName__Dir]" Component_="Reg32"/>
+    <ROW Registry="jars_1" Root="2" Key="SOFTWARE\[M_REG64]\LanguageIntegration" Name="jars" Value="[ProductName__Dir]" Component_="Reg64"/>
+    <ROW Registry="jvmProperty.opengamma.configurati_1" Root="2" Key="SOFTWARE\[M_REG32]\LanguageIntegration" Name="jvmProperty.opengamma.configuration.failOnMissing" Value="FALSE" Component_="Reg32"/>
+    <ROW Registry="jvmProperty.opengamma.configurati_2" Root="2" Key="SOFTWARE\[M_REG32]\LanguageIntegration" Name="jvmProperty.opengamma.configuration.url" Value="[CONFIGURATION_URL]" Component_="Reg32"/>
+    <ROW Registry="jvmProperty.opengamma.configurati_3" Root="2" Key="SOFTWARE\[M_REG64]\LanguageIntegration" Name="jvmProperty.opengamma.configuration.failOnInvalid" Value="TRUE" Component_="Reg64"/>
+    <ROW Registry="jvmProperty.opengamma.configurati_4" Root="2" Key="SOFTWARE\[M_REG64]\LanguageIntegration" Name="jvmProperty.opengamma.configuration.failOnMissing" Value="FALSE" Component_="Reg64"/>
+    <ROW Registry="jvmProperty.opengamma.configurati_5" Root="2" Key="SOFTWARE\[M_REG64]\LanguageIntegration" Name="jvmProperty.opengamma.configuration.url" Value="[CONFIGURATION_URL]" Component_="Reg64"/>
+    <ROW Registry="jvmProperty.opengamma.configuration" Root="2" Key="SOFTWARE\[M_REG32]\LanguageIntegration" Name="jvmProperty.opengamma.configuration.failOnInvalid" Value="TRUE" Component_="Reg32"/>
+    <ROW Registry="serviceLogConfiguration" Root="2" Key="SOFTWARE\[M_REG32]\LanguageIntegration" Name="serviceLogConfiguration" Value="[#log4cxx.properties_1]" Component_="Reg32"/>
+    <ROW Registry="serviceLogConfiguration_2" Root="2" Key="SOFTWARE\[M_REG64]\LanguageIntegration" Name="serviceLogConfiguration" Value="[#log4cxx.properties_1]" Component_="Reg64"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRemoveFileComponent">
+    <ROW FileKey="_" Component_="Root" FileName=".*" DirProperty="ProductName__Dir" InstallMode="2"/>
+    <ROW FileKey="__1" Component_="log" FileName="*" DirProperty="log_Dir" InstallMode="2"/>
+    <ROW FileKey="__2" Component_="log" DirProperty="log_Dir" InstallMode="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleInstExSeqComponent">
+    <ROW Action="ConfigurationURL" BaseAction="AppSearch" After="1" Condition="REG_CONFIGURATION_URL"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
+    <ROW ModuleID="OG_LanguageCore" Version="2.0.0" GUID="BFBD8D7F_3845_4E0F_AF95_4B3CCBC4AD60" Name="Language Integration API" Manufacturer="OpenGamma Ltd" Comments="The core, platform independent, components of the OpenGamma Language Integration API"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleUISeqComponent">
+    <ROW Action="ConfigurationURLUI" BaseAction="AppSearch" After="1" Condition="REG_CONFIGURATION_URL"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
+    <ROW Directory_="jar_Dir" SourcePath="target\run\jar" Feature="TargetFeature" ExcludeFlags="6"/>
+    <ROW Directory_="i386_Dir" SourcePath="target\ReleaseWin32" Feature="TargetFeature" IncludePattern="*.dll|*.lib" ExcludePattern="/*Test.dll" ExcludeFlags="6" ExcludeSubFolders="true"/>
+    <ROW Directory_="x64_Dir" SourcePath="target\Releasex64" Feature="TargetFeature" IncludePattern="*.lib|*.dll" ExcludePattern="*Test.dll" ExcludeFlags="6"/>
+    <ROW Directory_="include_Dir" SourcePath="target\run\include" Feature="TargetFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6"/>
+  </COMPONENT>
+</DOCUMENT>

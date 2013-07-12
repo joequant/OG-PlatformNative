@@ -586,15 +586,47 @@
             <configuration>
               <target>
                 <zip destfile="${localTarget}/headers.zip">
-                  <zipfileset dir="${localSource}/connector/cpp" includes="*.h" prefix="connector/cpp" />
-                  <zipfileset dir="${localTarget}/generated-sources/connector/cpp" includes="*.h" prefix="connector/cpp" />
-                  <zipfileset dir="${localSource}/service/cpp" includes="*.h" prefix="service/cpp" />
-                  <zipfileset dir="${localTarget}/generated-sources/service/cpp" includes="*.h" prefix="service/cpp" />
-                  <zipfileset dir="${localSource}/util/cpp" includes="*.h" prefix="util/cpp" />
+                  <zipfileset dir="${localSource}/connector/cpp" includes="*.h" prefix="connector/cpp">
+                    <exclude name="stdafx.h" />
+                  </zipfileset>
+                  <zipfileset dir="${localTarget}/generated-sources/connector/cpp" includes="*.h" prefix="connector/cpp">
+                    <exclude name="stdafx.h" />
+                  </zipfileset>
+                  <zipfileset dir="${localSource}/connector/ai" prefix="connector/cpp">
+                    <include name="stdafx.h" />
+                  </zipfileset>
+                  <zipfileset dir="${localSource}/service/cpp" includes="*.h" prefix="service/cpp">
+                    <exclude name="stdafx.h" />
+                  </zipfileset>
+                  <zipfileset dir="${localTarget}/generated-sources/service/cpp" includes="*.h" prefix="service/cpp">
+                    <exclude name="stdafx.h" />
+                  </zipfileset>
+                  <zipfileset dir="${localSource}/connector/ai" prefix="service/cpp">
+                    <include name="stdafx.h" />
+                  </zipfileset>
+                  <zipfileset dir="${localSource}/util/cpp" includes="*.h" prefix="util/cpp">
+                    <exclude name="stdafx.h" />
+                  </zipfileset>
+                  <zipfileset dir="${localSource}/connector/ai" prefix="util/cpp">
+                    <include name="stdafx.h" />
+                  </zipfileset>
                 </zip>
                 <zip destfile="${localTarget}/resources.zip">
                   <zipfileset dir="${localSource}/util/resources" prefix="util/resources" />
                 </zip>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-headers-for-installer</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${localTarget}/run/include" />
+                <unzip src="${localTarget}/headers.zip" dest="${localTarget}/run/include" />
               </target>
             </configuration>
           </execution>
