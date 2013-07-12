@@ -136,7 +136,7 @@ language.annotationCachePath=${localTarget}/run
     <exec executable="${cmd.r}" failonerror="true">
       <arg value="CMD" />
       <arg value="check" />
-      <arg value="-o" />
+      <arg line="${r.check.platform.args}-o" />
       <arg value="${localTarget}${file.separator}Rcheck" />
       <arg value="${localTarget}${file.separator}OpenGamma.tgz" />
       <env key="CONFIGURATION" value="${r.configuration}" />
@@ -144,12 +144,18 @@ language.annotationCachePath=${localTarget}/run
     </exec>
   </target>
 
-  <target name="r-configuration" depends="r-configuration-debug,r-configuration-release" />
+  <target name="r-configuration" depends="r-configuration-debug,r-configuration-release,r-configuration-windows,r-configuration-nix" />
   <target name="r-configuration-debug" if="profile.debug.r">
     <property name="r.configuration" value="Debug" />
   </target>
   <target name="r-configuration-release" if="profile.release.r">
     <property name="r.configuration" value="Release" />
+  </target>
+  <target name="r-configuration-windows" if="profile.windows.r">
+    <property name="r.check.platform.args" value="--no-manual " />
+  </target>
+  <target name="r-configuration-nix" if="profile.nix.r">
+    <property name="r.check.platform.args" value=" " />
   </target>
 
 </project>
