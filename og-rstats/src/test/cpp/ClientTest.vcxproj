@@ -107,7 +107,7 @@
       </Command>
     </PreLinkEvent>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src;$(SolutionDir)target\dependency\resources;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <CustomBuildStep>
       <Command>
@@ -141,7 +141,7 @@
       </Command>
     </PreLinkEvent>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src;$(SolutionDir)target\dependency\resources;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <CustomBuildStep>
       <Command>
@@ -179,7 +179,7 @@
       </Command>
     </PreLinkEvent>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src;$(SolutionDir)target\dependency\resources;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <CustomBuildStep>
       <Command>
@@ -217,7 +217,7 @@
       </Command>
     </PreLinkEvent>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)target\generated-sources;$(SolutionDir)src;$(SolutionDir)target\dependency\resources;$(SolutionDir)target\dependency\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <CustomBuildStep>
       <Command>
@@ -236,6 +236,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="DllVersionInfo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\resources\ClientTest.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataUtilTest.cpp" />

@@ -14,6 +14,6 @@
 #define DllVersion_OriginalFilename "ClientTest"
 #endif
 
-// TODO: need product name ??
+#define DllVersion_ProductName		"OpenGamma/R"
 
 #endif /* ifndef __inc_og_rstats_clienttest_dllversioninfo_h */
