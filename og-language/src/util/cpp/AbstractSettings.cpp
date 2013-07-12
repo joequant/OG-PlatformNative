@@ -54,7 +54,16 @@ CAbstractSettings::CAbstractSettings () {
 	HKEY hkey;
 	LOGDEBUG ("Opening registry keys");
 	HRESULT hr;
-	if ((hr = RegOpenKeyEx (HKEY_LOCAL_MACHINE, TEXT ("SOFTWARE"), 0, KEY_READ, &hkey)) == ERROR_SUCCESS) {
+	TCHAR szBaseKey[MAX_PATH];
+	PCTSTR pszBaseKey;
+	DWORD dwBaseKey = GetEnvironmentVariable (TEXT ("OG_LANGUAGE_CONFIG_PATH"), szBaseKey, MAX_PATH);
+	if ((dwBaseKey == 0) || (dwBaseKey >= MAX_PATH)) {
+		pszBaseKey = TEXT ("SOFTWARE");
+	} else {
+		LOGINFO (TEXT ("Using registry base key ") << pszBaseKey);
+		pszBaseKey = szBaseKey;
+	}
+	if ((hr = RegOpenKeyEx (HKEY_LOCAL_MACHINE, pszBaseKey, 0, KEY_READ, &hkey)) == ERROR_SUCCESS) {
 		if ((hr = RegOpenKeyEx (hkey, szSettingsLocation, 0, KEY_READ, &m_hkeyGlobal)) != ERROR_SUCCESS) {
 			LOGDEBUG ("Couldn't find machine global configuration settings, error " << hr);
 		}
@@ -62,21 +71,21 @@ CAbstractSettings::CAbstractSettings () {
 	} else {
 		LOGWARN ("Couldn't open HKEY_LOCAL_MACHINE\\SOFTWARE registry key, error " << hr);
 	}
-	if ((hr = RegOpenKeyEx (HKEY_CURRENT_USER, TEXT ("SOFTWARE"), 0, KEY_READ, &hkey)) == ERROR_SUCCESS) {
+	if ((hr = RegOpenKeyEx (HKEY_CURRENT_USER, pszBaseKey, 0, KEY_READ, &hkey)) == ERROR_SUCCESS) {
 		if ((hr = RegOpenKeyEx (hkey, szSettingsLocation, 0, KEY_READ, &m_hkeyLocal)) != ERROR_SUCCESS) {
 			LOGDEBUG ("Couldn't find user local configuration settings, error " << hr);
 		}
 		RegCloseKey (hkey);
 	} else {
-		LOGWARN ("Couldn't open HKEY_CURRENT_USER\\Software registry key, error " << hr);
+		LOGWARN ("Couldn't open HKEY_CURRENT_USER\\SOFTWARE registry key, error " << hr);
 	}
 #else /* ifdef _WIN32 */
-#ifndef DEFAULT_CONFIG_FOLDER
-#define DEFAULT_CONFIG_FOLDER	"/etc/"
-#endif /* ifndef DEFAULT_CONFIG_FOLDER */
-#ifndef DEFAULT_CONFIG_BASE
-#define DEFAULT_CONFIG_BASE		"/usr/local"
-#endif /* ifndef DEFAULT_CONFIG_BASE */
+# ifndef DEFAULT_CONFIG_FOLDER
+#  define DEFAULT_CONFIG_FOLDER	"/etc/"
+# endif /* ifndef DEFAULT_CONFIG_FOLDER */
+# ifndef DEFAULT_CONFIG_BASE
+#  define DEFAULT_CONFIG_BASE		"/usr/local"
+# endif /* ifndef DEFAULT_CONFIG_BASE */
 	const TCHAR *pszConfig = getenv ("OG_LANGUAGE_CONFIG_PATH");
 	FILE *f = pszConfig ? _OpenSettings (szSettingsLocation, TEXT (""), pszConfig) : NULL;
 	if (!f) {
