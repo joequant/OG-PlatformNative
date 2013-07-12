@@ -1,0 +1,21 @@
+<project name="install">
+
+  <import file="${common.dir}/advanced-installer.xml" />
+  
+  <target name="compile" depends="compile-jre32,compile-jre64" />
+
+  <target name="compile-jre32" if="exists.jre32" depends="test-jre32">
+    <ai-build file="${localSource}/jre/ai/JRE32.aip" />
+  </target>
+  <target name="test-jre32">
+    <available file="C:\\Program Files (x86)\\Java\\jre7" type="dir" property="exists.jre32" />
+  </target>
+
+  <target name="compile-jre64" if="exists.jre64" depends="test-jre64">
+    <ai-build file="${localSource}/jre/ai/JRE64.aip" />
+  </target>
+  <target name="test-jre64">
+    <available file="C:\\Program Files\\Java\\jre7" type="dir" property="exists.jre64" />
+  </target>
+
+</project>

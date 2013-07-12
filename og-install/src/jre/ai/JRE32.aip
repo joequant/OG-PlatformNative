@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="9.4" Modules="msm" RootPath="." Language="en" Id="{9F269738-F836-4C80-A42A-3161F3E4DFEF}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="9.4" Modules="msm" RootPath="..\..\.." Language="en" Id="{9F269738-F836-4C80-A42A-3161F3E4DFEF}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
-    <ROW Property="M_REG32" Value="OpenGammaLtd"/>
+    <ROW Property="AI_ModuleId" Value="DA2B6784_9C2E_43D2_AAB2_904EF63905D3"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="." IsPseudoRoot="1"/>
@@ -18,7 +18,9 @@
     <ROW Directory="Indiana_Dir" Directory_Parent="America_Dir" DefaultDir="Indiana"/>
     <ROW Directory="Kentucky_Dir" Directory_Parent="America_Dir" DefaultDir="Kentucky"/>
     <ROW Directory="North_Dakota_Dir" Directory_Parent="America_Dir" DefaultDir="North_~1|North_Dakota"/>
+    <ROW Directory="OpenGammaLtd_Dir" Directory_Parent="ProgramFilesFolder" DefaultDir="OpenGa~1|OpenGamma Ltd"/>
     <ROW Directory="Pacific_Dir" Directory_Parent="zi_Dir" DefaultDir="Pacific"/>
+    <ROW Directory="ProgramFilesFolder" Directory_Parent="TARGETDIR" DefaultDir="Progra~1|ProgramFilesFolder" IsPseudoRoot="1"/>
     <ROW Directory="SystemV_Dir" Directory_Parent="zi_Dir" DefaultDir="SystemV"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="applet_Dir" Directory_Parent="lib_Dir" DefaultDir="applet"/>
@@ -33,7 +35,7 @@
     <ROW Directory="i386_Dir" Directory_Parent="lib_Dir" DefaultDir="i386"/>
     <ROW Directory="images_Dir" Directory_Parent="lib_Dir" DefaultDir="images"/>
     <ROW Directory="jqs_Dir" Directory_Parent="deploy_Dir" DefaultDir="jqs"/>
-    <ROW Directory="jre_Dir" Directory_Parent="APPDIR" DefaultDir="jre"/>
+    <ROW Directory="jre_Dir" Directory_Parent="OpenGammaLtd_Dir" DefaultDir="Java7"/>
     <ROW Directory="lib_Dir" Directory_Parent="jre_Dir" DefaultDir="lib"/>
     <ROW Directory="management_Dir" Directory_Parent="lib_Dir" DefaultDir="manage~1|management"/>
     <ROW Directory="plugin2_Dir" Directory_Parent="bin_Dir" DefaultDir="plugin2"/>
@@ -829,8 +831,12 @@
     <ROW File="zipfs.jar" Component_="dnsns.jar" FileName="zipfs.jar" Attributes="0" SourcePath="C:\Program Files (x86)\Java\jre7\lib\ext\zipfs.jar" SelfReg="false" NextFile="dnsns.jar"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="." PackageFileName="JRE32" Languages="en" InstallationType="4"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="target\installer" PackageFileName="JRE32" Languages="en" InstallationType="4"/>
     <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.CacheComponent">
+    <ATTRIBUTE name="CacheIndex" value="JRE32.txt"/>
+    <ATTRIBUTE name="Folder" value="target\installer"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
@@ -851,18 +857,18 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AppSearchSign" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment" Name="CurrentVersion" Type="2"/>
-    <ROW Signature_="AppSearchSign_1" Root="2" Key="SOFTWARE\[M_REG32]\Java Runtime Environment" Name="CurrentVersion" Type="2"/>
+    <ROW Signature_="AppSearchSign_1" Root="2" Key="SOFTWARE\OpenGammaLtd\Java Runtime Environment" Name="CurrentVersion" Type="2"/>
     <ROW Signature_="AppSearchSign_2" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment\1.7" Name="RuntimeLib" Type="2"/>
-    <ROW Signature_="AppSearchSign_3" Root="2" Key="SOFTWARE\[M_REG32]\Java Runtime Environment\1.7" Name="RuntimeLib" Type="2"/>
+    <ROW Signature_="AppSearchSign_3" Root="2" Key="SOFTWARE\OpenGammaLtd\Java Runtime Environment\1.7" Name="RuntimeLib" Type="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
-    <ROW Registry="CurrentVersion" Root="2" Key="SOFTWARE\[M_REG32]\Java Runtime Environment" Name="CurrentVersion" Value="1.7" Component_="RegOGCurrentVersion"/>
+    <ROW Registry="CurrentVersion" Root="2" Key="SOFTWARE\OpenGammaLtd\Java Runtime Environment" Name="CurrentVersion" Value="1.7" Component_="RegOGCurrentVersion"/>
     <ROW Registry="CurrentVersion_1" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment" Name="CurrentVersion" Value="1.7" Component_="RegJSCurrentVersion"/>
-    <ROW Registry="JavaHome" Root="2" Key="SOFTWARE\[M_REG32]\Java Runtime Environment\1.7" Name="JavaHome" Value="#%[jre_Dir]" Component_="RegOG1.7"/>
+    <ROW Registry="JavaHome" Root="2" Key="SOFTWARE\OpenGammaLtd\Java Runtime Environment\1.7" Name="JavaHome" Value="#%[jre_Dir]" Component_="RegOG1.7"/>
     <ROW Registry="JavaHome_1" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment\1.7" Name="JavaHome" Value="#%[jre_Dir]" Component_="RegJS1.7"/>
-    <ROW Registry="MicroVersion" Root="2" Key="SOFTWARE\[M_REG32]\Java Runtime Environment\1.7" Name="MicroVersion" Value="#%0" Component_="RegOG1.7"/>
+    <ROW Registry="MicroVersion" Root="2" Key="SOFTWARE\OpenGammaLtd\Java Runtime Environment\1.7" Name="MicroVersion" Value="#%0" Component_="RegOG1.7"/>
     <ROW Registry="MicroVersion_1" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment\1.7" Name="MicroVersion" Value="#%0" Component_="RegJS1.7"/>
-    <ROW Registry="RuntimeLib" Root="2" Key="SOFTWARE\[M_REG32]\Java Runtime Environment\1.7" Name="RuntimeLib" Value="[#jvm.dll]" Component_="RegOG1.7"/>
+    <ROW Registry="RuntimeLib" Root="2" Key="SOFTWARE\OpenGammaLtd\Java Runtime Environment\1.7" Name="RuntimeLib" Value="[#jvm.dll]" Component_="RegOG1.7"/>
     <ROW Registry="RuntimeLib_1" Root="2" Key="SOFTWARE\JavaSoft\Java Runtime Environment\1.7" Name="RuntimeLib" Value="[#jvm.dll]" Component_="RegJS1.7"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
