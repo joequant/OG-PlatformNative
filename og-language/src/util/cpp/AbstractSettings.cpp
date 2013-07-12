@@ -60,7 +60,7 @@ CAbstractSettings::CAbstractSettings () {
 	if ((dwBaseKey == 0) || (dwBaseKey >= MAX_PATH)) {
 		pszBaseKey = TEXT ("SOFTWARE");
 	} else {
-		LOGINFO (TEXT ("Using registry base key ") << pszBaseKey);
+		LOGINFO (TEXT ("Using registry base key ") << szBaseKey);
 		pszBaseKey = szBaseKey;
 	}
 	if ((hr = RegOpenKeyEx (HKEY_LOCAL_MACHINE, pszBaseKey, 0, KEY_READ, &hkey)) == ERROR_SUCCESS) {
