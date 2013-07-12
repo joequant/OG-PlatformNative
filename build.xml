@@ -1,5 +1,6 @@
 <project name="OG-PlatformNative" default="configure-and-install">
 
+  <property environment="env" />
   <property name="root.dir" value="${basedir}" />
   <property name="local.dir" value="${root.dir}/local" />
   <property name="properties.dir" value="${local.dir}" />
@@ -58,6 +59,9 @@
 
   <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check,skip-tests"> 
     <property name="mvn.args" value="" />
+    <condition property="env.MVN_ARGS" value="">
+      <not><isset property="env.MVN_ARGS"/></not>
+    </condition>
     <mkdir dir="${root.dir}/target" />
     <echoproperties destfile="${root.dir}/target/command-line.properties">
       <propertyset>
@@ -100,8 +104,9 @@
       <arg value="os.family=${os.family}" />
       <arg value="-D" />
       <arg value="properties.file=${properties.dir}/${properties.file}" />
-      <arg line="${skip.tests.arg}${phase}" />
       <arg line="${mvn.args}" />
+      <arg line="${env.MVN_ARGS}" />
+      <arg line="${skip.tests.arg}${phase}" />
     </exec> 
   </target>
 
