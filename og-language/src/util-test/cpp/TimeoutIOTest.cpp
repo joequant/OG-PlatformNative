@@ -36,46 +36,32 @@ static int _createSocket () {
 class CLazyCloseTest : public CTimeoutIO {
 public:
 
-	int m_nCallLazyClose;
+	unsigned long m_lTimeout;
 	bool m_bSignalled;
 
-	CLazyCloseTest (int nCallLazyClose) : CTimeoutIO (
+	CLazyCloseTest (unsigned long lTimeout) : CTimeoutIO (
 #ifdef _WIN32
 			NULL
 #else /* ifdef _WIN32 */
 			_createSocket ()
 #endif /* ifdef _WIN32 */
 	) {
-		m_nCallLazyClose = nCallLazyClose;
+		m_lTimeout = lTimeout;
+		m_lTimeout = lTimeout;
 	}
 
 	// This code has to match the logic in WaitOnOverlapped and BeginOverlapped/EndOverlapped
 	void Run () {
-		unsigned long timeout = TIMEOUT_WAIT * 3;
-		bool bLazyWait = false;
-		if (m_nCallLazyClose == 1) {
-			LOGDEBUG (TEXT ("Lazy closing before check"));
-			LazyClose (TIMEOUT_WAIT / 2);
-		}
-		if (IsLazyClosing ()) {
-			bLazyWait = true;
-			timeout = IsLazyClosing ();
-		}
-		if (m_nCallLazyClose == 2) {
-			LOGDEBUG (TEXT ("Lazy closing after check"));
-			LazyClose (TIMEOUT_WAIT / 2);
-		}
 #ifdef _WIN32
-		if (WaitForSingleObject (GetOverlapped ()->hEvent, timeout) == WAIT_OBJECT_0) {
+		if (WaitForSingleObject (GetOverlapped ()->hEvent, m_lTimeout) == WAIT_OBJECT_0) {
 			LOGDEBUG (TEXT ("Event signalled"));
-			ASSERT (!bLazyWait);
 			m_bSignalled = true;
 		} else {
 			LOGDEBUG (TEXT ("Event timedout"));
 			m_bSignalled = false;
 		}
 #else /* ifdef _WIN32 */
-		if (BeginOverlapped (timeout, true)) {
+		if (BeginOverlapped (m_lTimeout, true)) {
 			ASSERT (FALSE);
 		} else {
 			int nError = GetLastError ();
@@ -84,7 +70,6 @@ public:
 				m_bSignalled = false;
 			} else if (nError == EINTR) {
 				LOGDEBUG (TEXT ("Event signalled"));
-				ASSERT (!bLazyWait);
 				m_bSignalled = true;
 			} else {
 				ASSERT (FALSE);
@@ -95,14 +80,15 @@ public:
 
 };
 
-static void LazyCloseBeforeIO1 () {
-	CLazyCloseTest oTest (1);
+static void TimeoutNoLazyClose () {
+	CLazyCloseTest oTest (TIMEOUT_WAIT / 2);
 	oTest.Run ();
 	ASSERT (!oTest.m_bSignalled);
 }
 
-static void LazyCloseBeforeIO2 () {
-	CLazyCloseTest oTest (2);
+static void LazyCloseBeforeIO () {
+	CLazyCloseTest oTest (TIMEOUT_WAIT * 3);
+	oTest.LazyClose (TIMEOUT_WAIT / 2);
 	oTest.Run ();
 #ifdef _WIN32
 	ASSERT (oTest.m_bSignalled);
@@ -127,7 +113,7 @@ public:
 };
 
 static void LazyCloseDuringIO () {
-	CLazyCloseTest oTest (0);
+	CLazyCloseTest oTest (TIMEOUT_WAIT * 3);
 	CLazyCloseThread *poCloser = new CLazyCloseThread (&oTest);
 	long lStart = GetTickCount ();
 	oTest.Run ();
@@ -141,7 +127,7 @@ static void LazyCloseDuringIO () {
 
 // Tests the functions and objects in Util/TimeoutIO.cpp
 BEGIN_TESTS (TimeoutIOTest)
-	UNIT_TEST (LazyCloseBeforeIO1)
-	UNIT_TEST (LazyCloseBeforeIO2)
+	UNIT_TEST (TimeoutNoLazyClose)
+	UNIT_TEST (LazyCloseBeforeIO)
 	UNIT_TEST (LazyCloseDuringIO)
 END_TESTS

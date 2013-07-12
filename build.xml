@@ -58,7 +58,7 @@
 
   <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check,skip-tests"> 
     <property name="mvn.args" value="" />
-    <mkdir dir="target" />
+    <mkdir dir="${root.dir}/target" />
     <echoproperties destfile="${root.dir}/target/command-line.properties">
       <propertyset>
         <propertyref prefix="cpp." />
