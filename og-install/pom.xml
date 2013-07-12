@@ -18,9 +18,9 @@
   <description>OpenGamma platform installation utilities</description>
 
   <properties>
-    <localTarget>../../target</localTarget>
-    <localSource>../../src</localSource>
     <solutionDir>${project.basedir}${file.separator}..${file.separator}..</solutionDir>
+    <localTarget>${solutionDir}${file.separator}target</localTarget>
+    <localSource>${solutionDir}${file.separator}src</localSource>
     <solutionFile>og-install.sln</solutionFile>
   </properties>
 
