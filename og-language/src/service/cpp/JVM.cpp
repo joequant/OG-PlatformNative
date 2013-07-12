@@ -433,7 +433,7 @@ void CJVM::CProperties::SetProperties (const CSettings *poSettings) const {
 	if (psz) {
 		LOGDEBUG (TEXT ("Using ") << psz << TEXT (" for annotation caches"));
 		Setting (TEXT ("fudgemsg.annotationCachePath"), psz);
-		Setting (TEXT ("language.annotationCachePath"), psz);
+		Setting (TEXT ("opengamma.annotationCachePath"), psz);
 	} else {
 		LOGWARN (TEXT ("No path for annotation caches"));
 	}

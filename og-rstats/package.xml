@@ -123,7 +123,8 @@ LazyLoad: true</echo>
 opengamma.configuration.url=${site.opengamma.test-server.url}
 opengamma.configuration.failOnInvalid=true
 opengamma.configuration.failOnMissing=false
-language.annotationCachePath=${localTarget}/run
+fudgemsg.annotationCachePath=${localTarget}/run
+opengamma.annotationCachePath=${localTarget}/run
 </echo>
     <mkdir dir="${localTarget}/run/ext" />
     <copy file="${localTarget}/dependency/config/0og-language.xml" todir="${localTarget}/run/ext" />
