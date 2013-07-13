@@ -544,7 +544,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <target>
+              <target unless="${skip.integration-tests-native}">
                 <ant antfile="${solutionDir}/package.xml" target="integration-test" />
               </target>
             </configuration>
