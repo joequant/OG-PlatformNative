@@ -8,8 +8,7 @@
   <parent>
     <groupId>com.opengamma</groupId>
     <artifactId>corporate-parent</artifactId>
-    <version>1.0.8</version>
-    <relativePath></relativePath>
+    <version>1.1.1</version>
   </parent>  
   <groupId>com.opengamma.platform</groupId>
   <artifactId>og-platform-native</artifactId>
@@ -166,7 +165,7 @@
                 <configuration>
                   <includeArtifactIds>og-platform-native</includeArtifactIds>
                   <includeTypes>zip</includeTypes>
-                  <outputDirectory>${localTarget}/dependency/ant-common</outputDirectory>
+                  <outputDirectory>${localTarget}/dependency</outputDirectory>
                   <classifier>ant-common</classifier>
                 </configuration>
               </execution>
@@ -939,6 +938,39 @@
         <profile.nix.cpptasks>true</profile.nix.cpptasks>
       </properties>
     </profile>
+    <profile>
+      <id>root-properties</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/default.properties</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>properties-maven-plugin</artifactId>
+            <version>${version.properties-maven-plugin}</version>
+            <executions>
+              <execution>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>read-project-properties</goal>
+                </goals>
+                <configuration>
+                  <files>
+                    <file>${root.dir}/default.properties</file>
+                    <file>${properties.file}</file>
+                    <file>${root.dir}/target/command-line.properties</file>
+                  </files>
+                  <quiet>true</quiet>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
@@ -1011,27 +1043,6 @@
             </exclusions>
           </dependency>
         </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>properties-maven-plugin</artifactId>
-        <version>${version.properties-maven-plugin}</version>
-        <executions>
-          <execution>
-            <phase>initialize</phase>
-            <goals>
-              <goal>read-project-properties</goal>
-            </goals>
-            <configuration>
-              <files>
-                <file>${root.dir}/default.properties</file>
-                <file>${properties.file}</file>
-                <file>${root.dir}/target/command-line.properties</file>
-              </files>
-              <quiet>true</quiet>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

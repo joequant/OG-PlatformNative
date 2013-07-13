@@ -21,7 +21,6 @@ LOGGING (com.opengamma.language.service.SettingsTest);
 
 static void InternalDefaults () {
 	CSettings settings;
-	PRINT_AND_ASSERT (AnnotationCache);
 	PRINT_AND_ASSERT (BusyTimeout);
 	PRINT_AND_ASSERT (ConnectionPipe);
 	PRINT_AND_ASSERT (ConnectionTimeout);
