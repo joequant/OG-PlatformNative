@@ -57,6 +57,14 @@ module.version.revision=${project.version}
   </target>
 
   <!--
+    msi-version-number:
+        Sets the msi.version.number property, defined as MAJOR/MINOR/BUILD. The REVISION field is ignored.
+  -->
+  <target name="msi-version-number" depends="module-version-numbers">
+    <property name="msi.version.number" value="${module.version.major}.${module.version.minor}.${module.build.number}" />
+  </target>
+
+  <!--
     version-header:
         Creates the version.h file in the target folder containing the version
         numbers.
