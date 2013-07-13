@@ -16,8 +16,11 @@
   <target name="create-archive">
     <antcall target="create-archive-impl" />
   </target>
-  <target name="create-archive-impl" if="dir.exists" depends="test-source-dir">
+  <target name="create-archive-impl" if="dir.exists" depends="no-archive">
     <antcall target="archive" />
+  </target>
+  <target name="no-archive" unless="dir.exists" depends="test-source-dir">
+    <touch file="${localTarget}/${archive.configuration}.zip" />
   </target>
   <target name="test-source-dir">
     <available type="dir" file="${localTarget}/${archive.configuration}" property="dir.exists" />
