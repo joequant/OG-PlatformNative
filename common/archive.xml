@@ -20,7 +20,11 @@
     <antcall target="archive" />
   </target>
   <target name="no-archive" unless="dir.exists" depends="test-source-dir">
-    <touch file="${localTarget}/${archive.configuration}.zip" />
+    <zip destfile="${localTarget}/${archive.configuration}.zip" whenempty="create">
+      <fileset dir=".">
+        <exclude name="*" />
+      </fileset>
+    </zip>
   </target>
   <target name="test-source-dir">
     <available type="dir" file="${localTarget}/${archive.configuration}" property="dir.exists" />
