@@ -592,7 +592,7 @@
                   <zipfileset dir="${localTarget}/generated-sources/connector/cpp" includes="*.h" prefix="connector/cpp">
                     <exclude name="stdafx.h" />
                   </zipfileset>
-                  <zipfileset dir="${localSource}/connector/ai" prefix="connector/cpp">
+                  <zipfileset dir="${localSource}/package/ai" prefix="connector/cpp">
                     <include name="stdafx.h" />
                   </zipfileset>
                   <zipfileset dir="${localSource}/service/cpp" includes="*.h" prefix="service/cpp">
@@ -601,13 +601,13 @@
                   <zipfileset dir="${localTarget}/generated-sources/service/cpp" includes="*.h" prefix="service/cpp">
                     <exclude name="stdafx.h" />
                   </zipfileset>
-                  <zipfileset dir="${localSource}/connector/ai" prefix="service/cpp">
+                  <zipfileset dir="${localSource}/package/ai" prefix="service/cpp">
                     <include name="stdafx.h" />
                   </zipfileset>
                   <zipfileset dir="${localSource}/util/cpp" includes="*.h" prefix="util/cpp">
                     <exclude name="stdafx.h" />
                   </zipfileset>
-                  <zipfileset dir="${localSource}/connector/ai" prefix="util/cpp">
+                  <zipfileset dir="${localSource}/package/ai" prefix="util/cpp">
                     <include name="stdafx.h" />
                   </zipfileset>
                 </zip>

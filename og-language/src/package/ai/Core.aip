@@ -201,9 +201,9 @@
     <ROW File="libfudgecX64.dll" Component_="x64" FileName="libfud~1.dll|libfudgecX64.dll" Attributes="0" SourcePath="target\Releasex64\libfudgecX64.dll" SelfReg="false" NextFile="aprutil.dll"/>
     <ROW File="log4cxx.dll" Component_="x64" FileName="log4cxx.dll" Attributes="0" SourcePath="target\Releasex64\log4cxx.dll" SelfReg="false" NextFile="libfudgecX64.dll"/>
     <ROW File="log4cxx.dll_2" Component_="i386" FileName="log4cxx.dll" Attributes="0" SourcePath="target\ReleaseWin32\log4cxx.dll" SelfReg="false" NextFile="Util.lib"/>
-    <ROW File="log4cxx.properties" Component_="Root" FileName="log4cx~2.pro|log4cxx.connector.properties" Attributes="0" SourcePath="src\connector\ai\log4cxx.properties" SelfReg="false" NextFile="log4cxx.properties_1"/>
-    <ROW File="log4cxx.properties_1" Component_="Root" FileName="log4cx~3.pro|log4cxx.service.properties" Attributes="0" SourcePath="src\connector\ai\log4cxx.properties" SelfReg="false" NextFile="logback.xml"/>
-    <ROW File="logback.xml" Component_="Root" FileName="logback.xml" Attributes="0" SourcePath="src\connector\ai\logback.xml" SelfReg="false" NextFile="og_language.xml"/>
+    <ROW File="log4cxx.properties" Component_="Root" FileName="log4cx~2.pro|log4cxx.connector.properties" Attributes="0" SourcePath="src\package\ai\log4cxx.properties" SelfReg="false" NextFile="log4cxx.properties_1"/>
+    <ROW File="log4cxx.properties_1" Component_="Root" FileName="log4cx~3.pro|log4cxx.service.properties" Attributes="0" SourcePath="src\package\ai\log4cxx.properties" SelfReg="false" NextFile="logback.xml"/>
+    <ROW File="logback.xml" Component_="Root" FileName="logback.xml" Attributes="0" SourcePath="src\package\ai\logback.xml" SelfReg="false" NextFile="og_language.xml"/>
     <ROW File="net.sf.ehcache.ehcachecore.jar" Component_="jars" FileName="netsfe~1.jar|net.sf.ehcache.ehcache-core.jar" Attributes="0" SourcePath="target\run\jar\net.sf.ehcache.ehcache-core.jar" SelfReg="false" NextFile="commonspool.commonspool.jar"/>
     <ROW File="net.sf.opencsv.opencsv.jar" Component_="jars" FileName="netsfo~1.jar|net.sf.opencsv.opencsv.jar" Attributes="0" SourcePath="target\run\jar\net.sf.opencsv.opencsv.jar" SelfReg="false" NextFile="xmlapis.xmlapis.jar"/>
     <ROW File="net.sf.scannotation.scannotation" Component_="jars" FileName="netsfs~1.jar|net.sf.scannotation.scannotation.jar" Attributes="0" SourcePath="target\run\jar\net.sf.scannotation.scannotation.jar" SelfReg="false" NextFile="org.springframework.springjms.ja"/>

@@ -21,6 +21,71 @@
     <skip.attach-native>false</skip.attach-native>
   </properties>
 
+  <profiles>
+    <profile>
+      <id>windows-ai</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/windows.ai</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apacha.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${version.maven-antrun-plugin}</version>
+            <executions>
+              <execution>
+                <id>installer-package</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target antfile="install.xml" target="compile" />
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${version.build-helper-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>installer-attach</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${localTarget}/installer/Core.msm</file>
+                      <type>msm</type>
+                      <classifier>windows</classifier>
+                    </artifact>
+                    <artifact>
+                      <file>${localTarget}/installer/Service32.msm</file>
+                      <type>msm</type>
+                      <classifier>windows-i386</classifier>
+                    </artifact>
+                    <artifact>
+                      <file>${localTarget}/installer/Service64.msm</file>
+                      <type>msm</type>
+                      <classifier>windows-x64</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
       <plugin>
