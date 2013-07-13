@@ -43,7 +43,9 @@
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target antfile="install.xml" target="compile" />
+                  <target>
+                    <ant antfile="install.xml" target="compile" />
+                  </target>
                 </configuration>
               </execution>
             </executions>
