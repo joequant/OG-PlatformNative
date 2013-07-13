@@ -19,12 +19,13 @@
   -->
   <macrodef name="ai-build">
     <attribute name="build-id" default="DefaultBuild" />
+    <attribute name="dir" />
     <attribute name="file" />
     <sequential>
       <echo message="Building @{build-id}" />
-      <exec executable="${cmd.ai}" dir="${solutionDir}" failonerror="true">
+      <exec executable="${cmd.ai}" dir="@{dir}" failonerror="true">
         <arg value="/build" />
-        <arg value="@{file}" />
+        <arg value="@{dir}${file.separator}@{file}" />
         <arg value="-buildslist" />
         <arg value="@{build-id}" />
       </exec>
