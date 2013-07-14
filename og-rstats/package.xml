@@ -114,6 +114,9 @@ LazyLoad: true</echo>
         <include name="OpenGamma_*.zip" />
       </fileset>
     </move>
+    <mkdir dir="${localTarget}/run/ext" />
+    <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
+    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar/${project.artifactId}.jar" />
     <antcall target="windows-installer" />
   </target>
   <target name="windows-installer" if="profile.windows.ai" depends="msi-version-number">
@@ -130,10 +133,7 @@ opengamma.configuration.url=${site.opengamma.test-server.url}
 opengamma.configuration.failOnInvalid=true
 opengamma.configuration.failOnMissing=false
 </echo>
-    <mkdir dir="${localTarget}/run/ext" />
     <copy file="${localTarget}/dependency/config/0og-language.xml" todir="${localTarget}/run/ext" />
-    <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
-    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar/${project.artifactId}.jar" />
   </target>
 
   <target name="integration-test" if="profile.r" depends="r-configuration">
