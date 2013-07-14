@@ -116,7 +116,7 @@ LazyLoad: true</echo>
     </move>
     <mkdir dir="${localTarget}/run/ext" />
     <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
-    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar/${project.artifactId}.jar" />
+    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" tofile="${localTarget}/run/jar/${project.artifactId}.jar" />
     <antcall target="windows-installer" />
   </target>
   <target name="windows-installer" if="profile.windows.ai" depends="msi-version-number">
