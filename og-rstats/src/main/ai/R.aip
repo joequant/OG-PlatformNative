@@ -32,9 +32,10 @@
     <ATTRIBUTE name="CurrentFeature" value="TargetFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="OpenGamma.zip" Component_="OpenGamma.zip" FileName="OpenGa~1.zip|OpenGamma.zip" Attributes="0" SourcePath="target\OpenGamma.zip" SelfReg="false"/>
+    <ROW File="OpenGamma.zip" Component_="OpenGamma.zip" FileName="OpenGa~1.zip|OpenGamma.zip" Attributes="0" SourcePath="target\OpenGamma.zip" SelfReg="false" NextFile="log4cxx.connector.properties"/>
     <ROW File="R.xml" Component_="R.xml_1" FileName="R.xml" Attributes="0" SourcePath="target\run\ext\R.xml" SelfReg="false" NextFile="OpenGamma.zip"/>
     <ROW File="ext.jar" Component_="ext.jar" FileName="comope~1.jar|com.opengamma-og-rstats.jar" Attributes="0" SourcePath="target\run\jar\og-rstats.jar" SelfReg="false" NextFile="R.xml"/>
+    <ROW File="log4cxx.connector.properties" Component_="OpenGamma.zip" FileName="log4cx~2.pro|log4cxx.properties" Attributes="0" SourcePath="..\og-language\src\package\ai\log4cxx.properties" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="target\installer" PackageFileName="OG-RStats" Languages="en" InstallationType="4"/>
@@ -84,9 +85,6 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="URL" FileName="Toolsf~2.url|Tools for R documentation (online).url" DirProperty="M_START__Dir" Section="InternetShortcut" Key="URL" Value="http://docs.opengamma.com/display/DOC/OpenGamma+Tools+for+R" Action="0" Component_="StartMenu"/>
     <ROW IniFile="WorkingDirectory" FileName="Toolsf~2.url|Tools for R documentation (online).url" DirProperty="M_START__Dir" Section="InternetShortcut" Key="WorkingDirectory" Value="[OpenGamma_Dir]" Action="0" Component_="StartMenu"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiMoveFileComponent">
-    <ROW FileKey="log4cxx.properties" Component_="OpenGamma.zip" SourceName="log4cxx.properties" DestName="log4cx~1.pro|log4cxx.properties" SourceFolder="LanguageIntegrationService_Dir" DestFolder="RSTAT_FILE__Dir" Options="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="connectorLogConfiguration" Root="2" Key="SOFTWARE\[M_REG32]\OpenGammaR" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg32"/>
