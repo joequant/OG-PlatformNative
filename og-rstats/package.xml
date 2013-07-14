@@ -90,6 +90,9 @@ LazyLoad: true</echo>
       </fileset>
     </copy>
     <copy file="${localTarget}/generated-sources/version.h" todir="${localTarget}/package/OpenGamma/src" />
+    <mkdir dir="${localTarget}/run/ext" />
+    <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
+    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" tofile="${localTarget}/run/jar/${project.artifactId}.jar" />
   </target>
 
   <target name="package" depends="source-package,binary-package" />
@@ -114,9 +117,6 @@ LazyLoad: true</echo>
         <include name="OpenGamma_*.zip" />
       </fileset>
     </move>
-    <mkdir dir="${localTarget}/run/ext" />
-    <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
-    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" tofile="${localTarget}/run/jar/${project.artifactId}.jar" />
     <antcall target="windows-installer" />
   </target>
   <target name="windows-installer" if="profile.windows.ai" depends="msi-version-number">
