@@ -6,16 +6,16 @@
   <target name="compile" depends="msi-version-number,compile-core,compile-service32,compile-service64" />
 
   <target name="compile-core" if="profile.windows.msvc">
-    <ai-set-version file="${localSource}${file.separator}connector${file.separator}ai${file.separator}Core.aip" version="msi.version.number" />
-    <ai-build dir="${localSource}${file.separator}connector${file.separator}ai" file="Core.aip" />
+    <ai-set-version file="${localSource}${file.separator}package${file.separator}ai${file.separator}Core.aip" version="msi.version.number" />
+    <ai-build dir="${localSource}${file.separator}package${file.separator}ai" file="Core.aip" />
   </target>
   <target name="compile-service32" if="profile.windows.msvc">
-    <ai-set-version file="${localSource}${file.separator}connector${file.separator}ai${file.separator}Service32.aip" version="msi.version.number" />
-    <ai-build dir="${localSource}${file.separator}connector${file.separator}ai" file="Service32.aip" />
+    <ai-set-version file="${localSource}${file.separator}package${file.separator}ai${file.separator}Service32.aip" version="msi.version.number" />
+    <ai-build dir="${localSource}${file.separator}package${file.separator}ai" file="Service32.aip" />
   </target>
   <target name="compile-service64" if="profile.windows.msvc">
-    <ai-set-version file="${localSource}${file.separator}connector${file.separator}ai${file.separator}Service64.aip" version="msi.version.number" />
-    <ai-build dir="${localSource}${file.separator}connector${file.separator}ai" file="Service64.aip" />
+    <ai-set-version file="${localSource}${file.separator}package${file.separator}ai${file.separator}Service64.aip" version="msi.version.number" />
+    <ai-build dir="${localSource}${file.separator}package${file.separator}ai" file="Service64.aip" />
   </target>
 
 </project>
