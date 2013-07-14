@@ -1,50 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="9.4" Modules="msm" RootPath="." Language="en" Id="{38E2DA2F-695A-4DC9-AFC3-16DB606E210B}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="8.7.1" version="9.4" Modules="msm" RootPath="..\..\.." Language="en" Id="{38E2DA2F-695A-4DC9-AFC3-16DB606E210B}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_ModuleId" Value="0E88570F_9ADE_4D21_9BC3_DD9B188C021D"/>
-    <ROW Property="M_FILE" Value="OpenGamma Ltd"/>
     <ROW Property="M_REG32" Value="OpenGammaLtd"/>
     <ROW Property="M_REG64" Value="OpenGammaLtd"/>
-    <ROW Property="M_START" Value="OpenGamma"/>
-    <ROW Property="OG_LANGUAGE_EXT" Value="OG_LANGUAGE_EXT"/>
-    <ROW Property="OG_LANGUAGE_JAR" Value="OG_LANGUAGE_JAR"/>
     <ROW Property="R32_PATH" Value="R32_PATH"/>
     <ROW Property="R64_PATH" Value="R64_PATH"/>
-    <ROW Property="RSTAT_FILE" Value="Tools for R"/>
-    <ROW Property="RSTAT_REG32" Value="OpenGammaR"/>
-    <ROW Property="RSTAT_REG64" Value="OpenGammaR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="." IsPseudoRoot="1"/>
     <ROW Directory="CommonAppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="Common~1|CommonAppDataFolder" IsPseudoRoot="1"/>
-    <ROW Directory="M_FILE__Dir" Directory_Parent="CommonAppDataFolder" DefaultDir="OpenGa~1|[|M_FILE]"/>
-    <ROW Directory="M_START__Dir" Directory_Parent="ProgramMenuFolder" DefaultDir="OpenGa~1|[|M_START]"/>
-    <ROW Directory="OG_LANGUAGE_EXT" Directory_Parent="TARGETDIR" DefaultDir="OG_LAN~2|OG_LANGUAGE_EXT" IsPseudoRoot="1"/>
-    <ROW Directory="OG_LANGUAGE_JAR" Directory_Parent="TARGETDIR" DefaultDir="OG_LAN~3|OG_LANGUAGE_JAR" IsPseudoRoot="1"/>
+    <ROW Directory="LanguageIntegrationService_Dir" Directory_Parent="M_FILE__Dir" DefaultDir="Langua~1|Language Integration Service"/>
+    <ROW Directory="M_FILE__Dir" Directory_Parent="CommonAppDataFolder" DefaultDir="OpenGa~2|OpenGamma Ltd"/>
+    <ROW Directory="M_START__Dir" Directory_Parent="ProgramMenuFolder" DefaultDir="OpenGa~2|OpenGamma"/>
     <ROW Directory="ProgramMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="Progra~1|ProgramMenuFolder" IsPseudoRoot="1"/>
-    <ROW Directory="RSTAT_FILE__Dir" Directory_Parent="M_FILE__Dir" DefaultDir="Toolsf~1|[|RSTAT_FILE]"/>
+    <ROW Directory="RSTAT_FILE__Dir" Directory_Parent="M_FILE__Dir" DefaultDir="R"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
-    <ROW Directory="jar_Dir" Directory_Parent="OG_LANGUAGE_JAR" DefaultDir="jar"/>
+    <ROW Directory="ext_Dir" Directory_Parent="LanguageIntegrationService_Dir" DefaultDir="ext"/>
+    <ROW Directory="jar_Dir" Directory_Parent="LanguageIntegrationService_Dir" DefaultDir="jar"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="OpenGamma.zip" ComponentId="{B74F6992-D65E-4716-8226-101B7481D1A5}" Directory_="RSTAT_FILE__Dir" Attributes="0" KeyPath="OpenGamma.zip" Type="0"/>
-    <ROW Component="R.xml" ComponentId="{2279B1AA-21DB-485C-9D34-BAE37306095D}" Directory_="OG_LANGUAGE_EXT" Attributes="0" KeyPath="R.xml" Type="0"/>
+    <ROW Component="R.xml_1" ComponentId="{03F8FFC7-83C3-4D78-ACEF-602EA47569AC}" Directory_="ext_Dir" Attributes="0" KeyPath="R.xml" Type="0"/>
     <ROW Component="StartMenu" ComponentId="{83F44A35-E633-450C-B79F-C656E4D4A512}" Directory_="M_START__Dir" Attributes="0"/>
     <ROW Component="ext.jar" ComponentId="{0F848C8C-AC37-44FC-8D24-5FCD131C15F0}" Directory_="jar_Dir" Attributes="0" KeyPath="ext.jar" Type="0"/>
     <ROW Component="reg32" ComponentId="{B7D6CF41-5C02-409C-AFB3-C314E61DED1A}" Directory_="APPDIR" Attributes="4" KeyPath="connectorLogConfiguration"/>
     <ROW Component="reg64" ComponentId="{940E0854-D4CA-4DBE-99E8-BFF6D215FD37}" Directory_="APPDIR" Attributes="260" Condition="VersionNT64" KeyPath="connectorLogConfiguration_1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="TargetFeature" Title="TargetFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="OpenGamma.zip R.xml StartMenu ext.jar reg32 reg64"/>
+    <ROW Feature="TargetFeature" Title="TargetFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="OpenGamma.zip R.xml_1 StartMenu ext.jar reg32 reg64"/>
     <ATTRIBUTE name="CurrentFeature" value="TargetFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="OpenGamma.zip" Component_="OpenGamma.zip" FileName="OpenGa~1.zip|OpenGamma.zip" Attributes="0" SourcePath="..\dist\OpenGamma.zip" SelfReg="false"/>
-    <ROW File="R.xml" Component_="R.xml" FileName="R.xml" Attributes="0" SourcePath="..\config\R.xml" SelfReg="false" NextFile="OpenGamma.zip"/>
-    <ROW File="ext.jar" Component_="ext.jar" FileName="comope~1.jar|com.opengamma-og-rstats.jar" Attributes="0" SourcePath="..\build\ext.jar" SelfReg="false" NextFile="R.xml"/>
+    <ROW File="OpenGamma.zip" Component_="OpenGamma.zip" FileName="OpenGa~1.zip|OpenGamma.zip" Attributes="0" SourcePath="target\OpenGamma.zip" SelfReg="false"/>
+    <ROW File="R.xml" Component_="R.xml_1" FileName="R.xml" Attributes="0" SourcePath="target\run\ext\R.xml" SelfReg="false" NextFile="OpenGamma.zip"/>
+    <ROW File="ext.jar" Component_="ext.jar" FileName="comope~1.jar|com.opengamma-og-rstats.jar" Attributes="0" SourcePath="target\run\jar\og-rstats.jar" SelfReg="false" NextFile="R.xml"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="..\build" PackageFileName="OG-RStats" Languages="en" InstallationType="4"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="target\installer" PackageFileName="OG-RStats" Languages="en" InstallationType="4"/>
     <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
@@ -56,18 +49,12 @@
     <ROW Fragment="MsmValidation.aip" Path="&lt;AI_FRAGS&gt;MsmValidation.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.ModuleConfigurationComponent">
-    <ROW Name="OG_LANGUAGE_EXT" Format="0" Type="Formatted" Attributes="0"/>
-    <ROW Name="OG_LANGUAGE_JAR" Format="0" Type="Formatted" Attributes="0"/>
     <ROW Name="R32_PATH" Format="0" Type="Formatted" Attributes="0"/>
     <ROW Name="R64_PATH" Format="0" Type="Formatted" Attributes="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.ModuleSubstitutionComponent">
-    <ROW Table="CustomAction" Row="OG_LANGUAGE_EXT_1" Column="Target" Value="[=OG_LANGUAGE_EXT]"/>
-    <ROW Table="CustomAction" Row="OG_LANGUAGE_JAR_1" Column="Target" Value="[=OG_LANGUAGE_JAR]"/>
     <ROW Table="CustomAction" Row="R32_PATH_1" Column="Target" Value="[=R32_PATH]"/>
     <ROW Table="CustomAction" Row="R64_PATH_1" Column="Target" Value="[=R64_PATH]"/>
-    <ROW Table="CustomAction" Row="OG_LANGUAGE_EXT_2" Column="Target" Value="[=OG_LANGUAGE_EXT]"/>
-    <ROW Table="CustomAction" Row="OG_LANGUAGE_JAR_2" Column="Target" Value="[=OG_LANGUAGE_JAR]"/>
     <ROW Table="CustomAction" Row="R32_PATH_2" Column="Target" Value="[=R32_PATH]"/>
     <ROW Table="CustomAction" Row="R64_PATH_2" Column="Target" Value="[=R64_PATH]"/>
   </COMPONENT>
@@ -79,10 +66,6 @@
     <ROW Directory_="M_START__Dir" Component_="StartMenu"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
-    <ROW Action="OG_LANGUAGE_EXT_1" Type="51" Source="OG_LANGUAGE_EXT" Target="[OG_LANGUAGE_EXT]"/>
-    <ROW Action="OG_LANGUAGE_EXT_2" Type="51" Source="OG_LANGUAGE_EXT" Target="[OG_LANGUAGE_EXT]"/>
-    <ROW Action="OG_LANGUAGE_JAR_1" Type="51" Source="OG_LANGUAGE_JAR" Target="[OG_LANGUAGE_JAR]"/>
-    <ROW Action="OG_LANGUAGE_JAR_2" Type="51" Source="OG_LANGUAGE_JAR" Target="[OG_LANGUAGE_JAR]"/>
     <ROW Action="R32_PATH_1" Type="51" Source="R32_PATH" Target="[R32_PATH]"/>
     <ROW Action="R32_PATH_2" Type="51" Source="R32_PATH" Target="[R32_PATH]"/>
     <ROW Action="R64_PATH_1" Type="51" Source="R64_PATH" Target="[R64_PATH]"/>
@@ -98,15 +81,15 @@
     <ROW IniFile="URL" FileName="Toolsf~2.url|Tools for R documentation (online).url" DirProperty="M_START__Dir" Section="InternetShortcut" Key="URL" Value="http://docs.opengamma.com/display/DOC/OpenGamma+Tools+for+R" Action="0" Component_="StartMenu"/>
     <ROW IniFile="WorkingDirectory" FileName="Toolsf~2.url|Tools for R documentation (online).url" DirProperty="M_START__Dir" Section="InternetShortcut" Key="WorkingDirectory" Value="[OpenGamma_Dir]" Action="0" Component_="StartMenu"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiMoveFileComponent">
+    <ROW FileKey="log4cxx.properties" Component_="OpenGamma.zip" SourceName="log4cxx.properties" DestName="log4cx~1.pro|log4cxx.properties" SourceFolder="LanguageIntegrationService_Dir" DestFolder="RSTAT_FILE__Dir" Options="0"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
-    <ROW Registry="connectorLogConfiguration" Root="2" Key="SOFTWARE\[M_REG32]\[RSTAT_REG32]" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg32"/>
-    <ROW Registry="connectorLogConfiguration_1" Root="2" Key="SOFTWARE\[M_REG64]\[RSTAT_REG64]" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg64"/>
+    <ROW Registry="connectorLogConfiguration" Root="2" Key="SOFTWARE\[M_REG32]\OpenGammaR" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg32"/>
+    <ROW Registry="connectorLogConfiguration_1" Root="2" Key="SOFTWARE\[M_REG64]\OpenGammaR" Name="connectorLogConfiguration" Value="[RSTAT_FILE__Dir]log4cxx.properties" Component_="reg64"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
-    <ROW ServiceControl="ServiceName" Name="OpenGammaLanguageAPI" Event="34" Wait="1" Component_="R.xml"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleDependencyComponent">
-    <ROW RequiredID="OG_LanguageCore.BFBD8D7F_3845_4E0F_AF95_4B3CCBC4AD60" RequiredLanguage="1033"/>
+    <ROW ServiceControl="ServiceName" Name="OpenGammaLanguageAPI" Event="34" Wait="1" Component_="OpenGamma.zip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleInstExSeqComponent">
     <ROW Action="RRemove64_1" BaseAction="RRemove32_1" After="1" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) ) AND ( R64_PATH )"/>
@@ -116,16 +99,12 @@
     <ROW Action="RInstall64" BaseAction="RInstall32" After="1" Condition="( NOT Installed ) AND ( R64_PATH AND $OpenGamma.zip=3 )"/>
     <ROW Action="RInstall32" BaseAction="Install" After="1" Condition="( NOT Installed ) AND ( R32_PATH AND NOT R64_PATH AND $OpenGamma.zip=3 )"/>
     <ROW Action="R64_PATH_2" BaseAction="R32_PATH_2" After="1"/>
-    <ROW Action="R32_PATH_2" BaseAction="OG_LANGUAGE_JAR_2" After="1"/>
-    <ROW Action="OG_LANGUAGE_JAR_2" BaseAction="OG_LANGUAGE_EXT_2" After="1"/>
-    <ROW Action="OG_LANGUAGE_EXT_2" BaseAction="ValidateProductID" After="1"/>
+    <ROW Action="R32_PATH_2" BaseAction="ValidateProductID" After="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
-    <ROW ModuleID="OG_RStats" Version="1.0.1" GUID="0E88570F_9ADE_4D21_9BC3_DD9B188C021D" Name="R package" Manufacturer="OpenGamma Ltd" Comments="The R extension package"/>
+    <ROW ModuleID="OG_RStats" Version="2.0.0" GUID="0E88570F_9ADE_4D21_9BC3_DD9B188C021D" Name="R package" Manufacturer="OpenGamma Ltd" Comments="The R extension package"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleUISeqComponent">
-    <ROW Action="OG_LANGUAGE_EXT_1" BaseAction="OG_LANGUAGE_JAR_1" After="1"/>
-    <ROW Action="OG_LANGUAGE_JAR_1" BaseAction="R32_PATH_1" After="1"/>
     <ROW Action="R32_PATH_1" BaseAction="R64_PATH_1" After="1"/>
     <ROW Action="R64_PATH_1" BaseAction="ValidateProductID" After="1"/>
   </COMPONENT>

@@ -1,6 +1,7 @@
 <project name="OG-RStats">
 
   <import file="${common.dir}/version.xml" />
+  <import file="${common.dir}/advanced-installer.xml" />
 
   <target name="generate-sources">
     <!-- Copy files from dependencies into build-tree -->
@@ -113,6 +114,11 @@ LazyLoad: true</echo>
         <include name="OpenGamma_*.zip" />
       </fileset>
     </move>
+    <antcall target="windows-installer" />
+  </target>
+  <target name="windows-installer" if="profile.windows.ai" depends="msi-version-number">
+    <ai-set-version file="src${file.separator}main${file.separator}ai${file.separator}R.aip" version="${msi.version.number}" />
+    <ai-build dir="src${file.separator}main${file.separator}ai${file.separator}" file="R.aip" />
   </target>
 
   <target name="pre-integration-test">
@@ -127,7 +133,7 @@ opengamma.configuration.failOnMissing=false
     <mkdir dir="${localTarget}/run/ext" />
     <copy file="${localTarget}/dependency/config/0og-language.xml" todir="${localTarget}/run/ext" />
     <copy file="${localSource}/main/config/R.xml" todir="${localTarget}/run/ext" />
-    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar" />
+    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" todir="${localTarget}/run/jar/${project.artifactId}.jar" />
   </target>
 
   <target name="integration-test" if="profile.r" depends="r-configuration">

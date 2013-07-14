@@ -634,6 +634,17 @@
       </properties>
     </profile>
     <profile>
+      <id>windows-ai</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/windows-ai</exists>
+        </file>
+      </activation>
+      <properties>
+        <profile.windows.ai>true</profile.windows.ai>
+      </properties>
+    </profile>
+    <profile>
       <id>debug-nix-cpptasks</id>
       <activation>
         <file>

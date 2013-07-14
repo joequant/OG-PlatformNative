@@ -26,7 +26,7 @@
       <id>windows-ai</id>
       <activation>
         <file>
-          <exists>${root.dir}/local/profile/windows.ai</exists>
+          <exists>${root.dir}/local/profile/windows-ai</exists>
         </file>
       </activation>
       <build>
