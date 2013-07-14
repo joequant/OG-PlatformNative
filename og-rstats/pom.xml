@@ -373,6 +373,11 @@
                       <type>zip</type>
                       <classifier>binary-package</classifier>
                     </artifact>
+                    <artifact>
+                      <file>${localTarget}/installer/OG-RStats.msm</file>
+                      <type>msm</type>
+                      <classifier>windows</classifier>
+                    </artifact>
                   </artifacts>
                 </configuration>
               </execution>
