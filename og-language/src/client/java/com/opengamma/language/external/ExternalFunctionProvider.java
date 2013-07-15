@@ -20,8 +20,7 @@ import com.opengamma.util.annotation.AnnotationCache;
 import com.opengamma.util.annotation.ClasspathScanner;
 
 /**
- * Creates and exposes functions based on methods that are annotated with
- * {@link ExternalFunction}.
+ * Creates and exposes functions based on methods that are annotated with {@link ExternalFunction}.
  */
 public class ExternalFunctionProvider extends AbstractFunctionProvider {
 
@@ -42,13 +41,16 @@ public class ExternalFunctionProvider extends AbstractFunctionProvider {
       s_logger.warn("One or more errors loading functions from cache");
     }
     s_logger.info("Scanning class path for annotated external functions");
-    
     scanner.setScanClassAnnotations(false);
     scanner.setScanMethodAnnotations(true);
     scanner.setScanFieldAnnotations(false);
     scanner.setScanParameterAnnotations(false);
-    
-    cache = scanner.scan(ExternalFunction.class);
+    try {
+      cache = scanner.scan(ExternalFunction.class);
+    } catch (RuntimeException e) {
+      s_logger.error("Couldn't scan for ExternalFunction decorations; annotated extensions will not be available");
+      s_logger.warn("Caught exception", e);
+    }
     final List<MetaFunction> functions = createFunctions(cache);
     if (functions != null) {
       cache.save();
