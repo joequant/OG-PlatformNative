@@ -428,8 +428,16 @@ CJVM *CJVM::Create (CErrorFeedback *poFeedback) {
 ///
 /// @param[in] poSettings settings source
 void CJVM::CProperties::SetProperties (const CSettings *poSettings) const {
+	// Annotation caches
+	const TCHAR *psz = poSettings->GetAnnotationCache ();
+	if (psz) {
+		LOGDEBUG (TEXT ("Using ") << psz << TEXT (" for annotation caches"));
+		Setting (TEXT ("opengamma.annotationCachePath"), psz);
+	} else {
+		LOGWARN (TEXT ("No path for annotation caches"));
+	}
 	// Language extension dir
-	const TCHAR *psz = poSettings->GetExtPath ();
+	psz = poSettings->GetExtPath ();
 	if (psz) {
 		LOGDEBUG (TEXT ("Using ") << psz << TEXT (" for extension folder"));
 		Setting (TEXT ("language.ext.path"), psz);

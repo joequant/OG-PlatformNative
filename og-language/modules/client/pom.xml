@@ -62,6 +62,7 @@
 opengamma.configuration.url=${site.opengamma.test-server.url}
 opengamma.configuration.failOnInvalid=true
 opengamma.configuration.failOnMissing=false
+opengamma.annotationCachePath=${localTarget}/run
 </echo>
                 <mkdir dir="${localTarget}/run/ext" />
                 <copy file="${localSource}/client/config/0og-language.xml" todir="${localTarget}/run/ext" />

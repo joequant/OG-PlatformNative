@@ -576,6 +576,14 @@ const TCHAR *CSettings::GetExtPath () const {
 	return GetExtPath (&g_oExtPathDefault);
 }
 
+/// Returns the path where annotation cache files should be written. The default is the JAR path, but this
+/// may not be writable in some installations.
+///
+/// @return the annotation cache path
+const TCHAR *CSettings::GetAnnotationCache () const {
+	return GetAnnotationCache (GetJarPath ());
+}
+
 /// Returns the timeout for polling the JVM's busy status; i.e. how often feedback from the service will get reported
 /// during service start/stop handling.
 ///
