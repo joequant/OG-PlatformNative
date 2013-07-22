@@ -1,0 +1,17 @@
+<project name="phase" default="set-target">
+  
+  <target name="initialise">
+    <mkdir dir="${basedir}/../local" />
+    <echo file="${basedir}/../local/ant-target.properties">ant.target=mvn-init</echo>
+  </target>
+
+  <target name="set-target">
+    <echo file="${basedir}/../local/ant-target.properties">ant.target=${ant.target}</echo>
+  </target>
+
+  <target name="run-target">
+    <property file="${basedir}/../../local/ant-target.properties" />
+    <ant dir="${basedir}/../.." target="${ant.target}" />
+  </target>
+
+</project>

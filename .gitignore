@@ -2,6 +2,8 @@
 /local/
 /og-*/target/
 /og-*/modules/*/target/
+/modules/*/target/
+/modules/target/
 *.aps
 *.suo
 *.vcxproj.user
