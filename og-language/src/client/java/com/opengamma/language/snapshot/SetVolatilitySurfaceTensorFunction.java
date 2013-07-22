@@ -98,7 +98,7 @@ public class SetVolatilitySurfaceTensorFunction extends AbstractFunctionInvoker 
             override = overrideValue[i][j].getDoubleValue();
           } else {
             if (value != null) {
-              override = value.getOverrideValue();
+              override = UnstructuredMarketDataSnapshotUtil.getOverrideValue(value);
             } else {
               override = null;
             }

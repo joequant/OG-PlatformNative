@@ -6,10 +6,14 @@
 
 package com.opengamma.language.snapshot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableCurveSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableUnstructuredMarketDataSnapshot;
-import com.opengamma.core.marketdatasnapshot.impl.ManageableYieldCurveSnapshot;
 import com.opengamma.id.ExternalIdBundle;
 import com.opengamma.language.Value;
 import com.opengamma.language.context.SessionContext;
@@ -21,11 +25,6 @@ import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Modifies a yield curve to take values from the updated 1D matrix tensor.
@@ -69,7 +68,7 @@ public class SetCurveTensorFunction extends AbstractFunctionInvoker implements P
             }
             override = overrideValue[i].getDoubleValue();
           } else {
-            override = entry.getValue().getOverrideValue();
+            override = UnstructuredMarketDataSnapshotUtil.getOverrideValue(entry.getValue());
           }
           values.putValue(target, entry.getKey(), new ValueSnapshot(marketValue[i].getDoubleValue(), override));
           i++;

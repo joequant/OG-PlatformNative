@@ -6,12 +6,15 @@
 
 package com.opengamma.language.snapshot;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableCurveSnapshot;
-import com.opengamma.core.marketdatasnapshot.impl.ManageableYieldCurveSnapshot;
 import com.opengamma.id.ExternalIdBundle;
 import com.opengamma.language.Value;
-import com.opengamma.language.ValueUtils;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
@@ -20,11 +23,6 @@ import com.opengamma.language.definition.MetaParameter;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Fetches the data from a curve as a 1D matrix tensor.
@@ -60,11 +58,11 @@ public class GetCurveTensorFunction extends AbstractFunctionInvoker implements P
       final Map<String, ValueSnapshot> entries = snapshot.getValues().getTargetValues(target);
       for (final ValueSnapshot entry : entries.values()) {
         if (Boolean.TRUE.equals(overrideValue) && (entry.getOverrideValue() != null)) {
-          values.add(ValueUtils.of(entry.getOverrideValue()));
+          values.add(UnstructuredMarketDataSnapshotUtil.toValue(entry.getOverrideValue()));
           continue;
         }
         if (Boolean.TRUE.equals(marketValue) && (entry.getMarketValue() != null)) {
-          values.add(ValueUtils.of(entry.getMarketValue()));
+          values.add(UnstructuredMarketDataSnapshotUtil.toValue(entry.getMarketValue()));
           continue;
         }
         values.add(new Value());

@@ -68,7 +68,7 @@ public class SetYieldCurveTensorFunction extends AbstractFunctionInvoker impleme
             }
             override = overrideValue[i].getDoubleValue();
           } else {
-            override = entry.getValue().getOverrideValue();
+            override = UnstructuredMarketDataSnapshotUtil.getOverrideValue(entry.getValue());
           }
           values.putValue(target, entry.getKey(), new ValueSnapshot(marketValue[i].getDoubleValue(), override));
           i++;

@@ -17,7 +17,6 @@ import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.VolatilityPoint;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableVolatilityCubeSnapshot;
 import com.opengamma.language.Value;
-import com.opengamma.language.ValueUtils;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
@@ -81,9 +80,9 @@ public class GetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
           if (value == null) {
             values[i][j][k] = new Value();
           } else if (Boolean.TRUE.equals(overrideValue) && (value.getOverrideValue() != null)) {
-            values[i][j][k] = ValueUtils.of(value.getOverrideValue());
+            values[i][j][k] = UnstructuredMarketDataSnapshotUtil.toValue(value.getOverrideValue());
           } else if (Boolean.TRUE.equals(marketValue) && (value.getMarketValue() != null)) {
-            values[i][j][k] = ValueUtils.of(value.getMarketValue());
+            values[i][j][k] = UnstructuredMarketDataSnapshotUtil.toValue(value.getMarketValue());
           } else {
             values[i][j][k] = new Value();
           }

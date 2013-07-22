@@ -55,7 +55,7 @@ public class GetSnapshotGlobalValueFunction extends AbstractFunctionInvoker impl
     if (values == null) {
       throw new InvokeInvalidArgumentException(0, "Snapshot does not contain value");
     }
-    return Arrays.asList(values.getOverrideValue(), values.getMarketValue());
+    return Arrays.asList(UnstructuredMarketDataSnapshotUtil.getOverrideValue(values), UnstructuredMarketDataSnapshotUtil.getMarketValue(values));
   }
 
   // AbstractFunctionInvoker

@@ -102,7 +102,7 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
               override = overrideValue[i][j][k].getDoubleValue();
             } else {
               if (value != null) {
-                override = value.getOverrideValue();
+                override = UnstructuredMarketDataSnapshotUtil.getOverrideValue(value);
               } else {
                 override = null;
               }
