@@ -2,16 +2,24 @@
   
   <target name="initialise">
     <mkdir dir="${basedir}/../local" />
-    <echo file="${basedir}/../local/ant-target.properties">ant.target=mvn-init</echo>
+    <echo file="${basedir}/../local/ant-target.properties">ant.target=mvn-init
+</echo>
   </target>
 
   <target name="set-target">
-    <echo file="${basedir}/../local/ant-target.properties">ant.target=${ant.target}</echo>
+    <echo file="${basedir}/../local/ant-target.properties">ant.target=${ant.target}
+</echo>
   </target>
 
-  <target name="run-target">
+  <target name="run-target" depends="skip-tests">
+    <echo>skipTests=${skipTests}</echo>
     <property file="${basedir}/../../local/ant-target.properties" />
     <ant dir="${basedir}/../.." target="${ant.target}" />
+  </target>
+
+  <target name="skip-tests" if="skipTests">
+    <echo file="${basedir}/../../local/ant-target.properties" append="true">skip.tests=true
+</echo>
   </target>
 
 </project>
