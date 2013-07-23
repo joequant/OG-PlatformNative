@@ -484,6 +484,7 @@
               <stripVersion>true</stripVersion>
               <outputDirectory>${localTarget}/run/jar</outputDirectory>
               <includeTypes>jar</includeTypes>
+              <excludeArtifactIds>og-language-client</excludeArtifactIds>
             </configuration>
           </execution>
         </executions>

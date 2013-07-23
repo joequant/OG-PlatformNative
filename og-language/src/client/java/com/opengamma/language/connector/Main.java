@@ -14,9 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
+import com.opengamma.OpenGammaRuntimeException;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.context.SessionContextFactory;
 import com.opengamma.language.install.ConfigureMain;
+import com.opengamma.language.test.TestUtils;
 import com.opengamma.util.tuple.Pair;
 
 /**
@@ -92,6 +94,28 @@ public class Main {
       s_logger.error("Exception thrown", t);
       return t.getMessage();
     }
+  }
+
+  /**
+   * Entry point for a Java integration test that require a OG-Language stack session context (rather than a simulated one from {@link TestUtils} that contains suitable mocks).
+   * <p>
+   * This should not be called in a system running normally. Tests should also not call this directly, but via {@link TestUtils}.
+   * <p>
+   * 
+   * @param userName the user name of the connection, not {@code null}
+   * @param languageID the language identifier to return the context for, not {@code null}
+   * @param debug true if the debugging components should be enabled for diagnostics, false to be representative of a real deployment
+   * @return an uninitialized session context, not null
+   */
+  public static synchronized SessionContext createIntegrationTestSessionContext(final String userName, final String languageID, final boolean debug) {
+    if (s_springContext == null) {
+      final String startupFailed = svcStart();
+      if (startupFailed != null) {
+        throw new OpenGammaRuntimeException("Couldn't run integration test - " + startupFailed);
+      }
+    }
+    final Pair<ClientFactory, SessionContextFactory> factories = s_springContext.getLanguageFactories(languageID);
+    return factories.getSecond().createSessionContext(userName, debug);
   }
 
   /**

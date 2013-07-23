@@ -10,6 +10,7 @@ import com.opengamma.core.position.PositionSource;
 import com.opengamma.core.security.SecuritySource;
 import com.opengamma.engine.view.ViewProcessor;
 import com.opengamma.financial.user.rest.RemoteClient;
+import com.opengamma.language.connector.Main;
 import com.opengamma.language.context.AbstractGlobalContextEventHandler;
 import com.opengamma.language.context.AbstractSessionContextEventHandler;
 import com.opengamma.language.context.AbstractUserContextEventHandler;
@@ -55,6 +56,22 @@ public class TestUtils {
       sessionContextFactory.setSessionContextEventHandler(sessionEventHandler);
     }
     final SessionContext ctx = sessionContextFactory.createSessionContext(USERNAME, false);
+    ctx.initContext(new DefaultSessionContextEventHandler());
+    return ctx;
+  }
+
+  /**
+   * Creates and initializes a session context based on the full OG-Language stack.
+   * <p>
+   * This may be used by integration tests where communication with a real OpenGamma server is necessary, or it is desired to test the Spring configuration loading. Typically components can be unit
+   * tested using a mocked context created by other methods available on this class.
+   * 
+   * @param languageID the language identifier, not {@code null}
+   * @param debug the debug status flag, normally {@code false}
+   * @return the initialized context, not {@code null}
+   */
+  public static SessionContext createIntegrationTestSessionContext(final String languageID, final boolean debug) {
+    final SessionContext ctx = Main.createIntegrationTestSessionContext(USERNAME, languageID, debug);
     ctx.initContext(new DefaultSessionContextEventHandler());
     return ctx;
   }
