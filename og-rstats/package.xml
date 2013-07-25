@@ -128,11 +128,10 @@ LazyLoad: true</echo>
     <copy file="${localTarget}/dependency/config/log4cxx.service.properties" todir="${localTarget}/run" />
     <copy file="${localSource}/main/config/log4cxx.connector.properties" todir="${localTarget}/run" />
     <copy file="${localTarget}/dependency/config/logback.xml" todir="${localTarget}/run" />
-    <echo file="${localTarget}/run/OpenGamma.properties"># Site configuration
-opengamma.configuration.url=${site.opengamma.test-server.url}
+    <echoproperties destfile="${localTarget}/run/OpenGamma.properties" prefix="opengamma.annotationCachePath" />
+    <echo file="${localTarget}/run/OpenGamma.properties" append="true">opengamma.configuration.url=${site.opengamma.test-server.url}
 opengamma.configuration.failOnInvalid=true
 opengamma.configuration.failOnMissing=false
-opengamma.annotationCachePath=${localTarget}/run
 </echo>
     <copy file="${localTarget}/dependency/config/0og-language.xml" todir="${localTarget}/run/ext" />
   </target>
