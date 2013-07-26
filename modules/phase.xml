@@ -1,4 +1,6 @@
 <project name="phase" default="set-target">
+
+  <!-- TODO: Use "bootstrap.xml" instead of this file so changes get copied to children -->
   
   <target name="initialise">
     <mkdir dir="${basedir}/../local" />

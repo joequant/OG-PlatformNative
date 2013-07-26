@@ -1,0 +1,291 @@
+<project name="OG-PlatformNative-bootstrap">
+
+  <property environment="env" />
+  <property name="root.dir" value="${basedir}" />
+  <property name="local.dir" value="${root.dir}/local" />
+  <property name="properties.dir" value="${local.dir}" />
+  <property name="properties.file" value="default.properties" />
+
+  <target name="configure-and-install" depends="configure,install" description="Sets up the build environment and builds the components" />
+
+  <target name="configure" depends="create-profile-dir,all-profiles" description="Sets up the build environment, identifying which components are to be built" />
+  <target name="clean" depends="mvn-init" description="Calls `mvn clean` to delete any temporary/intermediate build files">
+    <exec executable="${mvn}" searchpath="true">
+      <arg value="clean" />
+    </exec>
+  </target>
+
+  <target name="compile" description="Calls `mvn compile` to build all components">
+    <antcall target="mvn-call">
+      <param name="phase" value="compile" />
+    </antcall>
+  </target>
+
+  <target name="compile-tests" description="Calls `mvn test-compile` to build all components and testing source code">
+    <antcall target="mvn-call">
+      <param name="phase" value="test-compile" />
+    </antcall>
+  </target>
+
+  <target name="tests" description="Calls `mvn test` to build and unit test all components">
+    <antcall target="mvn-call">
+      <param name="phase" value="test" />
+    </antcall>
+  </target>
+
+  <target name="package" description="Calls `mvn package` to build a packaged deployment of the components">
+    <antcall target="mvn-call">
+      <param name="phase" value="package" />
+    </antcall>
+  </target>
+
+  <target name="integration-tests" description="Calls `mvn integration-test` to build, and test, a packaged deployment of the components">
+    <antcall target="mvn-call">
+      <param name="phase" value="integration-test" />
+    </antcall>
+  </target>
+
+  <target name="install" description="Calls `mvn install` to build all components and deploy them to the local repository">
+    <antcall target="mvn-call">
+      <param name="phase" value="install" />
+    </antcall>
+  </target>
+
+  <target name="deploy" description="Calls `mvn deploy` to build all components and deploy them to the remote repository">
+    <antcall target="mvn-call">
+      <param name="phase" value="deploy" />
+    </antcall>
+  </target>
+
+  <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check,init"> 
+    <property name="mvn.args" value="" />
+    <condition property="env.MVN_ARGS" value="">
+      <not><isset property="env.MVN_ARGS"/></not>
+    </condition>
+    <mkdir dir="${root.dir}/target" />
+    <echoproperties destfile="${root.dir}/target/command-line.properties">
+      <propertyset>
+        <propertyref prefix="cpp." />
+        <propertyref prefix="site." />
+        <propertyref prefix="cmd." />
+        <propertyref prefix="build." />
+      </propertyset>
+    </echoproperties>
+  </target>
+  <target name="mvn3-check" unless="mvn">
+    <exec executable="mvn3" resultproperty="mvn3.found" failifexecutionfails="false">
+      <arg value="-v" />
+    </exec>
+    <condition property="mvn" value="mvn3">
+      <isset property="mvn3.found" />
+    </condition>
+  </target>
+  <target name="mvn-check" unless="mvn">
+    <exec executable="mvn" resultproperty="mvn.found" failifexecutionfails="false">
+      <arg value="-v" />
+    </exec>
+    <condition property="mvn" value="mvn">
+      <isset property="mvn.found" />
+    </condition>
+  </target>
+  <target name="mvn.bat-check" unless="mvn">
+    <exec executable="mvn.bat" resultproperty="mvn.bat.found" failifexecutionfails="false">
+      <arg value="-v" />
+    </exec>
+    <condition property="mvn" value="mvn.bat">
+      <isset property="mvn.bat.found" />
+    </condition>
+  </target>
+  <target name="mvn-call" depends="mvn-init,os-family">
+    <exec executable="${mvn}" searchpath="true" failonerror="true">
+      <arg value="-D" />
+      <arg value="root.dir=${root.dir}" />
+      <arg value="-D" />
+      <arg value="os.family=${os.family}" />
+      <arg value="-D" />
+      <arg value="properties.file=${properties.dir}/${properties.file}" />
+      <arg line="${mvn.args}" />
+      <arg line="${env.MVN_ARGS}" />
+      <arg line="${skip.tests.arg}${phase}" />
+    </exec> 
+  </target>
+
+  <target name="init" depends="project-init,skip-tests" />
+  <target name="project-init" />
+
+  <target name="skip-tests" depends="skip-all-tests">
+    <property name="skip.unit-tests-java.arg" value="" />
+    <property name="skip.unit-tests-native.arg" value="" />
+    <property name="skip.integration-tests-java.arg" value="" />
+    <property name="skip.integration-tests-native.arg" value="" />
+    <property name="skip.tests.arg" value="${skip.unit-tests-java.arg}${skip.unit-tests-native.arg}${skip.integration-tests-java.arg}${skip.integration-tests-native.arg}" />
+  </target>
+  <target name="skip-all-tests" if="skip.tests" depends="skip-unit-tests,skip-integration-tests">
+    <property name="skip.unit-tests-java.arg" value="-Dskip.unit-tests-java=${skip.tests} " />
+    <property name="skip.unit-tests-native.arg" value="-Dskip.unit-tests-native=${skip.tests} " />
+    <property name="skip.integration-tests-java.arg" value="-Dskip.integration-tests-java=${skip.tests} " />
+    <property name="skip.integration-tests-native.arg" value="-Dskip.integration-tests-native=${skip.tests} " />
+  </target>
+  <target name="skip-unit-tests" if="skip.unit-tests" depends="skip-unit-tests-java,skip-unit-tests-native">
+    <property name="skip.unit-tests-java.arg" value="-Dskip.unit-tests-java=${skip.unit-tests} " />
+    <property name="skip.unit-tests-native.arg" value="-Dskip.unit-tests-native=${skip.unit-tests} " />
+  </target>
+  <target name="skip-unit-tests-java" if="skip.unit-tests-java">
+    <property name="skip.unit-tests-java.arg" value="-Dskip.unit-tests-java=${skip.unit-tests-java} " />
+  </target>
+  <target name="skip-unit-tests-native" if="skip.unit-tests-native">
+    <property name="skip.unit-tests-native.arg" value="-Dskip.unit-tests-native=${skip.unit-tests-native} " />
+  </target>
+  <target name="skip-integration-tests" if="skip.integration-tests" depends="skip-integration-tests-java,skip-integration-tests-native">
+    <property name="skip.integration-tests-java.arg" value="-Dskip.integration-tests-java=${skip.integration-tests} " />
+    <property name="skip.integration-tests-native.arg" value="-Dskip.integration-tests-native=${skip.integration-tests} " />
+  </target>
+  <target name="skip-integration-tests-java" if="skip.integration-tests-java">
+    <property name="skip.integration-tests-java.arg" value="-Dskip.integration-tests-java=${skip.integration-tests-java} " />
+  </target>
+  <target name="skip-integration-tests-native" if="skip.integration-tests-native">
+    <property name="skip.integration-tests-native.arg" value="-Dskip.integration-tests-native=${skip.integration-tests-native} " />
+  </target>
+
+  <target name="all-profiles" depends="windows-profiles,nix-profiles" />
+
+  <target name="windows-profiles"
+      depends="enable-windows-profiles,
+               debug-windows-win32-profile,
+               release-windows-win32-profile,
+               debug-windows-x64-profile,
+               release-windows-x64-profile" />
+
+  <target name="enable-windows-profiles" if="profile.windows"
+      depends="enable-debug-windows-profiles,
+               enable-release-windows-profiles,
+               enable-windows-win32-profiles,
+               enable-windows-x64-profiles">
+    <property name="profile.debug.windows.win32" value="true" />
+    <property name="profile.release.windows.win32" value="true" />
+    <property name="profile.debug.windows.x64" value="true" />
+    <property name="profile.release.windows.x64" value="true" />
+  </target>
+  <target name="enable-debug-windows-profiles" if="profile.debug.windows">
+    <property name="profile.debug.windows.win32" value="true" />
+    <property name="profile.debug.windows.x64" value="true" />
+  </target>
+  <target name="enable-release-windows-profiles" if="profile.release.windows">
+    <property name="profile.release.windows.win32" value="true" />
+    <property name="profile.release.windows.x64" value="true" />
+  </target>
+  <target name="enable-windows-win32-profiles" if="profile.windows.win32">
+    <property name="profile.debug.windows.win32" value="true" />
+    <property name="profile.release.windows.win32" value="true" />
+  </target>
+  <target name="enable-windows-x64-profiles" if="profile.windows.x64">
+    <property name="profile.debug.windows.x64" value="true" />
+    <property name="profile.release.windows.x64" value="true" />
+  </target>
+
+  <target name="debug-windows-win32-profile" if="profile.debug.windows.win32">
+    <antcall target="create-profile">
+      <param name="configuration" value="debug" />
+      <param name="family" value="windows" />
+      <param name="platform" value="win32" />
+    </antcall>
+  </target>
+  <target name="release-windows-win32-profile" if="profile.release.windows.win32">
+    <antcall target="create-profile">
+      <param name="configuration" value="release" />
+      <param name="family" value="windows" />
+      <param name="platform" value="win32" />
+    </antcall>
+  </target>
+  <target name="debug-windows-x64-profile" if="profile.debug.windows.x64">
+    <antcall target="create-profile">
+      <param name="configuration" value="debug" />
+      <param name="family" value="windows" />
+      <param name="platform" value="x64" />
+    </antcall>
+  </target>
+  <target name="release-windows-x64-profile" if="profile.release.windows.x64">
+    <antcall target="create-profile">
+      <param name="configuration" value="release" />
+      <param name="family" value="windows" />
+      <param name="platform" value="x64" />
+    </antcall>
+  </target>
+
+  <target name="nix-profiles"
+      depends="enable-nix-profiles,
+               debug-nix-profile,
+               release-nix-profile" />
+
+  <target name="enable-nix-profiles" if="profile.nix"
+      depends="enable-debug-nix-profile,
+               enable-release-nix-profile">
+    <property name="profile.debug.nix" value="true" />
+    <property name="profile.release.nix" value="true" />
+  </target>
+  <target name="enable-debug-nix-profile" if="profile.debug.nix">
+    <property name="profile.debug.nix" value="true" />
+  </target>
+  <target name="enable-release-nix-profile" if="profile.release.nix">
+    <property name="profile.release.nix" value="true" />
+  </target>
+
+  <target name="debug-nix-profile" if="profile.debug.nix">
+    <antcall target="create-profile">
+      <param name="configuration" value="debug" />
+      <param name="family" value="nix" />
+      <param name="platform" value="${os.arch}" />
+    </antcall>
+  </target>
+  <target name="release-nix-profile" if="profile.release.nix">
+    <antcall target="create-profile">
+      <param name="configuration" value="release" />
+      <param name="family" value="nix" />
+      <param name="platform" value="${os.arch}" />
+    </antcall>
+  </target>
+
+  <target name="create-profile-dir">
+    <mkdir dir="${local.dir}" />
+    <delete dir="${local.dir}/profile" failonerror="false" />
+    <mkdir dir="${local.dir}/profile" />
+  </target>
+
+  <target name="create-profile">
+    <antcall target="create-profile-files"><param name="profile" value="${configuration}" /></antcall>
+    <antcall target="create-profile-files"><param name="profile" value="${family}" /></antcall>
+    <antcall target="create-profile-files"><param name="profile" value="${configuration}-${family}" /></antcall>
+    <antcall target="create-profile-files"><param name="profile" value="${family}-${platform}" /></antcall>
+    <antcall target="create-profile-files"><param name="profile" value="${configuration}-${family}-${platform}" /></antcall>
+  </target>
+  <target name="create-profile-files"
+      depends="create-profile-msvc,
+               create-profile-cpptasks,
+               create-profile-ai">
+    <touch file="${local.dir}/profile/${profile}" />
+  </target>
+  <target name="create-profile-msvc" if="tool.msvc">
+    <touch file="${local.dir}/profile/${profile}-msvc" />
+  </target>
+  <target name="create-profile-cpptasks" if="tool.cpptasks">
+    <touch file="${local.dir}/profile/${profile}-cpptasks" />
+  </target>
+  <target name="create-profile-ai" if="tool.ai">
+    <touch file="${local.dir}/profile/${profile}-ai" />
+  </target>
+
+  <target name="os-family" depends="os-family-unix,os-family-windows" unless="os.family">
+    <fail message="Operating System family not recognised" />
+  </target>
+  <target name="os-family-unix" unless="os.family">
+    <condition property="os.family" value="unix">
+      <os family="unix" />
+    </condition>
+  </target>
+  <target name="os-family-windows" unless="os.family">
+    <condition property="os.family" value="windows">
+      <os family="windows" />
+    </condition>
+  </target>
+
+</project>

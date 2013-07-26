@@ -27,13 +27,15 @@
     <property name="test.dir" value="${localTarget}${file.separator}run${file.separator}${test.configuration}" />
   </target>
 
-  <target name="attach-exe" depends="attach-exe-msvc,attach-exe-nix" />
-  <target name="attach-exe-nix" if="profile.nix.cpptasks">
+  <target name="attach-bin" depends="attach-bin-msvc,attach-bin-nix" />
+  <target name="attach-bin-nix" if="profile.nix.cpptasks">
     <available file="${localTarget}/${test.configuration}/${publishFile}" property="copy.file.name" value="${publishFile}" />
+    <available file="${localTarget}/${test.configuration}/${publishFile}.so" property="copy.file.name" value="${publishFile}.so" />
     <antcall target="copy-file-nix" />
   </target>
-  <target name="attach-exe-msvc" if="profile.windows.msvc">
+  <target name="attach-bin-msvc" if="profile.windows.msvc">
     <available file="${localTarget}/${test.configuration}/${publishFile}.exe" property="copy.file.name" value="${publishFile}.exe" />
+    <available file="${localTarget}/${test.configuration}/${publishFile}.dll" property="copy.file.name" value="${publishFile}.dll" />
     <antcall target="copy-file-msvc" />
   </target>
   <target name="copy-integration-test" depends="copy-integration-test-msvc,copy-integration-test-nix" />
@@ -101,13 +103,16 @@
   </target>
   <target name="test-msvc">
     <delete file="${test.log.path}" quiet="true" />
+    <property environment="env" />
+    <property name="msvc.test.path" value="" />
     <exec executable="${cmd.mstest}" failonerror="false" dir="${localTarget}">
       <arg value="/testcontainer:${test.path}" />
       <arg value="/resultsfile:${test.log.path}" />
       <arg value="/detail:stdout" />
       <arg value="/detail:stderr" />
-      <arg value="/runconfig:${solutionDir}\\Local.testsettings" />
+      <arg value="/runconfig:${solutionDir}\Local.testsettings" />
       <arg value="/category:${test.groups}" />
+      <env key="PATH" value="${env.PATH};${msvc.test.path}" />
     </exec>
     <!-- TODO: If this has failed, fail the build after the reports have been run -->
   </target>
