@@ -13,14 +13,21 @@
 </echo>
   </target>
 
-  <target name="run-target" depends="skip-tests">
-    <echo>skipTests=${skipTests}</echo>
+  <target name="run-target" depends="skip-tests,og-public-snapshot-url,og-public-release-url">
     <property file="${basedir}/../../local/ant-target.properties" />
     <ant dir="${basedir}/../.." target="${ant.target}" />
   </target>
 
   <target name="skip-tests" if="skipTests">
     <echo file="${basedir}/../../local/ant-target.properties" append="true">skip.tests=true
+</echo>
+  </target>
+  <target name="og-public-snapshot-url" if="og-public-snapshot.url">
+    <echo file="${basedir}/../../local/ant-target.properties" append="true">og-public-snapshot.url=${og-public-snapshot.url}
+</echo>
+  </target>
+  <target name="og-public-release-url" if="og-public-release.url">
+    <echo file="${basedir}/../../local/ant-target.properties" append="true">og-public-release.url=${og-public-release.url}
 </echo>
   </target>
 
