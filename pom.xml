@@ -64,6 +64,32 @@
     </snapshotRepository>
   </distributionManagement>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>ant-contrib</groupId>
+      <artifactId>cpptasks</artifactId>
+      <version>${version.cpptasks}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
   <profiles>
     <profile>
       <id>og-platformnative-member</id>
@@ -1076,31 +1102,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <scope>test</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>ant-contrib</groupId>
-      <artifactId>cpptasks</artifactId>
-      <version>${version.cpptasks}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.opengamma.platform</groupId>
-      <artifactId>og-util</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
 
 </project>
