@@ -22,6 +22,7 @@ if (length (views) == 0) {
   for (i in seq (from = 1, to = length (views[,1]))) {
     viewIdentifier <- views[i, 1]
     viewName <- views[i, 2]
+    viewDescriptor <- SetViewClientExecutionFlag (StaticMarketDataViewClient (viewIdentifier), "AWAIT_MARKET_DATA")
     viewClient <- ViewClient (viewIdentifier)
     print (paste ("Waiting for result from", viewName))
     viewResultModel <- GetViewResult (viewClient, 30000)
