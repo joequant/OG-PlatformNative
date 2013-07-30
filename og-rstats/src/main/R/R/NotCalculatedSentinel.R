@@ -8,7 +8,7 @@
 missingInputs.NotCalculatedSentinel <- "Missing inputs"
 
 # Functions that weren't executed because of missing market data
-missingMarketData.NorCalculatedSentinel <- "Missing market data"
+missingMarketData.NotCalculatedSentinel <- "Missing market data"
 
 # Functions that were executed but failed to produce one or more results
 evaluationError.NotCalculatedSentinel <- "Evaluation error"
