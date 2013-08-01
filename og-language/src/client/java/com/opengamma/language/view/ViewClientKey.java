@@ -15,14 +15,12 @@ import com.opengamma.engine.view.client.ViewClient;
 import com.opengamma.util.ArgumentChecker;
 
 /**
- * Uniquely identifies a {@link ViewClient} within the user's context. The key comprises the
- * view name, execution options and whether to use a shared or private process. These are
- * the connection parameters for attaching the identified client to the process.
+ * Uniquely identifies a {@link ViewClient} within the user's context. The key comprises the view name, execution options and whether to use a shared or private process. These are the connection
+ * parameters for attaching the identified client to the process.
  * <p>
- * An optional name can be specified to allow different clients to be distinguished, e.g. so that
- * different properties can be set on each.
+ * An optional name can be specified to allow different clients to be distinguished, e.g. so that different properties can be set on each.
  * <p>
- * The view name and execution options are encoded as a {@link ViewClientDescriptor} string.
+ * The view identifier and all execution options to create a new, or connect to an existing, client are represented by a {@link ViewClientDescriptor} blob.
  */
 public final class ViewClientKey {
 
@@ -97,6 +95,7 @@ public final class ViewClientKey {
 
   /**
    * Produces the Fudge message encoding of the ViewClientKey:
+   * 
    * <pre>
    * message ViewClientKey {
    *   required ViewClientDescriptor viewClient;

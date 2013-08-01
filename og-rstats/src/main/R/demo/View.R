@@ -22,10 +22,12 @@ if (length (views) == 0) {
   for (i in seq (from = 1, to = length (views[,1]))) {
     viewIdentifier <- views[i, 1]
     viewName <- views[i, 2]
-    viewDescriptor <- SetViewClientExecutionFlag (StaticMarketDataViewClient (viewIdentifier), "AWAIT_MARKET_DATA")
-    viewClient <- ViewClient (viewIdentifier)
+    viewDescriptor <- StaticMarketDataViewClient (viewIdentifier)
+    print (paste ("Creating view client for", viewName))
+    viewClient <- ViewClient (viewDescriptor, FALSE)
+    TriggerViewCycle (viewClient)
     print (paste ("Waiting for result from", viewName))
-    viewResultModel <- GetViewResult (viewClient, 30000)
+    viewResultModel <- GetViewResult (viewClient, 120000)
     if (is.ViewComputationResultModel (viewResultModel)) {
       print (paste ("Calculation took", calculationDuration.ViewComputationResultModel (viewResultModel), "seconds"))
       viewResult <- results.ViewComputationResultModel (viewResultModel)
@@ -42,5 +44,6 @@ if (length (views) == 0) {
     } else {
       warning (paste ("No results from view", viewName, "produced in 30s"))
     }
+    rm (viewClient)
   }
 }

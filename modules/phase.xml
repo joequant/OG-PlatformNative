@@ -14,7 +14,6 @@
   </target>
 
   <target name="run-target" depends="skip-tests">
-    <echo>skipTests=${skipTests}</echo>
     <property file="${basedir}/../../local/ant-target.properties" />
     <ant dir="${basedir}/../.." target="${ant.target}" />
   </target>

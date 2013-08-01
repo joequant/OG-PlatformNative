@@ -33,8 +33,7 @@ import com.opengamma.language.context.UserContext;
 import com.opengamma.livedata.UserPrincipal;
 
 /**
- * Represents a {@link ViewClient} managed within a user's context. Language binding specific data can be associated with
- * the object using {@link UserViewClientBinding}.
+ * Represents a {@link ViewClient} managed within a user's context. Language binding specific data can be associated with the object using {@link UserViewClientBinding}.
  */
 public final class UserViewClient implements UniqueIdentifiable {
 
@@ -97,7 +96,7 @@ public final class UserViewClient implements UniqueIdentifiable {
         listener.viewDefinitionCompiled(compiledViewDefinition, hasMarketDataPermissions);
       }
     }
-    
+
     @Override
     public void viewDefinitionCompilationFailed(final Instant valuationTime, final Exception exception) {
       final ViewResultListener[] listeners;
@@ -116,7 +115,7 @@ public final class UserViewClient implements UniqueIdentifiable {
         listener.viewDefinitionCompilationFailed(valuationTime, exception);
       }
     }
-    
+
     @Override
     public void cycleFragmentCompleted(ViewComputationResultModel fullResult, ViewDeltaResultModel deltaResult) {
       for (ViewResultListener listener : _listeners) {
@@ -130,7 +129,7 @@ public final class UserViewClient implements UniqueIdentifiable {
         listener.cycleStarted(cycleMetadata);
       }
     }
-    
+
     @Override
     public void cycleCompleted(final ViewComputationResultModel fullResult, final ViewDeltaResultModel deltaResult) {
       for (ViewResultListener listener : _listeners) {
@@ -222,7 +221,7 @@ public final class UserViewClient implements UniqueIdentifiable {
   /**
    * Decrements the reference/lock count.
    * 
-   * @return false when the count reaches zero, true otherwise 
+   * @return false when the count reaches zero, true otherwise
    */
   protected boolean decrementRefCount() {
     assert _refCount.get() > 0;
@@ -287,8 +286,7 @@ public final class UserViewClient implements UniqueIdentifiable {
   }
 
   /**
-   * Returns the user data associated with the client. The first caller will create the user data. Other callers will be blocked
-   * until the data is available.
+   * Returns the user data associated with the client. The first caller will create the user data. Other callers will be blocked until the data is available.
    * 
    * @param <T> user data type
    * @param binding the data binding, not null
@@ -310,8 +308,7 @@ public final class UserViewClient implements UniqueIdentifiable {
   }
 
   /**
-   * Returns a value from the data map. This is used by {@link UserViewClientBinding} to apply type-safety and a data
-   * construction service.
+   * Returns a value from the data map. This is used by {@link UserViewClientBinding} to apply type-safety and a data construction service.
    * 
    * @param key key the value was stored against
    * @return the value, or null if none
@@ -326,8 +323,7 @@ public final class UserViewClient implements UniqueIdentifiable {
   }
 
   /**
-   * Sets a value in the data map. This is used by {@link UserViewClientBinding} to apply type-safety and a data
-   * construction service.
+   * Sets a value in the data map. This is used by {@link UserViewClientBinding} to apply type-safety and a data construction service.
    * 
    * @param key key to store the value against
    * @param value value to store, never null
@@ -345,8 +341,8 @@ public final class UserViewClient implements UniqueIdentifiable {
   }
 
   /**
-   * Adds a result listener to the client. The listener callbacks must not throw exceptions, or other sessions sharing
-   * the view client may break. After a listener is added, core state events are passed immediately to it.
+   * Adds a result listener to the client. The listener callbacks must not throw exceptions, or other sessions sharing the view client may break. After a listener is added, core state events are
+   * passed immediately to it.
    * 
    * @param resultListener the result listener to add, not null
    */
@@ -371,7 +367,7 @@ public final class UserViewClient implements UniqueIdentifiable {
   }
 
   /**
-   * Removes a result listener from the client. 
+   * Removes a result listener from the client.
    * 
    * @param resultListener the result listener to remove, not null
    */
