@@ -132,7 +132,7 @@ calculationDuration.ViewComputationResultModel <- function (msg) {
   if (length (configurations) > 0) {
     if (length (configurations) > 1) {
       for (index in seq (from = 1, to = length (configurations))) {
-        result[[configurations[index]]] <- configurationResults (results[[index]])
+        result[[configurations[[index]]]] <- configurationResults (results[[index]])
       }
     } else {
       result[[configurations]] <- configurationResults (results)

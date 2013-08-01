@@ -27,7 +27,7 @@ if (length (views) == 0) {
     viewClient <- ViewClient (viewDescriptor, FALSE)
     TriggerViewCycle (viewClient)
     print (paste ("Waiting for result from", viewName))
-    viewResultModel <- GetViewResult (viewClient, 120000)
+    viewResultModel <- GetViewResult (viewClient, 120000) # 2m timeout
     if (is.ViewComputationResultModel (viewResultModel)) {
       print (paste ("Calculation took", calculationDuration.ViewComputationResultModel (viewResultModel), "seconds"))
       viewResult <- results.ViewComputationResultModel (viewResultModel)
@@ -42,7 +42,7 @@ if (length (views) == 0) {
       print (liveData)
       print ("")
     } else {
-      warning (paste ("No results from view", viewName, "produced in 30s"))
+      warning (paste ("No results from view", viewName, "produced in 2m"))
     }
     rm (viewClient)
   }
