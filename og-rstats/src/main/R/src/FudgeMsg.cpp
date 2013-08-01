@@ -163,6 +163,24 @@ static FudgeMsg _GetFudgeMsgFromPointer (SEXP msgPointer) {
 	return msg;
 }
 
+SEXP RFudgeMsg::NumFields (SEXP message) {
+	SEXP result = R_NilValue;
+	FudgeMsg msg = _GetFudgeMsgFromPointer (message);
+	if (msg) {
+		int nFields = FudgeMsg_numFields (msg);
+		result = allocVector (INTSXP, 1);
+		if (result != R_NilValue) {
+			INTEGER(result)[0] = nFields;
+		} else {
+			LOGFATAL (ERR_INTERNAL);
+		}
+		FudgeMsg_release (msg);
+	} else {
+		LOGERROR (ERR_PARAMETER_VALUE);
+	}
+	return result;
+}
+
 static FudgeMsg _GetFudgeMsgFromObject (SEXP msgValue) {
 	FudgeMsg msg = NULL;
 	SEXP slot = mkString (R_FUDGEMSG_POINTER);

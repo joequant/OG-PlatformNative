@@ -14,6 +14,7 @@ private:
 	RFudgeMsg () { }
 	~RFudgeMsg () { }
 public:
+	static SEXP NumFields (SEXP msg);
 	static SEXP GetAllFields (SEXP msg);
 	static SEXP GetAllValues (SEXP msg);
 	static SEXP GetFieldsByName (SEXP msg, SEXP name);
@@ -27,6 +28,10 @@ public:
 
 #ifdef GLOBALS
 extern "C" {
+
+	SEXP RPROC FudgeMsg_numFields1 (SEXP msg) {
+		return RFudgeMsg::NumFields (msg);
+	}
 
 	SEXP RPROC FudgeMsg_getAllFields1 (SEXP msg) {
 		return RFudgeMsg::GetAllFields (msg);

@@ -16,6 +16,17 @@ is.FudgeMsg <- function (x) {
   .assert.Object (x, "FudgeMsg")
 }
 
+# Gets the number of fields in a Fudge message
+numFields.FudgeMsg <- function (x) {
+  .assert.FudgeMsg (x)
+  OpenGammaCall ("FudgeMsg_numFields", x@message)
+}
+
+# Tests if a Fudge message is empty
+isEmpty.FudgeMsg <- function (x) {
+  numFields.FudgeMsg (x) == 0
+}
+
 # Get all the fields of a Fudge message
 fields.FudgeMsg <- function (x) {
   .assert.FudgeMsg (x)

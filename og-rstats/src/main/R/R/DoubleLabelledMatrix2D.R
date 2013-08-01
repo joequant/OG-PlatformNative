@@ -37,20 +37,24 @@
 # Converts a Fudge representation of a double labelled matrix 2D into a data frame
 fromFudgeMsg.DoubleLabelledMatrix2D <- function (msg) {
   m <- msg$`matrix`
-  xLabelType <- field.FudgeMsg (m, 0) # X_LABEL_TYPE_ORDINAL (0)
-  # xKey <- field.FudgeMsg (m, 1) # X_KEY_ORDINAL (1)
-  xLabel <- field.FudgeMsg (m, 2) # X_LABEL_ORDINAL (2)
-  yLabelType <- field.FudgeMsg (m, 3) # Y_LABEL_TYPE_ORDINAL (3)
-  # yKey <- field.FudgeMsg (m, 4) # Y_KEY_ORDINAL (4)
-  yLabel <- field.FudgeMsg (m, 5) # Y_LABEL_ORDINAL (5)
-  value <- field.FudgeMsg (m, 6) # VALUE_ORDINAL (6)
-  xLabel <- .convert.labels (xLabelType, xLabel)
-  yLabel <- .convert.labels (yLabelType, yLabel)
-  value <- matrix (value, length (yLabel), length (xLabel), TRUE)
-  value <- data.frame (value)
-  row.names (value) <- yLabel
-  colnames (value) <- xLabel
-  value
+  if (isEmpty.FudgeMsg (m)) {
+    data.frame ()
+  } else {
+    xLabelType <- field.FudgeMsg (m, 0) # X_LABEL_TYPE_ORDINAL (0)
+    # xKey <- field.FudgeMsg (m, 1) # X_KEY_ORDINAL (1)
+    xLabel <- field.FudgeMsg (m, 2) # X_LABEL_ORDINAL (2)
+    yLabelType <- field.FudgeMsg (m, 3) # Y_LABEL_TYPE_ORDINAL (3)
+    # yKey <- field.FudgeMsg (m, 4) # Y_KEY_ORDINAL (4)
+    yLabel <- field.FudgeMsg (m, 5) # Y_LABEL_ORDINAL (5)
+    value <- field.FudgeMsg (m, 6) # VALUE_ORDINAL (6)
+    xLabel <- .convert.labels (xLabelType, xLabel)
+    yLabel <- .convert.labels (yLabelType, yLabel)
+    value <- matrix (value, length (yLabel), length (xLabel), TRUE)
+    value <- data.frame (value)
+    row.names (value) <- yLabel
+    colnames (value) <- xLabel
+    value
+  }
 }
 
 # Brings 2D matrix definitions into scope
