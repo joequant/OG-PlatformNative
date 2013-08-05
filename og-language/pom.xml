@@ -52,7 +52,20 @@
             <version>${version.exec-maven-plugin}</version>
             <executions>
               <execution>
-                <id>debug-nix-cpptasks-integration-tests-kill</id>
+                <id>debug-nix-cpptasks-integration-tests-kill-before</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>exe-kill</executable>
+                  <arguments>
+                    <argument>${localTarget}/run/Debug/ServiceRunner</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-nix-cpptasks-integration-tests-kill-after</id>
                 <phase>post-integration-test</phase>
                 <goals>
                   <goal>exec</goal>
@@ -63,6 +76,116 @@
                   <arguments>
                     <argument>${localTarget}/run/Debug/ServiceRunner</argument>
                   </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>debug-windows-win32-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/debug-windows-win32-msvc</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${version.exec-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>debug-windows-win32-msvc-integration-tests-kill-before</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}DebugWin32${file.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-windows-win32-msvc-integration-tests-kill-after</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}DebugWin32${file.separator}$ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>debug-windows-x64-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/debug-windows-x64-msvc</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${version.exec-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>debug-windows-x64-msvc-integration-tests-kill-before</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}Debugx64${file.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>debug-windows-x64-msvc-integration-tests-kill-after</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}Debugx64${file.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
                 </configuration>
               </execution>
             </executions>
@@ -85,7 +208,20 @@
             <version>${version.exec-maven-plugin}</version>
             <executions>
               <execution>
-                <id>release-nix-cpptasks-integration-tests-kill</id>
+                <id>release-nix-cpptasks-integration-tests-kill-before</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>exe-kill</executable>
+                  <arguments>
+                    <argument>${localTarget}/run/Release/ServiceRunner</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-nix-cpptasks-integration-tests-kill-after</id>
                 <phase>post-integration-test</phase>
                 <goals>
                   <goal>exec</goal>
@@ -96,6 +232,116 @@
                   <arguments>
                     <argument>${localTarget}/run/Release/ServiceRunner</argument>
                   </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>release-windows-win32-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/release-windows-win32-msvc</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${version.exec-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>release-windows-win32-msvc-integration-tests-kill-before</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}ReleaseWin32${file.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-windows-win32-msvc-integration-tests-kill-after</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}ReleaseWin32${file.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>release-windows-x64-msvc</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/release-windows-x64-msvc</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${version.exec-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>release-windows-x64-msvc-integration-tests-kill-before</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}Releasex64${file.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-windows-x64-msvc-integration-tests-kill-after</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}Releasex64${file.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
                 </configuration>
               </execution>
             </executions>

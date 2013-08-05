@@ -324,7 +324,21 @@
             <version>${version.exec-maven-plugin}</version>
             <executions>
               <execution>
-                <id>nix-r-integration-tests-kill</id>
+                <id>nix-r-integration-tests-kill-before</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>exe-kill</executable>
+                  <arguments>
+                    <argument>${localTarget}/run/Debug/ServiceRunner</argument>
+                    <argument>${localTarget}/run/Release/ServiceRunner</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>nix-r-integration-tests-kill-after</id>
                 <phase>post-integration-test</phase>
                 <goals>
                   <goal>exec</goal>
@@ -379,6 +393,55 @@
                       <classifier>windows</classifier>
                     </artifact>
                   </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${version.exec-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>windows-r-integration-tests-kill-before</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${path.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${path.separator}run${path.separator}DebugWin32${path.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${path.separator}run${path.separator}Debugx64${path.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${path.separator}run${path.separator}ReleaseWin32${path.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${path.separator}run${path.separator}Releasex64${path.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>windows-r-integration-tests-kill-after</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>perl</executable>
+                  <arguments>
+                    <argument>${common.dir}${path.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${path.separator}run${path.separator}DebugWin32${path.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${path.separator}run${path.separator}Debugx64${path.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${path.separator}run${path.separator}ReleaseWin32${path.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${path.separator}run${path.separator}Releasex64${path.separator}ServiceRunner.exe</argument>
+                  </arguments>
+                  <successCodes>
+                    <param>0</param>
+                    <param>1</param>
+                  </successCodes>
                 </configuration>
               </execution>
             </executions>
