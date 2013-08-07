@@ -411,11 +411,11 @@
                 <configuration>
                   <executable>perl</executable>
                   <arguments>
-                    <argument>${common.dir}${path.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${path.separator}run${path.separator}DebugWin32${path.separator}ServiceRunner.exe</argument>
-                    <argument>${localTarget}${path.separator}run${path.separator}Debugx64${path.separator}ServiceRunner.exe</argument>
-                    <argument>${localTarget}${path.separator}run${path.separator}ReleaseWin32${path.separator}ServiceRunner.exe</argument>
-                    <argument>${localTarget}${path.separator}run${path.separator}Releasex64${path.separator}ServiceRunner.exe</argument>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}DebugWin32${file.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}Debugx64${file.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}ReleaseWin32${file.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}Releasex64${file.separator}ServiceRunner.exe</argument>
                   </arguments>
                   <successCodes>
                     <param>0</param>
@@ -432,11 +432,11 @@
                 <configuration>
                   <executable>perl</executable>
                   <arguments>
-                    <argument>${common.dir}${path.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${path.separator}run${path.separator}DebugWin32${path.separator}ServiceRunner.exe</argument>
-                    <argument>${localTarget}${path.separator}run${path.separator}Debugx64${path.separator}ServiceRunner.exe</argument>
-                    <argument>${localTarget}${path.separator}run${path.separator}ReleaseWin32${path.separator}ServiceRunner.exe</argument>
-                    <argument>${localTarget}${path.separator}run${path.separator}Releasex64${path.separator}ServiceRunner.exe</argument>
+                    <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}DebugWin32${file.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}Debugx64${file.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}ReleaseWin32${file.separator}ServiceRunner.exe</argument>
+                    <argument>${localTarget}${file.separator}run${file.separator}Releasex64${file.separator}ServiceRunner.exe</argument>
                   </arguments>
                   <successCodes>
                     <param>0</param>
