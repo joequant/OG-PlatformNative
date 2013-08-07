@@ -20,8 +20,6 @@
 
 ifndef CONFIGURATION
 CONFIGURATION=Release
-else
-DEBUG=DEBUG
 endif
 
 ifeq "$(WIN)" "64"
@@ -44,6 +42,7 @@ FUDGE_RUNTIME=libfudgecX64d.dll
 else
 FUDGE_RUNTIME=libfudgecd.dll
 endif
+DEBUG=DEBUG
 endif
 LOG4CXX_RUNTIME=log4cxx.dll
 
