@@ -472,7 +472,7 @@
           </execution>
           <execution>
             <id>unpack-native-integration</id>
-            <phase>pre-integration-test</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>unpack-dependencies</goal>
             </goals>
