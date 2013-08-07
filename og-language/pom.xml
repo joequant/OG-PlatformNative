@@ -107,8 +107,9 @@
                   <executable>perl</executable>
                   <arguments>
                     <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${file.separator}run${file.separator}DebugWin32${file.separator}ServiceRunner.exe</argument>
+                    <argument>run${file.separator}DebugWin32${file.separator}ServiceRunner.exe</argument>
                   </arguments>
+                  <workingDirectory>${localTarget}</workingDirectory>
                   <successCodes>
                     <param>0</param>
                     <param>1</param>
@@ -125,8 +126,9 @@
                   <executable>perl</executable>
                   <arguments>
                     <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${file.separator}run${file.separator}DebugWin32${file.separator}$ServiceRunner.exe</argument>
+                    <argument>run${file.separator}DebugWin32${file.separator}$ServiceRunner.exe</argument>
                   </arguments>
+                  <workingDirectory>${localTarget}</workingDirectory>
                   <successCodes>
                     <param>0</param>
                     <param>1</param>
@@ -162,8 +164,9 @@
                   <executable>perl</executable>
                   <arguments>
                     <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${file.separator}run${file.separator}Debugx64${file.separator}ServiceRunner.exe</argument>
+                    <argument>run${file.separator}Debugx64${file.separator}ServiceRunner.exe</argument>
                   </arguments>
+                  <workingDirectory>${localTarget}</workingDirectory>
                   <successCodes>
                     <param>0</param>
                     <param>1</param>
@@ -180,8 +183,9 @@
                   <executable>perl</executable>
                   <arguments>
                     <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${file.separator}run${file.separator}Debugx64${file.separator}ServiceRunner.exe</argument>
+                    <argument>run${file.separator}Debugx64${file.separator}ServiceRunner.exe</argument>
                   </arguments>
+                  <workingDirectory>${localTarget}</workingDirectory>
                   <successCodes>
                     <param>0</param>
                     <param>1</param>
@@ -263,8 +267,9 @@
                   <executable>perl</executable>
                   <arguments>
                     <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${file.separator}run${file.separator}ReleaseWin32${file.separator}ServiceRunner.exe</argument>
+                    <argument>run${file.separator}ReleaseWin32${file.separator}ServiceRunner.exe</argument>
                   </arguments>
+                  <workingDirectory>${localTarget}</workingDirectory>
                   <successCodes>
                     <param>0</param>
                     <param>1</param>
@@ -281,8 +286,9 @@
                   <executable>perl</executable>
                   <arguments>
                     <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${file.separator}run${file.separator}ReleaseWin32${file.separator}ServiceRunner.exe</argument>
+                    <argument>run${file.separator}ReleaseWin32${file.separator}ServiceRunner.exe</argument>
                   </arguments>
+                  <workingDirectory>${localTarget}</workingDirectory>
                   <successCodes>
                     <param>0</param>
                     <param>1</param>
@@ -318,8 +324,9 @@
                   <executable>perl</executable>
                   <arguments>
                     <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${file.separator}run${file.separator}Releasex64${file.separator}ServiceRunner.exe</argument>
+                    <argument>run${file.separator}Releasex64${file.separator}ServiceRunner.exe</argument>
                   </arguments>
+                  <workingDirectory>${localTarget}</workingDirectory>
                   <successCodes>
                     <param>0</param>
                     <param>1</param>
@@ -336,8 +343,9 @@
                   <executable>perl</executable>
                   <arguments>
                     <argument>${common.dir}${file.separator}exe-kill-win.pl</argument>
-                    <argument>${localTarget}${file.separator}run${file.separator}Releasex64${file.separator}ServiceRunner.exe</argument>
+                    <argument>run${file.separator}Releasex64${file.separator}ServiceRunner.exe</argument>
                   </arguments>
+                  <workingDirectory>${localTarget}</workingDirectory>
                   <successCodes>
                     <param>0</param>
                     <param>1</param>
