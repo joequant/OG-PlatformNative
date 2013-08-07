@@ -145,7 +145,7 @@ public:
 				if (!strncmp (argv[1], "-p", 2)) {
 					StringCbPrintf (m_szProject, sizeof (m_szProject), "%s\\%s", szBaseDir, argv[1] + 2);
 					if (GetFileAttributes (m_szProject) == INVALID_FILE_ATTRIBUTES) {
-						StringCbPrintf (m_szProject, sizeof (m_szProject), "%s%s%s", szBaseDir, "\\build\\", argv[1] + 2);
+						StringCbPrintf (m_szProject, sizeof (m_szProject), "%s%s%s", szBaseDir, "\\target\\", argv[1] + 2);
 						if (GetFileAttributes (m_szProject) == INVALID_FILE_ATTRIBUTES) {
 							m_szProject[0] = 0;
 						} else {
@@ -230,7 +230,7 @@ private:
 		}
 	}
 public:
-	CRunToolOptions () {
+	CRunToolOptions (int *pargc, char **argv) {
 		char sz[MAX_PATH];
 		m_nCount = 0;
 		if (GetRegistryMemOpts (sz, sizeof (sz)) || GetDefaultMemOpts (sz, sizeof (sz))) {
@@ -238,6 +238,13 @@ public:
 		}
 		if (GetRegistryGCOpts (sz, sizeof (sz)) || GetDefaultGCOpts (sz, sizeof (sz))) {
 			ParseOptions (sz);
+		}
+		while (!strncmp (argv[1], "-D", 2)) {
+			if (m_nCount < sizeof (m_apsz) / sizeof (char*)) {
+				m_apsz[m_nCount++] = argv[1];
+			}
+			(*pargc)--;
+			memcpy (argv + 1, argv + 2, sizeof (char*) * *pargc);
 		}
 	}
 	~CRunToolOptions () {
@@ -308,7 +315,7 @@ public:
 	}
 	CConfigSourceSection *OpenSection (PCSTR pszSection) {
 		if (!strcmp (pszSection, "Classpath")) return new CRunToolClasspath (m_pargc, m_argv);
-		if (!strcmp (pszSection, "Options")) return new CRunToolOptions ();
+		if (!strcmp (pszSection, "Options")) return new CRunToolOptions (m_pargc, m_argv);
 		return NULL;
 	}
 };
