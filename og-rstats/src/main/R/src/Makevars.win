@@ -20,6 +20,8 @@
 
 ifndef CONFIGURATION
 CONFIGURATION=Release
+else
+DEBUG=DEBUG
 endif
 
 ifeq "$(WIN)" "64"
