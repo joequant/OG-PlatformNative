@@ -16,7 +16,7 @@ static BOOL _ConnectToConsole (int *pargc, char **argv) {
 	if (strncmp (argv[1], "-console", 8)) return TRUE;
 	DWORD dwParent = atoi (argv[1] + 8);
 	(*pargc)--;
-	memcpy (argv + 1, argv + 2, sizeof (char*) * *pargc);
+	memmove (argv + 1, argv + 2, sizeof (char*) * *pargc);
 	FreeConsole ();
 	if (!AttachConsole (dwParent)) {
 		ReportErrorReference (ERROR_REF_MAIN);
@@ -39,11 +39,11 @@ static BOOL _ElevateSelf (int *pargc, char **argv) {
 	if (*pargc < 2) return FALSE;
 	if (!strcmp (argv[1], "-elevate")) {
 		(*pargc)--;
-		memcpy (argv + 1, argv + 2, sizeof (char*) * *pargc);
+		memmove (argv + 1, argv + 2, sizeof (char*) * *pargc);
 		return TRUE;
 	} else if (!strcmp (argv[1], "-no-elevate")) {
 		(*pargc)--;
-		memcpy (argv + 1, argv + 2, sizeof (char*) * *pargc);
+		memmove (argv + 1, argv + 2, sizeof (char*) * *pargc);
 		return FALSE;
 	}
 	BOOL bResult;
@@ -142,7 +142,7 @@ public:
 					m_apsz[m_nCount++] = m_szConfig;
 				}
 				// Project JAR
-				if (!strncmp (argv[1], "-p", 2)) {
+				if ((*pargc > 1) && !strncmp (argv[1], "-p", 2)) {
 					StringCbPrintf (m_szProject, sizeof (m_szProject), "%s\\%s", szBaseDir, argv[1] + 2);
 					if (GetFileAttributes (m_szProject) == INVALID_FILE_ATTRIBUTES) {
 						StringCbPrintf (m_szProject, sizeof (m_szProject), "%s%s%s", szBaseDir, "\\target\\", argv[1] + 2);
@@ -155,7 +155,7 @@ public:
 						m_apsz[m_nCount++] = m_szProject;
 					}
 					(*pargc)--;
-					memcpy (argv + 1, argv + 2, sizeof (char*) * *pargc);
+					memmove (argv + 1, argv + 2, sizeof (char*) * *pargc);
 				}
 				// Other libraries
 				StringCbPrintf (m_szLib, sizeof (m_szLib), "%s%s", szBaseDir, "\\lib\\*");
@@ -239,12 +239,12 @@ public:
 		if (GetRegistryGCOpts (sz, sizeof (sz)) || GetDefaultGCOpts (sz, sizeof (sz))) {
 			ParseOptions (sz);
 		}
-		while (!strncmp (argv[1], "-D", 2)) {
+		while ((*pargc > 1) && !strncmp (argv[1], "-D", 2)) {
 			if (m_nCount < sizeof (m_apsz) / sizeof (char*)) {
-				m_apsz[m_nCount++] = argv[1];
+				m_apsz[m_nCount++] = _strdup (argv[1]);
 			}
 			(*pargc)--;
-			memcpy (argv + 1, argv + 2, sizeof (char*) * *pargc);
+			memmove (argv + 1, argv + 2, sizeof (char*) * *pargc);
 		}
 	}
 	~CRunToolOptions () {
