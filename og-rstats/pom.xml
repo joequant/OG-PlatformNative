@@ -540,7 +540,7 @@
           </execution>
           <execution>
             <id>copy-dependencies</id>
-            <phase>pre-integration-test</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>copy-dependencies</goal>
             </goals>
