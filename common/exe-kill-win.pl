@@ -17,7 +17,7 @@ foreach $i (0 .. $#ARGV) {
     if ($process =~ /^\Q$path\E\s+(\d+)\s*$/i) {
       $pid = $1;
       print "Killing process $pid\n";
-      `taskkill /pid $pid`;
+      `taskkill /pid $pid /f`;
     }
   }
 }
