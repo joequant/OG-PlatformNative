@@ -597,18 +597,6 @@
             </configuration>
           </execution>
           <execution>
-            <id>integration-test-init</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <ant antfile="${solutionDir}/package.xml" target="pre-integration-test" />
-              </target>
-            </configuration>
-          </execution>
-          <execution>
             <id>og-rstats-integration-test</id>
             <phase>integration-test</phase>
             <goals>
