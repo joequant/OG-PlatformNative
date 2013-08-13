@@ -13,14 +13,11 @@ $cwd = `cd`;
 $cwd =~ s/\s+$//;
 foreach $i (0 .. $#ARGV) {
   $path = $cwd . "\\" . $ARGV[$i];
-  print "Looking for $path to kill\n";
   foreach $process (split (/\r\n/, $processes)) {
     if ($process =~ /^\Q$path\E\s+(\d+)\s*$/i) {
       $pid = $1;
       print "Killing process $pid\n";
       `taskkill /pid $pid /f`;
-    } else {
-      print "Ignoring $process\n";
     }
   }
 }
