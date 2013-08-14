@@ -73,11 +73,30 @@ CProcess *CProcess::FindByName (const TCHAR *pszExecutable) {
 	LOGDEBUG (TEXT ("Checking ") << cdwProcesses << TEXT (" processes"));
 	HANDLE hProcess = NULL;
 	// Lookup correct rights mask - PROCESS_QUERY_INFORMATION on XP/W2K, PROCESS_QUERY_LIMITED_INFORMATION on newer
+	// Note: GetModuleFileNameEx is on XP/W2K (v5), QueryFullProcessImageName on Vista (v6) and higher
 	OSVERSIONINFO version;
 	ZeroMemory (&version, sizeof (version));
 	version.dwOSVersionInfoSize = sizeof (version);
 	GetVersionEx (&version);
-	DWORD dwRights = ((version.dwMajorVersion < 6) ? PROCESS_QUERY_INFORMATION : PROCESS_QUERY_LIMITED_INFORMATION) | PROCESS_TERMINATE | SYNCHRONIZE;
+	bool bHasQueryFullProcessImageName = version.dwMajorVersion >= 6;
+	DWORD dwRights = (bHasQueryFullProcessImageName ? PROCESS_QUERY_LIMITED_INFORMATION : (PROCESS_QUERY_INFORMATION | PROCESS_VM_READ)) | PROCESS_TERMINATE | SYNCHRONIZE;
+	TCHAR szFullSearchName[MAX_PATH];
+	if (bHasQueryFullProcessImageName) {
+		HANDLE hExecutable = CreateFile (pszExecutable, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hExecutable != INVALID_HANDLE_VALUE) {
+			if (GetFinalPathNameByHandle (hExecutable, szFullSearchName, MAX_PATH, FILE_NAME_NORMALIZED | VOLUME_NAME_NT)) {
+				pszExecutable = szFullSearchName;
+				LOGDEBUG (TEXT ("Searching for normalized '") << pszExecutable << TEXT ("'"));
+			} else {
+				DWORD dwError = GetLastError ();
+				LOGWARN (TEXT ("Couldn't normalize '") << pszExecutable << TEXT ("', error ") << dwError);
+			}
+			CloseHandle (hExecutable);
+		} else {
+			DWORD dwError = GetLastError ();
+			LOGWARN (TEXT ("Couldn't find '") << pszExecutable << TEXT ("' for normalization, error ") << dwError);
+		}
+	}
 	while (cdwProcesses) {
 		DWORD dwProcessID = pdwProcesses[--cdwProcesses];
 		if (!dwProcessID) continue;
@@ -85,7 +104,8 @@ CProcess *CProcess::FindByName (const TCHAR *pszExecutable) {
 		if (hProcess) {
 			TCHAR sz[MAX_PATH];
 			DWORD cch = MAX_PATH;
-			if (QueryFullProcessImageName (hProcess, 0, sz, &cch)) {
+			if ((bHasQueryFullProcessImageName && QueryFullProcessImageName (hProcess, PROCESS_NAME_NATIVE, sz, &cch))
+			 || (!bHasQueryFullProcessImageName && GetModuleFileNameEx (hProcess, NULL, sz, cch))) {
 				LOGDEBUG (TEXT ("Checking process ") << dwProcessID << TEXT (", executable ") << sz);
 				if (!_tcsicmp (pszExecutable, sz)) {
 					DWORD dwExitCode;

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -99,7 +99,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;log4cxx-debug-windows-win32.lib;fudge-c-debug-windows-win32.lib;Util.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;psapi.lib;log4cxx-debug-windows-win32.lib;fudge-c-debug-windows-win32.lib;Util.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)target\dependency</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
@@ -145,7 +145,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;log4cxx-release-windows-win32.lib;fudge-c-release-windows-win32.lib;Util.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;psapi.lib;log4cxx-release-windows-win32.lib;fudge-c-release-windows-win32.lib;Util.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)target\dependency</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
@@ -187,7 +187,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;log4cxx-debug-windows-x64.lib;fudge-c-debug-windows-x64.lib;Util.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;psapi.lib;log4cxx-debug-windows-x64.lib;fudge-c-debug-windows-x64.lib;Util.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)target\dependency</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
@@ -233,7 +233,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;log4cxx-release-windows-x64.lib;fudge-c-release-windows-x64.lib;Util.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;advapi32.lib;version.lib;psapi.lib;log4cxx-release-windows-x64.lib;fudge-c-release-windows-x64.lib;Util.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)target\dependency</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
@@ -270,6 +270,7 @@
     <ClCompile Include="FudgeTest.cpp" />
     <ClCompile Include="LoggingTest.cpp" />
     <ClCompile Include="NamedPipeTest.cpp" />
+    <ClCompile Include="ProcessTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
