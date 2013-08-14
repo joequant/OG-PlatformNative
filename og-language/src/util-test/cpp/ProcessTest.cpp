@@ -10,19 +10,19 @@
 LOGGING (com.opengamma.language.util.ProcessTest);
 
 static void GetCurrentModule () {
-	TCHAR szBuffer[MAX_PATH];
-	ASSERT (CProcess::GetCurrentModule (szBuffer, MAX_PATH));
+	TCHAR szBuffer[256];
+	ASSERT (CProcess::GetCurrentModule (szBuffer, 256));
 	LOGINFO (TEXT ("Current process = ") << szBuffer);
 }
 
 static void MyProcess () {
-	TCHAR szBuffer[MAX_PATH];
+	TCHAR szBuffer[256];
 #ifdef _WIN32
 	// This should give the MSTEST.EXE test harness
-	ASSERT (GetModuleFileName (NULL, szBuffer, MAX_PATH));
+	ASSERT (GetModuleFileName (NULL, szBuffer, 256));
 #else /* ifdef _WIN32 */
 	// This should give the UtilTest process
-	ASSERT (readlink ("/proc/self/exe", szBuffer, cchBuffer) > 0);
+	ASSERT (readlink ("/proc/self/exe", szBuffer, 256) > 0);
 #endif /* ifdef _WIN32 */
 	LOGDEBUG (TEXT ("Searching for '") << szBuffer << TEXT ("'"));
 	CProcess *poProcess = CProcess::FindByName (szBuffer);
