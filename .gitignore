@@ -8,6 +8,4 @@
 *.suo
 *.vcxproj.user
 *~
-.project
-.classpath
 .settings
