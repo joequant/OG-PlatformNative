@@ -13,6 +13,8 @@ import net.sf.ehcache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opengamma.core.config.impl.EHCachingConfigSource;
+import com.opengamma.core.config.impl.RemoteConfigSource;
 import com.opengamma.financial.security.EHCachingFinancialSecuritySource;
 import com.opengamma.financial.security.RemoteFinancialSecuritySource;
 import com.opengamma.language.config.Configuration;
@@ -76,6 +78,8 @@ public class Loader extends ContextInitializationBean {
     }
     s_logger.info("Configuring security support");
     globalContext.setSecuritySource(new EHCachingFinancialSecuritySource(new RemoteFinancialSecuritySource(uri), getCacheManager()));
+    s_logger.info("Configuring config support");
+    globalContext.setConfigSource(new EHCachingConfigSource(new RemoteConfigSource(uri), getCacheManager()));
     globalContext.getFunctionProvider().addProvider(
         new FunctionProviderBean(FetchSecurityFunction.INSTANCE));
     globalContext.getProcedureProvider().addProvider(

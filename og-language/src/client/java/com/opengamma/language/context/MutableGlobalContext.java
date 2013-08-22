@@ -7,6 +7,7 @@ package com.opengamma.language.context;
 
 import java.util.concurrent.ExecutorService;
 
+import com.opengamma.core.config.ConfigSource;
 import com.opengamma.core.exchange.ExchangeSource;
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.holiday.HolidaySource;
@@ -158,6 +159,10 @@ public class MutableGlobalContext extends GlobalContext {
 
   public void setSecuritySource(final SecuritySource securitySource) {
     removeOrReplaceValue(SECURITY_SOURCE, securitySource);
+  }
+
+  public void setConfigSource(final ConfigSource configSource) {
+    removeOrReplaceValue(CONFIG_SOURCE, configSource);
   }
   
   @Override

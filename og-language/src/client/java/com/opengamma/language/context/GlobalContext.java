@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import com.opengamma.core.config.ConfigSource;
 import com.opengamma.core.exchange.ExchangeSource;
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.holiday.HolidaySource;
@@ -167,6 +168,11 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the security source is bound.
    */
   protected static final String SECURITY_SOURCE = "securitySource";
+
+  /**
+   * Name under which the config source is bound.
+   */
+  protected static final String CONFIG_SOURCE = "configSource";
 
   /**
    * Name under which a source of type converters is bound.
@@ -389,6 +395,10 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
 
   public SecuritySource getSecuritySource() {
     return getValue(SECURITY_SOURCE);
+  }
+
+  public ConfigSource getConfigSource() {
+    return getValue(CONFIG_SOURCE);
   }
 
   public TypeConverterProvider getTypeConverterProvider() {
