@@ -16,7 +16,7 @@ import com.opengamma.analytics.math.curve.Curve;
 import com.opengamma.analytics.math.curve.FunctionalDoublesCurve;
 import com.opengamma.analytics.math.curve.NodalDoublesCurve;
 import com.opengamma.analytics.math.curve.NodalObjectsCurve;
-import com.opengamma.analytics.math.function.Function;
+import com.opengamma.analytics.math.function.Function1D;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.util.test.TestGroup;
 
@@ -27,10 +27,10 @@ import com.opengamma.util.test.TestGroup;
 public class GetCurveYValuesFunctionTest {
 
   public void testDoublesCurve() {
-    final Curve<Double, Double> curve = new FunctionalDoublesCurve(new Function<Double, Double>() {
+    final Curve<Double, Double> curve = new FunctionalDoublesCurve(new Function1D<Double, Double>() {
       @Override
-      public Double evaluate(Double... x) {
-        return x[0] + 3d;
+      public Double evaluate(Double x) {
+        return x + 3d;
       }
     });
     final Double[] result = GetCurveYValuesFunction.invoke(curve, new Double[] {1d, 2d, 3d });
