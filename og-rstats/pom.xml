@@ -690,14 +690,14 @@
     </dependency>
     <dependency>
       <groupId>com.opengamma.platform</groupId>
-      <artifactId>og-language</artifactId>
+      <artifactId>og-language-client</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
       <classifier>config</classifier>
     </dependency>
     <dependency>
       <groupId>com.opengamma.platform</groupId>
-      <artifactId>og-language</artifactId>
+      <artifactId>og-language-client</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
