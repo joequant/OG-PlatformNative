@@ -32,7 +32,7 @@ public class Loader extends ContextInitializationBean {
   private static final Logger s_logger = LoggerFactory.getLogger(Loader.class);
 
   private String _configurationEntry = "securitySource";
-  private String _configConfigurationEntry = "securitySource";
+  private String _configConfigurationEntry = "configSource";
   private Configuration _configuration;
   private CacheManager _cacheManager = CacheManager.getInstance();
 
