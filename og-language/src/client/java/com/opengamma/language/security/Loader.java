@@ -32,6 +32,7 @@ public class Loader extends ContextInitializationBean {
   private static final Logger s_logger = LoggerFactory.getLogger(Loader.class);
 
   private String _configurationEntry = "securitySource";
+  private String _configConfigurationEntry = "securitySource";
   private Configuration _configuration;
   private CacheManager _cacheManager = CacheManager.getInstance();
 
@@ -51,6 +52,15 @@ public class Loader extends ContextInitializationBean {
 
   public String getConfigurationEntry() {
     return _configurationEntry;
+  }
+
+  public String getConfigConfigurationEntry() {
+    return _configConfigurationEntry;
+  }
+
+  public void setConfigConfigurationEntry(String configConfigurationEntry) {
+    ArgumentChecker.notNull(configConfigurationEntry, "configConfigurationEntry");
+    _configConfigurationEntry = configConfigurationEntry;
   }
 
   public void setCacheManager(final CacheManager cacheManager) {
@@ -78,8 +88,13 @@ public class Loader extends ContextInitializationBean {
     }
     s_logger.info("Configuring security support");
     globalContext.setSecuritySource(new EHCachingFinancialSecuritySource(new RemoteFinancialSecuritySource(uri), getCacheManager()));
+    final URI configUri = getConfiguration().getURIConfiguration(getConfigConfigurationEntry());
+    if (configUri == null) {
+      s_logger.warn("Config support not available");
+      return;
+    }
     s_logger.info("Configuring config support");
-    globalContext.setConfigSource(new EHCachingConfigSource(new RemoteConfigSource(uri), getCacheManager()));
+    globalContext.setConfigSource(new EHCachingConfigSource(new RemoteConfigSource(configUri), getCacheManager()));
     globalContext.getFunctionProvider().addProvider(
         new FunctionProviderBean(FetchSecurityFunction.INSTANCE));
     globalContext.getProcedureProvider().addProvider(
