@@ -13,6 +13,9 @@
      test.configuration:  The build configuration to test
   -->
 
+  <property name="windows.ext.exe" value="exe" />
+  <property name="windows.ext.dll" value="dll" />
+
   <target name="unit-test" depends="unit-test-conf,configure,unit-test-nix,unit-test-msvc,report" />
   <target name="unit-test-conf">
     <property name="test.identifier" value="UnitTest" />
@@ -34,8 +37,8 @@
     <antcall target="copy-file-nix" />
   </target>
   <target name="attach-bin-msvc" if="profile.windows.msvc">
-    <available file="${localTarget}/${test.configuration}/${publishFile}.exe" property="copy.file.name" value="${publishFile}.exe" />
-    <available file="${localTarget}/${test.configuration}/${publishFile}.dll" property="copy.file.name" value="${publishFile}.dll" />
+    <available file="${localTarget}/${test.configuration}/${publishFile}.${windows.ext.exe}" property="copy.file.name" value="${publishFile}.${windows.ext.exe}" />
+    <available file="${localTarget}/${test.configuration}/${publishFile}.${windows.ext.dll}" property="copy.file.name" value="${publishFile}.${windows.ext.dll}" />
     <antcall target="copy-file-msvc" />
   </target>
   <target name="copy-integration-test" depends="copy-integration-test-msvc,copy-integration-test-nix" />
