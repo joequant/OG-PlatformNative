@@ -21,8 +21,8 @@ public class MainTest {
   @Test
   public void testStartStop() {
     assertNull(Main.svcStart());
-    assertTrue(Main.svcAccept("TestUser", "Foo", "Bar", "test", false));
-    assertTrue(Main.svcAccept("TestUser", "Foo", "Bar", "test", true));
+    assertNull(Main.svcAccept("TestUser", "Foo", "Bar", "test", false));
+    assertNull(Main.svcAccept("TestUser", "Foo", "Bar", "test", true));
     assertTrue(Main.svcStop());
   }
 

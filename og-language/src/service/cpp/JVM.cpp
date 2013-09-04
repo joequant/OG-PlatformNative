@@ -787,11 +787,22 @@ void CJVM::UserConnection (const TCHAR *pszUserName, const TCHAR *pszInputPipe, 
 #else /* ifdef _DEBUG */
 #define DEBUG_FLAG false
 #endif /* ifdef _DEBUG */
-		if (InvokeBool (m_pEnv, "svcAccept", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Z", jsUserName, jsInputPipe, jsOutputPipe, jsLanguageID, DEBUG_FLAG)) {
+		TCHAR *pszError = InvokeString (
+			m_pEnv,
+			"svcAccept",
+			"(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Ljava/lang/String;",
+			jsUserName,
+			jsInputPipe,
+			jsOutputPipe,
+			jsLanguageID,
+			DEBUG_FLAG);
 #undef DEBUG_FLAG
-			LOGINFO (TEXT ("Connection from ") << pszUserName << TEXT (" accepted"));
-		} else {
+		if (pszError) {
 			LOGWARN (TEXT ("Couldn't accept connection from ") << pszUserName);
+			CErrorFeedback oFeedback;
+			oFeedback.Write (pszError);
+		} else {
+			LOGINFO (TEXT ("Connection from ") << pszUserName << TEXT (" accepted"));
 		}
 		m_pEnv->PopLocalFrame (NULL);
 	} else {

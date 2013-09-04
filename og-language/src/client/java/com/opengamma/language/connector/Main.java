@@ -69,6 +69,17 @@ public class Main {
     return true;
   }
 
+  private static String exceptionToString(final Throwable e) {
+    Throwable t = e;
+    s_logger.warn("Exception thrown", t);
+    while (t instanceof BeanCreationException) {
+      t = t.getCause();
+    }
+    final String message = ((t != null) ? t : e).getMessage();
+    s_logger.error("{}", message);
+    return message;
+  }
+
   /**
    * Entry point from the service wrapper - starts the service.
    * 
@@ -79,20 +90,8 @@ public class Main {
       s_logger.info("Starting OpenGamma language integration service");
       s_springContext = new LanguageSpringContext();
       return null;
-    } catch (final BeanCreationException e) {
-      s_logger.error("Exception thrown", e);
-      Throwable t = e;
-      do {
-        t = t.getCause();
-      } while (t instanceof BeanCreationException);
-      if (t != null) {
-        return t.getMessage();
-      } else {
-        return e.getMessage();
-      }
     } catch (final Throwable t) {
-      s_logger.error("Exception thrown", t);
-      return t.getMessage();
+      return exceptionToString(t);
     }
   }
 
@@ -126,9 +125,9 @@ public class Main {
    * @param outputPipeName the pipe created for sending data from Java to C++
    * @param languageID the identifier of the bound language. Language specific factories will be used if present, otherwise the default factories will be used.
    * @param debug true if the bound language is a debug build
-   * @return true if the connection started okay
+   * @return null if the connection started okay, an error message otherwise
    */
-  public static synchronized boolean svcAccept(final String userName, final String inputPipeName,
+  public static synchronized String svcAccept(final String userName, final String inputPipeName,
       final String outputPipeName, final String languageID, final boolean debug) {
     try {
       s_logger.info("Accepted {} connection from {}", languageID, userName);
@@ -145,10 +144,10 @@ public class Main {
           clientDisconnected();
         }
       });
-      return true;
+      return null;
     } catch (final Throwable t) {
-      s_logger.error("Exception thrown", t);
-      return false;
+      Client.failPipes(inputPipeName, outputPipeName);
+      return exceptionToString(t);
     }
   }
 

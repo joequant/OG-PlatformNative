@@ -331,6 +331,23 @@ public class Client implements Runnable {
     s_logger.debug("Session context destroyed");
   }
 
+  public static void failPipes(final String inputPipeName, final String outputPipeName) {
+    try {
+      s_logger.info("Terminating input pipe: {}", inputPipeName);
+      (new FileInputStream(inputPipeName)).close();
+    } catch (Throwable t) {
+      s_logger.error("Couldn't terminate input pipe: {}", inputPipeName);
+      s_logger.debug("Caught exception", t);
+    }
+    try {
+      s_logger.info("Terminating output pipe: {}", outputPipeName);
+      (new FileOutputStream(outputPipeName)).close();
+    } catch (Throwable t) {
+      s_logger.error("Couldn't terminate output pipe: {}", outputPipeName);
+      s_logger.debug("Caught exception", t);
+    }
+  }
+
   private boolean connectPipes() {
     s_logger.debug("Connecting to input pipe: {}", getInputPipeName());
     try {

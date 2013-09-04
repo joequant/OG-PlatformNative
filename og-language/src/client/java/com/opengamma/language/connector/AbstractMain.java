@@ -62,7 +62,7 @@ public abstract class AbstractMain {
       return false;
     }
     s_logger.info("Infrastructure started, creating context for {}", languageId);
-    if (!Main.svcAccept("main", null, null, languageId, false)) {
+    if (Main.svcAccept("main", null, null, languageId, false) != null) {
       s_logger.error("Couldn't accept dummy connection");
       return false;
     }
