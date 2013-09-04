@@ -7,7 +7,7 @@
 
   <groupId>com.opengamma.platform</groupId>
   <artifactId>og-platform-native-module</artifactId>
-  <version>2.1.0-M3-SNAPSHOT</version>
+  <version>2.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>OG-Platform-Native (Aggregator)</name>
   <description>Aggregator import module for og-platform-native</description>
