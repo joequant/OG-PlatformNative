@@ -439,6 +439,20 @@
                   </target>
                 </configuration>
               </execution>
+              <execution>
+                <id>debug-windows-x64-integration-tests-attach</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${common.dir}/tests.xml" target="attach-bin">
+                      <property name="test.configuration" value="Debugx64" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
         </plugins>
@@ -659,6 +673,20 @@
                   <target unless="${skip.attach-native}">
                     <ant antfile="${common.dir}/archive.xml" target="create-archive">
                       <property name="archive.configuration" value="Releasex64" />
+                    </ant>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-windows-x64-integration-tests-attach</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <ant antfile="${common.dir}/tests.xml" target="attach-bin">
+                      <property name="test.configuration" value="Releasex64" />
                     </ant>
                   </target>
                 </configuration>
