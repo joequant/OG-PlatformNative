@@ -19,6 +19,7 @@ public class IdentifierFunctionProvider extends AbstractFunctionProvider {
   @Override
   protected void loadDefinitions(final Collection<MetaFunction> definitions) {
     definitions.add(ExternalIdBundleFunction.INSTANCE.getMetaFunction());
+    definitions.add(LatestVersionFunction.INSTANCE.getMetaFunction());
     definitions.add(PortfolioComponentIdentifiersFunction.INSTANCE.getMetaFunction());
   }
 
