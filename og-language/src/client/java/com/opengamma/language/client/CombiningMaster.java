@@ -5,7 +5,11 @@
  */
 package com.opengamma.language.client;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.master.AbstractDocument;
@@ -67,7 +71,7 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
         @Override
         protected CombinedMarketDataSnapshotMaster createCombinedMaster(final MarketDataSnapshotMaster sessionMaster, final MarketDataSnapshotMaster userMaster,
             final MarketDataSnapshotMaster globalMaster) {
-          return new CombinedMarketDataSnapshotMaster(ImmutableList.of(sessionMaster, userMaster, globalMaster));
+          return new CombinedMarketDataSnapshotMaster(filterNulls(Lists.newArrayList(sessionMaster, userMaster, globalMaster)));
         }
 
       };
@@ -84,7 +88,7 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
 
     @Override
     protected CombinedPortfolioMaster createCombinedMaster(final PortfolioMaster sessionMaster, final PortfolioMaster userMaster, final PortfolioMaster globalMaster) {
-      return new CombinedPortfolioMaster(ImmutableList.of(sessionMaster, userMaster, globalMaster));
+      return new CombinedPortfolioMaster(filterNulls(Lists.newArrayList(sessionMaster, userMaster, globalMaster)));
     }
 
   };
@@ -101,7 +105,7 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
 
     @Override
     protected CombinedPositionMaster createCombinedMaster(final PositionMaster sessionMaster, final PositionMaster userMaster, final PositionMaster globalMaster) {
-      return new CombinedPositionMaster(ImmutableList.of(sessionMaster, userMaster, globalMaster));
+      return new CombinedPositionMaster(filterNulls(Lists.newArrayList(sessionMaster, userMaster, globalMaster)));
     }
 
   };
@@ -118,11 +122,16 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
 
     @Override
     protected CombinedSecurityMaster createCombinedMaster(final SecurityMaster sessionMaster, final SecurityMaster userMaster, final SecurityMaster globalMaster) {
-      return new CombinedSecurityMaster(ImmutableList.of(sessionMaster, userMaster, globalMaster));
+      return new CombinedSecurityMaster(filterNulls(Lists.newArrayList(sessionMaster, userMaster, globalMaster)));
     }
 
   };
 
+  private static <T> List<T> filterNulls(List<T> list){
+    Iterables.removeIf(list, Predicates.notNull());
+    return list;
+  }
+  
   private CombiningMaster() {
   }
 
