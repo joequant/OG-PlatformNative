@@ -181,7 +181,9 @@
         <!-- For odd functions, use the provider bean. If a package exports more than a couple, create a provider for it -->
         <bean class="com.opengamma.language.invoke.TypeConverterProviderBean">
           <property name="converters">
-            <list />
+            <list>
+              <bean class="com.opengamma.language.datetime.TimeZoneConverter" />
+            </list>
           </property>
         </bean>
       </list>
