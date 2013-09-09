@@ -71,7 +71,7 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
         @Override
         protected CombinedMarketDataSnapshotMaster createCombinedMaster(final MarketDataSnapshotMaster sessionMaster, final MarketDataSnapshotMaster userMaster,
             final MarketDataSnapshotMaster globalMaster) {
-          return new CombinedMarketDataSnapshotMaster(filterNulls(Lists.newArrayList(sessionMaster, userMaster, globalMaster)));
+          return new CombinedMarketDataSnapshotMaster(filterNulls(sessionMaster, userMaster, globalMaster));
         }
 
       };
@@ -88,7 +88,7 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
 
     @Override
     protected CombinedPortfolioMaster createCombinedMaster(final PortfolioMaster sessionMaster, final PortfolioMaster userMaster, final PortfolioMaster globalMaster) {
-      return new CombinedPortfolioMaster(filterNulls(Lists.newArrayList(sessionMaster, userMaster, globalMaster)));
+      return new CombinedPortfolioMaster(filterNulls(sessionMaster, userMaster, globalMaster));
     }
 
   };
@@ -105,7 +105,7 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
 
     @Override
     protected CombinedPositionMaster createCombinedMaster(final PositionMaster sessionMaster, final PositionMaster userMaster, final PositionMaster globalMaster) {
-      return new CombinedPositionMaster(filterNulls(Lists.newArrayList(sessionMaster, userMaster, globalMaster)));
+      return new CombinedPositionMaster(filterNulls(sessionMaster, userMaster, globalMaster));
     }
 
   };
@@ -122,13 +122,15 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
 
     @Override
     protected CombinedSecurityMaster createCombinedMaster(final SecurityMaster sessionMaster, final SecurityMaster userMaster, final SecurityMaster globalMaster) {
-      return new CombinedSecurityMaster(filterNulls(Lists.newArrayList(sessionMaster, userMaster, globalMaster)));
+      return new CombinedSecurityMaster(filterNulls(sessionMaster, userMaster, globalMaster));
     }
 
   };
 
-  private static <T> List<T> filterNulls(List<T> list){
-    Iterables.removeIf(list, Predicates.notNull());
+  @SafeVarargs
+  private static <T> List<T> filterNulls(T... arr){
+    List<T> list = Lists.newArrayList(arr);
+    Iterables.removeIf(list, Predicates.isNull());
     return list;
   }
   
