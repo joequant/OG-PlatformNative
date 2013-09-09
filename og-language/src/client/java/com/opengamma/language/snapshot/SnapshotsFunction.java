@@ -6,12 +6,12 @@
 package com.opengamma.language.snapshot;
 
 import java.util.Arrays;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.opengamma.id.UniqueId;
-import com.opengamma.language.client.CombinedMarketDataSnapshotMaster;
 import com.opengamma.language.client.CombiningMaster;
 import com.opengamma.language.client.MasterID;
 import com.opengamma.language.context.SessionContext;
@@ -23,7 +23,9 @@ import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
 import com.opengamma.master.marketdatasnapshot.MarketDataSnapshotDocument;
+import com.opengamma.master.marketdatasnapshot.MarketDataSnapshotMaster;
 import com.opengamma.master.marketdatasnapshot.MarketDataSnapshotSearchRequest;
+import com.opengamma.master.marketdatasnapshot.impl.CombinedMarketDataSnapshotMaster;
 
 /**
  * Queries the snapshots available from masters.
@@ -56,6 +58,9 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
     request.setName(name);
     request.setIncludeData(false);
     final Map<UniqueId, String> result = new LinkedHashMap<UniqueId, String>();
+    
+    final IdentityHashMap<MarketDataSnapshotMaster,String> masterMap = buildMasterMap(context);
+    
     CombiningMaster.MARKET_DATA_SNAPSHOT.get(context).search(request, new CombinedMarketDataSnapshotMaster.SearchCallback() {
 
       @Override
@@ -64,13 +69,17 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
       }
 
       @Override
-      public void accept(MarketDataSnapshotDocument document, MasterID master, boolean masterUnique, boolean clientUnique) {
+      public void accept(MarketDataSnapshotDocument document, MarketDataSnapshotMaster master, boolean masterUnique, boolean clientUnique) {
         String name = document.getName();
         if (!masterUnique) {
           name = name + " " + document.getUniqueId().toString();
         }
         if (!clientUnique) {
-          name = name + " (" + master.getLabel() + ")";
+          String label = masterMap.get(master);
+          if (label == null) {
+            label = "UNKNOWN";
+          }
+          name = name + " (" + label + ")";
         }
         result.put(document.getUniqueId(), name);
       }
@@ -82,6 +91,18 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
 
     });
     return result;
+  }
+  
+  private static IdentityHashMap<MarketDataSnapshotMaster, String> buildMasterMap(final SessionContext context) {
+    MarketDataSnapshotMaster sessionMaster = context.getClient().getMarketDataSnapshotMaster();
+    MarketDataSnapshotMaster userMaster = context.getUserContext().getClient().getMarketDataSnapshotMaster();
+    MarketDataSnapshotMaster globalMaster = context.getGlobalContext().getClient().getMarketDataSnapshotMaster();
+    
+    final IdentityHashMap<MarketDataSnapshotMaster, String> masterMap = new IdentityHashMap<>();
+    masterMap.put(sessionMaster, MasterID.SESSION.getLabel());
+    masterMap.put(userMaster, MasterID.USER.getLabel());
+    masterMap.put(globalMaster, MasterID.GLOBAL.getLabel());
+    return masterMap;
   }
 
   // AbstractFunctionInvoker

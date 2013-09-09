@@ -10,9 +10,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.opengamma.id.UniqueId;
-import com.opengamma.language.client.CombinedPortfolioMaster;
 import com.opengamma.language.client.CombiningMaster;
-import com.opengamma.language.client.MasterID;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
@@ -25,8 +23,10 @@ import com.opengamma.language.function.PublishedFunction;
 import com.opengamma.master.DocumentVisibility;
 import com.opengamma.master.portfolio.ManageablePortfolio;
 import com.opengamma.master.portfolio.PortfolioDocument;
+import com.opengamma.master.portfolio.PortfolioMaster;
 import com.opengamma.master.portfolio.PortfolioSearchRequest;
 import com.opengamma.master.portfolio.PortfolioSearchSortOrder;
+import com.opengamma.master.portfolio.impl.CombinedPortfolioMaster;
 import com.opengamma.util.async.AsynchronousExecution;
 
 /**
@@ -71,7 +71,7 @@ public class PortfolioIdFunction extends AbstractFunctionInvoker implements Publ
       }
 
       @Override
-      public void accept(PortfolioDocument document, MasterID master, boolean masterUnique, boolean clientUnique) {
+      public void accept(PortfolioDocument document, PortfolioMaster master, boolean masterUnique, boolean clientUnique) {
         final ManageablePortfolio portfolio = document.getPortfolio();
         resultIds.add(portfolio.getUniqueId());
       }

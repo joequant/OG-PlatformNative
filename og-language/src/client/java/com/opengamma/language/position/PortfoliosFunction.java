@@ -7,10 +7,10 @@
 package com.opengamma.language.position;
 
 import java.util.Arrays;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.opengamma.language.client.CombinedPortfolioMaster;
 import com.opengamma.language.client.CombiningMaster;
 import com.opengamma.language.client.MasterID;
 import com.opengamma.language.context.SessionContext;
@@ -24,7 +24,9 @@ import com.opengamma.language.function.PublishedFunction;
 import com.opengamma.master.DocumentVisibility;
 import com.opengamma.master.portfolio.ManageablePortfolio;
 import com.opengamma.master.portfolio.PortfolioDocument;
+import com.opengamma.master.portfolio.PortfolioMaster;
 import com.opengamma.master.portfolio.PortfolioSearchRequest;
+import com.opengamma.master.portfolio.impl.CombinedPortfolioMaster;
 
 /**
  * Returns a list of matching portfolios, searched by name.
@@ -61,6 +63,9 @@ public class PortfoliosFunction extends AbstractFunctionInvoker implements Publi
     request.setDepth(0);
     request.setVisibility(DocumentVisibility.HIDDEN);
     final List<Object[]> rows = new LinkedList<Object[]>();
+    
+    final IdentityHashMap<PortfolioMaster, String> masterMap = buildMasterMap(context);
+    
     CombiningMaster.PORTFOLIO.get(context).search(request, new CombinedPortfolioMaster.SearchCallback() {
 
       @Override
@@ -70,7 +75,7 @@ public class PortfoliosFunction extends AbstractFunctionInvoker implements Publi
       }
 
       @Override
-      public void accept(PortfolioDocument document, MasterID master, boolean masterUnique, boolean clientUnique) {
+      public void accept(PortfolioDocument document, PortfolioMaster master, boolean masterUnique, boolean clientUnique) {
         final ManageablePortfolio portfolio = document.getPortfolio();
         final Object[] result = new Object[4];
         result[0] = portfolio.getUniqueId();
@@ -79,7 +84,11 @@ public class PortfoliosFunction extends AbstractFunctionInvoker implements Publi
           name = name + " " + portfolio.getUniqueId().toString();
         }
         if (!clientUnique) {
-          name = name + " (" + master.getLabel() + ")";
+          String label = masterMap.get(master);
+          if (label == null) {
+            label = "UNKNOWN";
+          }
+          name = name + " (" + label + ")";
         }
         result[1] = name;
         result[2] = portfolio.getRootNode().getUniqueId();
@@ -96,6 +105,18 @@ public class PortfoliosFunction extends AbstractFunctionInvoker implements Publi
     return rows.toArray(new Object[rows.size()][]);
   }
 
+  private static IdentityHashMap<PortfolioMaster, String> buildMasterMap(final SessionContext context) {
+    PortfolioMaster sessionMaster = context.getClient().getPortfolioMaster();
+    PortfolioMaster userMaster = context.getUserContext().getClient().getPortfolioMaster();
+    PortfolioMaster globalMaster = context.getGlobalContext().getClient().getPortfolioMaster();
+    
+    final IdentityHashMap<PortfolioMaster, String> masterMap = new IdentityHashMap<>();
+    masterMap.put(sessionMaster, MasterID.SESSION.getLabel());
+    masterMap.put(userMaster, MasterID.USER.getLabel());
+    masterMap.put(globalMaster, MasterID.GLOBAL.getLabel());
+    return masterMap;
+  }
+  
   // AbstractFunctionInvoker
 
   @Override
