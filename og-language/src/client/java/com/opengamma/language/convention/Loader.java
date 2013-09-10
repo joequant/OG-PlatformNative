@@ -13,6 +13,7 @@ import net.sf.ehcache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opengamma.financial.convention.EHCachingConventionSource;
 import com.opengamma.financial.convention.rest.RemoteConventionSource;
 import com.opengamma.language.config.Configuration;
 import com.opengamma.language.context.ContextInitializationBean;
@@ -73,8 +74,7 @@ public class Loader extends ContextInitializationBean {
       return;
     }
     s_logger.info("Configuring convention support");
-    // TODO: [PLAT-4305] should be cached
-    globalContext.setConventionSource(new RemoteConventionSource(uri));
+    globalContext.setConventionSource(new EHCachingConventionSource(new RemoteConventionSource(uri), getCacheManager()));
     globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FetchConventionFunction.INSTANCE));
   }
 
