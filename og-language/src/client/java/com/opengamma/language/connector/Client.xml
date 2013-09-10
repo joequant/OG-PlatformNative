@@ -200,6 +200,12 @@
     <property name="sessionContextFactory" ref="sessionContextFactory" />
     <property name="userContextFactory" ref="userContextFactory" />
   </bean>
+  
+  <!-- Conventions -->
+  <bean id="conventionLoader" class="com.opengamma.language.convention.Loader">
+    <property name="globalContextFactory" ref="globalContextFactory" />
+    <property name="configuration" ref="defaultConfiguration" />
+  </bean>
 
   <!-- Currency pairs -->
   <bean id="currencyPairsLoader" class="com.opengamma.language.currency.Loader">

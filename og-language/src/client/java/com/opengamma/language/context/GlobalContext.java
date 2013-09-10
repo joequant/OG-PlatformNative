@@ -21,6 +21,7 @@ import com.opengamma.engine.ComputationTargetResolver;
 import com.opengamma.engine.view.ViewProcessor;
 import com.opengamma.engine.view.helper.AvailableOutputsProvider;
 import com.opengamma.financial.analytics.volatility.cube.VolatilityCubeDefinitionSource;
+import com.opengamma.financial.convention.ConventionSource;
 import com.opengamma.financial.currency.CurrencyPairsSource;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.language.function.AggregatingFunctionProvider;
@@ -44,8 +45,7 @@ import com.opengamma.language.procedure.DefaultProcedureDefinitionFilter;
 import com.opengamma.language.procedure.ProcedureDefinitionFilter;
 
 /**
- * A global information context shared by all client instances. This corresponds to the
- * OpenGamma installation the language integration framework is connecting to.
+ * A global information context shared by all client instances. This corresponds to the OpenGamma installation the language integration framework is connecting to.
  */
 public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> {
 
@@ -63,6 +63,11 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the default computation target resolver is bound.
    */
   protected static final String COMPUTATION_TARGET_RESOLVER = "computationTargetResolver";
+
+  /**
+   * Name under which the convention source is bound.
+   */
+  protected static final String CONVENTION_SOURCE = "conventionSource";
 
   /**
    * Name under which the currency pairs source is bound.
@@ -148,7 +153,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the position source is bound.
    */
   protected static final String POSITION_SOURCE = "positionSource";
-  
+
   /**
    * Name under which the region source is bound.
    */
@@ -180,7 +185,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   protected static final String TYPE_CONVERTER_PROVIDER = "typeConverterProvider";
 
   /**
-   * Name under which the generic value converter is bound. 
+   * Name under which the generic value converter is bound.
    */
   protected static final String VALUE_CONVERTER = "valueConverter";
 
@@ -188,12 +193,11 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the view processor is bound.
    */
   protected static final String VIEW_PROCESSOR = "viewProcessor";
-  
+
   /**
    * Name under which the volatility cube definition source is bound.
    */
   protected static final String VOLATILITY_CUBE_DEFINITION_SOURCE = "volatilityCubeDefinitionSource";
-
 
   private final Map<String, UserContext> _userContexts = new HashMap<String, UserContext>();
 
@@ -213,8 +217,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   // System calls
 
   /**
-   * Adds a user context. To combine the user context operations into an atomic operation,
-   * synchronize on the global context object (e.g. for get followed by add).
+   * Adds a user context. To combine the user context operations into an atomic operation, synchronize on the global context object (e.g. for get followed by add).
    * 
    * @param userContext user context to add
    * @throws IllegalStateException if an active context already exists for the user
@@ -227,8 +230,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   }
 
   /**
-   * Removes a user context. To combine the user context operations into an atomic operation,
-   * synchronize on the global context object (e.g. for get followed by add).
+   * Removes a user context. To combine the user context operations into an atomic operation, synchronize on the global context object (e.g. for get followed by add).
    * 
    * @param userContext user context to remove
    * @throws IllegalStateException if an active context does not exist for the user
@@ -240,8 +242,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   }
 
   /**
-   * Returns an existing user context. To combine the user context operations into an atomic
-   * operation, synchronize on the global context object (e.g. for get followed by add).
+   * Returns an existing user context. To combine the user context operations into an atomic operation, synchronize on the global context object (e.g. for get followed by add).
    * 
    * @param userName name of the user to search for
    * @return an existing context, null if none is available
@@ -253,11 +254,8 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   // Core members
 
   /**
-   * Returns true iff the service is running from a debug build.
-   * This is dependent only on the service runner and should probably control infrastructure
-   * behavior, logging or diagnostics. The session context will indicate whether the code used
-   * by the bound language is a debug build which could control the operation available or
-   * additional debugging/diagnostic metadata apply to the results.
+   * Returns true iff the service is running from a debug build. This is dependent only on the service runner and should probably control infrastructure behavior, logging or diagnostics. The session
+   * context will indicate whether the code used by the bound language is a debug build which could control the operation available or additional debugging/diagnostic metadata apply to the results.
    * 
    * @return true if the service runner is a debug build
    */
@@ -298,9 +296,13 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   public RemoteClient getClient() {
     return getValue(CLIENT);
   }
-  
+
   public ComputationTargetResolver getComputationTargetResolver() {
     return getValue(COMPUTATION_TARGET_RESOLVER);
+  }
+
+  public ConventionSource getConventionSource() {
+    return getValue(CONVENTION_SOURCE);
   }
 
   public CurrencyPairsSource getCurrencyPairsSource() {
@@ -363,7 +365,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   public PositionSource getPositionSource() {
     return getValue(POSITION_SOURCE);
   }
-  
+
   public ProcedureDefinitionFilter getProcedureDefinitionFilter() {
     return getValue(PROCEDURE_DEFINITION_FILTER);
   }
@@ -412,7 +414,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   public ViewProcessor getViewProcessor() {
     return getValue(VIEW_PROCESSOR);
   }
-  
+
   public VolatilityCubeDefinitionSource getVolatilityCubeDefinitionSource() {
     return getValue(VOLATILITY_CUBE_DEFINITION_SOURCE);
   }

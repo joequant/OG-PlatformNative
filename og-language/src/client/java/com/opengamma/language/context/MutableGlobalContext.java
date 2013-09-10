@@ -19,6 +19,7 @@ import com.opengamma.engine.DefaultComputationTargetResolver;
 import com.opengamma.engine.view.ViewProcessor;
 import com.opengamma.engine.view.helper.AvailableOutputsProvider;
 import com.opengamma.financial.analytics.volatility.cube.VolatilityCubeDefinitionSource;
+import com.opengamma.financial.convention.ConventionSource;
 import com.opengamma.financial.currency.CurrencyPairsSource;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.language.function.AggregatingFunctionProvider;
@@ -68,9 +69,13 @@ public class MutableGlobalContext extends GlobalContext {
   public void setClient(final RemoteClient client) {
     removeOrReplaceValue(CLIENT, client);
   }
-  
+
   public void setComputationTargetResolver(final DefaultComputationTargetResolver computationTargetResolver) {
     removeOrReplaceValue(COMPUTATION_TARGET_RESOLVER, computationTargetResolver);
+  }
+
+  public void setConventionSource(final ConventionSource conventionSource) {
+    removeOrReplaceValue(CONVENTION_SOURCE, conventionSource);
   }
 
   public void setCurrencyPairsSource(final CurrencyPairsSource currencyPairsSource) {
@@ -164,7 +169,7 @@ public class MutableGlobalContext extends GlobalContext {
   public void setConfigSource(final ConfigSource configSource) {
     removeOrReplaceValue(CONFIG_SOURCE, configSource);
   }
-  
+
   @Override
   public AggregatingTypeConverterProvider getTypeConverterProvider() {
     return getTypeConverterProviderImpl();
@@ -178,7 +183,7 @@ public class MutableGlobalContext extends GlobalContext {
   public void setViewProcessor(final ViewProcessor viewProcessor) {
     removeOrReplaceValue(VIEW_PROCESSOR, viewProcessor);
   }
-  
+
   public void setVolatilityCubeDefinitionSource(final VolatilityCubeDefinitionSource volatilityCubeDefinitionSource) {
     removeOrReplaceValue(VOLATILITY_CUBE_DEFINITION_SOURCE, volatilityCubeDefinitionSource);
   }

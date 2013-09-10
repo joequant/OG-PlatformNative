@@ -7,14 +7,18 @@
 package com.opengamma.language.definition;
 
 /**
- * The standard categories for grouping OpenGamma language entities. Local implementations
- * should use these where possible (or extend generically if necessary), with a filter
- * defined that translates to corresponding names suitable for a bound language. 
+ * The standard categories for grouping OpenGamma language entities. Local implementations should use these where possible (or extend generically if necessary), with a filter defined that translates
+ * to corresponding names suitable for a bound language.
  */
 public final class Categories {
 
   // TODO: add other category dimensions (like the code used to be), so that it can be sliced in whichever way the language binding chooses
   // (e.g. to group by function, such as database access, rather than by object type)
+
+  /**
+   * Anything concerned with trading conventions.
+   */
+  public static final String CONVENTION = "Convention";
 
   /**
    * Anything concerned with currency manipulation.
