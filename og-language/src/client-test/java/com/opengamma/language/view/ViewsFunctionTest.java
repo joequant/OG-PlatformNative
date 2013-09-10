@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 import com.opengamma.core.config.ConfigSource;
 import com.opengamma.core.config.impl.ConfigItem;
 import com.opengamma.engine.view.ViewDefinition;
+import com.opengamma.id.ObjectId;
 import com.opengamma.id.UniqueId;
 import com.opengamma.master.config.ConfigDocument;
 import com.opengamma.master.config.impl.InMemoryConfigMaster;
@@ -45,7 +46,7 @@ public class ViewsFunctionTest {
     final ConfigSource source = createConfigSource();
     final Map<UniqueId, String> result = ViewsFunction.invoke(source, "Two");
     assertEquals(result.size(), 1);
-    assertTrue(result.keySet().contains(UniqueId.of(InMemoryConfigMaster.DEFAULT_OID_SCHEME, "2")));
+    assertEquals(result.keySet().iterator().next().getObjectId(), ObjectId.of(InMemoryConfigMaster.DEFAULT_OID_SCHEME, "2"));
     assertTrue(result.values().contains("Two"));
   }
 

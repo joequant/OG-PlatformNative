@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include <util/cpp/AbstractSettings.h>
+#include <util/cpp/Error.h>
 
 LOGGING (com.opengamma.language.util.AbstractSettingsTest);
 
@@ -58,6 +59,7 @@ protected:
 	/// @param[in] poSettings the settings object
 	/// @return the default string
 	TCHAR *CalculateString (const CAbstractSettings *poSettings) const {
+		__unused (poSettings)
 		return _tcsdup (TEXT ("Foo"));
 	}
 
@@ -122,7 +124,12 @@ public:
 		m_nSettings = 0;
 	}
 	void Setting (const TCHAR *pszKey, const TCHAR *pszValue) const {
+#ifdef _DEBUG
 		LOGDEBUG (TEXT ("Key=") << pszKey << TEXT (", Value=") << pszValue);
+#else /* ifdef _DEBUG */
+		__unused (pszKey)
+		__unused (pszValue)
+#endif /* ifdef _DEBUG */
 		m_nSettings++;
 	}
 	int GetSettingCount () {
