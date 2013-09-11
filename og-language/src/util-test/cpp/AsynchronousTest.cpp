@@ -46,6 +46,23 @@ public:
 	}
 };
 
+class CTestAsyncOperation3 : public CAsynchronous::COperation {
+private:
+	int *m_pnRun1Count;
+	int m_nRun1Expect;
+	int *m_pnRun2Count;
+public:
+	CTestAsyncOperation3 (int *pnRun1Count, int nRun1Expect, int *pnRun2Count) {
+		m_pnRun1Count = pnRun1Count;
+		m_nRun1Expect = nRun1Expect;
+		m_pnRun2Count = pnRun2Count;
+	}
+	void Run () {
+		ASSERT (*m_pnRun1Count == m_nRun1Expect);
+		(*m_pnRun2Count)++;
+	}
+};
+
 class CThreadRecordingOperation : public CAsynchronous::COperation {
 private:
 	CThread::THREAD_REF *m_phThread;
@@ -84,6 +101,26 @@ static void BasicOperations () {
 	ASSERT (nRun1 == 1);
 	ASSERT (nRun2 == 3);
 	ASSERT (nRun3 == 0);
+}
+
+static void PrioritizedOperations () {
+	CAsynchronous *poCaller = CAsynchronous::Create ();
+	ASSERT (poCaller);
+	int nRun1 = 0, nRun2 = 0, nRun3 = 0;
+	CTestAsyncOperation2 *poRun1 = new CTestAsyncOperation2 (false, &nRun1);
+	CTestAsyncOperation3 *poRun2 = new CTestAsyncOperation3 (&nRun1, 0, &nRun2);
+	CTestAsyncOperation3 *poRun3a = new CTestAsyncOperation3 (&nRun1, 1, &nRun3);
+	CTestAsyncOperation3 *poRun3b = new CTestAsyncOperation3 (&nRun2, 1, &nRun3);
+	ASSERT (poCaller->Run (poRun1));
+	ASSERT (poCaller->RunFirst (poRun2));
+	ASSERT (poCaller->Run (poRun3a));
+	ASSERT (poCaller->Run (poRun3b));
+	CThread::Sleep (TIMEOUT_COMPLETE);
+	CAsynchronous::PoisonAndRelease (poCaller);
+	CThread::Sleep (TIMEOUT_COMPLETE / 6);
+	ASSERT (nRun1 == 1);
+	ASSERT (nRun2 == 1);
+	ASSERT (nRun3 == 2);
 }
 
 static void VitalOperations () {
@@ -160,6 +197,7 @@ static void ThreadRecycling () {
 /// Tests the functions and objects in Util/Asynchronous.cpp
 BEGIN_TESTS (AsynchronousTest)
 	UNIT_TEST (BasicOperations)
+	UNIT_TEST (PrioritizedOperations)
 	UNIT_TEST (VitalOperations)
 	UNIT_TEST (ThreadIdleTimeout)
 	UNIT_TEST (ThreadRecycling)

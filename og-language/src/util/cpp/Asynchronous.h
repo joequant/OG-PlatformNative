@@ -143,6 +143,7 @@ protected:
 
 public:
 	bool Run (COperation *poOperation);
+	bool RunFirst (COperation *poOperation);
 	virtual void Poison ();
 	bool RecycleThread ();
 

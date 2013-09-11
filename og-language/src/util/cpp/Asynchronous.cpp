@@ -240,14 +240,14 @@ abandonLoop:
 
 /// Schedules an operation for later execution on the execution thread. If no thread
 /// currently exists, one is started. The callback service will take ownership of
-/// the operation after this call. If the return value is true, the caller may no
+/// the operation after this call. If the return value is TRUE, the caller may no
 /// longer use the object. It will be deleted by the asynchronous framework.
 ///
-/// @param[in] poOperation operation to schedule, never NULL
-/// @return true if the operation was scheduled (or discarded), false otherwise
+/// @param[in] poOperation operation to schedule, not NULL
+/// @return TRUE if the operation was scheduled (or discarded), FALSE otherwise
 bool CAsynchronous::Run (COperation *poOperation) {
 	if (!poOperation) {
-		LOGWARN ("NULL pointer passed");
+		LOGWARN (TEXT ("NULL pointer passed"));
 		return false;
 	}
 	bool bResult = true;
@@ -275,7 +275,7 @@ bool CAsynchronous::Run (COperation *poOperation) {
 			} else {
 				m_poHead = poOperation;
 				if (m_bWaiting) {
-					LOGDEBUG ("Signalling semaphore");
+					LOGDEBUG (TEXT ("Signalling semaphore"));
 					if (!m_semQueue.Signal ()) {
 						LOGWARN (TEXT ("Couldn't signal semaphore, error ") << GetLastError ());
 					}
@@ -292,7 +292,71 @@ bool CAsynchronous::Run (COperation *poOperation) {
 			delete poOperation;
 		}
 	} else {
-		LOGWARN ("Caller has been poisoned");
+		LOGWARN (TEXT ("Caller has been poisoned"));
+		bResult = false;
+	}
+abortRun:
+	LeaveCriticalSection ();
+	return bResult;
+}
+
+/// Schedules an operation for later execution on the execution thread. If no thread currently
+/// exists, one is started. The callback service will take ownership of the operation after
+/// this call. If the return value is TRUE, the caller may no longer use the object. It will
+/// be deleted by the asynchronous framework.
+///
+/// Unlike Run, this will place the operation at the head of the pending queue. This will
+/// cause it to run before any operations previously scheduled with Run or RunFirst, breaking
+/// the normal FIFO contract.
+///
+/// @param[in] poOperation operation to schedule, never NULL
+/// @return TRUE if the operation was scheduled (or discarded), FALSE otherwise
+bool CAsynchronous::RunFirst (COperation *poOperation) {
+	if (!poOperation) {
+		LOGWARN (TEXT ("NULL pointer passed"));
+		return false;
+	}
+	bool bResult = true;
+	EnterCriticalSection ();
+	if (!m_bPoison) {
+		if (!m_poRunner) {
+			m_poRunner = new CAsynchronousRunnerThread (this);
+			if (!m_poRunner) {
+				LOGFATAL (TEXT ("Out of memory"));
+				bResult = false;
+				goto abortRun;
+			} else if (m_poRunner->Start ()) {
+				LOGINFO (TEXT ("Callback thread created, ID ") << m_poRunner->GetThreadId ());
+			} else {
+				LOGFATAL (TEXT ("Couldn't create callback thread, error ") << GetLastError ());
+				CThread::Release (m_poRunner);
+				m_poRunner = NULL;
+				bResult = false;
+				goto abortRun;
+			}
+		}
+		if (poOperation->OnScheduled ()) {
+			poOperation->m_poNext = m_poHead;
+			if (!m_poHead) {
+				m_poTail = poOperation;
+				if (m_bWaiting) {
+					LOGDEBUG (TEXT ("Signalling semaphore"));
+					if (!m_semQueue.Signal ()) {
+						LOGWARN (TEXT ("Couldn't signal semaphore, error ") << GetLastError ());
+					}
+					// Clear the waiting flag, e.g. if there is another call to Run before the
+					// dispatch thread completes its wait and clears it itself.
+					m_bWaiting = false;
+				}
+			}
+			m_poHead = poOperation;
+			poOperation->m_nMustReschedule = 0;
+		} else {
+			LOGDEBUG (TEXT ("Operation refused to schedule"));
+			delete poOperation;
+		}
+	} else {
+		LOGWARN (TEXT ("Caller has been poisoned"));
 		bResult = false;
 	}
 abortRun:
