@@ -84,7 +84,8 @@ public class Loader extends ContextInitializationBean {
     globalContext.getFunctionProvider().addProvider(functions);
     globalContext.getTypeConverterProvider().addTypeConverterProvider(new TypeConverterProviderBean(
         AvailableOutputsConverter.INSTANCE,
-        ValuePropertiesConverter.INSTANCE));
+        ValuePropertiesConverter.INSTANCE,
+        ComputationTargetTypeConverter.INSTANCE));
   }
 
 }
