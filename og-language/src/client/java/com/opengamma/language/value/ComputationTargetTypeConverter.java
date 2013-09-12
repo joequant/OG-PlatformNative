@@ -16,8 +16,8 @@ import com.opengamma.language.definition.JavaTypeInfo;
  */
 public class ComputationTargetTypeConverter extends AbstractMappedConverter {
 
-  private static final JavaTypeInfo<ComputationTargetType> COMPUTATION_TARGET_TYPE = JavaTypeInfo.builder(ComputationTargetType.class).get();
-  private static final JavaTypeInfo<String> STRING = JavaTypeInfo.builder(String.class).get();
+  private static final JavaTypeInfo<ComputationTargetType> COMPUTATION_TARGET_TYPE = JavaTypeInfo.builder(ComputationTargetType.class).allowNull().get();
+  private static final JavaTypeInfo<String> STRING = JavaTypeInfo.builder(String.class).allowNull().get();
 
   /**
    * Default instance.

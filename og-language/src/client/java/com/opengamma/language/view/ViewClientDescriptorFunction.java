@@ -8,10 +8,13 @@ package com.opengamma.language.view;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.threeten.bp.Instant;
 
+import com.opengamma.engine.marketdata.spec.MarketDataSpecification;
 import com.opengamma.id.UniqueId;
+import com.opengamma.language.config.ConfigurationItem;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
@@ -35,6 +38,7 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final MetaParameter SNAPSHOT_PARAMETER = new MetaParameter("snapshot", JavaTypeInfo.builder(UniqueId.class).get());
   private static final MetaParameter TS_RESOLVER_PARAMETER = new MetaParameter("timeSeriesResolver", JavaTypeInfo.builder(String.class).allowNull().get());
   private static final MetaParameter TS_FIELD_RESOLVER_PARAMETER = new MetaParameter("timeSeriesFieldResolver", JavaTypeInfo.builder(String.class).allowNull().get());
+  private static final MetaParameter MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER = new MetaParameter("marketDataSpecifications", JavaTypeInfo.builder(List.class).parameter(JavaTypeInfo.builder(MarketDataSpecification.class).get()).get());
 
   private final MetaFunction _meta;
 
@@ -66,6 +70,25 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
    * tickingMarketData instance
    */
   public static final ViewClientDescriptorFunction TICKING_MARKET_DATA = new TickingMarketData();
+  
+  private static final class TickingMarketDataSpecifications extends ViewClientDescriptorFunction {
+
+    private TickingMarketDataSpecifications() {
+      super("TickingMarketDataSpecificationsViewClient", Arrays.asList(VIEW_PARAMETER, MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ViewClientDescriptor invokeImpl(final Object[] parameters) {
+      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], (List<MarketDataSpecification>) parameters[1]);
+    }
+
+  }
+
+  /**
+   * tickingMarketDataSpecifications instance
+   */
+  public static final ViewClientDescriptorFunction TICKING_MARKET_DATA_SPECIFICATIONS = new TickingMarketDataSpecifications();
 
   private static final class StaticMarketData extends ViewClientDescriptorFunction {
 
@@ -84,6 +107,25 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
    * staticMarketData instance
    */
   public static final ViewClientDescriptorFunction STATIC_MARKET_DATA = new StaticMarketData();
+  
+  private static final class StaticMarketDataSpecifications extends ViewClientDescriptorFunction {
+
+    private StaticMarketDataSpecifications() {
+      super("StaticMarketDataSpecificationsViewClient", Arrays.asList(VIEW_PARAMETER, MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ViewClientDescriptor invokeImpl(final Object[] parameters) {
+      return ViewClientDescriptor.staticMarketData((UniqueId) parameters[0], (List<MarketDataSpecification>) parameters[1]);
+    }
+
+  }
+
+  /**
+   * staticMarketData instance
+   */
+  public static final ViewClientDescriptorFunction STATIC_MARKET_DATA_SPECIFICATIONS = new StaticMarketDataSpecifications();
 
   private static final class HistoricalMarketData extends ViewClientDescriptorFunction {
 

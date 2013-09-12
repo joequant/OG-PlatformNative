@@ -5,6 +5,9 @@
  */
 package com.opengamma.language.view;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.MutableFudgeMsg;
 import org.fudgemsg.mapping.FudgeDeserializer;
@@ -13,6 +16,7 @@ import org.threeten.bp.Instant;
 
 import com.opengamma.engine.marketdata.spec.LiveMarketDataSpecification;
 import com.opengamma.engine.marketdata.spec.MarketData;
+import com.opengamma.engine.marketdata.spec.MarketDataSpecification;
 import com.opengamma.engine.view.execution.ExecutionFlags;
 import com.opengamma.engine.view.execution.ExecutionOptions;
 import com.opengamma.engine.view.execution.InfiniteViewCycleExecutionSequence;
@@ -62,13 +66,26 @@ public final class ViewClientDescriptor {
    * @return the descriptor
    */
   public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final String dataSource) {
-    final LiveMarketDataSpecification marketDataSpec;
+    final MarketDataSpecification marketDataSpec;
     if (dataSource == null) {
       marketDataSpec = MarketData.live();
     } else {
       marketDataSpec = MarketData.live(dataSource);
     }
-    return new ViewClientDescriptor(viewId, ExecutionOptions.infinite(marketDataSpec));
+    return new ViewClientDescriptor(viewId, ExecutionOptions.infinite(Collections.singletonList(marketDataSpec)));
+  }
+  
+  /**
+   * Returns a descriptor for ticking live market data. The view will recalculate when market data changes and obey time
+   * thresholds on the view definition.
+   * 
+   * @param viewId  unique identifier of the view, not null
+   * @param marketDataSpecifications  a list of the market data specifications, not null
+   * @return the descriptor
+   */
+  public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications) {
+    final LiveMarketDataSpecification marketDataSpec;
+    return new ViewClientDescriptor(viewId, ExecutionOptions.infinite(marketDataSpecifications));
   }
 
   /**
@@ -83,6 +100,22 @@ public final class ViewClientDescriptor {
     final ViewCycleExecutionSequence cycleSequence = new InfiniteViewCycleExecutionSequence();
     final ViewCycleExecutionOptions.Builder cycleOptions = ViewCycleExecutionOptions.builder();
     cycleOptions.setMarketDataSpecification((dataSource == null) ? MarketData.live() : MarketData.live(dataSource));
+    final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions.create(), ExecutionFlags.none().waitForInitialTrigger().awaitMarketData().get());
+    return new ViewClientDescriptor(viewId, options);
+  }
+  
+  /**
+   * Returns a descriptor for a static live market data view. The view will recalculate when manually triggered and will not start
+   * until the first trigger is received (allowing injected overrides to be set up before the first). 
+   * 
+   * @param viewId  unique identifier of the view, not null
+   * @param marketDataSpecifications  a list of the market data specifications, not null
+   * @return the descriptor
+   */
+  public static ViewClientDescriptor staticMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications) {
+    final ViewCycleExecutionSequence cycleSequence = new InfiniteViewCycleExecutionSequence();
+    final ViewCycleExecutionOptions.Builder cycleOptions = ViewCycleExecutionOptions.builder();
+    cycleOptions.setMarketDataSpecifications(marketDataSpecifications);
     final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions.create(), ExecutionFlags.none().waitForInitialTrigger().awaitMarketData().get());
     return new ViewClientDescriptor(viewId, options);
   }

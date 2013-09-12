@@ -54,7 +54,7 @@ public class ViewClientDescriptorConverter extends AbstractTypeConverter {
         return;
       }
     }
-    conversionContext.setResult(ViewClientDescriptor.tickingMarketData(viewId, null));
+    conversionContext.setResult(ViewClientDescriptor.tickingMarketData(viewId, (String) null));
   }
 
   @Override
