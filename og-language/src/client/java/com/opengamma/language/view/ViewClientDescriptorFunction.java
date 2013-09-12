@@ -38,7 +38,7 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final MetaParameter SNAPSHOT_PARAMETER = new MetaParameter("snapshot", JavaTypeInfo.builder(UniqueId.class).get());
   private static final MetaParameter TS_RESOLVER_PARAMETER = new MetaParameter("timeSeriesResolver", JavaTypeInfo.builder(String.class).allowNull().get());
   private static final MetaParameter TS_FIELD_RESOLVER_PARAMETER = new MetaParameter("timeSeriesFieldResolver", JavaTypeInfo.builder(String.class).allowNull().get());
-  private static final MetaParameter MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER = new MetaParameter("marketDataSpecifications", JavaTypeInfo.builder(List.class).parameter(JavaTypeInfo.builder(MarketDataSpecification.class).get()).get());
+  private static final MetaParameter MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER = new MetaParameter("marketDataSpecifications", JavaTypeInfo.builder(List.class).allowNull().parameter(JavaTypeInfo.builder(MarketDataSpecification.class).get()).get());
 
   private final MetaFunction _meta;
 
