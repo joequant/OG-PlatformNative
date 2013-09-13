@@ -43,6 +43,8 @@ public abstract class AbstractMappedConverter extends AbstractTypeConverter {
      * 
      * @param value the value to convert
      * @return the converted value
+     * @throws RuntimeException if the conversion is invalid. If possible, detect the invalid conversion with the {@link #cast} method and return null. Only throw an exception if checking in advance
+     *           is likely to be more expensive than having a go and failing.
      */
     protected abstract T convert(F value);
 
@@ -81,11 +83,17 @@ public abstract class AbstractMappedConverter extends AbstractTypeConverter {
     }
     final Action<Object, Object> action = (Action<Object, Object>) _conversions.get(type.withoutDefault()).getSecond();
     final Object cast = action.cast(value);
-    if (cast != null) {
-      conversionContext.setResult(action.convert(cast));
-    } else {
+    if (cast == null) {
       conversionContext.setFail();
     }
+    final Object result;
+    try {
+      result = action.convert(cast);
+    } catch (RuntimeException e) {
+      conversionContext.setFail();
+      return;
+    }
+    conversionContext.setResult(result);
   }
 
   @Override
