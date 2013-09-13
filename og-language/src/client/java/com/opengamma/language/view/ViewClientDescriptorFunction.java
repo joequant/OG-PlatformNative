@@ -38,7 +38,7 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final MetaParameter SNAPSHOT_PARAMETER = new MetaParameter("snapshot", JavaTypeInfo.builder(UniqueId.class).get());
   private static final MetaParameter TS_RESOLVER_PARAMETER = new MetaParameter("timeSeriesResolver", JavaTypeInfo.builder(String.class).allowNull().get());
   private static final MetaParameter TS_FIELD_RESOLVER_PARAMETER = new MetaParameter("timeSeriesFieldResolver", JavaTypeInfo.builder(String.class).allowNull().get());
-  private static final MetaParameter MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER = new MetaParameter("marketDataSpecifications", JavaTypeInfo.builder(List.class).allowNull().parameter(JavaTypeInfo.builder(MarketDataSpecification.class).get()).get());
+  private static final MetaParameter MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER = new MetaParameter("marketDataSpecifications", JavaTypeInfo.builder(MarketDataSpecification.class).get().arrayOfWithAllowNull(true));
 
   private final MetaFunction _meta;
 
@@ -77,10 +77,10 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
       super("TickingMarketDataSpecificationsViewClient", Arrays.asList(VIEW_PARAMETER, MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected ViewClientDescriptor invokeImpl(final Object[] parameters) {
-      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], (List<MarketDataSpecification>) parameters[1]);
+      MarketDataSpecification[] marketDataSpecs = (MarketDataSpecification[]) parameters[1];
+      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], Arrays.asList(marketDataSpecs));
     }
 
   }
