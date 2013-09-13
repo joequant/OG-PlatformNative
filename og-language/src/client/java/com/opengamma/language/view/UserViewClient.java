@@ -40,8 +40,10 @@ public final class UserViewClient implements UniqueIdentifiable {
   private static final Logger s_logger = LoggerFactory.getLogger(UserViewClient.class);
   private static final ViewResultListener[] EMPTY = new ViewResultListener[0];
 
-  private static final int ET_FINISH = 1;
-  private static final int ET_VIEWDEF = 2;
+  private static final int ET_VIEWDEF = 1;
+  private static final int ET_COMPLETED = 2;
+  private static final int ET_TERMINATED = 3;
+  private static final int ET_SHUTDOWN = 4;
 
   private abstract class ViewResultListenerEvent {
 
@@ -92,6 +94,9 @@ public final class UserViewClient implements UniqueIdentifiable {
         _coreEvents.add(event);
         listeners = _listeners;
       }
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching view definition compiled to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
       for (ViewResultListener listener : listeners) {
         listener.viewDefinitionCompiled(compiledViewDefinition, hasMarketDataPermissions);
       }
@@ -111,6 +116,9 @@ public final class UserViewClient implements UniqueIdentifiable {
         _coreEvents.add(event);
         listeners = _listeners;
       }
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching view definition compilation failed to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
       for (ViewResultListener listener : listeners) {
         listener.viewDefinitionCompilationFailed(valuationTime, exception);
       }
@@ -118,28 +126,44 @@ public final class UserViewClient implements UniqueIdentifiable {
 
     @Override
     public void cycleFragmentCompleted(ViewComputationResultModel fullResult, ViewDeltaResultModel deltaResult) {
-      for (ViewResultListener listener : _listeners) {
+      final ViewResultListener[] listeners = _listeners;
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching cycle fragment completed to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
+      for (ViewResultListener listener : listeners) {
         listener.cycleFragmentCompleted(fullResult, deltaResult);
       }
     }
 
     @Override
     public void cycleStarted(ViewCycleMetadata cycleMetadata) {
-      for (ViewResultListener listener : _listeners) {
+      final ViewResultListener[] listeners = _listeners;
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching cycle started to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
+      for (ViewResultListener listener : listeners) {
         listener.cycleStarted(cycleMetadata);
       }
     }
 
     @Override
     public void cycleCompleted(final ViewComputationResultModel fullResult, final ViewDeltaResultModel deltaResult) {
-      for (ViewResultListener listener : _listeners) {
+      final ViewResultListener[] listeners = _listeners;
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching cycle completed to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
+      for (ViewResultListener listener : listeners) {
         listener.cycleCompleted(fullResult, deltaResult);
       }
     }
 
     @Override
     public void cycleExecutionFailed(final ViewCycleExecutionOptions executionOptions, final Exception exception) {
-      for (ViewResultListener listener : _listeners) {
+      final ViewResultListener[] listeners = _listeners;
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching cycle execution failed to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
+      for (ViewResultListener listener : listeners) {
         listener.cycleExecutionFailed(executionOptions, exception);
       }
     }
@@ -152,7 +176,7 @@ public final class UserViewClient implements UniqueIdentifiable {
     @Override
     public void processCompleted() {
       final ViewResultListener[] listeners;
-      final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_FINISH) {
+      final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_COMPLETED) {
         @Override
         public void callback(final ViewResultListener listener) {
           listener.processCompleted();
@@ -163,6 +187,9 @@ public final class UserViewClient implements UniqueIdentifiable {
         _coreEvents.add(event);
         listeners = _listeners;
       }
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching process completed to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
       for (ViewResultListener listener : listeners) {
         listener.processCompleted();
       }
@@ -171,7 +198,7 @@ public final class UserViewClient implements UniqueIdentifiable {
     @Override
     public void processTerminated(final boolean executionInterrupted) {
       final ViewResultListener[] listeners;
-      final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_FINISH) {
+      final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_TERMINATED) {
         @Override
         public void callback(final ViewResultListener listener) {
           listener.processTerminated(executionInterrupted);
@@ -182,13 +209,34 @@ public final class UserViewClient implements UniqueIdentifiable {
         _coreEvents.add(event);
         listeners = _listeners;
       }
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching process terminated to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
       for (ViewResultListener listener : listeners) {
         listener.processTerminated(executionInterrupted);
       }
     }
 
     @Override
-    public void clientShutdown(Exception e) {
+    public void clientShutdown(final Exception e) {
+      final ViewResultListener[] listeners;
+      final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_SHUTDOWN) {
+        @Override
+        public void callback(final ViewResultListener listener) {
+          listener.clientShutdown(e);
+        }
+      };
+      synchronized (this) {
+        _coreEvents.remove(event);
+        _coreEvents.add(event);
+        listeners = _listeners;
+      }
+      if (s_logger.isInfoEnabled()) {
+        s_logger.info("Dispatching client shutdown to {} listener(s) for {}", listeners.length, getUniqueId());
+      }
+      for (ViewResultListener listener : listeners) {
+        listener.clientShutdown(e);
+      }
     }
 
   };
@@ -398,4 +446,8 @@ public final class UserViewClient implements UniqueIdentifiable {
     return previouslyApplied;
   }
 
+  @Override
+  public String toString() {
+    return "UserViewClient[" + getViewClientKey() + "]";
+  }
 }
