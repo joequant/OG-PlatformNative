@@ -80,7 +80,10 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
     @Override
     protected ViewClientDescriptor invokeImpl(final Object[] parameters) {
       MarketDataSpecification[] marketDataSpecs = (MarketDataSpecification[]) parameters[1];
-      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], Arrays.asList(marketDataSpecs));
+      if (marketDataSpecs == null) { 
+        throw new IllegalArgumentException("marketDataSpecs must not be null");
+      }
+      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], marketDataSpecs != null ? Arrays.asList(marketDataSpecs) : null);
     }
 
   }
