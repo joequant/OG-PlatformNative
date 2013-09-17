@@ -11,10 +11,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.client.CombiningMaster;
 import com.opengamma.language.client.MasterID;
 import com.opengamma.language.context.SessionContext;
+import com.opengamma.language.context.UserContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
@@ -95,12 +97,14 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
   
   private static IdentityHashMap<MarketDataSnapshotMaster, String> buildMasterMap(final SessionContext context) {
     MarketDataSnapshotMaster sessionMaster = context.getClient().getMarketDataSnapshotMaster();
-    MarketDataSnapshotMaster userMaster = context
-        .getUserContext()
-        .getClient()
-        .getMarketDataSnapshotMaster();
+    UserContext a = context.getUserContext();
+    RemoteClient b = a.getClient();
+    MarketDataSnapshotMaster userMaster = b.getMarketDataSnapshotMaster();
     MarketDataSnapshotMaster globalMaster = context.getGlobalContext().getClient().getMarketDataSnapshotMaster();
-    
+
+
+
+
     final IdentityHashMap<MarketDataSnapshotMaster, String> masterMap = new IdentityHashMap<>();
     masterMap.put(sessionMaster, MasterID.SESSION.getLabel());
     masterMap.put(userMaster, MasterID.USER.getLabel());
