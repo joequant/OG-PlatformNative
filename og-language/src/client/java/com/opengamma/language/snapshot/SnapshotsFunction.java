@@ -95,7 +95,10 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
   
   private static IdentityHashMap<MarketDataSnapshotMaster, String> buildMasterMap(final SessionContext context) {
     MarketDataSnapshotMaster sessionMaster = context.getClient().getMarketDataSnapshotMaster();
-    MarketDataSnapshotMaster userMaster = context.getUserContext().getClient().getMarketDataSnapshotMaster();
+    MarketDataSnapshotMaster userMaster = context
+        .getUserContext()
+        .getClient()
+        .getMarketDataSnapshotMaster();
     MarketDataSnapshotMaster globalMaster = context.getGlobalContext().getClient().getMarketDataSnapshotMaster();
     
     final IdentityHashMap<MarketDataSnapshotMaster, String> masterMap = new IdentityHashMap<>();
