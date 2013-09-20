@@ -105,6 +105,7 @@ public class Loader extends ContextInitializationBean {
         SetCurveTensorFunction.INSTANCE,
         SnapshotsFunction.INSTANCE,
         SnapshotVersionsFunction.INSTANCE,
+        GetSnapshotCurveFunction.INSTANCE,
         TakeSnapshotNowFunction.INSTANCE,
         // REVIEW 2011-12-01 andrew -- Why did I do the following? Why not put entries into ObjectFunctionProvider?
         new GetAttributeFunction(Categories.MARKET_DATA, "GetSnapshotName", "Fetches the name of a snapshot", ManageableMarketDataSnapshot.meta().name(),
