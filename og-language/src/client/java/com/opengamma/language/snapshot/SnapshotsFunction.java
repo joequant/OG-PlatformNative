@@ -16,7 +16,6 @@ import com.opengamma.id.UniqueId;
 import com.opengamma.language.client.CombiningMaster;
 import com.opengamma.language.client.MasterID;
 import com.opengamma.language.context.SessionContext;
-import com.opengamma.language.context.UserContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
@@ -60,10 +59,9 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
     request.setName(name);
     request.setIncludeData(false);
     final Map<UniqueId, String> result = new LinkedHashMap<UniqueId, String>();
-    
-    final IdentityHashMap<MarketDataSnapshotMaster,String> masterMap = buildMasterMap(context);
-    
     CombiningMaster.MARKET_DATA_SNAPSHOT.get(context).search(request, new CombinedMarketDataSnapshotMaster.SearchCallback() {
+
+      private Map<MarketDataSnapshotMaster, String> _masterMap;
 
       @Override
       public boolean include(MarketDataSnapshotDocument document) {
@@ -77,7 +75,10 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
           name = name + " " + document.getUniqueId().toString();
         }
         if (!clientUnique) {
-          String label = masterMap.get(master);
+          if (_masterMap == null) {
+            _masterMap = buildMasterMap(context);
+          }
+          String label = _masterMap.get(master);
           if (label == null) {
             label = "UNKNOWN";
           }
@@ -94,20 +95,19 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
     });
     return result;
   }
-  
+
+  private static void addIfNotNull(final Map<MarketDataSnapshotMaster, String> map, final RemoteClient client, final MasterID id) {
+    if (client != null) {
+      final MarketDataSnapshotMaster master = client.getMarketDataSnapshotMaster();
+      map.put(master, id.getLabel());
+    }
+  }
+
   private static IdentityHashMap<MarketDataSnapshotMaster, String> buildMasterMap(final SessionContext context) {
-    MarketDataSnapshotMaster sessionMaster = context.getClient().getMarketDataSnapshotMaster();
-    RemoteClient remoteClient = context.getClient();
-    MarketDataSnapshotMaster userMaster = remoteClient.getMarketDataSnapshotMaster();
-    MarketDataSnapshotMaster globalMaster = context.getGlobalContext().getClient().getMarketDataSnapshotMaster();
-
-
-
-
     final IdentityHashMap<MarketDataSnapshotMaster, String> masterMap = new IdentityHashMap<>();
-    masterMap.put(sessionMaster, MasterID.SESSION.getLabel());
-    masterMap.put(userMaster, MasterID.USER.getLabel());
-    masterMap.put(globalMaster, MasterID.GLOBAL.getLabel());
+    addIfNotNull(masterMap, context.getClient(), MasterID.SESSION);
+    addIfNotNull(masterMap, context.getUserContext().getClient(), MasterID.USER);
+    addIfNotNull(masterMap, context.getGlobalContext().getClient(), MasterID.GLOBAL);
     return masterMap;
   }
 
