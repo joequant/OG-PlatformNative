@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.opengamma.OpenGammaRuntimeException;
 import com.opengamma.engine.value.ValueProperties;
+import com.opengamma.engine.value.ValueRequirement;
 import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.tuple.Pair;
 import com.opengamma.util.tuple.Triple;
@@ -25,15 +26,15 @@ import com.opengamma.util.tuple.Triple;
  */
 public final class ValueRequirementUtils {
 
-  private static final Pattern REQUIREMENT_EXPRESSION = Pattern.compile("^(?:(.+)/)?(.+?)([\\[\\{](.+)[\\]\\}])?$");
+  private static final Pattern REQUIREMENT_EXPRESSION = Pattern.compile("^(?:([^/]+)/)?(.+?)([\\[\\{](.+)[\\]\\}])?$");
   private static final String DEFAULT_CONFIG_NAME = "Default";
-  
+
   /**
    * Hidden constructor
    */
   private ValueRequirementUtils() {
   }
-  
+
   public static String generateRequirementName(String calcConfigName, String valueName, ValueProperties constraints) {
     String requirementName = valueName;
     if (!DEFAULT_CONFIG_NAME.equals(calcConfigName)) {
@@ -44,10 +45,9 @@ public final class ValueRequirementUtils {
     }
     return requirementName;
   }
-  
+
   /**
-   * Parses the string descriptions of the portfolio requirements into sets of value requirements (string/constraint pairs)
-   * for each calculation configuration referenced.
+   * Parses the string descriptions of the portfolio requirements into sets of value requirements (string/constraint pairs) for each calculation configuration referenced.
    * 
    * @param portfolioRequirements the user supplied requirements
    * @return a map of configuration to value requirement sets
@@ -91,5 +91,5 @@ public final class ValueRequirementUtils {
     constraints = ValueProperties.parse(constraintsString);
     return Triple.of(calcConfigName, requirementName, constraints);
   }
-  
+
 }
