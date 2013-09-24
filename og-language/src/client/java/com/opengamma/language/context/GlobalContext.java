@@ -14,6 +14,7 @@ import com.opengamma.core.exchange.ExchangeSource;
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.holiday.HolidaySource;
 import com.opengamma.core.marketdatasnapshot.MarketDataSnapshotSource;
+import com.opengamma.core.organization.OrganizationSource;
 import com.opengamma.core.position.PositionSource;
 import com.opengamma.core.region.RegionSource;
 import com.opengamma.core.security.SecuritySource;
@@ -198,6 +199,11 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the volatility cube definition source is bound.
    */
   protected static final String VOLATILITY_CUBE_DEFINITION_SOURCE = "volatilityCubeDefinitionSource";
+  
+  /**
+   * Name under which the organization source is bound.
+   */
+  protected static final String ORGANIZATION_SOURCE = "organizationSource";
 
   private final Map<String, UserContext> _userContexts = new HashMap<String, UserContext>();
 
@@ -417,6 +423,10 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
 
   public VolatilityCubeDefinitionSource getVolatilityCubeDefinitionSource() {
     return getValue(VOLATILITY_CUBE_DEFINITION_SOURCE);
+  }
+  
+  public OrganizationSource getOrganizationSource() {
+    return getValue(ORGANIZATION_SOURCE);
   }
 
 }

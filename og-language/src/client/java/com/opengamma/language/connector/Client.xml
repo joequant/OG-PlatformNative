@@ -231,6 +231,12 @@
     <property name="configuration" ref="defaultConfiguration" />
   </bean>
   
+  <!-- Organization -->
+  <bean id="organizationLoader" class="com.opengamma.language.organization.Loader">
+    <property name="globalContextFactory" ref="globalContextFactory" />
+    <property name="configuration" ref="defaultConfiguration" />
+  </bean>
+  
   <!-- Position -->
   <bean id="positionLoader" class="com.opengamma.language.position.Loader">
     <property name="globalContextFactory" ref="globalContextFactory" />

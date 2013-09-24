@@ -12,6 +12,7 @@ import com.opengamma.core.exchange.ExchangeSource;
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.holiday.HolidaySource;
 import com.opengamma.core.marketdatasnapshot.MarketDataSnapshotSource;
+import com.opengamma.core.organization.OrganizationSource;
 import com.opengamma.core.position.PositionSource;
 import com.opengamma.core.region.RegionSource;
 import com.opengamma.core.security.SecuritySource;
@@ -186,6 +187,10 @@ public class MutableGlobalContext extends GlobalContext {
 
   public void setVolatilityCubeDefinitionSource(final VolatilityCubeDefinitionSource volatilityCubeDefinitionSource) {
     removeOrReplaceValue(VOLATILITY_CUBE_DEFINITION_SOURCE, volatilityCubeDefinitionSource);
+  }
+  
+  public void setOrganizationSource(final OrganizationSource organizationSource) {
+    removeOrReplaceValue(ORGANIZATION_SOURCE, organizationSource);
   }
 
   // Arbitrary values

@@ -83,7 +83,7 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
       if (marketDataSpecs == null) { 
         throw new IllegalArgumentException("marketDataSpecs must not be null");
       }
-      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], marketDataSpecs != null ? Arrays.asList(marketDataSpecs) : null);
+      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], marketDataSpecs != null ? Arrays.asList(marketDataSpecs) : null, null, null);
     }
 
   }

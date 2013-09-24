@@ -21,9 +21,11 @@ import com.opengamma.engine.view.execution.ExecutionFlags;
 import com.opengamma.engine.view.execution.ExecutionOptions;
 import com.opengamma.engine.view.execution.InfiniteViewCycleExecutionSequence;
 import com.opengamma.engine.view.execution.ViewCycleExecutionOptions;
+import com.opengamma.engine.view.execution.ViewCycleExecutionOptions.Builder;
 import com.opengamma.engine.view.execution.ViewCycleExecutionSequence;
 import com.opengamma.engine.view.execution.ViewExecutionOptions;
 import com.opengamma.id.UniqueId;
+import com.opengamma.id.VersionCorrection;
 
 /**
  * Object describing all of the parameters required to construct a view client - i.e. the view
@@ -81,11 +83,18 @@ public final class ViewClientDescriptor {
    * 
    * @param viewId  unique identifier of the view, not null
    * @param marketDataSpecifications  a list of the market data specifications, not null
+   * @param valuationTime TODO
    * @return the descriptor
    */
-  public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications) {
-    final LiveMarketDataSpecification marketDataSpec;
-    return new ViewClientDescriptor(viewId, ExecutionOptions.infinite(marketDataSpecifications));
+  public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications, Instant valuationTime, VersionCorrection portfolioVersionCorrection) {
+    Builder executionOptions = ViewCycleExecutionOptions.builder().setMarketDataSpecifications(marketDataSpecifications);
+    if (valuationTime != null) {
+      executionOptions = executionOptions.setValuationTime(valuationTime);
+    }
+    if (portfolioVersionCorrection != null) {
+      executionOptions = executionOptions.setResolverVersionCorrection(portfolioVersionCorrection);
+    }
+    return new ViewClientDescriptor(viewId, ExecutionOptions.of(new InfiniteViewCycleExecutionSequence(), executionOptions.create(), ExecutionFlags.triggersEnabled().get()));
   }
 
   /**
