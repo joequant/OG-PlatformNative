@@ -8,6 +8,9 @@ package com.opengamma.language.livedata;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
@@ -15,16 +18,18 @@ import com.opengamma.language.ValueUtils;
 import com.opengamma.language.context.GlobalContext;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.error.AbstractException;
 import com.opengamma.language.error.Constants;
 import com.opengamma.language.invoke.AbstractInvoker;
 import com.opengamma.language.invoke.ParameterConverter;
 import com.opengamma.language.invoke.ResultConverter;
 
 /**
- * Partial implementation of a {@link LiveDataConnector} that converts the parameters and results using
- * the converters bound to the invoking session context.
+ * Partial implementation of a {@link LiveDataConnector} that converts the parameters and results using the converters bound to the invoking session context.
  */
 public abstract class AbstractLiveDataConnector extends AbstractInvoker implements LiveDataConnector {
+
+  private static final Logger s_logger = LoggerFactory.getLogger(AbstractLiveDataConnector.class);
 
   /**
    * Connection abstraction passed to the subclass.
@@ -42,7 +47,17 @@ public abstract class AbstractLiveDataConnector extends AbstractInvoker implemen
       if (value == null) {
         super.setValue(new Data());
       } else {
-        final Data resultData = convertResult(_context, value);
+        Data resultData;
+        try {
+          resultData = convertResult(_context, value);
+        } catch (AbstractException e) {
+          resultData = DataUtils.of(e.getValue());
+        } catch (RuntimeException e) {
+          s_logger.error("Invocation runtime exception", e);
+          final Value err = ValueUtils.ofError(Constants.ERROR_INTERNAL);
+          err.setStringValue(e.getMessage());
+          resultData = DataUtils.of(err);
+        }
         if (resultData == null) {
           // This is a fault - non-null should not have been converted to null
           final Value err = ValueUtils.ofError(Constants.ERROR_INTERNAL);
@@ -57,7 +72,7 @@ public abstract class AbstractLiveDataConnector extends AbstractInvoker implemen
     public void setCancelHandler(final Runnable cancel) {
       _cancel = cancel;
     }
-    
+
     public Runnable getCancelHandler() {
       return _cancel;
     }
