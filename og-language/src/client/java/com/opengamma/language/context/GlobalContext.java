@@ -126,6 +126,11 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   protected static final String LIVEDATA_DISPATCHER = "liveDataDispatcher";
 
   /**
+   * Name under which the logical server identifier is bound.
+   */
+  protected static final String LOGICAL_SERVER_IDENTIFIER = "lsid";
+
+  /**
    * Name under which a market data snapshot source is bound.
    */
   protected static final String MARKET_DATA_SNAPSHOT_SOURCE = "marketDataSnapshotSource";
@@ -199,7 +204,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the volatility cube definition source is bound.
    */
   protected static final String VOLATILITY_CUBE_DEFINITION_SOURCE = "volatilityCubeDefinitionSource";
-  
+
   /**
    * Name under which the organization source is bound.
    */
@@ -355,6 +360,10 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
     return getResultConverter(LIVEDATA_RESULT_CONVERTER);
   }
 
+  public String getLogicalServerId() {
+    return getValue(LOGICAL_SERVER_IDENTIFIER);
+  }
+
   public MarketDataSnapshotSource getMarketDataSnapshotSource() {
     return getValue(MARKET_DATA_SNAPSHOT_SOURCE);
   }
@@ -424,7 +433,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   public VolatilityCubeDefinitionSource getVolatilityCubeDefinitionSource() {
     return getValue(VOLATILITY_CUBE_DEFINITION_SOURCE);
   }
-  
+
   public OrganizationSource getOrganizationSource() {
     return getValue(ORGANIZATION_SOURCE);
   }

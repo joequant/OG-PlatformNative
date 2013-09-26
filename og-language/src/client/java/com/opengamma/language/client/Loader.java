@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.MutableFudgeMsg;
@@ -25,6 +26,12 @@ import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.language.context.MutableSessionContext;
 import com.opengamma.language.context.MutableUserContext;
+import com.opengamma.master.config.ConfigMaster;
+import com.opengamma.master.historicaltimeseries.HistoricalTimeSeriesMaster;
+import com.opengamma.master.marketdatasnapshot.MarketDataSnapshotMaster;
+import com.opengamma.master.portfolio.PortfolioMaster;
+import com.opengamma.master.position.PositionMaster;
+import com.opengamma.master.security.SecurityMaster;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -33,18 +40,63 @@ import com.opengamma.util.ArgumentChecker;
 public class Loader extends ContextInitializationBean {
 
   private static final String CLIENTID_STASH_FIELD = "clientId";
+  private static final String LOGICAL_SERVER_STASH_FIELD = "serverId";
 
   private static final Logger s_logger = LoggerFactory.getLogger(Loader.class);
 
+  /**
+   * The published configuration document to configure from.
+   */
   private Configuration _configuration;
+
+  /**
+   * The name of the field describing the {@link ConfigMaster} connection details.
+   */
   private String _configMaster = "configMaster";
-  private String _positionMaster = "positionMaster";
-  private String _portfolioMaster = "portfolioMaster";
-  private String _securityMaster = "securityMaster";
-  private String _marketDataSnapshotMaster = "marketDataSnapshotMaster";
-  private String _userData = "userData";
+
+  /**
+   * The name of the field describing the {@link HistoricalTimeSeriesMaster} connection details.
+   */
   private String _historicalTimeSeriesMaster = "historicalTimeSeriesMaster";
+
+  /**
+   * The name of the field containing the logical server identifier.
+   */
+  private String _logicalServerId = "lsid";
+
+  /**
+   * The name of the field containing the {@link MarketDataSnapshotMaster} connection details.
+   */
+  private String _marketDataSnapshotMaster = "marketDataSnapshotMaster";
+
+  /**
+   * The name of the field containing the {@link PortfolioMaster} connection details.
+   */
+  private String _portfolioMaster = "portfolioMaster";
+
+  /**
+   * The name of the field containing the {@link PositionMaster} connection details.
+   */
+  private String _positionMaster = "positionMaster";
+
+  /**
+   * The name of the field containing the {@link SecurityMaster} connection details.
+   */
+  private String _securityMaster = "securityMaster";
+
+  /**
+   * The name of the field containing "the per-user" client connection details.
+   */
+  private String _userData = "userData";
+
+  /**
+   * The scheduler to use for any housekeeping, which can include I/O operations, such as heartbeating a client.
+   */
   private ScheduledExecutorService _housekeepingScheduler;
+
+  /**
+   * The client heartbeating period, in minutes.
+   */
   private int _clientHeartbeat = 5;
 
   public void setConfiguration(final Configuration configuration) {
@@ -64,12 +116,28 @@ public class Loader extends ContextInitializationBean {
     return _configMaster;
   }
 
-  public void setPositionMaster(final String positionMaster) {
-    _positionMaster = positionMaster;
+  public void setHistoricalTimeSeriesMaster(final String historicalTimeSeriesMaster) {
+    _historicalTimeSeriesMaster = historicalTimeSeriesMaster;
   }
 
-  public String getPositionMaster() {
-    return _positionMaster;
+  public String getHistoricalTimeSeriesMaster() {
+    return _historicalTimeSeriesMaster;
+  }
+
+  public void setLogicalServerId(final String logicalServerId) {
+    _logicalServerId = logicalServerId;
+  }
+
+  public String getLogicalServerId() {
+    return _logicalServerId;
+  }
+
+  public void setMarketDataSnapshotMaster(final String marketDataSnapshotMaster) {
+    _marketDataSnapshotMaster = marketDataSnapshotMaster;
+  }
+
+  public String getMarketDataSnapshotMaster() {
+    return _marketDataSnapshotMaster;
   }
 
   public void setPortfolioMaster(final String portfolioMaster) {
@@ -80,20 +148,20 @@ public class Loader extends ContextInitializationBean {
     return _portfolioMaster;
   }
 
+  public void setPositionMaster(final String positionMaster) {
+    _positionMaster = positionMaster;
+  }
+
+  public String getPositionMaster() {
+    return _positionMaster;
+  }
+
   public void setSecurityMaster(final String securityMaster) {
     _securityMaster = securityMaster;
   }
 
   public String getSecurityMaster() {
     return _securityMaster;
-  }
-
-  public void setMarketDataSnapshotMaster(final String marketDataSnapshotMaster) {
-    _marketDataSnapshotMaster = marketDataSnapshotMaster;
-  }
-
-  public String getMarketDataSnapshotMaster() {
-    return _marketDataSnapshotMaster;
   }
 
   public void setUserData(final String userData) {
@@ -120,14 +188,6 @@ public class Loader extends ContextInitializationBean {
     return _clientHeartbeat;
   }
 
-  public void setHistoricalTimeSeriesMaster(final String historicalTimeSeriesMaster) {
-    _historicalTimeSeriesMaster = historicalTimeSeriesMaster;
-  }
-
-  public String getHistoricalTimeSeriesMaster() {
-    return _historicalTimeSeriesMaster;
-  }
-
   // ContextInitializationBean
 
   @Override
@@ -149,6 +209,9 @@ public class Loader extends ContextInitializationBean {
     targets.setMarketDataSnapshotMaster(getConfiguration().getURIConfiguration(getMarketDataSnapshotMaster()));
     targets.setHistoricalTimeSeriesMaster(getConfiguration().getURIConfiguration(getHistoricalTimeSeriesMaster()));
     globalContext.setClient(new RemoteClient(null, getConfiguration().getFudgeContext(), targets));
+    final String lsid = getConfiguration().getStringConfiguration(getLogicalServerId());
+    s_logger.info("Setting logical server identifier - {}", lsid);
+    globalContext.setLogicalServerId(lsid);
   }
 
   @Override
@@ -185,11 +248,16 @@ public class Loader extends ContextInitializationBean {
     if (stash != null) {
       final FudgeMsg msg = stash.get();
       if (msg != null) {
-        final String clientId = msg.getString(CLIENTID_STASH_FIELD);
-        if (clientId != null) {
-          s_logger.info("Recovering old remote engine client {}", clientId);
-          initClient(sessionContext, RemoteClient.forClient(getConfiguration().getFudgeContext(), uri, sessionContext.getUserContext().getUserName(), clientId));
-          return;
+        final String lsid = msg.getString(LOGICAL_SERVER_STASH_FIELD);
+        if (ObjectUtils.equals(sessionContext.getGlobalContext().getLogicalServerId(), lsid)) {
+          final String clientId = msg.getString(CLIENTID_STASH_FIELD);
+          if (clientId != null) {
+            s_logger.info("Recovering old remote engine client {}", clientId);
+            initClient(sessionContext, RemoteClient.forClient(getConfiguration().getFudgeContext(), uri, sessionContext.getUserContext().getUserName(), clientId));
+            return;
+          }
+        } else {
+          s_logger.info("Ignoring stash message following server restart");
         }
       }
     }
@@ -198,6 +266,10 @@ public class Loader extends ContextInitializationBean {
     if (stash != null) {
       final MutableFudgeMsg msgStash = FudgeContext.GLOBAL_DEFAULT.newMessage();
       msgStash.add(CLIENTID_STASH_FIELD, client.getClientId());
+      final String lsid = sessionContext.getGlobalContext().getLogicalServerId();
+      if (lsid != null) {
+        msgStash.add(LOGICAL_SERVER_STASH_FIELD, lsid);
+      }
       stash.put(msgStash);
     } else {
       s_logger.warn("Message stash not available - cannot resume client if JVM abends");

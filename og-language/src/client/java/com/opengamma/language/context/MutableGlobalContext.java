@@ -126,6 +126,10 @@ public class MutableGlobalContext extends GlobalContext {
     removeOrReplaceValue(LIVEDATA_RESULT_CONVERTER, resultConverter);
   }
 
+  public void setLogicalServerId(final String serverId) {
+    removeOrReplaceValue(LOGICAL_SERVER_IDENTIFIER, serverId);
+  }
+
   public void setMarketDataSnapshotSource(final MarketDataSnapshotSource marketDataSnapshotSource) {
     removeOrReplaceValue(MARKET_DATA_SNAPSHOT_SOURCE, marketDataSnapshotSource);
   }
@@ -188,7 +192,7 @@ public class MutableGlobalContext extends GlobalContext {
   public void setVolatilityCubeDefinitionSource(final VolatilityCubeDefinitionSource volatilityCubeDefinitionSource) {
     removeOrReplaceValue(VOLATILITY_CUBE_DEFINITION_SOURCE, volatilityCubeDefinitionSource);
   }
-  
+
   public void setOrganizationSource(final OrganizationSource organizationSource) {
     removeOrReplaceValue(ORGANIZATION_SOURCE, organizationSource);
   }

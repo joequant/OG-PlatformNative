@@ -11,9 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * When scheduled periodically, will runs a prescribed command if the {@link #stillAlive} hasn't been called since
- * the previous schedule. This can be used, for example, to trigger shutdown of a failed client connection that has
- * lost its heartbeat. 
+ * When scheduled periodically, will run a prescribed command if the {@link #stillAlive} hasn't been called since the previous schedule. This can be used, for example, to trigger shutdown of a failed
+ * client connection that has lost its heartbeat.
  */
 public class Watchdog implements Runnable {
 
