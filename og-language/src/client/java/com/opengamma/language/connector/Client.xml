@@ -57,9 +57,12 @@
   </bean>
 
   <!-- Remote configuration parameters -->
-  <bean id="defaultConfiguration" class="com.opengamma.language.config.ConfigurationFactoryBean">
+  <bean id="serverConfiguration" class="com.opengamma.language.config.ConfigurationSourceBean">
     <property name="configurationURI" value="${opengamma.configuration.url}" />
     <property name="fudgeContext" ref="engineFudgeContext" />
+  </bean>
+  <bean id="defaultConfiguration" class="com.opengamma.language.config.ConfigurationFactoryBean">
+    <property name="configuration" ref="serverConfiguration" />
     <property name="failOnInvalidURI" value="${opengamma.configuration.failOnInvalid}" />
     <property name="failOnMissingConfiguration" value="${opengamma.configuration.failOnMissing}" />
   </bean>
@@ -73,6 +76,13 @@
   <!-- Standard conditionals -->
   <bean id="isDebugClient" class="com.opengamma.language.connector.Conditional" factory-method="isDebugClient" />
   <bean id="isDebugStack" class="com.opengamma.language.connector.Conditional" factory-method="isDebugStack" />
+  
+  <!-- Server restart/change monitor -->
+  <bean id="serverConfigurationWatchdog" class="com.opengamma.language.config.ConfigurationWatchdog">
+    <property name="configuration" ref="serverConfiguration" />
+    <property name="clientContextFactory" ref="clientContextFactory" />
+    <property name="globalContextFactory" ref="globalContextFactory" />
+  </bean>
 
   <!-- Debug items for testing-->
   <bean id="debugFunctionsLoader" class="com.opengamma.language.function.Loader">

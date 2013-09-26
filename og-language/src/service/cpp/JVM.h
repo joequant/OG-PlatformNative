@@ -57,6 +57,7 @@ public:
 	static CJVM *Create (CErrorFeedback *poFeedback);
 	void Start (CErrorFeedback *poFeedback, bool bAsync = true);
 	void Stop (bool bAsync = true);
+	void Halt ();
 	bool IsBusy (unsigned long dwTimeout) const;
 	bool IsRunning () const;
 	bool IsStopped () const;

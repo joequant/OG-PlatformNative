@@ -32,6 +32,7 @@ public class Main {
   private static final ExecutorService s_executorService = Executors.newCachedThreadPool(new CustomizableThreadFactory("Client-"));
 
   private static int s_activeConnections;
+  private static Thread s_stopping;
 
   /**
    * Sets a system property.
@@ -180,10 +181,34 @@ public class Main {
   private static native void notifyStop();
 
   /**
+   * Requests the host process halt the service. Use with caution. This should be used for serious issues that mean the existing instance is no longer viable; such as the back-end server no longer
+   * being available or connected to a different data environment.
+   * 
+   * @param logMessage the message to report to the user through some mechanism as to why the Java stack has aborted
+   */
+  private static native void notifyHalt(String logMessage);
+
+  /**
    * Deadlocks the calling thread against the pipe dispatch thread within the C++ layer. This is for testing error recovery by deliberately hanging the JVM. DO NOT CALL THIS FUNCTION UNLESS YOU WANT
    * THINGS TO BREAK.
    */
   public static native void notifyPause();
+
+  private static synchronized void beginStop() {
+    Thread stopping = s_stopping;
+    s_stopping = Thread.currentThread();
+    if (stopping != null) {
+      throw new OpenGammaRuntimeException("Already stopped by " + stopping.getName());
+    }
+  }
+
+  private static synchronized void forceStop() {
+    if (s_stopping != null) {
+      s_logger.info("Interrupting thread {} to stop", s_stopping.getName());
+      s_stopping.interrupt();
+    }
+    s_stopping = Thread.currentThread();
+  }
 
   /**
    * Entry point from the service wrapper - stops the service.
@@ -194,6 +219,7 @@ public class Main {
     try {
       s_logger.info("Waiting for client threads to stop");
       s_executorService.shutdown();
+      beginStop();
       s_executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
       s_logger.info("Stopping application context");
       s_springContext.stop();
@@ -203,6 +229,11 @@ public class Main {
       s_logger.error("Exception thrown", t);
       return false;
     }
+  }
+
+  public static void halt(final String logMessage) {
+    forceStop();
+    notifyHalt(logMessage);
   }
 
   /**

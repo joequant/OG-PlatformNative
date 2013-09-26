@@ -149,6 +149,33 @@ void ServiceStop (bool bForce) {
 	g_oMutex.Leave ();
 }
 
+/// Implementation of the notifyHalt method in the Main class.
+///
+/// @param pEnv see Java documentation
+/// @param cls see Java documentation
+/// @param jstrMessage the message to log to the user, never NULL
+void JNICALL _notifyHalt (JNIEnv *pEnv, jclass cls, jstring jstrMessage) {
+	LOGINFO (TEXT ("NOTIFYHALT called from JVM"));
+#ifdef _UNICODE
+	const wchar_t *pszMessage = (const wchar_t*)pEnv->GetStringChars (jstrMessage, NULL);
+#else /* ifdef _UNICODE */
+	const char *pszMessage = pEnv->GetStringUTFChars (jstrMessage, NULL);
+#endif /* ifdef _UNICODE */
+	CErrorFeedback oServiceErrors;
+	oServiceErrors.Write (pszMessage);
+	g_oMutex.Enter ();
+	ServiceStop (true);
+	if (g_poJVM) {
+		g_poJVM->Halt ();
+	}
+	g_oMutex.Leave ();
+#ifdef _UNICODE
+	pEnv->ReleaseStringChars (jstrMessage, (const jchar*)pszMessage);
+#else /* ifdef _UNICODE */
+	pEnv->ReleaseStringUTFChars (jstrMessage, pszMessage);
+#endif /* ifdef _UNICODE */
+}
+
 /// Breaks the service. This is provided for the unit tests only to simulate a broken JVM or service and
 /// test the recovery mechanism. Do not call it intentionally otherwise.
 void ServiceSuspend () {

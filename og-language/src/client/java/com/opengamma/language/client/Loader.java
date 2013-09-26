@@ -60,11 +60,6 @@ public class Loader extends ContextInitializationBean {
   private String _historicalTimeSeriesMaster = "historicalTimeSeriesMaster";
 
   /**
-   * The name of the field containing the logical server identifier.
-   */
-  private String _logicalServerId = "lsid";
-
-  /**
    * The name of the field containing the {@link MarketDataSnapshotMaster} connection details.
    */
   private String _marketDataSnapshotMaster = "marketDataSnapshotMaster";
@@ -122,14 +117,6 @@ public class Loader extends ContextInitializationBean {
 
   public String getHistoricalTimeSeriesMaster() {
     return _historicalTimeSeriesMaster;
-  }
-
-  public void setLogicalServerId(final String logicalServerId) {
-    _logicalServerId = logicalServerId;
-  }
-
-  public String getLogicalServerId() {
-    return _logicalServerId;
   }
 
   public void setMarketDataSnapshotMaster(final String marketDataSnapshotMaster) {
@@ -209,9 +196,6 @@ public class Loader extends ContextInitializationBean {
     targets.setMarketDataSnapshotMaster(getConfiguration().getURIConfiguration(getMarketDataSnapshotMaster()));
     targets.setHistoricalTimeSeriesMaster(getConfiguration().getURIConfiguration(getHistoricalTimeSeriesMaster()));
     globalContext.setClient(new RemoteClient(null, getConfiguration().getFudgeContext(), targets));
-    final String lsid = getConfiguration().getStringConfiguration(getLogicalServerId());
-    s_logger.info("Setting logical server identifier - {}", lsid);
-    globalContext.setLogicalServerId(lsid);
   }
 
   @Override

@@ -262,6 +262,8 @@ static void JNICALL _notifyStop (JNIEnv *pEnv, jclass cls) {
 	ServiceStop (false);
 }
 
+extern void JNICALL _notifyHalt (JNIEnv *pEnv, jclass cls, jstring jstrMessage);
+
 /// Implementation of the notifyPause method in the Main class.
 ///
 /// @param pEnv see Java documentation
@@ -277,6 +279,8 @@ static void JNICALL _notifyPause (JNIEnv *pEnv, jclass cls) {
 ///
 /// @param pEnv see Java documentation
 /// @param cls see Java documentation
+/// @param jstrProperty the property name to write, never NULL
+/// @param jstrValue the value to write, or NULL to delete the property
 static void JNICALL _writeProperty (JNIEnv *pEnv, jclass cls, jstring jstrProperty, jstring jstrValue) {
 	LOGINFO (TEXT ("WRITEPROPERTY called from JVM"));
 #ifdef _UNICODE
@@ -397,9 +401,10 @@ CJVM *CJVM::Create (CErrorFeedback *poFeedback) {
 		return NULL;
 	}
 	LOGDEBUG (TEXT ("Registering native methods"));
-	JNINativeMethod methods[3] = {
+	JNINativeMethod methods[4] = {
 		{ (char*)"notifyPause", (char*)"()V", (void*)&_notifyPause },
 		{ (char*)"notifyStop", (char*)"()V", (void*)&_notifyStop },
+		{ (char*)"notifyHalt", (char*)"(Ljava/lang/String;)V", (void*)&_notifyHalt },
 		{ (char*)"writeProperty", (char*)"(Ljava/lang/String;Ljava/lang/String;)V", (void*)&_writeProperty }
 	};
 	jclass cls = pEnv->FindClass (MAIN_CLASS);
@@ -409,7 +414,7 @@ CJVM *CJVM::Create (CErrorFeedback *poFeedback) {
 		delete pJvm;
 		return NULL;
 	}
-	err = pEnv->RegisterNatives (cls, methods, 3);
+	err = pEnv->RegisterNatives (cls, methods, sizeof (methods) / sizeof (JNINativeMethod));
 	if (err) {
 		LOGWARN (TEXT ("Couldn't register native methods, error ") << err);
 		TCHAR *psz = new TCHAR[1024];
@@ -719,6 +724,15 @@ void CJVM::Stop (bool bAsync) {
 			LOGERROR (TEXT ("Couldn't stop service"));
 		}
 	}
+}
+
+/// Halts the OpenGamma Java stack. In practice, the JVM and any threads it has created will
+/// continue to run, but IsRunning will return FALSE.
+void CJVM::Halt () {
+	m_oMutex.Enter ();
+	m_bRunning = false;
+	m_oMutex.Leave ();
+	LOGINFO (TEXT ("Service halted"));
 }
 
 /// Tests if the JVM instance is busy servicing an asynchronous call to Start or to Stop.
