@@ -35,10 +35,6 @@ public final class ConfigurationWatchdog extends ContextInitializationBean {
    */
   private ClientContextFactoryBean _clientFactory;
   /**
-   * The name of the field containing the logical server identifier.
-   */
-  private String _logicalServerId = "lsid";
-  /**
    * The watchdog thread.
    */
   private volatile ScheduledFuture<?> _watchdog;
@@ -58,15 +54,6 @@ public final class ConfigurationWatchdog extends ContextInitializationBean {
 
   public ClientContextFactoryBean getClientContextFactory() {
     return _clientFactory;
-  }
-
-  public void setLogicalServerId(final String logicalServerId) {
-    ArgumentChecker.notNull(logicalServerId, "logicalServerId");
-    _logicalServerId = logicalServerId;
-  }
-
-  public String getLogicalServerId() {
-    return _logicalServerId;
   }
 
   protected void restart(final String logMessage) {
@@ -93,14 +80,14 @@ public final class ConfigurationWatchdog extends ContextInitializationBean {
   protected void assertPropertiesSet() {
     ArgumentChecker.notNull(getConfiguration(), "configuration");
     ArgumentChecker.notNull(getClientContextFactory(), "clientContextFactory");
-    ArgumentChecker.notNull(getLogicalServerId(), "logicalServerId");
   }
 
   @Override
   protected void initContext(final MutableGlobalContext context) {
-    final String lsid = getConfiguration().fetchConfigurationMessage(true).getString(getLogicalServerId());
-    s_logger.info("Setting logical server identifier to {}", lsid);
-    context.setLogicalServerId(lsid);
+    final ServerMetadata meta = new ServerMetadata(getConfiguration());
+    context.setServerMetadata(meta);
+    final String lsid = meta.getLogicalServerId();
+    s_logger.info("Got logical server identifier {}", lsid);
     if (_watchdog == null) {
       synchronized (this) {
         if (_watchdog == null) {
@@ -110,7 +97,7 @@ public final class ConfigurationWatchdog extends ContextInitializationBean {
               final String newServerId;
               try {
                 s_logger.info("Polling server for logical changes");
-                newServerId = getConfiguration().fetchConfigurationMessage(false).getString(getLogicalServerId());
+                newServerId = getConfiguration().fetchConfigurationMessage(false).getString("lsid");
               } catch (Throwable t) {
                 s_logger.info("Caught exception", t);
                 serverNotAvailable(t.getMessage());

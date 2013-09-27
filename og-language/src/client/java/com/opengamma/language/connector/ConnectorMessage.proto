@@ -20,7 +20,7 @@ namespace com.opengamma.language.connector {
     required Operation operation = 1;
     
     optional message stash = 2;
-  
+    
   }
 
 }

@@ -23,6 +23,7 @@ import com.opengamma.financial.analytics.volatility.cube.VolatilityCubeDefinitio
 import com.opengamma.financial.convention.ConventionSource;
 import com.opengamma.financial.currency.CurrencyPairsSource;
 import com.opengamma.financial.user.rest.RemoteClient;
+import com.opengamma.language.config.ServerMetadata;
 import com.opengamma.language.function.AggregatingFunctionProvider;
 import com.opengamma.language.function.FunctionDefinitionFilter;
 import com.opengamma.language.invoke.AggregatingTypeConverterProvider;
@@ -126,10 +127,6 @@ public class MutableGlobalContext extends GlobalContext {
     removeOrReplaceValue(LIVEDATA_RESULT_CONVERTER, resultConverter);
   }
 
-  public void setLogicalServerId(final String serverId) {
-    removeOrReplaceValue(LOGICAL_SERVER_IDENTIFIER, serverId);
-  }
-
   public void setMarketDataSnapshotSource(final MarketDataSnapshotSource marketDataSnapshotSource) {
     removeOrReplaceValue(MARKET_DATA_SNAPSHOT_SOURCE, marketDataSnapshotSource);
   }
@@ -169,6 +166,10 @@ public class MutableGlobalContext extends GlobalContext {
 
   public void setSecuritySource(final SecuritySource securitySource) {
     removeOrReplaceValue(SECURITY_SOURCE, securitySource);
+  }
+
+  public void setServerMetadata(final ServerMetadata serverMetadata) {
+    removeOrReplaceValue(SERVER_METADATA, serverMetadata);
   }
 
   public void setConfigSource(final ConfigSource configSource) {

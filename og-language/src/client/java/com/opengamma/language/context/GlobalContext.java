@@ -25,6 +25,7 @@ import com.opengamma.financial.analytics.volatility.cube.VolatilityCubeDefinitio
 import com.opengamma.financial.convention.ConventionSource;
 import com.opengamma.financial.currency.CurrencyPairsSource;
 import com.opengamma.financial.user.rest.RemoteClient;
+import com.opengamma.language.config.ServerMetadata;
 import com.opengamma.language.function.AggregatingFunctionProvider;
 import com.opengamma.language.function.DefaultFunctionDefinitionFilter;
 import com.opengamma.language.function.FunctionDefinitionFilter;
@@ -126,11 +127,6 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
   protected static final String LIVEDATA_DISPATCHER = "liveDataDispatcher";
 
   /**
-   * Name under which the logical server identifier is bound.
-   */
-  protected static final String LOGICAL_SERVER_IDENTIFIER = "lsid";
-
-  /**
    * Name under which a market data snapshot source is bound.
    */
   protected static final String MARKET_DATA_SNAPSHOT_SOURCE = "marketDataSnapshotSource";
@@ -179,6 +175,11 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the security source is bound.
    */
   protected static final String SECURITY_SOURCE = "securitySource";
+
+  /**
+   * Name under which the server metadata channel is bound.
+   */
+  protected static final String SERVER_METADATA = "serverMeta";
 
   /**
    * Name under which the config source is bound.
@@ -360,10 +361,6 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
     return getResultConverter(LIVEDATA_RESULT_CONVERTER);
   }
 
-  public String getLogicalServerId() {
-    return getValue(LOGICAL_SERVER_IDENTIFIER);
-  }
-
   public MarketDataSnapshotSource getMarketDataSnapshotSource() {
     return getValue(MARKET_DATA_SNAPSHOT_SOURCE);
   }
@@ -412,6 +409,10 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
 
   public SecuritySource getSecuritySource() {
     return getValue(SECURITY_SOURCE);
+  }
+
+  public ServerMetadata getServerMetadata() {
+    return getValue(SERVER_METADATA);
   }
 
   public ConfigSource getConfigSource() {

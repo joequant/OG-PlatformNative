@@ -233,7 +233,7 @@ public class Loader extends ContextInitializationBean {
       final FudgeMsg msg = stash.get();
       if (msg != null) {
         final String lsid = msg.getString(LOGICAL_SERVER_STASH_FIELD);
-        if (ObjectUtils.equals(sessionContext.getGlobalContext().getLogicalServerId(), lsid)) {
+        if (ObjectUtils.equals(sessionContext.getGlobalContext().getServerMetadata().getLogicalServerId(), lsid)) {
           final String clientId = msg.getString(CLIENTID_STASH_FIELD);
           if (clientId != null) {
             s_logger.info("Recovering old remote engine client {}", clientId);
@@ -250,7 +250,7 @@ public class Loader extends ContextInitializationBean {
     if (stash != null) {
       final MutableFudgeMsg msgStash = FudgeContext.GLOBAL_DEFAULT.newMessage();
       msgStash.add(CLIENTID_STASH_FIELD, client.getClientId());
-      final String lsid = sessionContext.getGlobalContext().getLogicalServerId();
+      final String lsid = sessionContext.getGlobalContext().getServerMetadata().getLogicalServerId();
       if (lsid != null) {
         msgStash.add(LOGICAL_SERVER_STASH_FIELD, lsid);
       }

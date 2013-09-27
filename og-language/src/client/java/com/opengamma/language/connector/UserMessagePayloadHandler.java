@@ -8,6 +8,8 @@ package com.opengamma.language.connector;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.opengamma.language.config.SystemInfo;
+import com.opengamma.language.config.SystemInfoMessageHandler;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.custom.CustomMessageVisitor;
 import com.opengamma.language.custom.CustomMessageVisitorRegistry;
@@ -15,13 +17,14 @@ import com.opengamma.language.custom.CustomVisitors;
 import com.opengamma.language.function.FunctionVisitor;
 import com.opengamma.language.livedata.LiveDataVisitor;
 import com.opengamma.language.procedure.ProcedureVisitor;
+import com.opengamma.language.test.Test;
+import com.opengamma.language.test.TestMessageHandler;
 import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.async.AsynchronousExecution;
 
 /**
- * Delegating visitor for the top level messages. Each message type has a default visitor that can be overridden.
- * For example, to filter a set of messages, get the existing handler, register a new one and delegate to the
- * original from the new one. To handle custom messages, register the handler and message types.
+ * Delegating visitor for the top level messages. Each message type has a default visitor that can be overridden. For example, to filter a set of messages, get the existing handler, register a new one
+ * and delegate to the original from the new one. To handle custom messages, register the handler and message types.
  */
 public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<UserMessagePayload, SessionContext>,
     InitializingBean, CustomMessageVisitorRegistry<UserMessagePayload, SessionContext> {
@@ -97,13 +100,8 @@ public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<User
   }
 
   @Override
-  public UserMessagePayload visitTest(final Test message, final SessionContext session) {
-    return TestMessageHandler.testMessage(message, session);
-  }
-
-  @Override
-  public UserMessagePayload visitLiveData(final LiveData message, final SessionContext session) throws AsynchronousExecution {
-    return message.accept(_liveDataVisitor, session);
+  public UserMessagePayload visitCustom(final Custom message, final SessionContext session) {
+    return _customVisitors.visit(message, session);
   }
 
   @Override
@@ -112,13 +110,23 @@ public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<User
   }
 
   @Override
+  public UserMessagePayload visitLiveData(final LiveData message, final SessionContext session) throws AsynchronousExecution {
+    return message.accept(_liveDataVisitor, session);
+  }
+
+  @Override
   public UserMessagePayload visitProcedure(final Procedure message, final SessionContext session) throws AsynchronousExecution {
     return message.accept(_procedureVisitor, session);
   }
 
   @Override
-  public UserMessagePayload visitCustom(final Custom message, final SessionContext session) {
-    return _customVisitors.visit(message, session);
+  public UserMessagePayload visitSystemInfo(final SystemInfo message, final SessionContext session) {
+    return SystemInfoMessageHandler.handle(message, session);
+  }
+
+  @Override
+  public UserMessagePayload visitTest(final Test message, final SessionContext session) {
+    return TestMessageHandler.testMessage(message, session);
   }
 
 }

@@ -522,8 +522,9 @@
                   <arg value="com/opengamma/language/Data.proto" />
                   <arg value="com/opengamma/language/connector/Custom.proto" />
                   <arg value="com/opengamma/language/connector/ConnectorMessage.proto" />
-                  <arg value="com/opengamma/language/connector/UserMessage.proto" />
+                  <arg value="com/opengamma/language/connector/SystemInfo.proto" />
                   <arg value="com/opengamma/language/connector/Test.proto" />
+                  <arg value="com/opengamma/language/connector/UserMessage.proto" />
                   <arg value="com/opengamma/language/function/Available.proto" />
                   <arg value="com/opengamma/language/function/Custom.proto" />
                   <arg value="com/opengamma/language/function/Invoke.proto" />
@@ -557,8 +558,9 @@
                   <arg value="com/opengamma/language/Data.proto" />
                   <arg value="com/opengamma/language/connector/Custom.proto" />
                   <arg value="com/opengamma/language/connector/ConnectorMessage.proto" />
-                  <arg value="com/opengamma/language/connector/UserMessage.proto" />
+                  <arg value="com/opengamma/language/connector/SystemInfo.proto" />
                   <arg value="com/opengamma/language/connector/Test.proto" />
+                  <arg value="com/opengamma/language/connector/UserMessage.proto" />
                   <arg value="com/opengamma/language/function/Available.proto" />
                   <arg value="com/opengamma/language/function/Custom.proto" />
                   <arg value="com/opengamma/language/function/Invoke.proto" />

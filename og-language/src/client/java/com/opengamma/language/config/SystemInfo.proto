@@ -1,0 +1,72 @@
+/**
+ * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
+namespace com.opengamma.language.test {
+
+  /**
+   * System information querying and reporting messages.
+   */
+  message SystemInfo extends connector.UserMessagePayload {
+
+    /**
+     * Indicates which fields are to be queried by refering to the field ordinals. There
+     * must not be fields in the message with the ordinals of those values being queried.
+     *
+     * Client code may use this to query information about the Java stack or the server
+     * it is connected to.
+     *
+     * The Java stack may use this to query information about the client for diagnostic or
+     * auditing purposes. This should not be used as a way to pull arbitrary data from
+     * a language binding - define custom messages for that.
+     */
+    optional repeated int get = 1;
+
+    /**
+     * Indicates which fields are being reported by refering to the field ordinals. If
+     * the fields have a value, they will be present in the message. If a field has no
+     * value (or the value is to be deleted when this is used as a command) then it will
+     * be absent from the message.
+     *
+     * Client code may use this to update the Java stack configuration, if supported. It
+     * is more normally used in responses to a message that contained fields listed with
+     * a "get" instruction.
+     *
+     * The Java stack may use this to update client configuration, if supported. It is
+     * more normally used in response to messages from the client to query stack/server
+     * configuration or to provide an initial value for the logical server identifier.
+     */
+    optional repeated int set = 2;
+  
+    /**
+     * The logical server identifier from the OpenGamma installation this is connected to.
+     */
+    optional string lsid = 3;
+
+    /**
+     * The configuration URL of the OpenGamma installation this is connected to.
+     */
+    optional string configurationURL = 4;
+
+    /**
+     * The published description of the OpenGamma installation.
+     */
+    optional string serverDescription = 5;
+
+    /**
+     * The full published configuration of the OpenGamma installation. This is provided
+     * mainly for diagnostic purposes, or as a more convenient mechanism than querying
+     * the configuration URL and fetching the document directly from the network (which
+     * may not even be possible if the language binding is sandboxed).
+     */
+    optional message publishedConfiguration = 6;
+    
+    binding Java {
+      body  "public <T1,T2> T1 accept (final com.opengamma.language.connector.UserMessagePayloadVisitor<T1,T2> visitor, final T2 data) throws com.opengamma.util.async.AsynchronousExecution { return visitor.visitSystemInfo (this, data); }";
+    }
+  
+  }
+
+}

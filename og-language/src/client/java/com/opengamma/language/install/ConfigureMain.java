@@ -15,6 +15,8 @@ import com.opengamma.util.ArgumentChecker;
  */
 public class ConfigureMain implements Runnable {
 
+  public static final String CONFIGURATION_URL_PROPERTY = "opengamma.configuration.url";
+
   /**
    * Callback for setting and querying properties.
    */
@@ -32,7 +34,7 @@ public class ConfigureMain implements Runnable {
     ArgumentChecker.notNull(callback, "callback");
     _callback = callback;
   }
-  
+
   protected void setProperty(final String property, final String value) {
     _callback.setProperty(property, value);
   }
@@ -44,7 +46,7 @@ public class ConfigureMain implements Runnable {
   @Override
   public void run() {
     final ConfigurationUrlDialog dialog = new ConfigurationUrlDialog();
-    final String urlOriginal = getProperty("opengamma.configuration.url");
+    final String urlOriginal = getProperty(CONFIGURATION_URL_PROPERTY);
     if (urlOriginal != null) {
       dialog.setUrl(urlOriginal);
     }
@@ -53,7 +55,7 @@ public class ConfigureMain implements Runnable {
     final String urlNew = dialog.getUrl();
     if (urlNew != null) {
       if (!StringUtils.equals(urlOriginal, urlNew)) {
-        setProperty("opengamma.configuration.url", urlNew);
+        setProperty(CONFIGURATION_URL_PROPERTY, urlNew);
       }
     }
   }

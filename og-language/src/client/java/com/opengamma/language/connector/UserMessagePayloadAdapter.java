@@ -6,14 +6,16 @@
 
 package com.opengamma.language.connector;
 
+import com.opengamma.language.config.SystemInfo;
+import com.opengamma.language.test.Test;
 import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.async.AsynchronousExecution;
 
 /**
  * Pass through adapter to allow filtering of all {@link UserMessagePayload} messages.
- *
- * @param <T1>  the return type
- * @param <T2>  the data type
+ * 
+ * @param <T1> the return type
+ * @param <T2> the data type
  */
 public class UserMessagePayloadAdapter<T1, T2> implements UserMessagePayloadVisitor<T1, T2> {
 
@@ -34,13 +36,8 @@ public class UserMessagePayloadAdapter<T1, T2> implements UserMessagePayloadVisi
   }
 
   @Override
-  public T1 visitTest(final Test message, final T2 data) throws AsynchronousExecution {
-    return getUnderlying().visitTest(message, data);
-  }
-
-  @Override
-  public T1 visitLiveData(final LiveData message, final T2 data) throws AsynchronousExecution {
-    return getUnderlying().visitLiveData(message, data);
+  public T1 visitCustom(final Custom message, final T2 data) throws AsynchronousExecution {
+    return getUnderlying().visitCustom(message, data);
   }
 
   @Override
@@ -49,13 +46,23 @@ public class UserMessagePayloadAdapter<T1, T2> implements UserMessagePayloadVisi
   }
 
   @Override
+  public T1 visitLiveData(final LiveData message, final T2 data) throws AsynchronousExecution {
+    return getUnderlying().visitLiveData(message, data);
+  }
+
+  @Override
   public T1 visitProcedure(final Procedure message, final T2 data) throws AsynchronousExecution {
     return getUnderlying().visitProcedure(message, data);
   }
 
   @Override
-  public T1 visitCustom(final Custom message, final T2 data) throws AsynchronousExecution {
-    return getUnderlying().visitCustom(message, data);
+  public T1 visitSystemInfo(final SystemInfo message, final T2 data) throws AsynchronousExecution {
+    return getUnderlying().visitSystemInfo(message, data);
+  }
+
+  @Override
+  public T1 visitTest(final Test message, final T2 data) throws AsynchronousExecution {
+    return getUnderlying().visitTest(message, data);
   }
 
 }

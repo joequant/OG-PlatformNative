@@ -4,7 +4,7 @@
  * Please see distribution for license.
  */
 
-package com.opengamma.language.connector;
+package com.opengamma.language.test;
 
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
@@ -12,19 +12,20 @@ import org.fudgemsg.MutableFudgeMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opengamma.language.connector.Test.Operation;
+import com.opengamma.language.connector.Main;
+import com.opengamma.language.connector.UserMessagePayload;
 import com.opengamma.language.context.SessionContext;
+import com.opengamma.language.test.Test.Operation;
 
 /**
  * Responds to the Test message to allow an unit test of the messaging infrastructures.
  */
-/* package */class TestMessageHandler {
-  
-  private static final Logger s_logger = LoggerFactory.getLogger (TestMessageHandler.class);
+public class TestMessageHandler {
+
+  private static final Logger s_logger = LoggerFactory.getLogger(TestMessageHandler.class);
 
   /**
-   * Returns the inline response to the message (or null for none), and sends asynchronous responses
-   * to the supplied sender.
+   * Returns the inline response to the message (or null for none), and sends asynchronous responses to the supplied sender.
    * 
    * @param message received test message
    * @param sender message sender for asynchronous messages
@@ -33,11 +34,11 @@ import com.opengamma.language.context.SessionContext;
   public static UserMessagePayload testMessage(final Test message, final SessionContext context) {
     switch (message.getOperation()) {
       case CRASH_REQUEST: {
-        s_logger.info ("CRASH_REQUEST - calling system.exit");
+        s_logger.info("CRASH_REQUEST - calling system.exit");
         final MutableFudgeMsg msg = FudgeContext.GLOBAL_DEFAULT.newMessage();
         msg.add("foo", null, 42);
         context.getStashMessage().put(msg);
-        System.exit (1);
+        System.exit(1);
         return null;
       }
       case ECHO_REQUEST:
@@ -52,9 +53,9 @@ import com.opengamma.language.context.SessionContext;
         message.setOperation(Operation.ECHO_RESPONSE);
         return message;
       case ECHO_RESPONSE:
-        throw new IllegalArgumentException ("ECHO_RESPONSE should not have been sent by the server");
+        throw new IllegalArgumentException("ECHO_RESPONSE should not have been sent by the server");
       case ECHO_RESPONSE_A:
-        throw new IllegalArgumentException ("ECHO_RESPONSE_A should not have been sent by the server");
+        throw new IllegalArgumentException("ECHO_RESPONSE_A should not have been sent by the server");
       case PAUSE_REQUEST:
         s_logger.info("PAUSE_REQUEST - suspending threads");
         Main.notifyPause();
@@ -94,7 +95,7 @@ import com.opengamma.language.context.SessionContext;
         context.getMessageSender().send(message);
         return null;
       case VOID_RESPONSE_A:
-        throw new IllegalArgumentException ("VOID_RESPONSE_A should not have been sent by the server");
+        throw new IllegalArgumentException("VOID_RESPONSE_A should not have been sent by the server");
       default:
         throw new IllegalArgumentException("Unexpected operation " + message.getOperation());
     }

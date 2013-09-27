@@ -1,6 +1,10 @@
 // Automatically created - do not modify
 ///CLOVER:OFF - CSOFF
-package com.opengamma.language.connector;
+package com.opengamma.language.test;
+
+import com.opengamma.language.connector.UserMessagePayload;
+import com.opengamma.language.connector.UserMessagePayloadVisitor;
+
 public class Test extends com.opengamma.language.connector.UserMessagePayload implements java.io.Serializable {
   public <T1,T2> T1 accept (final UserMessagePayloadVisitor<T1,T2> visitor, final T2 data) throws com.opengamma.util.async.AsynchronousExecution { return visitor.visitTest (this, data); }
   private static final long serialVersionUID = 48456185335614l;
@@ -17,11 +21,11 @@ public class Test extends com.opengamma.language.connector.UserMessagePayload im
     STASH_REQUEST,
     STASH_RESPONSE;
   }
-  private com.opengamma.language.connector.Test.Operation _operation;
+  private com.opengamma.language.test.Test.Operation _operation;
   public static final int OPERATION_ORDINAL = 1;
   private int _nonce;
   public static final int NONCE_ORDINAL = 2;
-  public Test (com.opengamma.language.connector.Test.Operation operation, int nonce) {
+  public Test (com.opengamma.language.test.Test.Operation operation, int nonce) {
     if (operation == null) throw new NullPointerException ("operation' cannot be null");
     _operation = operation;
     _nonce = nonce;
@@ -32,7 +36,7 @@ public class Test extends com.opengamma.language.connector.UserMessagePayload im
     fudgeField = fudgeMsg.getByOrdinal (OPERATION_ORDINAL);
     if (fudgeField == null) throw new IllegalArgumentException ("Fudge message is not a Test - field 'operation' is not present");
     try {
-      _operation = fudgeMsg.getFieldValue (com.opengamma.language.connector.Test.Operation.class, fudgeField);
+      _operation = fudgeMsg.getFieldValue (com.opengamma.language.test.Test.Operation.class, fudgeField);
     }
     catch (IllegalArgumentException e) {
       throw new IllegalArgumentException ("Fudge message is not a Test - field 'operation' is not Operation enum", e);
@@ -74,7 +78,7 @@ public class Test extends com.opengamma.language.connector.UserMessagePayload im
       final String className = (String)field.getValue ();
       if ("com.opengamma.language.connector.Test".equals (className)) break;
       try {
-        return (com.opengamma.language.connector.Test)Class.forName (className).getDeclaredMethod ("fromFudgeMsg", org.fudgemsg.mapping.FudgeDeserializer.class, org.fudgemsg.FudgeMsg.class).invoke (null, deserializer, fudgeMsg);
+        return (com.opengamma.language.test.Test)Class.forName (className).getDeclaredMethod ("fromFudgeMsg", org.fudgemsg.mapping.FudgeDeserializer.class, org.fudgemsg.FudgeMsg.class).invoke (null, deserializer, fudgeMsg);
       }
       catch (Throwable t) {
         // no-action
@@ -82,10 +86,10 @@ public class Test extends com.opengamma.language.connector.UserMessagePayload im
     }
     return new Test (deserializer, fudgeMsg);
   }
-  public com.opengamma.language.connector.Test.Operation getOperation () {
+  public com.opengamma.language.test.Test.Operation getOperation () {
     return _operation;
   }
-  public void setOperation (com.opengamma.language.connector.Test.Operation operation) {
+  public void setOperation (com.opengamma.language.test.Test.Operation operation) {
     if (operation == null) throw new NullPointerException ("operation' cannot be null");
     _operation = operation;
   }

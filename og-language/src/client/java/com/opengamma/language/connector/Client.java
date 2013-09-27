@@ -38,6 +38,7 @@ import org.fudgemsg.wire.FudgeStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opengamma.language.config.SystemInfo;
 import com.opengamma.language.connector.ConnectorMessage.Operation;
 import com.opengamma.language.context.MutableSessionContext;
 import com.opengamma.language.context.SessionContext;
@@ -157,6 +158,21 @@ public class Client implements Runnable {
     getOutputMessageBuffer().add(new FudgeMsgEnvelope(msg, 0, MessageDirectives.USER));
   }
 
+  protected void sendLSID() {
+    final SystemInfo msg = new SystemInfo();
+    msg.setSet(SystemInfo.LSID_ORDINAL);
+    msg.setLsid(getSessionContext().getGlobalContext().getServerMetadata().getLogicalServerId());
+    sendUserMessage(new UserMessage(msg));
+  }
+
+  protected void sendConnectorMessage(final ConnectorMessage message) {
+    sendClientMessage(message.toFudgeMsg(new FudgeSerializer(getClientContext().getFudgeContext())));
+  }
+
+  protected void sendClientMessage(final FudgeMsg msg) {
+    getOutputMessageBuffer().add(new FudgeMsgEnvelope(msg, 0, MessageDirectives.CLIENT));
+  }
+
   protected SessionContextInitializationEventHandler getSessionInitializer() {
     return new SessionContextInitializationEventHandler() {
 
@@ -238,6 +254,8 @@ public class Client implements Runnable {
     final Thread sender = new Thread(createMessageWriter());
     sender.setName(Thread.currentThread().getName() + "-Writer");
     sender.start();
+    // First message will be a report of the LSID
+    sendLSID();
     // The "termination" timeout is used for the startup delay before the watchdog thread starts as the first connection can
     // be rather slow while waiting (for example) for the function list to be built if it is not already cached
     final ScheduledFuture<?> watchdogFuture = getClientContext().getHousekeepingScheduler().scheduleWithFixedDelay(watchdog,
@@ -481,9 +499,9 @@ public class Client implements Runnable {
     synchronized (this) {
       _stashMessage = stashMessage;
     }
-    final ConnectorMessage msg = new ConnectorMessage(Operation.STASH, stashMessage);
-    getOutputMessageBuffer().add(new FudgeMsgEnvelope(msg.toFudgeMsg(
-        new FudgeSerializer(getClientContext().getFudgeContext())), 0, MessageDirectives.CLIENT));
+    final ConnectorMessage msg = new ConnectorMessage(Operation.STASH);
+    msg.setStash(stashMessage);
+    sendConnectorMessage(msg);
   }
 
   protected synchronized FudgeMsg getStashMessage() {
