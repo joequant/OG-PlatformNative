@@ -437,8 +437,8 @@ CConnector *CConnector::Start (const TCHAR *pszLanguage) {
 /// @return TRUE if the stop attempt was successful (although it may not have propogated
 ///         to all components), FALSE if there was a problem.
 bool CConnector::Stop () {
-	m_oMutex.Enter ();
 	bool bResult = m_poClient->Stop ();
+	m_oMutex.Enter ();
 	if (bResult && m_poDispatch) {
 		// The dispatch will later call back to OnThreadDisconnect, but this may be too late if there
 		// are callbacks removed before then. Setting m_poDispatch to NULL will suppress the calls
@@ -473,7 +473,6 @@ bool CConnector::Stop () {
 /// @return TRUE if the client is now started, FALSE if there was a problem
 bool CConnector::WaitForStartup (unsigned long lTimeout) const {
 	CSemaphore oStartupSemaphore (0, 1);
-	m_oMutex.Enter ();
 	m_oStartupSemaphorePtr.Set (&oStartupSemaphore);
 	ClientServiceState eState = m_poClient->GetState ();
 	if ((eState != RUNNING) && (eState != STOPPED) && (eState != ERRORED)) {
@@ -490,7 +489,6 @@ retryLock:
 		CThread::Yield ();
 		goto retryLock;
 	}
-	m_oMutex.Leave ();
 	eState = m_poClient->GetState ();
 	LOGDEBUG (TEXT ("Client is in state ") << eState);
 	return eState == RUNNING;
