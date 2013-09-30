@@ -328,7 +328,7 @@ static jstring JNICALL _version (JNIEnv *pEnv, jclass cls) {
 	TCHAR sz[32];
 	StringCbPrintf (sz, sizeof (sz), TEXT ("%d.%d.%d.%d%s"), VERSION_MAJOR, VERSION_MINOR, REVISION, BUILD_NUMBER, TEXT(VERSION_SUFFIX));
 #ifdef _UNICODE
-	return pEnv->NewString (sz, _SafeLen (sz));
+	return pEnv->NewString ((jchar*)sz, _SafeLen (sz));
 #else /* ifdef _UNICODE */
 	return pEnv->NewStringUTF (sz);
 #endif /* ifdef _UNICODE */
