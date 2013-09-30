@@ -12,6 +12,7 @@ import org.fudgemsg.FudgeMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opengamma.language.connector.Main;
 import com.opengamma.language.connector.UserMessagePayload;
 import com.opengamma.language.context.SessionContext;
 
@@ -114,6 +115,56 @@ public class SystemInfoMessageHandler {
 
   };
 
+  private static final SystemInfoField<String> OG_LANGUAGE_VERSION = new SystemInfoField<String>(SystemInfo.OG_LANGUAGE_VERSION_ORDINAL) {
+
+    @Override
+    public void set(final SystemInfo message, final String value) {
+      message.setOgLanguageVersion(value);
+    }
+
+    @Override
+    public String get(final SystemInfo message) {
+      return message.getOgLanguageVersion();
+    }
+
+    @Override
+    public void update(final SessionContext context, final String value) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String query(final SessionContext context) {
+      return Main.version();
+    }
+
+  };
+
+  private static final SystemInfoField<String> OG_PLATFORM_VERSION = new ServerMetadataField<String>(SystemInfo.OG_PLATFORM_VERSION_ORDINAL) {
+
+    @Override
+    public void set(final SystemInfo message, final String value) {
+      message.setOgPlatformVersion(value);
+    }
+
+    @Override
+    public String get(final SystemInfo message) {
+      return message.getOgPlatformVersion();
+    }
+
+    @Override
+    public void set(final ServerMetadata metadata, final String value) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String get(final ServerMetadata metadata) {
+      final String version = Main.version();
+      s_logger.error("TODO: PLAT-4766 Server version requested; returning OG-Language version string - {}", version);
+      return version;
+    }
+
+  };
+
   private static final SystemInfoField<FudgeMsg> PUBLISHED_CONFIGURATION = new ServerMetadataField<FudgeMsg>(SystemInfo.PUBLISHED_CONFIGURATION_ORDINAL) {
 
     @Override
@@ -168,6 +219,10 @@ public class SystemInfoMessageHandler {
         return CONFIGURATION_URL;
       case SystemInfo.LSID_ORDINAL:
         return LSID;
+      case SystemInfo.OG_LANGUAGE_VERSION_ORDINAL:
+        return OG_LANGUAGE_VERSION;
+      case SystemInfo.OG_PLATFORM_VERSION_ORDINAL:
+        return OG_PLATFORM_VERSION;
       case SystemInfo.PUBLISHED_CONFIGURATION_ORDINAL:
         return PUBLISHED_CONFIGURATION;
       case SystemInfo.SERVER_DESCRIPTION_ORDINAL:
@@ -199,6 +254,7 @@ public class SystemInfoMessageHandler {
     for (Integer field : fields) {
       final SystemInfoField<?> info = getField(field);
       if (info != null) {
+        s_logger.debug("Updating field {}", field);
         setSystemInfo(info, message, context);
       } else {
         s_logger.error("Can't update system information for unrecognised field {}", field);
@@ -217,6 +273,7 @@ public class SystemInfoMessageHandler {
     for (Integer field : fields) {
       final SystemInfoField<?> info = getField(field);
       if (info != null) {
+        s_logger.debug("Querying field {}", field);
         getSystemInfo(info, message, context);
       } else {
         s_logger.error("Can't query system information for unrecognised field {}", field);

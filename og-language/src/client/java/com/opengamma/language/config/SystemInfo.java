@@ -1,13 +1,9 @@
 // Automatically created - do not modify
 ///CLOVER:OFF - CSOFF
 package com.opengamma.language.config;
-
-import com.opengamma.language.connector.UserMessagePayload;
-import com.opengamma.language.connector.UserMessagePayloadVisitor;
-
 public class SystemInfo extends com.opengamma.language.connector.UserMessagePayload implements java.io.Serializable {
-  public <T1,T2> T1 accept (final UserMessagePayloadVisitor<T1,T2> visitor, final T2 data) throws com.opengamma.util.async.AsynchronousExecution { return visitor.visitSystemInfo (this, data); }
-  private static final long serialVersionUID = -7473512778568440080l;
+  public <T1,T2> T1 accept (final com.opengamma.language.connector.UserMessagePayloadVisitor<T1,T2> visitor, final T2 data) throws com.opengamma.util.async.AsynchronousExecution { return visitor.visitSystemInfo (this, data); }
+  private static final long serialVersionUID = -4465842173335584163l;
   private java.util.List<Integer> _get;
   public static final int GET_ORDINAL = 1;
   private java.util.List<Integer> _set;
@@ -20,6 +16,10 @@ public class SystemInfo extends com.opengamma.language.connector.UserMessagePayl
   public static final int SERVER_DESCRIPTION_ORDINAL = 5;
   private org.fudgemsg.FudgeMsg _publishedConfiguration;
   public static final int PUBLISHED_CONFIGURATION_ORDINAL = 6;
+  private String _ogLanguageVersion;
+  public static final int OG_LANGUAGE_VERSION_ORDINAL = 7;
+  private String _ogPlatformVersion;
+  public static final int OG_PLATFORM_VERSION_ORDINAL = 8;
   public SystemInfo () {
   }
   protected SystemInfo (final org.fudgemsg.mapping.FudgeDeserializer deserializer, final org.fudgemsg.FudgeMsg fudgeMsg) {
@@ -92,8 +92,26 @@ public class SystemInfo extends com.opengamma.language.connector.UserMessagePayl
         throw new IllegalArgumentException ("Fudge message is not a SystemInfo - field 'publishedConfiguration' is not anonymous/unknown message", e);
       }
     }
+    fudgeField = fudgeMsg.getByOrdinal (OG_LANGUAGE_VERSION_ORDINAL);
+    if (fudgeField != null)  {
+      try {
+        setOgLanguageVersion ((fudgeField.getValue () != null) ? fudgeField.getValue ().toString () : null);
+      }
+      catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException ("Fudge message is not a SystemInfo - field 'ogLanguageVersion' is not string", e);
+      }
+    }
+    fudgeField = fudgeMsg.getByOrdinal (OG_PLATFORM_VERSION_ORDINAL);
+    if (fudgeField != null)  {
+      try {
+        setOgPlatformVersion ((fudgeField.getValue () != null) ? fudgeField.getValue ().toString () : null);
+      }
+      catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException ("Fudge message is not a SystemInfo - field 'ogPlatformVersion' is not string", e);
+      }
+    }
   }
-  public SystemInfo (java.util.Collection<? extends Integer> get, java.util.Collection<? extends Integer> set, String lsid, String configurationURL, String serverDescription, org.fudgemsg.FudgeMsg publishedConfiguration) {
+  public SystemInfo (java.util.Collection<? extends Integer> get, java.util.Collection<? extends Integer> set, String lsid, String configurationURL, String serverDescription, org.fudgemsg.FudgeMsg publishedConfiguration, String ogLanguageVersion, String ogPlatformVersion) {
     if (get == null) _get = null;
     else {
       final java.util.List<Integer> fudge0 = new java.util.ArrayList<Integer> (get);
@@ -116,6 +134,8 @@ public class SystemInfo extends com.opengamma.language.connector.UserMessagePayl
     _configurationURL = configurationURL;
     _serverDescription = serverDescription;
     _publishedConfiguration = publishedConfiguration;
+    _ogLanguageVersion = ogLanguageVersion;
+    _ogPlatformVersion = ogPlatformVersion;
   }
   protected SystemInfo (final SystemInfo source) {
     super (source);
@@ -132,6 +152,8 @@ public class SystemInfo extends com.opengamma.language.connector.UserMessagePayl
     _configurationURL = source._configurationURL;
     _serverDescription = source._serverDescription;
     _publishedConfiguration = source._publishedConfiguration;
+    _ogLanguageVersion = source._ogLanguageVersion;
+    _ogPlatformVersion = source._ogPlatformVersion;
   }
   public SystemInfo clone () {
     return new SystemInfo (this);
@@ -166,12 +188,18 @@ public class SystemInfo extends com.opengamma.language.connector.UserMessagePayl
     if (_publishedConfiguration != null)  {
       msg.add (null, PUBLISHED_CONFIGURATION_ORDINAL, (_publishedConfiguration instanceof org.fudgemsg.MutableFudgeMsg) ? serializer.newMessage (_publishedConfiguration) : _publishedConfiguration);
     }
+    if (_ogLanguageVersion != null)  {
+      msg.add (null, OG_LANGUAGE_VERSION_ORDINAL, _ogLanguageVersion);
+    }
+    if (_ogPlatformVersion != null)  {
+      msg.add (null, OG_PLATFORM_VERSION_ORDINAL, _ogPlatformVersion);
+    }
   }
   public static SystemInfo fromFudgeMsg (final org.fudgemsg.mapping.FudgeDeserializer deserializer, final org.fudgemsg.FudgeMsg fudgeMsg) {
     final java.util.List<org.fudgemsg.FudgeField> types = fudgeMsg.getAllByOrdinal (0);
     for (org.fudgemsg.FudgeField field : types) {
       final String className = (String)field.getValue ();
-      if ("com.opengamma.language.connector.SystemInfo".equals (className)) break;
+      if ("com.opengamma.language.config.SystemInfo".equals (className)) break;
       try {
         return (com.opengamma.language.config.SystemInfo)Class.forName (className).getDeclaredMethod ("fromFudgeMsg", org.fudgemsg.mapping.FudgeDeserializer.class, org.fudgemsg.FudgeMsg.class).invoke (null, deserializer, fudgeMsg);
       }
@@ -263,6 +291,18 @@ public class SystemInfo extends com.opengamma.language.connector.UserMessagePayl
   public void setPublishedConfiguration (org.fudgemsg.FudgeMsg publishedConfiguration) {
     _publishedConfiguration = publishedConfiguration;
   }
+  public String getOgLanguageVersion () {
+    return _ogLanguageVersion;
+  }
+  public void setOgLanguageVersion (String ogLanguageVersion) {
+    _ogLanguageVersion = ogLanguageVersion;
+  }
+  public String getOgPlatformVersion () {
+    return _ogPlatformVersion;
+  }
+  public void setOgPlatformVersion (String ogPlatformVersion) {
+    _ogPlatformVersion = ogPlatformVersion;
+  }
   public boolean equals (final Object o) {
     if (o == this) return true;
     if (!(o instanceof SystemInfo)) return false;
@@ -309,6 +349,20 @@ public class SystemInfo extends com.opengamma.language.connector.UserMessagePayl
       else return false;
     }
     else if (msg._publishedConfiguration != null) return false;
+    if (_ogLanguageVersion != null) {
+      if (msg._ogLanguageVersion != null) {
+        if (!_ogLanguageVersion.equals (msg._ogLanguageVersion)) return false;
+      }
+      else return false;
+    }
+    else if (msg._ogLanguageVersion != null) return false;
+    if (_ogPlatformVersion != null) {
+      if (msg._ogPlatformVersion != null) {
+        if (!_ogPlatformVersion.equals (msg._ogPlatformVersion)) return false;
+      }
+      else return false;
+    }
+    else if (msg._ogPlatformVersion != null) return false;
     return super.equals (msg);
   }
   public int hashCode () {
@@ -325,6 +379,10 @@ public class SystemInfo extends com.opengamma.language.connector.UserMessagePayl
     if (_serverDescription != null) hc += _serverDescription.hashCode ();
     hc *= 31;
     if (_publishedConfiguration != null) hc += _publishedConfiguration.hashCode ();
+    hc *= 31;
+    if (_ogLanguageVersion != null) hc += _ogLanguageVersion.hashCode ();
+    hc *= 31;
+    if (_ogPlatformVersion != null) hc += _ogPlatformVersion.hashCode ();
     return hc;
   }
   public String toString () {

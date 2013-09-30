@@ -56,6 +56,8 @@ public:
 		/// @param[in] eNewState the state the client has changed to
 		virtual void OnStateChange (ClientServiceState ePreviousState, ClientServiceState eNewState) = 0;
 
+	public:
+		virtual ~CStateChange () { }
 	};
 
 	/// Callback for messages received.
@@ -71,6 +73,8 @@ public:
 		/// @param[in] msg the message received, never NULL
 		virtual void OnMessageReceived (FudgeMsg msg) = 0;
 
+	public:
+		virtual ~CMessageReceived () { }
 	};
 private:
 	class CRunnerThread;

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -79,9 +79,6 @@
       <Filter>Header Files\Fudge</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Procedure.h">
-      <Filter>Header Files\Fudge</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Test.h">
       <Filter>Header Files\Fudge</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessage.h">
@@ -168,6 +165,15 @@
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Result.h">
       <Filter>Header Files\Fudge</Filter>
     </ClInclude>
+    <ClInclude Include="SystemInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_config_SystemInfo.h">
+      <Filter>Header Files\Fudge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_test_Test.h">
+      <Filter>Header Files\Fudge</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -216,9 +222,6 @@
       <Filter>Source Files\Fudge</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Procedure.c">
-      <Filter>Source Files\Fudge</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Test.c">
       <Filter>Source Files\Fudge</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessage.c">
@@ -303,6 +306,12 @@
       <Filter>Source Files\Fudge</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_procedure_Result.c">
+      <Filter>Source Files\Fudge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_config_SystemInfo.c">
+      <Filter>Source Files\Fudge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_test_Test.c">
       <Filter>Source Files\Fudge</Filter>
     </ClCompile>
   </ItemGroup>

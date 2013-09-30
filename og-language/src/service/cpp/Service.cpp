@@ -155,6 +155,7 @@ void ServiceStop (bool bForce) {
 /// @param cls see Java documentation
 /// @param jstrMessage the message to log to the user, never NULL
 void JNICALL _notifyHalt (JNIEnv *pEnv, jclass cls, jstring jstrMessage) {
+	__unused (cls)
 	LOGINFO (TEXT ("NOTIFYHALT called from JVM"));
 #ifdef _UNICODE
 	const wchar_t *pszMessage = (const wchar_t*)pEnv->GetStringChars (jstrMessage, NULL);

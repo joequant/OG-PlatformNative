@@ -10,6 +10,7 @@
 #include "Service.h"
 #include <util/cpp/File.h>
 #include <util/cpp/Library.h>
+#include "version.h"
 
 #ifdef _WIN32
 // It's this or disable warning C4996
@@ -282,6 +283,7 @@ static void JNICALL _notifyPause (JNIEnv *pEnv, jclass cls) {
 /// @param jstrProperty the property name to write, never NULL
 /// @param jstrValue the value to write, or NULL to delete the property
 static void JNICALL _writeProperty (JNIEnv *pEnv, jclass cls, jstring jstrProperty, jstring jstrValue) {
+	__unused (cls)
 	LOGINFO (TEXT ("WRITEPROPERTY called from JVM"));
 #ifdef _UNICODE
 	const wchar_t *pszProperty = (const wchar_t*)pEnv->GetStringChars (jstrProperty, NULL);
@@ -300,6 +302,36 @@ static void JNICALL _writeProperty (JNIEnv *pEnv, jclass cls, jstring jstrProper
 	if (pszValue) pEnv->ReleaseStringUTFChars (jstrValue, pszValue);
 #endif /* ifdef _UNICODE */
 	g_nWriteProperty++;
+}
+
+#ifdef _UNICODE
+#ifdef _WIN64
+/// Returns the length of a string, truncated gracefully on 64-bit architecture.
+///
+/// @param[in] psz string to measure
+/// @return the length of the string, truncated to a positive integer
+static inline jsize _SafeLen (const TCHAR *psz) {
+	size_t len = wcslen (psz);
+	return (len > MAXINT32) ? MAXINT32 : (jsize)len;
+}
+#else /* ifdef _WIN64 */
+#define _SafeLen wcslen
+#endif /* ifdef _WIN64 */
+#endif /* ifdef _UNICODE */
+
+/// Implementation of the version method in the Main class.
+///
+/// @param pEnv see Java documentation
+/// @param cls see Java documentation
+static jstring JNICALL _version (JNIEnv *pEnv, jclass cls) {
+	__unused (cls)
+	TCHAR sz[32];
+	StringCbPrintf (sz, sizeof (sz), TEXT ("%d.%d.%d.%d%s"), VERSION_MAJOR, VERSION_MINOR, REVISION, BUILD_NUMBER, TEXT(VERSION_SUFFIX));
+#ifdef _UNICODE
+	return pEnv->NewString (sz, _SafeLen (sz));
+#else /* ifdef _UNICODE */
+	return pEnv->NewStringUTF (sz);
+#endif /* ifdef _UNICODE */
 }
 
 /// Creates a new JVM instance.
@@ -401,11 +433,12 @@ CJVM *CJVM::Create (CErrorFeedback *poFeedback) {
 		return NULL;
 	}
 	LOGDEBUG (TEXT ("Registering native methods"));
-	JNINativeMethod methods[4] = {
+	JNINativeMethod methods[5] = {
 		{ (char*)"notifyPause", (char*)"()V", (void*)&_notifyPause },
 		{ (char*)"notifyStop", (char*)"()V", (void*)&_notifyStop },
 		{ (char*)"notifyHalt", (char*)"(Ljava/lang/String;)V", (void*)&_notifyHalt },
-		{ (char*)"writeProperty", (char*)"(Ljava/lang/String;Ljava/lang/String;)V", (void*)&_writeProperty }
+		{ (char*)"writeProperty", (char*)"(Ljava/lang/String;Ljava/lang/String;)V", (void*)&_writeProperty },
+		{ (char*)"version", (char*)"()Ljava/lang/String;", (void*)&_version }
 	};
 	jclass cls = pEnv->FindClass (MAIN_CLASS);
 	if (!cls) {
@@ -498,12 +531,12 @@ TCHAR *CJVM::InvokeString (JNIEnv *pEnv, const char *pszMethodName, const char *
 	jclass cls = pEnv->FindClass (MAIN_CLASS);
 	if (!cls) {
 		LOGWARN (TEXT ("Couldn't find class ") << TEXT (MAIN_CLASS));
-		return false;
+		return _tcsdup (TEXT ("Couldn't find Main class.\nIt is possible that one or more JAR files are missing from this OpenGamma installation."));
 	}
 	jmethodID mtd = pEnv->GetStaticMethodID (cls, pszMethodName, pszSignature);
 	if (!mtd) {
 		LOGWARN ("Couldn't find method " << pszMethodName << " on " << MAIN_CLASS);
-		return false;
+		return _tcsdup (TEXT ("Couldn't find the entry point method on the Main class.\nIt is possible that one or more JAR files are missing from this OpenGamma installation."));
 	}
 	va_list args;
 	va_start (args, pszSignature);
@@ -588,21 +621,6 @@ TCHAR *CJVM::InvokeString (const char *pszMethodName) {
 	m_pJVM->DetachCurrentThread ();
 	return psz;
 }
-
-#ifdef _UNICODE
-#ifdef _WIN64
-/// Returns the length of a string, truncated gracefully on 64-bit architecture.
-///
-/// @param[in] psz string to measure
-/// @return the length of the string, truncated to a positive integer
-static inline jsize _SafeLen (const TCHAR *psz) {
-	size_t len = wcslen (psz);
-	return (len > MAXINT32) ? MAXINT32 : (jsize)len;
-}
-#else /* ifdef _WIN64 */
-#define _SafeLen wcslen
-#endif /* ifdef _WIN64 */
-#endif /* ifdef _UNICODE */
 
 /// Calls the SetProperty method on the Main class to define a system property. This should be
 /// used in preference to System.setProperty as it includes diagnostic logging and handles

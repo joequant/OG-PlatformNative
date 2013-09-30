@@ -10,7 +10,7 @@
 
 #include <connector/cpp/Client.h>
 #define FUDGE_NO_NAMESPACE
-#include <connector/cpp/com_opengamma_language_connector_Test.h>
+#include <connector/cpp/com_opengamma_language_test_Test.h>
 #include <connector/cpp/com_opengamma_language_connector_UserMessage.h>
 
 LOGGING (com.opengamma.language.connector.ClientTest);
@@ -55,6 +55,11 @@ private:
 protected:
 	void OnMessageReceived (FudgeMsg msg) {
 		LOGINFO (TEXT ("Message received"));
+		int i;
+		if (UserMessage_getHandle (msg, &i) != FUDGE_OK) {
+			LOGINFO (TEXT ("Discarding ASYNC push message"));
+			return;
+		}
 		FudgeMsg_retain (msg);
 		// Not expecting to have had another message
 		ASSERT (!m_msg.GetAndSet (msg));

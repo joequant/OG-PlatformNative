@@ -258,4 +258,12 @@ public class Main {
     return true;
   }
 
+  /**
+   * Returns the version string from the native code. The version string is formatted as {@code major}.{@code minor}.{@code revision}.{@code buildNumber}, with possibly a suffix such as {@code -Debug}
+   * .
+   * 
+   * @return the version string
+   */
+  public static native String version();
+
 }

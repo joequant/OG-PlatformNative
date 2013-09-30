@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_config_SystemInfo.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_test_Test.h" />
     <ClInclude Include="Alert.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_ConnectorMessage.h" />
@@ -157,7 +159,6 @@
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Function.h" />
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_LiveData.h" />
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Procedure.h" />
-    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Test.h" />
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessage.h" />
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessagePayload.h" />
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_Data.h" />
@@ -196,11 +197,24 @@
     <ClInclude Include="Connector.h" />
     <ClInclude Include="Procedures.h" />
     <ClInclude Include="RequestBuilder.h" />
+    <ClInclude Include="SystemInfo.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SynchronousCalls.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_config_SystemInfo.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_test_Test.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+    </ClCompile>
     <ClCompile Include="Alert.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_ConnectorMessage.c">
@@ -216,9 +230,6 @@
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Procedure.c">
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_Test.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_connector_UserMessage.c">

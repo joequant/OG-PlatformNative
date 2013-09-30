@@ -97,6 +97,12 @@ public final class ConfigurationWatchdog extends ContextInitializationBean {
               final String newServerId;
               try {
                 s_logger.info("Polling server for logical changes");
+                // Note: We only poll for LSID changes. Changes to other aspects of configuration will be ignored. This is safe:
+                // 
+                //   * If a configuration change is such that using either the old or new document gives consistent behavior it
+                //     can safely be ignored.
+                //   * If a configuration change is such that behavior of clients will differ, then it is no longer the same
+                //     logical server and the LSID must have been changed.
                 newServerId = getConfiguration().fetchConfigurationMessage(false).getString("lsid");
               } catch (Throwable t) {
                 s_logger.info("Caught exception", t);

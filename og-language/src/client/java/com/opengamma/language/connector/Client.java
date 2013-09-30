@@ -254,8 +254,6 @@ public class Client implements Runnable {
     final Thread sender = new Thread(createMessageWriter());
     sender.setName(Thread.currentThread().getName() + "-Writer");
     sender.start();
-    // First message will be a report of the LSID
-    sendLSID();
     // The "termination" timeout is used for the startup delay before the watchdog thread starts as the first connection can
     // be rather slow while waiting (for example) for the function list to be built if it is not already cached
     final ScheduledFuture<?> watchdogFuture = getClientContext().getHousekeepingScheduler().scheduleWithFixedDelay(watchdog,
@@ -302,6 +300,7 @@ public class Client implements Runnable {
                   s_logger.debug("Ignoring heartbeat request - other messages pending");
                 }
                 if (!contextInitialized) {
+                  sendLSID();
                   deferredMessages = new LinkedList<Runnable>();
                   initializeContext(message.getStash(), deferredMessages);
                   contextInitialized = true;

@@ -39,7 +39,10 @@ bool CProcess::GetCurrentModule (TCHAR *pszBuffer, size_t cchBuffer) {
 	return hModule && GetModuleFileName (hModule, pszBuffer, (DWORD)cchBuffer);
 #else /* ifdef _WIN32 */
 	// TODO: this is flawed and probably not portable; we probably want the .so file and not the executing image
-	return readlink ("/proc/self/exe", pszBuffer, cchBuffer) > 0;
+	ssize_t cch = readlink ("/proc/self/exe", pszBuffer, cchBuffer - 1);
+	if (cch < 0) return false;
+	pszBuffer[cch] = 0;
+	return true;
 #endif /* ifdef _WIN32 */
 }
 

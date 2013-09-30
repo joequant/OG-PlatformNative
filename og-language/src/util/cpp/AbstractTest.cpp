@@ -159,7 +159,8 @@ private:
 			return;
 		}
 		LOGDEBUG (TEXT ("Got TEST_GROUPS = ") << szGroups);
-#define PSZ_GROUPS szGroups
+# define PSZ_GROUPS szGroups
+		TCHAR *pszContext;
 #else /* ifdef _WIN32 */
 		const char *pszGroups = getenv ("TEST_GROUPS");
 		if (!pszGroups) {
@@ -175,9 +176,8 @@ private:
 			LOGFATAL (TEXT ("Out of memory"));
 			return;
 		}
-#define PSZ_GROUPS pszGroupsCopy
+# define PSZ_GROUPS pszGroupsCopy
 #endif /* ifdef _WIN32 */
-		TCHAR *pszContext;
 		TCHAR *psz = _tcstok_s (PSZ_GROUPS, TEXT (","), &pszContext);
 #undef PSZ_GROUPS
 		while (psz) {

@@ -1,13 +1,9 @@
 // Automatically created - do not modify
 ///CLOVER:OFF - CSOFF
 package com.opengamma.language.test;
-
-import com.opengamma.language.connector.UserMessagePayload;
-import com.opengamma.language.connector.UserMessagePayloadVisitor;
-
 public class Test extends com.opengamma.language.connector.UserMessagePayload implements java.io.Serializable {
-  public <T1,T2> T1 accept (final UserMessagePayloadVisitor<T1,T2> visitor, final T2 data) throws com.opengamma.util.async.AsynchronousExecution { return visitor.visitTest (this, data); }
-  private static final long serialVersionUID = 48456185335614l;
+  public <T1,T2> T1 accept (final com.opengamma.language.connector.UserMessagePayloadVisitor<T1,T2> visitor, final T2 data) throws com.opengamma.util.async.AsynchronousExecution { return visitor.visitTest (this, data); }
+  private static final long serialVersionUID = 50608703414505l;
   public enum Operation {
     ECHO_REQUEST,
     ECHO_REQUEST_A,
@@ -76,7 +72,7 @@ public class Test extends com.opengamma.language.connector.UserMessagePayload im
     final java.util.List<org.fudgemsg.FudgeField> types = fudgeMsg.getAllByOrdinal (0);
     for (org.fudgemsg.FudgeField field : types) {
       final String className = (String)field.getValue ();
-      if ("com.opengamma.language.connector.Test".equals (className)) break;
+      if ("com.opengamma.language.test.Test".equals (className)) break;
       try {
         return (com.opengamma.language.test.Test)Class.forName (className).getDeclaredMethod ("fromFudgeMsg", org.fudgemsg.mapping.FudgeDeserializer.class, org.fudgemsg.FudgeMsg.class).invoke (null, deserializer, fudgeMsg);
       }

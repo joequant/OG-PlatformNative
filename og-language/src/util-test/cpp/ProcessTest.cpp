@@ -22,7 +22,9 @@ static void MyProcess () {
 	ASSERT (GetModuleFileName (NULL, szBuffer, 256));
 #else /* ifdef _WIN32 */
 	// This should give the UtilTest process
-	ASSERT (readlink ("/proc/self/exe", szBuffer, 256) > 0);
+	ssize_t cch = readlink ("/proc/self/exe", szBuffer, 256);
+	ASSERT (cch > 0);
+	szBuffer[cch] = 0;
 #endif /* ifdef _WIN32 */
 	LOGDEBUG (TEXT ("Searching for '") << szBuffer << TEXT ("'"));
 	CProcess *poProcess = CProcess::FindByName (szBuffer);

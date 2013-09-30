@@ -22,5 +22,6 @@
 
 #include <util/cpp/Fudge.h>
 #include <util/cpp/AbstractTest.h>
+#include <util/cpp/String.h>
 
 #endif /* ifndef STDAFX_H */

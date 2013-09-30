@@ -10,7 +10,8 @@
 
 #include <connector/cpp/Connector.h>
 #define FUDGE_NO_NAMESPACE
-#include <connector/cpp/com_opengamma_language_connector_Test.h>
+#include <connector/cpp/com_opengamma_language_config_SystemInfo.h>
+#include <connector/cpp/com_opengamma_language_test_Test.h>
 
 LOGGING (com.opengamma.language.connector.ConnectorTest);
 
@@ -45,7 +46,7 @@ protected:
 	void OnThreadDisconnect () {
 		LOGDEBUG (TEXT ("Callback thread disconnected"));
 		m_oMutex.Enter ();
-		m_nDisconnects++;
+		m_nDisconnects--;
 		m_oMutex.Leave ();
 	}
 public:
@@ -79,10 +80,16 @@ public:
 	}
 	bool Disconnected () {
 		m_oMutex.Enter ();
-		LOGDEBUG (TEXT ("messages=") << m_nMessages << TEXT (", disconnects=") << m_nDisconnects);
-		bool bResult = (m_nDisconnects == 1);
+		LOGDEBUG (TEXT ("messages=") << m_nMessages << TEXT (", disconnects pending=") << m_nDisconnects);
+		bool bResult = (m_nDisconnects == 0);
 		m_oMutex.Leave ();
 		return bResult;
+	}
+	bool Connect (const TCHAR *pszClass, CConnector *poConnector) {
+		m_oMutex.Enter ();
+		m_nDisconnects++;
+		m_oMutex.Leave ();
+		return poConnector->AddCallback (pszClass, this);
 	}
 };
 
@@ -95,7 +102,7 @@ static void StartConnector () {
 	ASSERT (g_poConnector);
 	ASSERT (g_poConnector->WaitForStartup (TIMEOUT_STARTUP));
 	g_poCallback = new CTestMessageCallback ();
-	ASSERT (g_poConnector->AddCallback (Test_Class, g_poCallback));
+	ASSERT (g_poCallback->Connect (Test_Class, g_poConnector));
 	g_nonce = (fudge_i32)GetTickCount ();
 }
 
@@ -133,7 +140,7 @@ static void StartStop () {
 	// No-op; the fun is in the StartConnector and StopConnector methods
 }
 
-static void SyncCall (long lTimeout = TIMEOUT_CALL) {
+static void SyncCallImpl (long lTimeout) {
 	FudgeMsg msgToSend;
 	FudgeMsg msgReceived;
 	CreateTestMessage (&msgToSend, ECHO_REQUEST);
@@ -141,8 +148,13 @@ static void SyncCall (long lTimeout = TIMEOUT_CALL) {
 	ASSERT (msgReceived);
 	CheckTestResponse (msgReceived, ECHO_RESPONSE);
 	FudgeMsg_release (msgReceived);
-	ASSERT (!g_poCallback->WaitForMessage (&msgReceived));
 	FudgeMsg_release (msgToSend);
+}
+
+static void SyncCall () {
+	FudgeMsg msgReceived;
+	SyncCallImpl (TIMEOUT_CALL);
+	ASSERT (!g_poCallback->WaitForMessage (&msgReceived));
 }
 
 static void AsyncCall () {
@@ -184,6 +196,7 @@ static void AsyncCallWithAsyncCallback () {
 }
 
 static void JVMCrash () {
+	ASSERT (g_poCallback->Connect (SystemInfo_Class, g_poConnector));
 	FudgeMsg msgToSend;
 	FudgeMsg msgReceived;
 	CreateTestMessage (&msgToSend, CRASH_REQUEST);
@@ -194,7 +207,18 @@ static void JVMCrash () {
 	ASSERT (tEnd - tStart < TIMEOUT_CALL);
 	FudgeMsg_release (msgToSend);
 	// And now it should be operational again
-	SyncCall (TIMEOUT_STARTUP);
+	SyncCallImpl (TIMEOUT_STARTUP);
+	// The async listener should have received at least one LSID notification following the restart
+	// the first notification can be a bit hit-or-miss because the listener isn't registered until
+	// after the Java stack is up and running.
+	ASSERT (g_poCallback->WaitForMessage (&msgReceived));
+	ASSERT (SystemInfo_isClass (msgReceived));
+	TCHAR *pszLSID;
+	ASSERT (SystemInfo_getLsid (msgReceived, &pszLSID) == FUDGE_OK);
+	ASSERT (pszLSID);
+	LOGINFO (TEXT ("Server LSID = ") << pszLSID);
+	free (pszLSID);
+	FudgeMsg_release (msgReceived);
 }
 
 static void JVMHang () {
@@ -208,7 +232,7 @@ static void JVMHang () {
 	ASSERT (tEnd - tStart < 3 * TIMEOUT_CALL);
 	FudgeMsg_release (msgToSend);
 	// And now it should be operational again
-	SyncCall (TIMEOUT_STARTUP);
+	SyncCallImpl (TIMEOUT_STARTUP);
 }
 
 BEGIN_TESTS (ConnectorTest)

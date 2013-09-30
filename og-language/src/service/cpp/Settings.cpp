@@ -400,6 +400,7 @@ private:
 	/// @param[in] poSettings ignored
 	/// @return the path to the JVM DLL, a default best guess, or NULL if there is a problem
 	TCHAR *CalculateString (const CAbstractSettings *poSettings) const {
+		__unused (poSettings)
 		TCHAR *pszLibrary = NULL;
 		do {
 #ifdef _WIN32
@@ -482,6 +483,7 @@ protected:
 	/// @param[in] poSettings ignored
 	/// @return the path, or a default best guess if none is found
 	TCHAR *CalculateString (const CAbstractSettings *poSettings) const {
+		__unused (poSettings)
 		TCHAR *pszJarPath = NULL;
 		// Scan backwards from the module to find a path which has Client.jar in. This works if all of the
 		// JARs and DLLs are in the same folder, but also in the case of a build system where we have sub-folders

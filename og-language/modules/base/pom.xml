@@ -520,10 +520,9 @@
                   <arg value="-lC" />
                   <arg value="-Xinclude=stdafx.h" />
                   <arg value="com/opengamma/language/Data.proto" />
+                  <arg value="com/opengamma/language/config/SystemInfo.proto" />
                   <arg value="com/opengamma/language/connector/Custom.proto" />
                   <arg value="com/opengamma/language/connector/ConnectorMessage.proto" />
-                  <arg value="com/opengamma/language/connector/SystemInfo.proto" />
-                  <arg value="com/opengamma/language/connector/Test.proto" />
                   <arg value="com/opengamma/language/connector/UserMessage.proto" />
                   <arg value="com/opengamma/language/function/Available.proto" />
                   <arg value="com/opengamma/language/function/Custom.proto" />
@@ -542,6 +541,7 @@
                   <arg value="com/opengamma/language/procedure/Invoke.proto" />
                   <arg value="com/opengamma/language/procedure/QueryAvailable.proto" />
                   <arg value="com/opengamma/language/procedure/Result.proto" />
+                  <arg value="com/opengamma/language/test/Test.proto" />
                 </java>
                 <!-- Temporary measure to suppress the class header field for "Value" sub-messages; remove
                      this when Fudge-Proto gets updated/fixed -->
@@ -556,10 +556,9 @@
                   <arg value="-XfileFooter=///CLOVER:ON - CSON" />
                   <arg value="-XfileHeader=///CLOVER:OFF - CSOFF" />
                   <arg value="com/opengamma/language/Data.proto" />
+                  <arg value="com/opengamma/language/config/SystemInfo.proto" />
                   <arg value="com/opengamma/language/connector/Custom.proto" />
                   <arg value="com/opengamma/language/connector/ConnectorMessage.proto" />
-                  <arg value="com/opengamma/language/connector/SystemInfo.proto" />
-                  <arg value="com/opengamma/language/connector/Test.proto" />
                   <arg value="com/opengamma/language/connector/UserMessage.proto" />
                   <arg value="com/opengamma/language/function/Available.proto" />
                   <arg value="com/opengamma/language/function/Custom.proto" />
@@ -578,6 +577,7 @@
                   <arg value="com/opengamma/language/procedure/Invoke.proto" />
                   <arg value="com/opengamma/language/procedure/QueryAvailable.proto" />
                   <arg value="com/opengamma/language/procedure/Result.proto" />
+                  <arg value="com/opengamma/language/test/Test.proto" />
                 </java>
               </target>
             </configuration>
