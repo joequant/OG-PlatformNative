@@ -8,6 +8,7 @@ package com.opengamma.language.snapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,11 +76,11 @@ public class SetYieldCurveTensorFunction extends AbstractFunctionInvoker impleme
         }
       } else {
         if (overrideValue != null) {
-          for (final Map.Entry<String, ValueSnapshot> entry : entries.entrySet()) {
+          for (final ValueSnapshot entry : entries.values()) {
             if (overrideValue.length < i) {
               throw new InvokeInvalidArgumentException(1, "Vector too short");
             }
-            entry.setValue(entry.getValue().toBuilder().overrideValue(overrideValue[i].getDoubleValue()).build());
+            entry.setOverrideValue(overrideValue[i].getDoubleValue());
             i++;
           }
         }

@@ -25,7 +25,7 @@ import com.opengamma.language.ValueUtils;
     } else if (overrideValue != null) {
       final ValueSnapshot value = snapshot.getValue(identifier, valueName);
       if (value != null) {
-        snapshot.putValue(identifier, valueName, value.toBuilder().overrideValue(overrideValue).build());
+        value.setOverrideValue(overrideValue);
       } else {
         snapshot.putValue(identifier, valueName, ValueSnapshot.of(marketValue, overrideValue));
       }

@@ -112,7 +112,7 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
             snapshotValues.put(key, ValueSnapshot.of(marketValue[i][j][k].getDoubleValue(), override));
           } else if (overrideValue != null) {
             if (value != null) {
-              snapshotValues.put(key, value.toBuilder().overrideValue(overrideValue[i][j][k].getDoubleValue()).build());
+              value.setOverrideValue(overrideValue[i][j][k].getDoubleValue());
             } else {
               snapshotValues.put(key, ValueSnapshot.of(null, overrideValue[i][j][k].getDoubleValue()));
             }

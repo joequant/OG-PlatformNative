@@ -66,7 +66,7 @@ public class SetVolatilityCubePointFunction extends AbstractFunctionInvoker impl
         if (marketValue != null) {
           points.put(key, ValueSnapshot.of(marketValue, overrideValue));
         } else {
-          points.put(key, value.toBuilder().overrideValue(overrideValue).build());
+          value.setOverrideValue(overrideValue);
         }
       } else {
         points.put(key, ValueSnapshot.of(marketValue, overrideValue));

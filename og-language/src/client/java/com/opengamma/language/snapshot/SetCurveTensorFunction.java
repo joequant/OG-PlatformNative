@@ -60,7 +60,7 @@ public class SetCurveTensorFunction extends AbstractFunctionInvoker implements P
     for (final ExternalIdBundle target : values.getTargets()) {
       final Map<String, ValueSnapshot> entries = values.getTargetValues(target);
       if (marketValue != null) {
-        for (final Map.Entry<String, ValueSnapshot> entry : new ArrayList<Map.Entry<String, ValueSnapshot>>(entries.entrySet())) {
+        for (final Map.Entry<String, ValueSnapshot> entry : new ArrayList<>(entries.entrySet())) {
           final Double override;
           if (overrideValue != null) {
             if (overrideValue.length < i) {
@@ -75,11 +75,11 @@ public class SetCurveTensorFunction extends AbstractFunctionInvoker implements P
         }
       } else {
         if (overrideValue != null) {
-          for (final Map.Entry<String, ValueSnapshot> valueSnapshotEntry : entries.entrySet()) {
+          for (final ValueSnapshot entry : entries.values()) {
             if (overrideValue.length < i) {
               throw new InvokeInvalidArgumentException(1, "Vector too short");
             }
-            valueSnapshotEntry.setValue(valueSnapshotEntry.getValue().toBuilder().overrideValue(overrideValue[i].getDoubleValue()).build());
+            entry.setOverrideValue(overrideValue[i].getDoubleValue());
             i++;
           }
         }

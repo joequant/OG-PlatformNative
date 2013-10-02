@@ -108,7 +108,7 @@ public class SetVolatilitySurfaceTensorFunction extends AbstractFunctionInvoker 
           snapshotValues.put(key, ValueSnapshot.of(marketValue[i][j].getDoubleValue(), override));
         } else if (overrideValue != null) {
           if (value != null) {
-            snapshotValues.put(key, value.toBuilder().overrideValue(overrideValue[i][j].getDoubleValue()).build());
+            value.setOverrideValue(overrideValue[i][j].getDoubleValue());
           } else {
             snapshotValues.put(key, ValueSnapshot.of(null, overrideValue[i][j].getDoubleValue()));
           }

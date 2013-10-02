@@ -114,7 +114,7 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
       Map<Pair<Object, Object>, ValueSnapshot> snapshotValues = snapshot.getValues();
       final ValueSnapshot value = snapshotValues.get(key);
       if (value != null) {
-        snapshotValues.put(key, value.toBuilder().overrideValue(overrideValue).build());
+        value.setOverrideValue(overrideValue);
       } else {
         snapshotValues.put(key, ValueSnapshot.of(overrideValue, overrideValue));
       }
@@ -131,7 +131,7 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
           if (marketValue != null) {
             snapshot.getValues().put(surfacePoint.getKey(), ValueSnapshot.of(marketValue, overrideValue));
           } else {
-            surfacePoint.setValue(surfacePoint.getValue().toBuilder().overrideValue(overrideValue).build());
+            surfacePoint.getValue().setOverrideValue(overrideValue);
           }
           break;
         }
