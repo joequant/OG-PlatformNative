@@ -60,7 +60,7 @@ public class SetYieldCurveTensorFunction extends AbstractFunctionInvoker impleme
     for (final ExternalIdBundle target : values.getTargets()) {
       final Map<String, ValueSnapshot> entries = values.getTargetValues(target);
       if (marketValue != null) {
-        for (final Map.Entry<String, ValueSnapshot> entry : new ArrayList<Map.Entry<String, ValueSnapshot>>(entries.entrySet())) {
+        for (final Map.Entry<String, ValueSnapshot> entry : new ArrayList<>(entries.entrySet())) {
           final Double override;
           if (overrideValue != null) {
             if (overrideValue.length < i) {
@@ -70,16 +70,16 @@ public class SetYieldCurveTensorFunction extends AbstractFunctionInvoker impleme
           } else {
             override = UnstructuredMarketDataSnapshotUtil.getOverrideValue(entry.getValue());
           }
-          values.putValue(target, entry.getKey(), new ValueSnapshot(marketValue[i].getDoubleValue(), override));
+          values.putValue(target, entry.getKey(), ValueSnapshot.of(marketValue[i].getDoubleValue(), override));
           i++;
         }
       } else {
         if (overrideValue != null) {
-          for (final ValueSnapshot entry : entries.values()) {
+          for (final Map.Entry<String, ValueSnapshot> entry : entries.entrySet()) {
             if (overrideValue.length < i) {
               throw new InvokeInvalidArgumentException(1, "Vector too short");
             }
-            entry.setOverrideValue(overrideValue[i].getDoubleValue());
+            entry.setValue(entry.getValue().toBuilder().overrideValue(overrideValue[i].getDoubleValue()).build());
             i++;
           }
         }

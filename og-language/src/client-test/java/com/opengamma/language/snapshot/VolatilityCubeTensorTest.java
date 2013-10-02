@@ -28,10 +28,10 @@ public class VolatilityCubeTensorTest {
 
   private ManageableVolatilityCubeSnapshot createSnapshot() {
     final ManageableVolatilityCubeSnapshot snapshot = new ManageableVolatilityCubeSnapshot();
-    final Map<VolatilityPoint, ValueSnapshot> values = new HashMap<VolatilityPoint, ValueSnapshot>();
-    values.put(new VolatilityPoint(Tenor.DAY, Tenor.DAY, 0), new ValueSnapshot(0.1, null));
-    values.put(new VolatilityPoint(Tenor.DAY, Tenor.YEAR, 0), new ValueSnapshot(0.2, 0.25));
-    values.put(new VolatilityPoint(Tenor.YEAR, Tenor.YEAR, 4.2), new ValueSnapshot(null, 0.35));
+    final Map<VolatilityPoint, ValueSnapshot> values = new HashMap<>();
+    values.put(new VolatilityPoint(Tenor.DAY, Tenor.DAY, 0), ValueSnapshot.of(0.1, null));
+    values.put(new VolatilityPoint(Tenor.DAY, Tenor.YEAR, 0), ValueSnapshot.of(0.2, 0.25));
+    values.put(new VolatilityPoint(Tenor.YEAR, Tenor.YEAR, 4.2), ValueSnapshot.of(null, 0.35));
     snapshot.setValues(values);
     return snapshot;
   }

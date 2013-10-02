@@ -64,12 +64,12 @@ public class SetVolatilityCubePointFunction extends AbstractFunctionInvoker impl
       final ValueSnapshot value = points.get(key);
       if (value != null) {
         if (marketValue != null) {
-          points.put(key, new ValueSnapshot(marketValue, overrideValue));
+          points.put(key, ValueSnapshot.of(marketValue, overrideValue));
         } else {
-          value.setOverrideValue(overrideValue);
+          points.put(key, value.toBuilder().overrideValue(overrideValue).build());
         }
       } else {
-        points.put(key, new ValueSnapshot(marketValue, overrideValue));
+        points.put(key, ValueSnapshot.of(marketValue, overrideValue));
       }
     } else {
       points.remove(key);

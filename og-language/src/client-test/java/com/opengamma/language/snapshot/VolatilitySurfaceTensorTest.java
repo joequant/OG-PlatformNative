@@ -29,9 +29,9 @@ public class VolatilitySurfaceTensorTest {
   private ManageableVolatilitySurfaceSnapshot createSnapshot() {
     final ManageableVolatilitySurfaceSnapshot snapshot = new ManageableVolatilitySurfaceSnapshot();
     final Map<Pair<? extends Object, ? extends Object>, ValueSnapshot> values = new HashMap<Pair<? extends Object, ? extends Object>, ValueSnapshot>();
-    values.put(Pair.of("A", "I"), new ValueSnapshot(0.1, null));
-    values.put(Pair.of("B", "I"), new ValueSnapshot(0.2, 0.25));
-    values.put(Pair.of("C", "J"), new ValueSnapshot(null, 0.35));
+    values.put(Pair.of("A", "I"), ValueSnapshot.of(0.1, null));
+    values.put(Pair.of("B", "I"), ValueSnapshot.of(0.2, 0.25));
+    values.put(Pair.of("C", "J"), ValueSnapshot.of(null, 0.35));
     snapshot.setValues((Map<Pair<Object, Object>, ValueSnapshot>) (Map<?, ?>) values);
     return snapshot;
   }

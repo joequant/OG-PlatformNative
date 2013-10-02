@@ -109,13 +109,14 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
       snapshot.setValues(new HashMap<Pair<Object, Object>, ValueSnapshot>());
     }
     if (marketValue != null) {
-      snapshot.getValues().put(key, new ValueSnapshot(marketValue, overrideValue));
+      snapshot.getValues().put(key, ValueSnapshot.of(marketValue, overrideValue));
     } else {
-      final ValueSnapshot value = snapshot.getValues().get(key);
+      Map<Pair<Object, Object>, ValueSnapshot> snapshotValues = snapshot.getValues();
+      final ValueSnapshot value = snapshotValues.get(key);
       if (value != null) {
-        value.setOverrideValue(overrideValue);
+        snapshotValues.put(key, value.toBuilder().overrideValue(overrideValue).build());
       } else {
-        snapshot.getValues().put(key, new ValueSnapshot(overrideValue, overrideValue));
+        snapshotValues.put(key, ValueSnapshot.of(overrideValue, overrideValue));
       }
     }
     return snapshot;
@@ -128,9 +129,9 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
         final Object yObject = surfacePoint.getKey().getSecond();
         if (y.equals(StructuredMarketDataSnapshotUtil.toString(yObject))) {
           if (marketValue != null) {
-            snapshot.getValues().put(surfacePoint.getKey(), new ValueSnapshot(marketValue, overrideValue));
+            snapshot.getValues().put(surfacePoint.getKey(), ValueSnapshot.of(marketValue, overrideValue));
           } else {
-            surfacePoint.getValue().setOverrideValue(overrideValue);
+            surfacePoint.setValue(surfacePoint.getValue().toBuilder().overrideValue(overrideValue).build());
           }
           break;
         }

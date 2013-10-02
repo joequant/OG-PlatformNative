@@ -70,16 +70,16 @@ public class SetCurveTensorFunction extends AbstractFunctionInvoker implements P
           } else {
             override = UnstructuredMarketDataSnapshotUtil.getOverrideValue(entry.getValue());
           }
-          values.putValue(target, entry.getKey(), new ValueSnapshot(marketValue[i].getDoubleValue(), override));
+          values.putValue(target, entry.getKey(), ValueSnapshot.of(marketValue[i].getDoubleValue(), override));
           i++;
         }
       } else {
         if (overrideValue != null) {
-          for (final ValueSnapshot entry : entries.values()) {
+          for (final Map.Entry<String, ValueSnapshot> valueSnapshotEntry : entries.entrySet()) {
             if (overrideValue.length < i) {
               throw new InvokeInvalidArgumentException(1, "Vector too short");
             }
-            entry.setOverrideValue(overrideValue[i].getDoubleValue());
+            valueSnapshotEntry.setValue(valueSnapshotEntry.getValue().toBuilder().overrideValue(overrideValue[i].getDoubleValue()).build());
             i++;
           }
         }

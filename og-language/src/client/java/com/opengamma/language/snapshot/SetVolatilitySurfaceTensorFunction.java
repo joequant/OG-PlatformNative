@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
@@ -91,6 +92,7 @@ public class SetVolatilitySurfaceTensorFunction extends AbstractFunctionInvoker 
       }
       for (int j = 0; j < keyX.size(); j++) {
         final Pair<Object, Object> key = Pair.of((Object) keyX.get(j), y);
+        final Map<Pair<Object, Object>, ValueSnapshot> snapshotValues = snapshot.getValues();
         final ValueSnapshot value = snapshot.getValues().get(key);
         if (marketValue != null) {
           Double override;
@@ -103,12 +105,12 @@ public class SetVolatilitySurfaceTensorFunction extends AbstractFunctionInvoker 
               override = null;
             }
           }
-          snapshot.getValues().put(key, new ValueSnapshot(marketValue[i][j].getDoubleValue(), override));
+          snapshotValues.put(key, ValueSnapshot.of(marketValue[i][j].getDoubleValue(), override));
         } else if (overrideValue != null) {
           if (value != null) {
-            value.setOverrideValue(overrideValue[i][j].getDoubleValue());
+            snapshotValues.put(key, value.toBuilder().overrideValue(overrideValue[i][j].getDoubleValue()).build());
           } else {
-            snapshot.getValues().put(key, new ValueSnapshot(null, overrideValue[i][j].getDoubleValue()));
+            snapshotValues.put(key, ValueSnapshot.of(null, overrideValue[i][j].getDoubleValue()));
           }
         }
       }

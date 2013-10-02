@@ -21,13 +21,13 @@ import com.opengamma.language.ValueUtils;
 
   public static void setValue(final ManageableUnstructuredMarketDataSnapshot snapshot, final String valueName, final ExternalId identifier, final Double overrideValue, final Double marketValue) {
     if (marketValue != null) {
-      snapshot.putValue(identifier, valueName, new ValueSnapshot(marketValue, overrideValue));
+      snapshot.putValue(identifier, valueName, ValueSnapshot.of(marketValue, overrideValue));
     } else if (overrideValue != null) {
       final ValueSnapshot value = snapshot.getValue(identifier, valueName);
       if (value != null) {
-        value.setOverrideValue(overrideValue);
+        snapshot.putValue(identifier, valueName, value.toBuilder().overrideValue(overrideValue).build());
       } else {
-        snapshot.putValue(identifier, valueName, new ValueSnapshot(marketValue, overrideValue));
+        snapshot.putValue(identifier, valueName, ValueSnapshot.of(marketValue, overrideValue));
       }
     } else {
       snapshot.removeValue(identifier, valueName);

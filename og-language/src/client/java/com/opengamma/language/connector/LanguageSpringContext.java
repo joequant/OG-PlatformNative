@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -95,7 +96,11 @@ public class LanguageSpringContext {
     final XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(context);
     xmlReader.loadBeanDefinitions(new ClassPathResource(CLIENT_XML));
     String[] xmlFiles = findSpringXmlConfig();
-    xmlReader.loadBeanDefinitions(xmlFiles);
+    try {
+      xmlReader.loadBeanDefinitions(xmlFiles);
+    } catch (BeanDefinitionStoreException e) {
+      e.printStackTrace();
+    }
     s_logger.info("Creating context beans");
     context.refresh();
     s_logger.info("Starting application context");

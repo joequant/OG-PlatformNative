@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
@@ -57,17 +58,17 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
   }
 
   public static ManageableVolatilityCubeSnapshot invoke(final ManageableVolatilityCubeSnapshot snapshot, final Value[][][] overrideValue, final Value[][][] marketValue) {
-    final Set<Tenor> keyXSet = new HashSet<Tenor>();
-    final Set<Tenor> keyYSet = new HashSet<Tenor>();
-    final Set<Double> keyZSet = new HashSet<Double>();
+    final Set<Tenor> keyXSet = new HashSet<>();
+    final Set<Tenor> keyYSet = new HashSet<>();
+    final Set<Double> keyZSet = new HashSet<>();
     for (VolatilityPoint key : snapshot.getValues().keySet()) {
       keyXSet.add(key.getSwapTenor());
       keyYSet.add(key.getOptionExpiry());
       keyZSet.add(key.getRelativeStrike());
     }
-    final List<Tenor> keyX = new ArrayList<Tenor>(keyXSet);
-    final List<Tenor> keyY = new ArrayList<Tenor>(keyYSet);
-    final List<Double> keyZ = new ArrayList<Double>(keyZSet);
+    final List<Tenor> keyX = new ArrayList<>(keyXSet);
+    final List<Tenor> keyY = new ArrayList<>(keyYSet);
+    final List<Double> keyZ = new ArrayList<>(keyZSet);
     Collections.sort(keyX);
     Collections.sort(keyY);
     Collections.sort(keyZ);
@@ -95,7 +96,8 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
         }
         for (int k = 0; k < keyX.size(); k++) {
           final VolatilityPoint key = new VolatilityPoint(keyX.get(k), y, z);
-          final ValueSnapshot value = snapshot.getValues().get(key);
+          Map<VolatilityPoint, ValueSnapshot> snapshotValues = snapshot.getValues();
+          final ValueSnapshot value = snapshotValues.get(key);
           if (marketValue != null) {
             final Double override;
             if (overrideValue != null) {
@@ -107,12 +109,12 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
                 override = null;
               }
             }
-            snapshot.getValues().put(key, new ValueSnapshot(marketValue[i][j][k].getDoubleValue(), override));
+            snapshotValues.put(key, ValueSnapshot.of(marketValue[i][j][k].getDoubleValue(), override));
           } else if (overrideValue != null) {
             if (value != null) {
-              value.setOverrideValue(overrideValue[i][j][k].getDoubleValue());
+              snapshotValues.put(key, value.toBuilder().overrideValue(overrideValue[i][j][k].getDoubleValue()).build());
             } else {
-              snapshot.getValues().put(key, new ValueSnapshot(null, overrideValue[i][j][k].getDoubleValue()));
+              snapshotValues.put(key, ValueSnapshot.of(null, overrideValue[i][j][k].getDoubleValue()));
             }
           }
         }
