@@ -43,7 +43,7 @@ public class CreateBeanFunction implements PublishedFunction {
     _metaBean = JodaBeanUtils.metaBean(beanClass);
     final List<MetaParameter> metaParameters = new ArrayList<MetaParameter>();
     List<String> paramDescriptions = new ArrayList<String>();
-    for (MetaProperty<?> metaProperty : BeanUtils.writableMetaProperties(_metaBean)) {
+    for (MetaProperty<?> metaProperty : BeanUtils.buildableMetaProperties(_metaBean)) {
       Class<?> propertyType = metaProperty.propertyType();
       paramDescriptions.add(propertyType.getSimpleName() + " " + metaProperty.name());
       // TODO get the PropertyDefinition annotation from the property and check whether its validate property = notNull

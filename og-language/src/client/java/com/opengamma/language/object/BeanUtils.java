@@ -19,11 +19,11 @@ public final class BeanUtils {
   private BeanUtils() {
   }
 
-  public static Iterable<MetaProperty<?>> writableMetaProperties(MetaBean metaBean) {
+  public static Iterable<MetaProperty<?>> buildableMetaProperties(MetaBean metaBean) {
     return Iterables.filter(metaBean.metaPropertyIterable(), new Predicate<MetaProperty<?>>() {
       @Override
       public boolean apply(MetaProperty<?> property) {
-        return property.readWrite().isWritable();
+        return property.style().isBuildable();
       }
     });
   }

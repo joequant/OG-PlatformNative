@@ -34,7 +34,8 @@ public abstract class AbstractLiveDataConnector extends AbstractInvoker implemen
   /**
    * Connection abstraction passed to the subclass.
    */
-  public final class AbstractConnection extends Connection {
+  public final class
+      AbstractConnection extends Connection {
 
     private final SessionContext _context;
     private Runnable _cancel;
