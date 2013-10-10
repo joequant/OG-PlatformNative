@@ -53,10 +53,10 @@ public class SetYieldCurvePointFunction extends AbstractFunctionInvoker implemen
     this(new DefinitionAnnotater(SetYieldCurvePointFunction.class));
   }
 
-  public static ManageableYieldCurveSnapshot invoke(final ManageableYieldCurveSnapshot snapshot, final String valueName, final ExternalId identifier,
+  public static ManageableYieldCurveSnapshot invoke(ManageableYieldCurveSnapshot snapshot, final String valueName, final ExternalId identifier,
       final Double overrideValue, final Double marketValue) {
     if (snapshot.getValues() == null) {
-      snapshot.setValues(new ManageableUnstructuredMarketDataSnapshot());
+      snapshot = snapshot.toBuilder().values(new ManageableUnstructuredMarketDataSnapshot()).build();
     }
     UnstructuredMarketDataSnapshotUtil.setValue(snapshot.getValues(), valueName, identifier, overrideValue, marketValue);
     return snapshot;

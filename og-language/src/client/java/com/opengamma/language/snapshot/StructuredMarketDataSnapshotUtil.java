@@ -43,7 +43,7 @@ import com.opengamma.util.tuple.Pair;
     if (!s_curveName.validate(parsed)) {
       return null;
     }
-    return new YieldCurveKey(Currency.of(parsed[0]), parsed[1]);
+    return YieldCurveKey.of(Currency.of(parsed[0]), parsed[1]);
   }
 
   public static String fromYieldCurveKey(final YieldCurveKey key) {
@@ -55,7 +55,7 @@ import com.opengamma.util.tuple.Pair;
     if (!s_surfaceName.validate(parsed)) {
       return null;
     }
-    return new VolatilitySurfaceKey(UniqueId.parse(parsed[0]), parsed[1], parsed[4], parsed[2], parsed[3]);
+    return VolatilitySurfaceKey.of(UniqueId.parse(parsed[0]), parsed[1], parsed[4], parsed[2], parsed[3]);
   }
 
   public static String fromVolatilitySurfaceKey(final VolatilitySurfaceKey key) {
@@ -67,7 +67,7 @@ import com.opengamma.util.tuple.Pair;
     if (!s_cubeName.validate(parsed)) {
       return null;
     }
-    return new VolatilityCubeKey(Currency.of(parsed[0]), parsed[1]);
+    return VolatilityCubeKey.of(Currency.of(parsed[0]), parsed[1]);
   }
 
   public static String fromVolatilityCubeKey(final VolatilityCubeKey key) {

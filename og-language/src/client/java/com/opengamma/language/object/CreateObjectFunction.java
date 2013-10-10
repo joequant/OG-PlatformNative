@@ -10,10 +10,18 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.beans.Bean;
+import org.joda.beans.BeanBuilder;
+import org.joda.beans.ImmutableBean;
+import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
+
 import com.opengamma.OpenGammaRuntimeException;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.Parameter;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -25,8 +33,10 @@ import com.opengamma.language.function.PublishedFunction;
  */
 public class CreateObjectFunction<T> implements PublishedFunction {
 
-  private final Constructor<T> _constructor;
-  private final int _constructorParameterCount;
+  private Constructor<T> _constructor = null;
+  private int _constructorParameterCount = 0;
+
+  private MetaBean _metaBean = null;
   private final int _prependedParameterCount;
   private final int _appendedParameterCount;
   private final MetaFunction _definition;
@@ -42,7 +52,46 @@ public class CreateObjectFunction<T> implements PublishedFunction {
    * @param parameterDescriptions the constructor parameter descriptions, not null
    */
   public CreateObjectFunction(final String category, final String name, final Class<T> clazz, final String description, final String[] parameterNames, final String[] parameterDescriptions) {
-    this(category, name, findPublicConstructor(clazz, parameterNames.length), description, parameterNames, parameterDescriptions);
+    final List<MetaParameter> parameters = new ArrayList<>();
+    final List<MetaParameter> prependedParameters = getPrependedParameters();
+    _prependedParameterCount = (prependedParameters != null) ? prependedParameters.size() : 0;
+    final List<MetaParameter> appendedParameters = getAppendedParameters();
+    _appendedParameterCount = (appendedParameters != null) ? appendedParameters.size() : 0;
+
+    if (_prependedParameterCount > 0) {
+      parameters.addAll(prependedParameters);
+    }
+    if(ImmutableBean.class.isAssignableFrom(clazz)){
+      _metaBean = JodaBeanUtils.metaBean(clazz);
+      for (int i = 0; i < parameterNames.length; i++) {
+        MetaProperty<Object> metaProperty = _metaBean.metaProperty(parameterNames[i]);
+        final MetaParameter parameter = new MetaParameter(parameterNames[i], JavaTypeInfo.builder(metaProperty.declaringType()).get());
+        parameter.setDescription(parameterDescriptions[i]);
+        parameters.add(parameter);
+      }
+    }else{
+      _constructor = findPublicConstructor(clazz, parameterNames.length);
+      final Class<?>[] constructorParameters = _constructor.getParameterTypes();
+      _constructorParameterCount = constructorParameters.length;
+      if (_constructorParameterCount != parameterNames.length) {
+        throw new OpenGammaRuntimeException("Constructor has " + _constructorParameterCount + ", expected " + parameterNames.length);
+      }
+      for (int i = 0; i < parameterNames.length; i++) {
+        final MetaParameter parameter = new MetaParameter(parameterNames[i], JavaTypeInfo.builder(constructorParameters[i]).get());
+        parameter.setDescription(parameterDescriptions[i]);
+        parameters.add(parameter);
+      }
+    }
+    if (_appendedParameterCount > 0) {
+      parameters.addAll(appendedParameters);
+    }
+    _definition = new MetaFunction(category, name, parameters, new AbstractFunctionInvoker(parameters) {
+      @Override
+      protected Object invokeImpl(final SessionContext sessionContext, final Object[] parameters) {
+        return postConstruction(sessionContext, createObject(parameters), parameters);
+      }
+    });
+    _definition.setDescription(description);
   }
 
   public CreateObjectFunction(final String category, final String name, final Constructor<T> constructor, final String description,
@@ -126,7 +175,19 @@ public class CreateObjectFunction<T> implements PublishedFunction {
       args = parameters;
     }
     try {
-      return _constructor.newInstance(args);
+      if(_constructor != null){
+        return _constructor.newInstance(args);
+      } else if (_metaBean != null){
+        BeanBuilder builder = _metaBean.builder();
+        int i = 0;
+        for (Parameter parameter : _definition.getParameter()) {
+          builder = builder.set(parameter.getName(), parameters[i]);
+          i++;
+        }
+        return (T) builder.build();
+      }else{
+        throw new OpenGammaRuntimeException("Create object function couldn't find object constructor nor the object is of org.joda.beans.Bean type");
+      }
     } catch (Exception e) {
       throw new OpenGammaRuntimeException(e.getMessage(), e);
     }

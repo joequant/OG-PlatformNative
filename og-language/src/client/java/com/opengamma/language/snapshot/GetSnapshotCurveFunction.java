@@ -56,7 +56,7 @@ public class GetSnapshotCurveFunction extends AbstractFunctionInvoker implements
   }
 
   public static CurveSnapshot invoke(final ManageableMarketDataSnapshot snapshot, final String name) {
-    final CurveKey key = new CurveKey(name);
+    final CurveKey key = CurveKey.of(name);
     if (key == null) {
       throw new InvokeInvalidArgumentException(NAME, "Invalid curve name");
     }

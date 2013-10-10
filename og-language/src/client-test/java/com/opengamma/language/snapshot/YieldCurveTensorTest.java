@@ -8,6 +8,7 @@ package com.opengamma.language.snapshot;
 import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
+import org.threeten.bp.Instant;
 
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableUnstructuredMarketDataSnapshot;
@@ -24,13 +25,11 @@ import com.opengamma.util.test.TestGroup;
 public class YieldCurveTensorTest {
 
   private ManageableYieldCurveSnapshot createSnapshot() {
-    final ManageableYieldCurveSnapshot snapshot = new ManageableYieldCurveSnapshot();
     final ManageableUnstructuredMarketDataSnapshot values = new ManageableUnstructuredMarketDataSnapshot();
     UnstructuredMarketDataSnapshotUtil.setValue(values, "V", ExternalId.of("Test", "A"), null, 0.1);
     UnstructuredMarketDataSnapshotUtil.setValue(values, "V", ExternalId.of("Test", "B"), 0.25, 0.2);
     UnstructuredMarketDataSnapshotUtil.setValue(values, "V", ExternalId.of("Test", "C"), 0.35, null);
-    snapshot.setValues(values);
-    return snapshot;
+    return ManageableYieldCurveSnapshot.of(Instant.now(), values);
   }
 
   public void testGetMarketValue() {
