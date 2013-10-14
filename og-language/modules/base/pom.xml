@@ -545,7 +545,7 @@
                 </java>
                 <!-- Temporary measure to suppress the class header field for "Value" sub-messages; remove
                      this when Fudge-Proto gets updated/fixed -->
-                <replace file="${localTarget}/generated-sources/connector/cpp/com_opengamma_language_Value.c" token="if ((status = com_opengamma_language_Value_addClass (msg))" value="//if ((status = com_opengamma_language_Value_addClass (msg))" />
+                <!--replace file="${localTarget}/generated-sources/connector/cpp/com_opengamma_language_Value.c" token="if ((status = com_opengamma_language_Value_addClass (msg))" value="//if ((status = com_opengamma_language_Value_addClass (msg))" /-->
                 <java classname="org.fudgemsg.proto.CommandLine" classpathref="maven.compile.classpath" fork="true">
                   <arg value="-d${localSource}/client/java" />
                   <arg value="-s${localSource}/client/java" />

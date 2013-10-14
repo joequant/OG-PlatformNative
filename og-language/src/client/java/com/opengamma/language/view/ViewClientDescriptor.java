@@ -66,15 +66,37 @@ public final class ViewClientDescriptor {
    * @param viewId  unique identifier of the view, not null
    * @param dataSource  the data source, null for the default
    * @return the descriptor
+   * @deprecated use version the takes valuation time and portfolio VC and pass nulls
    */
+  @Deprecated
   public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final String dataSource) {
+    return tickingMarketData(viewId, dataSource, null, null);
+  }
+  
+  /**
+   * Returns a descriptor for ticking live market data. The view will recalculate when market data changes and obey time
+   * thresholds on the view definition.
+   * 
+   * @param viewId  unique identifier of the view, not null
+   * @param dataSource  the data source, null for the default
+   * @return the descriptor
+   */
+  public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final String dataSource, Instant valuationTime, VersionCorrection portfolioVersionCorrection) {
     final MarketDataSpecification marketDataSpec;
     if (dataSource == null) {
       marketDataSpec = MarketData.live();
     } else {
       marketDataSpec = MarketData.live(dataSource);
     }
-    return new ViewClientDescriptor(viewId, ExecutionOptions.infinite(Collections.singletonList(marketDataSpec)));
+    Builder cycleOptions = ViewCycleExecutionOptions.builder();
+    if (valuationTime != null) {
+      cycleOptions.setValuationTime(valuationTime);
+    }
+    if (portfolioVersionCorrection != null) {
+      cycleOptions.setResolverVersionCorrection(portfolioVersionCorrection);
+    }
+    cycleOptions.setMarketDataSpecification(marketDataSpec);
+    return new ViewClientDescriptor(viewId, ExecutionOptions.of(new InfiniteViewCycleExecutionSequence(), cycleOptions.create(), ExecutionFlags.triggersEnabled().get()));
   }
   
   /**
@@ -122,9 +144,27 @@ public final class ViewClientDescriptor {
    * @return the descriptor
    */
   public static ViewClientDescriptor staticMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications) {
+    return staticMarketData(viewId, marketDataSpecifications, null, null);
+  }
+  
+  /**
+   * Returns a descriptor for a static live market data view. The view will recalculate when manually triggered and will not start
+   * until the first trigger is received (allowing injected overrides to be set up before the first). 
+   * 
+   * @param viewId  unique identifier of the view, not null
+   * @param marketDataSpecifications  a list of the market data specifications, not null
+   * @return the descriptor
+   */
+  public static ViewClientDescriptor staticMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications, Instant valuationTime, VersionCorrection portfolioVersionCorrection) {
     final ViewCycleExecutionSequence cycleSequence = new InfiniteViewCycleExecutionSequence();
     final ViewCycleExecutionOptions.Builder cycleOptions = ViewCycleExecutionOptions.builder();
     cycleOptions.setMarketDataSpecifications(marketDataSpecifications);
+    if (valuationTime != null) {
+      cycleOptions.setValuationTime(valuationTime);
+    }
+    if (portfolioVersionCorrection != null) {
+      cycleOptions.setResolverVersionCorrection(portfolioVersionCorrection);
+    }
     final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions.create(), ExecutionFlags.none().waitForInitialTrigger().awaitMarketData().get());
     return new ViewClientDescriptor(viewId, options);
   }
@@ -204,15 +244,37 @@ public final class ViewClientDescriptor {
    * @param snapshotId unique identifier of the market data snapshot, not null
    * @param valuationTime valuation time to use, null for current time
    * @return the descriptor 
+   * @deprecated use call with portfolio version correction parameter and pass null
    */
+  @Deprecated
   public static ViewClientDescriptor tickingSnapshot(final UniqueId viewId, final UniqueId snapshotId, final Instant valuationTime) {
-    final ViewCycleExecutionSequence cycleSequence = new InfiniteViewCycleExecutionSequence();
-    final ViewCycleExecutionOptions cycleOptions = ViewCycleExecutionOptions.builder().setValuationTime(valuationTime).setMarketDataSpecification(MarketData.user(snapshotId)).create();
-    final ExecutionFlags flags = ExecutionFlags.none().triggerOnMarketData();
-    final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions, flags.get());
-    return new ViewClientDescriptor(viewId, options);
+    return tickingSnapshot(viewId, snapshotId, valuationTime, null);
   }
 
+  /**
+   * Returns a descriptor for a view that will use market data from a snapshot. Cycles will be triggered when the snapshot
+   * changes (if an unversioned identifier is supplied) or manually.
+   * 
+   * @param viewId unique identifier of the view, not null
+   * @param snapshotId unique identifier of the market data snapshot, not null
+   * @param valuationTime valuation time to use, null for current time
+   * @param portfolioVersionCorrection the version correction to use when resolving the portfolio, null for latest portfolio
+   * @return the descriptor 
+   */
+  public static ViewClientDescriptor tickingSnapshot(final UniqueId viewId, final UniqueId snapshotId, final Instant valuationTime, final VersionCorrection portfolioVersionCorrection) {
+    final ViewCycleExecutionSequence cycleSequence = new InfiniteViewCycleExecutionSequence();
+    final Builder cycleOptions = ViewCycleExecutionOptions.builder().setMarketDataSpecification(MarketData.user(snapshotId));
+    if (valuationTime != null) {
+      cycleOptions.setValuationTime(valuationTime);
+    }
+    if (portfolioVersionCorrection != null) {
+      cycleOptions.setResolverVersionCorrection(portfolioVersionCorrection);
+    }
+    final ExecutionFlags flags = ExecutionFlags.none().triggerOnMarketData();
+    final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions.create(), flags.get());
+    return new ViewClientDescriptor(viewId, options);
+  }
+  
   /**
    * Returns a descriptor for a view that will use market data from a snapshot. The view will recalculate when triggered
    * manually and will not start until the first trigger is received (allowing injected overrides to be set up before the
@@ -223,12 +285,35 @@ public final class ViewClientDescriptor {
    * @param snapshotId unique identifier of the market data snapshot, not null
    * @param valuationTime valuation time to use, null for current time
    * @return the descriptor
+   * @deprecated use version that takes portfolioVersionCorrection and pass null
    */
   public static ViewClientDescriptor staticSnapshot(final UniqueId viewId, final UniqueId snapshotId, final Instant valuationTime) {
+    return staticSnapshot(viewId, snapshotId, valuationTime, null);
+  }
+  
+  /**
+   * Returns a descriptor for a view that will use market data from a snapshot. The view will recalculate when triggered
+   * manually and will not start until the first trigger is received (allowing injected overrides to be set up before the
+   * first). E.g. if created with an unversioned snapshot identifier, changes to the snapshot will not trigger a cycle
+   * but will be observed (the latest version will be taken) when a cycle is manually triggered.
+   * 
+   * @param viewId unique identifier of the view, not null
+   * @param snapshotId unique identifier of the market data snapshot, not null
+   * @param valuationTime valuation time to use, null for current time
+   * @param portfolioVersionCorrection the version correction to use when resolving the portfolio, or null to use latest portfolio
+   * @return the descriptor
+   */
+  public static ViewClientDescriptor staticSnapshot(final UniqueId viewId, final UniqueId snapshotId, final Instant valuationTime, final VersionCorrection portfolioVersionCorrection) {
     final ViewCycleExecutionSequence cycleSequence = new InfiniteViewCycleExecutionSequence();
-    final ViewCycleExecutionOptions cycleOptions = ViewCycleExecutionOptions.builder().setValuationTime(valuationTime).setMarketDataSpecification(MarketData.user(snapshotId)).create();
+    final Builder cycleOptions = ViewCycleExecutionOptions.builder().setMarketDataSpecification(MarketData.user(snapshotId));
+    if (valuationTime != null) {
+      cycleOptions.setValuationTime(valuationTime);
+    }
+    if (portfolioVersionCorrection != null) {
+      cycleOptions.setResolverVersionCorrection(portfolioVersionCorrection);
+    }
     final ExecutionFlags flags = ExecutionFlags.none().waitForInitialTrigger();
-    final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions, flags.get());
+    final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions.create(), flags.get());
     return new ViewClientDescriptor(viewId, options);
   }
 

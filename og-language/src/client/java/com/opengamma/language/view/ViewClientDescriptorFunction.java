@@ -14,6 +14,7 @@ import org.threeten.bp.Instant;
 
 import com.opengamma.engine.marketdata.spec.MarketDataSpecification;
 import com.opengamma.id.UniqueId;
+import com.opengamma.id.VersionCorrection;
 import com.opengamma.language.config.ConfigurationItem;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
@@ -32,6 +33,8 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final MetaParameter VIEW_PARAMETER = new MetaParameter("view", JavaTypeInfo.builder(UniqueId.class).get());
   private static final MetaParameter DATA_SOURCE_PARAMETER = new MetaParameter("dataSource", JavaTypeInfo.builder(String.class).allowNull().get());
   private static final MetaParameter VALUATION_TIME = new MetaParameter("valuationTime", JavaTypeInfo.builder(Instant.class).allowNull().get());
+  private static final MetaParameter PORTFOLIO_VERSION_TIME = new MetaParameter("portfolioVersionTime", JavaTypeInfo.builder(Instant.class).allowNull().get());
+  private static final MetaParameter PORTFOLIO_CORRECTION_TIME = new MetaParameter("portfolioCorrectionTime", JavaTypeInfo.builder(Instant.class).allowNull().get());
   private static final MetaParameter FIRST_VALUATION_TIME_PARAMETER = new MetaParameter("firstValuationTime", JavaTypeInfo.builder(Instant.class).get());
   private static final MetaParameter LAST_VALUATION_TIME_PARAMETER = new MetaParameter("lastValuationTime", JavaTypeInfo.builder(Instant.class).get());
   private static final MetaParameter SAMPLE_PERIOD_PARAMETER = new MetaParameter("samplePeriod", JavaTypeInfo.builder(Integer.class).defaultValue(ViewClientDescriptor.DEFAULT_SAMPLE_PERIOD).get());
@@ -56,16 +59,16 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final class TickingMarketData extends ViewClientDescriptorFunction {
 
     private TickingMarketData() {
-      super("TickingMarketDataViewClient", Arrays.asList(VIEW_PARAMETER, DATA_SOURCE_PARAMETER));
+      super("TickingMarketDataViewClientDescriptor", Arrays.asList(VIEW_PARAMETER, DATA_SOURCE_PARAMETER, VALUATION_TIME, PORTFOLIO_VERSION_TIME, PORTFOLIO_CORRECTION_TIME));
     }
 
     @Override
     protected ViewClientDescriptor invokeImpl(final Object[] parameters) {
-      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], (String) parameters[1]);
+      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], (String) parameters[1], (Instant) parameters[2], VersionCorrection.of((Instant) parameters[3], (Instant) parameters[4]));
     }
 
   }
-
+  
   /**
    * tickingMarketData instance
    */
@@ -74,7 +77,7 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final class TickingMarketDataSpecifications extends ViewClientDescriptorFunction {
 
     private TickingMarketDataSpecifications() {
-      super("TickingMarketDataSpecificationsViewClient", Arrays.asList(VIEW_PARAMETER, MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER));
+      super("TickingMarketDataSpecificationsViewClientDescriptor", Arrays.asList(VIEW_PARAMETER, MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER, VALUATION_TIME, PORTFOLIO_VERSION_TIME, PORTFOLIO_CORRECTION_TIME));
     }
 
     @Override
@@ -83,7 +86,7 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
       if (marketDataSpecs == null) { 
         throw new IllegalArgumentException("marketDataSpecs must not be null");
       }
-      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], marketDataSpecs != null ? Arrays.asList(marketDataSpecs) : null, null, null);
+      return ViewClientDescriptor.tickingMarketData((UniqueId) parameters[0], marketDataSpecs != null ? Arrays.asList(marketDataSpecs) : null, (Instant) parameters[2], VersionCorrection.of((Instant) parameters[3], (Instant) parameters[4]));
     }
 
   }
@@ -96,7 +99,7 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final class StaticMarketData extends ViewClientDescriptorFunction {
 
     private StaticMarketData() {
-      super("StaticMarketDataViewClient", Arrays.asList(VIEW_PARAMETER, DATA_SOURCE_PARAMETER));
+      super("StaticMarketDataViewClientDescriptor", Arrays.asList(VIEW_PARAMETER, DATA_SOURCE_PARAMETER));
     }
 
     @Override
@@ -114,13 +117,13 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final class StaticMarketDataSpecifications extends ViewClientDescriptorFunction {
 
     private StaticMarketDataSpecifications() {
-      super("StaticMarketDataSpecificationsViewClient", Arrays.asList(VIEW_PARAMETER, MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER));
+      super("StaticMarketDataSpecificationsViewClientDescriptor", Arrays.asList(VIEW_PARAMETER, MARKET_DATA_SPECIFICATIONS_LIST_PARAMETER, VALUATION_TIME, PORTFOLIO_VERSION_TIME, PORTFOLIO_CORRECTION_TIME));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected ViewClientDescriptor invokeImpl(final Object[] parameters) {
-      return ViewClientDescriptor.staticMarketData((UniqueId) parameters[0], (List<MarketDataSpecification>) parameters[1]);
+      return ViewClientDescriptor.staticMarketData((UniqueId) parameters[0], (List<MarketDataSpecification>) parameters[1], (Instant) parameters[2], VersionCorrection.of((Instant) parameters[3], (Instant) parameters[4]));
     }
 
   }
@@ -133,7 +136,7 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final class HistoricalMarketData extends ViewClientDescriptorFunction {
 
     private HistoricalMarketData() {
-      super("HistoricalMarketDataViewClient", Arrays.asList(VIEW_PARAMETER, FIRST_VALUATION_TIME_PARAMETER, LAST_VALUATION_TIME_PARAMETER, SAMPLE_PERIOD_PARAMETER, TS_RESOLVER_PARAMETER,
+      super("HistoricalMarketDataViewClientDescriptor", Arrays.asList(VIEW_PARAMETER, FIRST_VALUATION_TIME_PARAMETER, LAST_VALUATION_TIME_PARAMETER, SAMPLE_PERIOD_PARAMETER, TS_RESOLVER_PARAMETER,
           TS_FIELD_RESOLVER_PARAMETER));
     }
 
@@ -153,12 +156,12 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final class TickingSnapshot extends ViewClientDescriptorFunction {
 
     private TickingSnapshot() {
-      super("TickingSnapshotViewClient", Arrays.asList(VIEW_PARAMETER, SNAPSHOT_PARAMETER, VALUATION_TIME));
+      super("TickingSnapshotViewClientDescriptor", Arrays.asList(VIEW_PARAMETER, SNAPSHOT_PARAMETER, VALUATION_TIME, PORTFOLIO_VERSION_TIME, PORTFOLIO_CORRECTION_TIME));
     }
 
     @Override
     protected ViewClientDescriptor invokeImpl(final Object[] parameters) {
-      return ViewClientDescriptor.tickingSnapshot((UniqueId) parameters[0], (UniqueId) parameters[1], (Instant) parameters[2]);
+      return ViewClientDescriptor.tickingSnapshot((UniqueId) parameters[0], (UniqueId) parameters[1], (Instant) parameters[2], VersionCorrection.of((Instant) parameters[3], (Instant) parameters[4]));
     }
 
   }
@@ -171,12 +174,12 @@ public abstract class ViewClientDescriptorFunction extends AbstractFunctionInvok
   private static final class StaticSnapshot extends ViewClientDescriptorFunction {
 
     private StaticSnapshot() {
-      super("StaticSnapshotViewClient", Arrays.asList(VIEW_PARAMETER, SNAPSHOT_PARAMETER, VALUATION_TIME));
+      super("StaticSnapshotViewClientDescriptor", Arrays.asList(VIEW_PARAMETER, SNAPSHOT_PARAMETER, VALUATION_TIME, PORTFOLIO_VERSION_TIME, PORTFOLIO_CORRECTION_TIME));
     }
 
     @Override
     protected ViewClientDescriptor invokeImpl(final Object[] parameters) {
-      return ViewClientDescriptor.staticSnapshot((UniqueId) parameters[0], (UniqueId) parameters[1], (Instant) parameters[2]);
+      return ViewClientDescriptor.staticSnapshot((UniqueId) parameters[0], (UniqueId) parameters[1], (Instant) parameters[2], VersionCorrection.of((Instant) parameters[3], (Instant) parameters[4]));
     }
 
   }
