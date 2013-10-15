@@ -8,6 +8,7 @@ package com.opengamma.language.view;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.opengamma.engine.marketdata.MarketDataInjector;
@@ -222,6 +223,10 @@ import com.opengamma.util.tuple.Pair;
   @Override
   public void waitForCompletion() throws InterruptedException {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void setViewProcessContextMap(Map<String, String> context) {
   }
 
 }
