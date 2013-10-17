@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.language.client.CombiningMaster;
 import com.opengamma.language.client.MasterID;
 import com.opengamma.language.context.SessionContext;
@@ -63,9 +65,9 @@ public class PortfoliosFunction extends AbstractFunctionInvoker implements Publi
     request.setDepth(0);
     request.setVisibility(DocumentVisibility.HIDDEN);
     final List<Object[]> rows = new LinkedList<Object[]>();
-    
+
     final IdentityHashMap<PortfolioMaster, String> masterMap = buildMasterMap(context);
-    
+
     CombiningMaster.PORTFOLIO.get(context).search(request, new CombinedPortfolioMaster.SearchCallback() {
 
       @Override
@@ -105,18 +107,21 @@ public class PortfoliosFunction extends AbstractFunctionInvoker implements Publi
     return rows.toArray(new Object[rows.size()][]);
   }
 
+  private static void addIfNotNull(final Map<PortfolioMaster, String> map, final RemoteClient client, final MasterID id) {
+    if (client != null) {
+      final PortfolioMaster master = client.getPortfolioMaster();
+      map.put(master, id.getLabel());
+    }
+  }
+
   private static IdentityHashMap<PortfolioMaster, String> buildMasterMap(final SessionContext context) {
-    PortfolioMaster sessionMaster = context.getClient().getPortfolioMaster();
-    PortfolioMaster userMaster = context.getUserContext().getClient().getPortfolioMaster();
-    PortfolioMaster globalMaster = context.getGlobalContext().getClient().getPortfolioMaster();
-    
     final IdentityHashMap<PortfolioMaster, String> masterMap = new IdentityHashMap<>();
-    masterMap.put(sessionMaster, MasterID.SESSION.getLabel());
-    masterMap.put(userMaster, MasterID.USER.getLabel());
-    masterMap.put(globalMaster, MasterID.GLOBAL.getLabel());
+    addIfNotNull(masterMap, context.getClient(), MasterID.SESSION);
+    addIfNotNull(masterMap, context.getUserContext().getClient(), MasterID.USER);
+    addIfNotNull(masterMap, context.getGlobalContext().getClient(), MasterID.GLOBAL);
     return masterMap;
   }
-  
+
   // AbstractFunctionInvoker
 
   @Override
