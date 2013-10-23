@@ -15,8 +15,7 @@ import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.SingletonFactoryBean;
 
 /**
- * Configures an ActiveMQ JMS provider from the configuration document. The document must have a string entry giving
- * the URL for the ActiveMQ server. 
+ * Configures an ActiveMQ JMS provider from the configuration document. The document must have a string entry giving the URL for the ActiveMQ server.
  */
 public class ActiveMQConnectionFactoryFactoryBean extends SingletonFactoryBean<ConnectionFactory> {
 
@@ -45,11 +44,15 @@ public class ActiveMQConnectionFactoryFactoryBean extends SingletonFactoryBean<C
   protected ConnectionFactory createObject() {
     ArgumentChecker.notNull(getConfiguration(), "configuration");
     final String brokerURL = getConfiguration().getStringConfiguration(getConfigurationEntry());
+    final PooledConnectionFactory factory;
     if (brokerURL == null) {
-      return new PooledConnectionFactory();
+      factory = new PooledConnectionFactory();
     } else {
-      return new PooledConnectionFactory(brokerURL);
+      factory = new PooledConnectionFactory(brokerURL);
     }
+    // Workaround for [AMQ-4366]
+    factory.setIdleTimeout(0);
+    return factory;
   }
 
 }
