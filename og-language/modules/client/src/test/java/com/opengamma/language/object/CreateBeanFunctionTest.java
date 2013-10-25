@@ -32,7 +32,7 @@ public class CreateBeanFunctionTest {
     Class.forName("com.opengamma.financial.security.fx.FXForwardSecurity");
   }
 
-  @Test
+  @Test(enabled = false)
   public void invoke() {
     String testFunctionName = "testFunctionName";
     CreateBeanFunction function = new CreateBeanFunction(testFunctionName, FXForwardSecurity.class);
