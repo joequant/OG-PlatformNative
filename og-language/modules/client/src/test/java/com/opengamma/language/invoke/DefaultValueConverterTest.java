@@ -82,7 +82,7 @@ public class DefaultValueConverterTest {
   }
 
 
-  @Test
+  @Test(enabled = false)
      public void testArrayOfObjectsToDataConversion() {
     TestBean bean = new TestBean();
     bean.setBar(123);
@@ -194,7 +194,7 @@ public class DefaultValueConverterTest {
     assertNotNull(converted);
   }
 
-  @Test
+  @Test(enabled = false)
   public void testSetToValueConversion() {
     Set<String> set = new HashSet<>();
     set.add("ala");
