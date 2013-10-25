@@ -10,24 +10,16 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsgFactory;
 import org.fudgemsg.MutableFudgeMsg;
 import org.fudgemsg.mapping.FudgeSerializer;
-import org.joda.beans.Bean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
-import com.opengamma.language.TestBean;
-import com.opengamma.language.TestBeanInner;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.context.SessionContext;
@@ -67,143 +59,6 @@ public class DefaultValueConverterTest {
     String s = convert("Foo", stringType);
     assertNotNull(s);
     assertEquals("Foo", s);
-  }
-
-  private static Object[][] invoke(final Bean bean) {
-    Set<String> propertyNames = bean.propertyNames();
-    final Object[][] result = new Object[2][propertyNames.size()];
-    int i = 0;
-    for (String propertyName : propertyNames) {
-      result[0][i] = propertyName;
-      result[1][i] = bean.metaBean().metaProperty(propertyName).get(bean);
-      i++;
-    }
-    return result;
-  }
-
-
-  @Test(enabled = false)
-     public void testArrayOfObjectsToDataConversion() {
-    TestBean bean = new TestBean();
-    bean.setBar(123);
-    bean.setFoo("Fooooo");
-    //HashMap<String, Integer> map = new HashMap<>();
-    //map.put("foo", 1);
-    //map.put("bar", 456);
-    //bean.setMap(map);
-    TestBeanInner inner = new TestBeanInner();
-    inner.setA("AA");
-    inner.setB(1231231);
-    Set<String> set = new HashSet<>();
-    set.add("ala");
-    set.add("ma");
-    set.add("kota");
-    inner.setC(set);
-    bean.setInnerBean(inner);
-
-    bean.setSet(set);
-
-    Object[][] result = invoke(bean);
-
-    final JavaTypeInfo<Data> toType = JavaTypeInfo.builder(Data.class).get();
-
-    Data converted = convert(result, toType);
-    assertNotNull(converted);
-  }
-
-  @Test
-  public void testBeanToDataConversion() {
-    TestBean bean = new TestBean();
-    bean.setBar(123);
-    bean.setFoo("Fooooo");
-    //HashMap<String, Integer> map = new HashMap<>();
-    //map.put("foo", 1);
-    //map.put("bar", 456);
-    //bean.setMap(map);
-    TestBeanInner inner = new TestBeanInner();
-    inner.setA("AA");
-    inner.setB(1231231);
-    Set<String> set = new HashSet<>();
-    set.add("ala");
-    set.add("ma");
-    set.add("kota");
-    inner.setC(set);
-    bean.setInnerBean(inner);
-
-    bean.setSet(set);
-
-    final JavaTypeInfo<Data> toType = JavaTypeInfo.builder(Data.class).get();
-
-    Data converted = convert(bean, toType);
-    assertNotNull(converted);
-  }
-
-  @Test
-  public void testBeanToValueConversion() {
-    TestBean bean = new TestBean();
-    bean.setBar(123);
-    bean.setFoo("Fooooo");
-    //HashMap<String, Integer> map = new HashMap<>();
-    //map.put("foo", 1);
-    //map.put("bar", 456);
-    //bean.setMap(map);
-    TestBeanInner inner = new TestBeanInner();
-    inner.setA("AA");
-    inner.setB(1231231);
-    Set<String> set = new HashSet<>();
-    set.add("ala");
-    set.add("ma");
-    set.add("kota");
-    inner.setC(set);
-    bean.setInnerBean(inner);
-
-    bean.setSet(set);
-
-    final JavaTypeInfo<Value> toType = JavaTypeInfo.builder(Value.class).get();
-
-    Value converted = convert(bean, toType);
-    assertNotNull(converted);
-  }
-
-
-  @Test
-  public void testStringToDataConversion() {
-
-    final JavaTypeInfo<Data> toType = JavaTypeInfo.builder(Data.class).get();
-    Data converted = convert("some string", toType);
-    assertNotNull(converted);
-  }
-
-  @Test
-  public void testStringToValueConversion() {
-
-    final JavaTypeInfo<Value> toType = JavaTypeInfo.builder(Value.class).get();
-    Value converted = convert("some string", toType);
-    assertNotNull(converted);
-  }
-
-  @Test
-  public void testSetToDataConversion() {
-    Set<String> set = new HashSet<>();
-    set.add("ala");
-    set.add("ma");
-    set.add("kota");
-
-    final JavaTypeInfo<Data> toType = JavaTypeInfo.builder(Data.class).get();
-    Data converted = convert(set, toType);
-    assertNotNull(converted);
-  }
-
-  @Test(enabled = false)
-  public void testSetToValueConversion() {
-    Set<String> set = new HashSet<>();
-    set.add("ala");
-    set.add("ma");
-    set.add("kota");
-
-    final JavaTypeInfo<Value> toType = JavaTypeInfo.builder(Value.class).get();
-    Value converted = convert(set, toType);
-    assertNotNull(converted);
   }
 
   @Test

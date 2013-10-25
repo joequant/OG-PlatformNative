@@ -24,6 +24,8 @@
 
   <build>
     <directory>${localTarget}</directory>
+    <sourceDirectory>${localSource}/client/java</sourceDirectory>
+    <testSourceDirectory>${localSource}/client-test/java</testSourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -39,7 +41,7 @@
             <configuration>
               <target>
                 <zip destfile="${localTarget}/config.zip">
-                  <zipfileset dir="${project.basedir}/src/main/config" prefix="" />
+                  <zipfileset dir="${localSource}/client/config" prefix="" />
                 </zip>
               </target>
             </configuration>
@@ -53,9 +55,9 @@
             <configuration>
               <target>
                 <mkdir dir="${localTarget}/run" />
-                <copy file="${project.basedir}/src/main/config/log4cxx.connector.properties" todir="${localTarget}/run" />
-                <copy file="${project.basedir}/src/main/config/log4cxx.service.properties" todir="${localTarget}/run" />
-                <copy file="${project.basedir}/src/main/config/logback.xml" todir="${localTarget}/run" />
+                <copy file="${localSource}/client/config/log4cxx.connector.properties" todir="${localTarget}/run" />
+                <copy file="${localSource}/client/config/log4cxx.service.properties" todir="${localTarget}/run" />
+                <copy file="${localSource}/client/config/logback.xml" todir="${localTarget}/run" />
                 <property name="opengamma.annotationCachePath" location="${localTarget}${file.separator}run" />
                 <echoproperties destfile="${localTarget}/run/OpenGamma.properties" prefix="opengamma.annotationCachePath" />
                 <echo file="${localTarget}/run/OpenGamma.properties" append="true">opengamma.configuration.url=${site.opengamma.test-server.url}
@@ -63,7 +65,7 @@ opengamma.configuration.failOnInvalid=true
 opengamma.configuration.failOnMissing=false
 </echo>
                 <mkdir dir="${localTarget}/run/ext" />
-                <copy file="${project.basedir}/src/main/config/0og-language.xml" todir="${localTarget}/run/ext" />
+                <copy file="${localSource}/client/config/0og-language.xml" todir="${localTarget}/run/ext" />
                 <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" tofile="${localTarget}/run/client.jar" />
               </target>
             </configuration>
