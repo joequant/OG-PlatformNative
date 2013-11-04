@@ -8,6 +8,7 @@ package com.opengamma.language.convert;
 
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS_NON_PREFERRED;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.fudgemsg.FudgeContext;
@@ -90,7 +91,8 @@ public final class FudgeTypeConverter extends AbstractTypeConverter {
         if ((valueType == null) && (fieldType.getTypeId() == FudgeWireType.SUB_MESSAGE_TYPE_ID)) {
           // Serialization to a message
           final Class<?> valueClass = value.getClass();
-          if (getFudgeContext().getObjectDictionary().isDefaultObject(valueClass)) {
+          if (getFudgeContext().getObjectDictionary().isDefaultObject(valueClass) && (conversionContext.getReentranceCount()==0 || !(Collection.class.isAssignableFrom(valueClass) || Map.class.isAssignableFrom(valueClass)))) {
+          //if (getFudgeContext().getObjectDictionary().isDefaultObject(valueClass)) {
             // Don't convert default objects to messages; they should be expressed using Data/Value constructs
             conversionContext.setFail();
           } else {
