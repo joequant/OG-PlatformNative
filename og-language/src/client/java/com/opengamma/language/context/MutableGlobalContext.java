@@ -8,6 +8,7 @@ package com.opengamma.language.context;
 import java.util.concurrent.ExecutorService;
 
 import com.opengamma.core.config.ConfigSource;
+import com.opengamma.core.convention.ConventionSource;
 import com.opengamma.core.exchange.ExchangeSource;
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.holiday.HolidaySource;
@@ -20,7 +21,6 @@ import com.opengamma.engine.DefaultComputationTargetResolver;
 import com.opengamma.engine.view.ViewProcessor;
 import com.opengamma.engine.view.helper.AvailableOutputsProvider;
 import com.opengamma.financial.analytics.volatility.cube.VolatilityCubeDefinitionSource;
-import com.opengamma.financial.convention.ConventionSource;
 import com.opengamma.financial.currency.CurrencyPairsSource;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.language.config.ServerMetadata;

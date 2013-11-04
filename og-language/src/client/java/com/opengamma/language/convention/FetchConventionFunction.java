@@ -11,7 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opengamma.financial.convention.Convention;
+import com.opengamma.core.convention.Convention;
 import com.opengamma.id.ExternalIdBundle;
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
@@ -68,7 +68,7 @@ public class FetchConventionFunction extends AbstractFunctionInvoker implements 
       } else {
         Convention convention;
         try {
-          convention = sessionContext.getGlobalContext().getConventionSource().getConvention(uniqueId);
+          convention = sessionContext.getGlobalContext().getConventionSource().get(uniqueId);
         } catch (Throwable e) {
           s_logger.debug("Caught exception", e);
           convention = null;
@@ -84,9 +84,9 @@ public class FetchConventionFunction extends AbstractFunctionInvoker implements 
         Convention convention;
         try {
           if (identifiers.size() == 1) {
-            convention = sessionContext.getGlobalContext().getConventionSource().getConvention(identifiers.iterator().next());
+            convention = sessionContext.getGlobalContext().getConventionSource().getSingle(identifiers.iterator().next());
           } else {
-            convention = sessionContext.getGlobalContext().getConventionSource().getConvention(identifiers);
+            convention = sessionContext.getGlobalContext().getConventionSource().getSingle(identifiers);
           }
         } catch (Throwable e) {
           s_logger.debug("Caught exception", e);

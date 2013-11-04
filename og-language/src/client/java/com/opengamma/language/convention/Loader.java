@@ -13,8 +13,7 @@ import net.sf.ehcache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opengamma.financial.convention.EHCachingConventionSource;
-import com.opengamma.financial.convention.rest.RemoteConventionSource;
+import com.opengamma.core.convention.impl.RemoteConventionSource;
 import com.opengamma.language.config.Configuration;
 import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
@@ -74,7 +73,9 @@ public class Loader extends ContextInitializationBean {
       return;
     }
     s_logger.info("Configuring convention support");
-    globalContext.setConventionSource(new EHCachingConventionSource(new RemoteConventionSource(uri), getCacheManager()));
+    //globalContext.setConventionSource(new EHCachingConventionSource(new RemoteConventionSource(uri), getCacheManager()));
+    // [PLAT-5008] The line above no longer compiles; restore it, or something equivalent, when caching is available again
+    globalContext.setConventionSource(new RemoteConventionSource(uri));
     globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FetchConventionFunction.INSTANCE));
   }
 
