@@ -13,7 +13,7 @@ LOGGING (com.opengamma.language.util.Fudge);
 static size_t _hash (const void *pData, size_t cbData) {
 	size_t *psData = (size_t*)pData;
 	size_t hc = 1;
-	int i;
+	size_t i;
 	for (i = cbData / sizeof (size_t); i > 0; i--) {
 		hc += (hc << 4) + *(psData++);
 	}

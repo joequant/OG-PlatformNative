@@ -291,7 +291,7 @@ public:
 
 #endif /* ifdef __cplusplus_cli */
 
-#define UNIT_TEST(proc) TEST("unit", proc)
-#define INTEGRATION_TEST(proc) TEST("integration", proc)
+#define UNIT_TEST(proc) TEST (TEXT ("unit"), proc)
+#define INTEGRATION_TEST(proc) TEST (TEXT ("integration"), proc)
 
 #endif /* ifndef __inc_og_language_util_abstracttest_h */

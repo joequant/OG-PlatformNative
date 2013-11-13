@@ -226,7 +226,7 @@ private:
 		// JRE 1.7 32-bit doesn't seem to have this bug but 64-bit version does
 		if (hFile == INVALID_HANDLE_VALUE) {
 			// JDK1.7 64-bit puts the wrong path into the registry. It ends \client\jvm.dll but should be \server\jvm.dll
-			int cchPath = _tcslen (szPath);
+			size_t cchPath = _tcslen (szPath);
 			if ((cchPath > 15) && !_tcscmp (szPath + cchPath - 15, TEXT ("\\client\\jvm.dll"))) {
 				LOGDEBUG (TEXT ("Applying hack for broken JDK installer"));
 				memcpy (szPath + cchPath - 14, TEXT ("server"), sizeof (TCHAR) * 6);

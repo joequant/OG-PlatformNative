@@ -11,10 +11,12 @@
 static CSuppressLoggingWarning g_oSuppressLoggingWarning;
 
 #ifndef __cplusplus_cli
-int main (int argc, char **argv) {
-	if ((argc == 3) && !strcmp (argv[1], "jvm")) {
+int main (int argc, TCHAR **argv) {
+#ifndef _WIN32
+	if ((argc == 3) && !_tcscmp (argv[1], TEXT ("jvm"))) {
 		return ServiceTestJVM (argv[2]) ? 0 : 1;
 	}
+#endif /* ifndef _WIN32 */
 	CAbstractTest::Main (argc, argv);
 	return 0;
 }

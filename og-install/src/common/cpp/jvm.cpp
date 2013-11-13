@@ -123,7 +123,7 @@ popAndReturn:
 DWORD CJavaVM::RegisterNatives (PCSTR pszClass, int nMethods, JNINativeMethod *aMethods) const {
 	jclass cls = _findClass (m_penv, pszClass);
 	if (!cls) return ERROR_REF_JVM;
-    return m_penv->RegisterNatives (cls, aMethods, nMethods) ? ERROR_REF_JVM : 0;
+	return m_penv->RegisterNatives (cls, aMethods, nMethods) ? ERROR_REF_JVM : 0;
 }
 
 CJavaVM *CJavaVM::Attach (PCSTR pszThreadName) const {
