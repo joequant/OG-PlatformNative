@@ -475,6 +475,13 @@ bool CConnector::WaitForStartup (unsigned long lTimeout) const {
 	CSemaphore oStartupSemaphore (0, 1);
 	m_oStartupSemaphorePtr.Set (&oStartupSemaphore);
 	ClientServiceState eState = m_poClient->GetState ();
+	if (eState == ERRORED) {
+		if (m_poClient->Start ()) {
+			eState = m_poClient->GetState ();
+		} else {
+			LOGERROR (TEXT ("Couldn't start client service, error ") << GetLastError ());
+		}
+	}
 	if ((eState != RUNNING) && (eState != STOPPED) && (eState != ERRORED)) {
 		LOGINFO (TEXT ("Waiting for client startup"));
 		oStartupSemaphore.Wait (lTimeout);

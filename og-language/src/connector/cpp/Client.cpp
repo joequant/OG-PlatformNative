@@ -320,7 +320,7 @@ bool CClientService::Start () {
 }
 
 /// Attempts to stop the service. The service will enter the POISONED state signalling the
-/// event thread to shut down. The caller is then blocked until the revent thread terminates.
+/// event thread to shut down. The caller is then blocked until the event thread terminates.
 ///
 /// @return TRUE if the service stopped and the thread terminated. FALSE if there was a
 ///         problem
