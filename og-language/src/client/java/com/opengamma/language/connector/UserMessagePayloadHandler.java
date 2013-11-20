@@ -14,6 +14,9 @@ import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.custom.CustomMessageVisitor;
 import com.opengamma.language.custom.CustomMessageVisitorRegistry;
 import com.opengamma.language.custom.CustomVisitors;
+import com.opengamma.language.debug.DefaultUnhandledMessageHandler;
+import com.opengamma.language.debug.Unhandled;
+import com.opengamma.language.debug.UnhandledMessageHandler;
 import com.opengamma.language.function.FunctionVisitor;
 import com.opengamma.language.livedata.LiveDataVisitor;
 import com.opengamma.language.procedure.ProcedureVisitor;
@@ -26,13 +29,13 @@ import com.opengamma.util.async.AsynchronousExecution;
  * Delegating visitor for the top level messages. Each message type has a default visitor that can be overridden. For example, to filter a set of messages, get the existing handler, register a new one
  * and delegate to the original from the new one. To handle custom messages, register the handler and message types.
  */
-public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<UserMessagePayload, SessionContext>,
-    InitializingBean, CustomMessageVisitorRegistry<UserMessagePayload, SessionContext> {
+public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<UserMessagePayload, SessionContext>, InitializingBean, CustomMessageVisitorRegistry<UserMessagePayload, SessionContext> {
 
   private final CustomVisitors<UserMessagePayload, SessionContext> _customVisitors = new CustomVisitors<UserMessagePayload, SessionContext>();
   private FunctionVisitor<UserMessagePayload, SessionContext> _functionVisitor;
   private LiveDataVisitor<UserMessagePayload, SessionContext> _liveDataVisitor;
   private ProcedureVisitor<UserMessagePayload, SessionContext> _procedureVisitor;
+  private UnhandledMessageHandler<SessionContext> _nonDeliverable = new DefaultUnhandledMessageHandler<SessionContext>();
 
   public UserMessagePayloadHandler() {
   }
@@ -43,6 +46,7 @@ public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<User
     _functionVisitor = copyFrom._functionVisitor;
     _liveDataVisitor = copyFrom._liveDataVisitor;
     _procedureVisitor = copyFrom._procedureVisitor;
+    _nonDeliverable = copyFrom._nonDeliverable;
   }
 
   // Main message type delegates
@@ -74,6 +78,15 @@ public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<User
     return _procedureVisitor;
   }
 
+  public void setNonDeliverableHandler(final UnhandledMessageHandler<SessionContext> handler) {
+    ArgumentChecker.notNull(handler, "handler");
+    _nonDeliverable = handler;
+  }
+
+  public UnhandledMessageHandler<SessionContext> getNonDeliverableHandler() {
+    return _nonDeliverable;
+  }
+
   // InitializingBean
 
   @Override
@@ -81,13 +94,13 @@ public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<User
     ArgumentChecker.notNull(getFunctionHandler(), "functionHandler");
     ArgumentChecker.notNull(getLiveDataHandler(), "liveDataHandler");
     ArgumentChecker.notNull(getProcedureHandler(), "procedureHandler");
+    ArgumentChecker.notNull(getNonDeliverableHandler(), "nonDeliverableHandler");
   }
 
   // CustomMessageVisitorRegistry
 
   @Override
-  public <M extends Custom> void register(Class<M> clazz,
-      CustomMessageVisitor<M, UserMessagePayload, SessionContext> visitor) {
+  public <M extends Custom> void register(Class<M> clazz, CustomMessageVisitor<M, UserMessagePayload, SessionContext> visitor) {
     _customVisitors.register(clazz, visitor);
   }
 
@@ -127,6 +140,12 @@ public class UserMessagePayloadHandler implements UserMessagePayloadVisitor<User
   @Override
   public UserMessagePayload visitTest(final Test message, final SessionContext session) {
     return TestMessageHandler.testMessage(message, session);
+  }
+
+  @Override
+  public UserMessagePayload visitUnhandled(final Unhandled message, final SessionContext session) throws AsynchronousExecution {
+    getNonDeliverableHandler().unhandledMessage(message.getUnhandled(), session);
+    return null;
   }
 
 }

@@ -264,6 +264,7 @@ void CConnector::OnMessageReceived (FudgeMsg msg) {
 				}
 			}
 			LOGWARN (TEXT ("Ignoring message"));
+			// TODO: Post a message back to the JAVA stack with details of the ignored message (just a copy will do)
 dispatched:
 			m_oMutex.Leave ();
 		} else {

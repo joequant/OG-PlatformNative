@@ -521,9 +521,9 @@
                   <arg value="-Xinclude=stdafx.h" />
                   <arg value="com/opengamma/language/Data.proto" />
                   <arg value="com/opengamma/language/config/SystemInfo.proto" />
-                  <arg value="com/opengamma/language/connector/Custom.proto" />
                   <arg value="com/opengamma/language/connector/ConnectorMessage.proto" />
-                  <arg value="com/opengamma/language/connector/UserMessage.proto" />
+                  <arg value="com/opengamma/language/connector/Custom.proto" />
+                  <arg value="com/opengamma/language/debug/Unhandled.proto" />
                   <arg value="com/opengamma/language/function/Available.proto" />
                   <arg value="com/opengamma/language/function/Custom.proto" />
                   <arg value="com/opengamma/language/function/Invoke.proto" />
@@ -557,9 +557,9 @@
                   <arg value="-XfileHeader=///CLOVER:OFF - CSOFF" />
                   <arg value="com/opengamma/language/Data.proto" />
                   <arg value="com/opengamma/language/config/SystemInfo.proto" />
-                  <arg value="com/opengamma/language/connector/Custom.proto" />
                   <arg value="com/opengamma/language/connector/ConnectorMessage.proto" />
-                  <arg value="com/opengamma/language/connector/UserMessage.proto" />
+                  <arg value="com/opengamma/language/connector/Custom.proto" />
+                  <arg value="com/opengamma/language/debug/Unhandled.proto" />
                   <arg value="com/opengamma/language/function/Available.proto" />
                   <arg value="com/opengamma/language/function/Custom.proto" />
                   <arg value="com/opengamma/language/function/Invoke.proto" />
