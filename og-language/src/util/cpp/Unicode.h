@@ -25,6 +25,7 @@
 #   define _tcslen		wcslen
 #   define _tcsrchr		wcsrchr
 #   define _tcstok_s(a,b,c)	wcstok(a,b)
+#   define _tmain		?
 #   define _tstoi		?
 #   define _tstof		?
 #  else /* ifdef _UNICODE */
@@ -38,6 +39,7 @@
 #   define _tcslen		strlen
 #   define _tcsrchr		strrchr
 #   define _tcstok_s(a,b,c)	strtok(a,b)
+#   define _tmain		main
 #   define _tstoi		atoi
 #   define _tstof		atof
 #  endif /* ifdef _UNICODE */

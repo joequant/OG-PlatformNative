@@ -294,6 +294,7 @@ void CConnector::OnMessageReceived (FudgeMsg msg) {
 		}
 		if (FudgeMsg_getFields (pField, nFields, msgPayload) > 0) {
 			int i;
+			CAsynchronous::COperation *poDispatch;
 			m_oMutex.Enter ();
 			for (i = 0; i < nFields; i++) {
 				if ((pField[i].flags & FUDGE_FIELD_HAS_ORDINAL) && (pField[i].ordinal == 0) && (pField[i].type == FUDGE_TYPE_STRING)) {
@@ -301,7 +302,7 @@ void CConnector::OnMessageReceived (FudgeMsg msg) {
 					while (poCallback) {
 						if (poCallback->IsClass (pField[i].data.string)) {
 							LOGDEBUG (TEXT ("Dispatching message to user callback"));
-							CAsynchronous::COperation *poDispatch = new CConnectorMessageDispatch (poCallback, msgPayload);
+							poDispatch = new CConnectorMessageDispatch (poCallback, msgPayload);
 							if (poDispatch) {
 								if (!m_poDispatch->Run (poDispatch)) {
 									delete poDispatch;
@@ -318,7 +319,7 @@ void CConnector::OnMessageReceived (FudgeMsg msg) {
 				}
 			}
 			LOGWARN (TEXT ("No message handler defined for user message"));
-			CAsynchronous::COperation *poDispatch = new CUnhandledMessageDispatch (this, msg);
+			poDispatch = new CUnhandledMessageDispatch (this, msg);
 			if (poDispatch) {
 				if (!m_poDispatch->Run (poDispatch)) {
 					delete poDispatch;

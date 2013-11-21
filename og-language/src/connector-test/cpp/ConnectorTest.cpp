@@ -34,6 +34,7 @@ protected:
 	void OnMessage (FudgeMsg msgPayload) {
 		LOGDEBUG (TEXT ("Message received"));
 		m_oMutex.Enter ();
+		m_oSemaphore.Signal ();
 		if (m_msg) {
 			FudgeMsg_release (m_msg);
 		}
@@ -41,7 +42,6 @@ protected:
 		FudgeMsg_retain (m_msg);
 		m_nMessages++;
 		m_oMutex.Leave ();
-		m_oSemaphore.Signal ();
 	}
 	void OnThreadDisconnect () {
 		LOGDEBUG (TEXT ("Callback thread disconnected"));
@@ -201,7 +201,9 @@ static void NonDelivery () {
 	CreateTestMessage (&msgToSend, NON_DELIVERY_REQUEST);
 	ASSERT (g_poConnector->Send (msgToSend));
 	// The Java stack should send some gibberish, get it back and then send an ECHO_RESONSE_A
-	ASSERT (g_poCallback->WaitForMessage (&msgReceived));
+	ASSERT (g_poCallback->WaitForMessage (&msgReceived)
+	     || g_poCallback->WaitForMessage (&msgReceived)
+	     || g_poCallback->WaitForMessage (&msgReceived)); // allow 3x as long to pass
 	CheckTestResponse (msgReceived, ECHO_RESPONSE_A);
 	FudgeMsg_release (msgReceived);
 	FudgeMsg_release (msgToSend);

@@ -32,17 +32,14 @@ public final class ClientContextFactoryBean implements ClientContextFactory, Ini
   private ScheduledExecutorService _housekeepingScheduler;
 
   /**
-   * Message timeout. This should match the value used by the clients for consistent behavior. This is
-   * typically used with the blocking message send routines as either its direct value or a multiple if
-   * the operation is known to take an unusually long or short time. Messaging timeouts are typically
-   * shorter than the heartbeat timeouts.
+   * Message timeout. This should match the value used by the clients for consistent behavior. This is typically used with the blocking message send routines as either its direct value or a multiple
+   * if the operation is known to take an unusually long or short time. Messaging timeouts are typically shorter than the heartbeat timeouts.
    */
   private int _messageTimeout;
 
   /**
-   * Heartbeat timeout. This should match (or ideally be a touch less than) the value used by the clients.
-   * If this is much lower the JVM process terminate prematurely. If this is much higher, the client
-   * threads may run for longer than they need to after failure of the C++ process.
+   * Heartbeat timeout. This should match (or ideally be a touch less than) the value used by the clients. If this is much lower the JVM process terminate prematurely. If this is much higher, the
+   * client threads may run for longer than they need to after failure of the C++ process.
    */
   private int _heartbeatTimeout;
 
@@ -67,10 +64,8 @@ public final class ClientContextFactoryBean implements ClientContextFactory, Ini
   private UserMessagePayloadVisitor<UserMessagePayload, SessionContext> _messageHandler;
 
   /**
-   * The executor service provider. This is not set as part of the bean but constructed from the bean
-   * attributes after they have all been set. This is exposed so that a language specific client
-   * context can use the same executor so that the thread limits are enforced. If it were to create
-   * its own executor then it would have its own pool of threads which may not be the intention.
+   * The executor service provider. This is not set as part of the bean but constructed from the bean attributes after they have all been set. This is exposed so that a language specific client
+   * context can use the same executor so that the thread limits are enforced. If it were to create its own executor then it would have its own pool of threads which may not be the intention.
    */
   private ClientExecutor _clientExecutor;
 
@@ -190,7 +185,10 @@ public final class ClientContextFactoryBean implements ClientContextFactory, Ini
   public void afterPropertiesSet() {
     // Only messageHandler could still be null - the others have defaults and won't let null be set
     ArgumentChecker.notNull(getMessageHandler(), "messageHandler");
-    _clientExecutor = new ClientExecutor(getMaxThreadsPerClient(), getMaxClientThreads());
+    // Only set if not copied from the parent and parameters are different
+    if ((_clientExecutor == null) || (_clientExecutor.getMaxThreadsPerClient() != getMaxThreadsPerClient()) || (_clientExecutor.getMaxThreads() != getMaxClientThreads())) {
+      _clientExecutor = new ClientExecutor(getMaxThreadsPerClient(), getMaxClientThreads());
+    }
   }
 
   // ClientContextFactory

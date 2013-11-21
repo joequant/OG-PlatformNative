@@ -9,6 +9,8 @@ package com.opengamma.language.test;
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.MutableFudgeMsg;
+import org.fudgemsg.mapping.FudgeDeserializer;
+import org.fudgemsg.mapping.FudgeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +31,24 @@ public class TestMessageHandler {
 
   private static final Logger s_logger = LoggerFactory.getLogger(TestMessageHandler.class);
 
-  public static class NonDeliverable extends Custom {
+  public static final class NonDeliverable extends Custom {
 
     private static final long serialVersionUID = 1L;
+
+    private final int _nonce;
+
+    public NonDeliverable(final int nonce) {
+      _nonce = nonce;
+    }
+
+    @Override
+    public void toFudgeMsg(final FudgeSerializer serializer, final MutableFudgeMsg fudgeMsg) {
+      fudgeMsg.add("nonce", _nonce);
+    }
+
+    public static Custom fromFudgeMsg(final FudgeDeserializer deserializer, final FudgeMsg fudgeMsg) {
+      return new NonDeliverable(fudgeMsg.getInt("nonce"));
+    }
 
   }
 
@@ -45,7 +62,7 @@ public class TestMessageHandler {
     public void unhandledMessage(final UserMessage message, final SessionContext context) throws AsynchronousExecution {
       if (message.getPayload() instanceof NonDeliverable) {
         s_logger.info("Non-deliverable message returned - sending ECHO_RESPONSE_A");
-        context.getMessageSender().send(new Test(Test.Operation.ECHO_RESPONSE_A, 0));
+        context.getMessageSender().send(new Test(Test.Operation.ECHO_RESPONSE_A, ((NonDeliverable) message.getPayload())._nonce));
       } else {
         super.unhandledMessage(message, context);
       }
@@ -87,7 +104,7 @@ public class TestMessageHandler {
         throw new IllegalArgumentException("ECHO_RESPONSE_A should not have been sent by the server");
       case NON_DELIVERY_REQUEST:
         s_logger.info("NON_DELIVERY_REQUEST - sending non-deliverable payload");
-        context.getMessageSender().send(new NonDeliverable());
+        context.getMessageSender().send(new NonDeliverable(message.getNonce()));
         return null;
       case PAUSE_REQUEST:
         s_logger.info("PAUSE_REQUEST - suspending threads");
