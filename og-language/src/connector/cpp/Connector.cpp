@@ -8,6 +8,7 @@
 #include "Connector.h"
 #define FUDGE_NO_NAMESPACE
 #include "com_opengamma_language_connector_UserMessage.h"
+#include "com_opengamma_language_debug_Unhandled.h"
 #include <util/cpp/Error.h>
 
 LOGGING (com.opengamma.language.connector.Connector);
@@ -45,6 +46,59 @@ public:
 	/// Invokes OnMessage on the callback entry with the message.
 	void Run () {
 		m_poCallback->OnMessage (m_msg);
+	}
+
+};
+
+/// Asynchronous operation to bounce an unhandled message back to the Java stack. Note that
+/// this is a very minimal implementation; if the Java handling of non-deliverable messages
+/// will generate further messages into the C++ stack then it MUST NOT do so for ones that
+/// have already proved undeliverable or it will get caught in an infinite loop.
+class CUnhandledMessageDispatch : public CAsynchronous::COperation {
+private:
+
+	/// Connection to the Java stack
+	CConnector *m_poConnector;
+
+	/// Message to pass.
+	FudgeMsg m_msg;
+
+public:
+
+	/// Creates a new operation for the return message.
+	///
+	/// @param[in] poConnector connection to the Java stack
+	/// @param[in] msg undeliverable Fudge message
+	CUnhandledMessageDispatch (CConnector *poConnector, FudgeMsg msg)
+	: COperation () {
+		poConnector->Retain ();
+		m_poConnector = poConnector;
+		FudgeMsg_retain (msg);
+		m_msg = msg;
+	}
+
+
+	/// Destroys the operation
+	~CUnhandledMessageDispatch () {
+		CConnector::Release (m_poConnector);
+		FudgeMsg_release (m_msg);
+	}
+
+	/// Sends the non-deliverable message back to the Java stack
+	void Run () {
+		LOGINFO (TEXT ("Returning non-deliverable message"));
+		FudgeMsg msg;
+		if (FudgeMsg_create (&msg) == FUDGE_OK) {
+			if (Unhandled_addClass (msg) == FUDGE_OK) {
+				Unhandled_setFudgeMsgUnhandled (msg, m_msg);
+				m_poConnector->Send (msg);
+			} else {
+				LOGERROR (TEXT ("Couldn't build unhandled message response"));
+			}
+			FudgeMsg_release (msg);
+		} else {
+			LOGFATAL (TEXT ("Couldn't create Fudge message"));
+		}
 	}
 
 };
@@ -263,8 +317,16 @@ void CConnector::OnMessageReceived (FudgeMsg msg) {
 					}
 				}
 			}
-			LOGWARN (TEXT ("Ignoring message"));
-			// TODO: Post a message back to the JAVA stack with details of the ignored message (just a copy will do)
+			LOGWARN (TEXT ("No message handler defined for user message"));
+			CAsynchronous::COperation *poDispatch = new CUnhandledMessageDispatch (this, msg);
+			if (poDispatch) {
+				if (!m_poDispatch->Run (poDispatch)) {
+					delete poDispatch;
+					LOGWARN (TEXT ("Couldn't return message to sender"));
+				}
+			} else {
+				LOGFATAL (TEXT ("Out of memory"));
+			}
 dispatched:
 			m_oMutex.Leave ();
 		} else {
