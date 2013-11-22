@@ -60,5 +60,10 @@ import com.opengamma.livedata.UserPrincipal;
   public NamedMarketDataSpecificationRepository getNamedMarketDataSpecificationRepository() {
     throw new UnsupportedOperationException();
   }
-  
+
+  @Override
+  public void clearViewExecutionCache() {
+    throw new UnsupportedOperationException();
+  }
+
 }
