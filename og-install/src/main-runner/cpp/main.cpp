@@ -18,6 +18,10 @@ static CParamFlagInvert g_oGUI ("gui", &g_oSilent);
 static CParam *g_apoParams[3] = { &g_oConfig, &g_oSilent, &g_oGUI };
 static CParams g_oParams (sizeof (g_apoParams) / sizeof (*g_apoParams), g_apoParams);
 
+PCSTR GetToolUIFlag () {
+	return g_oGUI.IsSet () ? "-gui" : "-silent";
+}
+
 static DWORD CALLBACK _main (PVOID pFeedback) {
 	CFeedback *poFeedback = (CFeedback*)pFeedback;
 	DWORD dwResult = EXIT_FAILURE;
