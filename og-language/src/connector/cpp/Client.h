@@ -96,6 +96,9 @@ private:
 	/// Current state.
 	ClientServiceState m_eState;
 
+	/// Last error message if state is ERRORED
+	TCHAR *m_pszErrorState;
+
 	/// Critical section to protect the state change callback.
 	CMutex m_oStateChangeMutex;
 
@@ -160,6 +163,7 @@ private:
 	bool Send (int cProcessingDirectives, FudgeMsg msg) const;
 	bool SendPoison ();
 	bool SetState (ClientServiceState eNewState);
+	void SetErrorState (const TCHAR *pszMessage);
 	bool StartJVM ();
 	bool StopJVM ();
 public:
@@ -181,6 +185,7 @@ public:
 	bool Stop ();
 	bool Start ();
 	ClientServiceState GetState () const;
+	bool GetErrorMessage (TCHAR *pszBuffer, size_t cchBuffer) const;
 	bool Send (FudgeMsg msg) const;
 	void SetStateChangeCallback (CStateChange *poCallback);
 	void SetMessageReceivedCallback (CMessageReceived *poCallback);

@@ -31,7 +31,7 @@ static inline int StringCbPrintfA (char *pszBuffer, size_t cbBuffer, const char 
 	if ((size_t)result > cbBuffer) return -1;
 	return 0;
 }
-#ifdef WCHAR_AVAILABLE
+# ifdef WCHAR_AVAILABLE
 static inline int StringCbPrintfW (wchar_t *pszBuffer, size_t cbBuffer, const wchar_t *pszFormat, ...) {
 	va_list args;
 	va_start (args, pszFormat);
@@ -52,14 +52,26 @@ static inline int StringCchPrintfW (wchar_t *pszBuffer, size_t cchBuffer, const 
 	if ((size_t)result > cchBuffer) return -1;
 	return 0;
 }
-#endif /* ifdef WCHAR_AVAILABLE */
-#ifdef _UNICODE
-#define StringCbPrintf StringCbPrintfW
-#define StringCchPrintf StringCchPrintfW
-#else /* ifdef _UNICODE */
-#define StringCbPrintf StringCbPrintfA
-#define StringCchPrintf StringCbPrintfA
-#endif /* ifdef _UNICODE */
+# endif /* ifdef WCHAR_AVAILABLE */
+# ifdef _UNICODE
+#  define StringCbPrintf StringCbPrintfW
+#  define StringCchPrintf StringCchPrintfW
+# else /* ifdef _UNICODE */
+#  define StringCbPrintf StringCbPrintfA
+#  define StringCchPrintf StringCbPrintfA
+# endif /* ifdef _UNICODE */
+#endif /* ifndef _WIN32 */
+
+#ifndef _WIN32
+static inline int StringCchCopy (TCHAR *pszBuffer, size_t cchBuffer, const TCHAR *pszString) {
+	return StringCchPrintf (pszBuffer, cchBuffer, TEXT ("%s"), pszString);
+}
+static inline int StringCchCat (TCHAR *pszBuffer, size_t cchBuffer, const TCHAR *pszString) {
+	size_t len = _tcslen (pszBuffer);
+	if (len >= cchBuffer) return -1;
+	cchBuffer -= len;
+	return StringCchCopy (pszBuffer + len, cchBuffer, pszString);
+}
 #endif /* ifndef _WIN32 */
 
 #ifdef WCHAR_AVAILABLE

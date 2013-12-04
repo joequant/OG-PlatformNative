@@ -17,11 +17,13 @@
 
 const TCHAR *ServiceDefaultConnectionPipe ();
 const TCHAR *ServiceDefaultServiceName ();
-#ifndef _WIN32
+#ifdef _WIN32
+BOOL ServiceGetErrorLog (PCTSTR *ppszSummary, PCTSTR **pppszDetail, DWORD *pdwDetail, PVOID pBuffer, DWORD cbBuffer);
+#else /* ifdef _WIN32 */
 TCHAR *ServiceCreateQueryCmd (const TCHAR *pszName);
 TCHAR *ServiceCreateStartCmd (const TCHAR *pszName);
 TCHAR *ServiceCreateStopCmd (const TCHAR *pszName);
-#endif /* ifndef _WIN32 */
+#endif /* ifdef _WIN32 */
 
 #include <service/cpp/ClientConnect.h>
 

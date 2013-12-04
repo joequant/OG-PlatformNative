@@ -39,6 +39,49 @@ private:
 	/// Heartbeat timeout (taken from the CSettings instance).
 	unsigned long m_lHeartbeatTimeout;
 
+	/// Reports an inability to connect to the service, using an error the service posted to
+	/// the log if possible.
+	///
+	/// @param[in] pszDefaultText the text to report if there is no log entry
+	void ReportServiceError (TCHAR const *pszDefaultText) {
+#ifdef _WIN32
+		DWORD cbBuffer = 1024;
+		PVOID pBuffer = malloc (cbBuffer);
+		if (pBuffer) {
+			TCHAR const *pszSummary;
+			TCHAR const **ppszDetail;
+			DWORD dwDetail;
+			if (ServiceGetErrorLog (&pszSummary, &ppszDetail, &dwDetail, pBuffer, cbBuffer)) {
+				DWORD dwCount;
+				size_t cch = _tcslen (pszSummary) + 4; // full-stop, lf, lf & null terminator
+				for (dwCount = 0; dwCount < dwDetail; dwCount++) {
+					cch += _tcslen (ppszDetail[dwCount]) + 1; // leading space
+				}
+				PTSTR pszMessage = (PTSTR)malloc (cch * sizeof (TCHAR));
+				if (pszMessage) {
+					StringCchCopy (pszMessage, cch, pszSummary);
+					StringCchCat (pszMessage, cch, TEXT (".\n\n"));
+					for (dwCount = 0; dwCount < dwDetail; dwCount++) {
+						StringCchCat (pszMessage, cch, TEXT (" "));
+						StringCchCat (pszMessage, cch, ppszDetail[dwCount]);
+					}
+					m_poService->SetErrorState (pszMessage);
+					pszDefaultText = NULL;
+					free (pszMessage);
+				} else {
+					LOGFATAL (TEXT ("Out of memory"));
+				}
+			}
+			free (pBuffer);
+		} else {
+			LOGFATAL (TEXT ("Out of memory"));
+		}
+#endif /* ifdef _WIN32 */
+		if (pszDefaultText) {
+			m_poService->SetErrorState (pszDefaultText);
+		}
+	}
+
 	/// Send a heartbeat message, optionally including the stash message.
 	///
 	/// @param[in] bWithStash TRUE to include the stash message (if there is one), FALSE not to
@@ -128,7 +171,7 @@ public:
 			LOGINFO (TEXT ("Starting Java framework"));
 			if (!m_poService->CreatePipes ()) {
 				LOGERROR (TEXT ("Unable to open pipes to Java framework"));
-				CAlert::Bad (TEXT ("Unable to connect to service"));
+				m_poService->SetErrorState (TEXT ("There was a problem making a connection to the OpenGamma service."));
 				bStatus = false;
 				break;
 			}
@@ -141,7 +184,7 @@ public:
 					continue;
 				}
 				LOGERROR (TEXT ("Unable to initiate Java framework"));
-				CAlert::Bad (TEXT ("Unable to start service"));
+				m_poService->SetErrorState (TEXT ("The OpenGamma service couldn't be started."));
 				bStatus = false;
 				break;
 			}
@@ -155,7 +198,7 @@ public:
 					continue;
 				}
 				LOGERROR (TEXT ("Unable to connect to Java framework"));
-				CAlert::Bad (TEXT ("Unable to start service"));
+				ReportServiceError (TEXT ("The OpenGamma service did not start correctly."));
 				bStatus = false;
 				break;
 			}
@@ -169,8 +212,7 @@ public:
 					continue;
 				}
 				LOGERROR (TEXT ("Java framework is not responding"));
-				CAlert::Bad (TEXT ("Service is not responding"));
-				// TODO: [XLS-43] (needs moving to PLAT) Can we get information from the log to pop-up if the user clicks on the bubble?
+				ReportServiceError (TEXT ("The OpenGamma service started but is not responding."));
 				// TODO: [XLS-43] (needs a hook to implement) What about a "retry" button to force Excel to unload and re-load the plugin
 				bStatus = false;
 				break;
@@ -255,6 +297,7 @@ CClientService::CClientService (const TCHAR *pszLanguageID)
 	m_poStateChangeCallback = NULL;
 	m_poMessageReceivedCallback = NULL;
 	m_eState = STOPPED;
+	m_pszErrorState = NULL;
 	m_poRunner = NULL;
 	m_poPipes = NULL;
 	m_poJVM = NULL;
@@ -282,7 +325,10 @@ CClientService::~CClientService () {
 	if (m_poJVM) {
 		delete m_poJVM;
 	}
-	delete (m_pszLanguageID);
+	if (m_pszErrorState) {
+		delete m_pszErrorState;
+	}
+	delete m_pszLanguageID;
 }
 
 /// Attempts to start the service. The service will enter the STARTING state and an event thread
@@ -381,6 +427,22 @@ ClientServiceState CClientService::GetState () const {
 	ClientServiceState eState = m_eState;
 	m_oStateMutex.Leave ();
 	return eState;
+}
+
+/// Returns the last error message when the state is ERRORED.
+///
+/// @param[out] buffer to receive the string
+/// @param[in] number of characters in the buffer
+/// @return TRUE if a string was returned, FALSE if the state is not errored
+bool CClientService::GetErrorMessage (TCHAR *pszBuffer, size_t cchBuffer) const {
+	bool bResult = false;
+	m_oStateMutex.Enter ();
+	if ((m_eState == ERRORED) && m_pszErrorState) {
+		StringCchCopy (pszBuffer, cchBuffer, m_pszErrorState);
+		bResult = true;
+	}
+	m_oStateMutex.Leave ();
+	return bResult;
 }
 
 /// Sends a user message to the Java stack for dispatch to the handling code.
@@ -753,6 +815,11 @@ bool CClientService::SetState (ClientServiceState eNewState) {
 	} else {
 		eOriginalState = m_eState;
 		m_eState = eNewState;
+		if (m_pszErrorState && (eNewState != ERRORED)) {
+			// Clear the last error message
+			delete m_pszErrorState;
+			m_pszErrorState = NULL;
+		}
 		bResult = true;
 	}
 	m_oStateMutex.Leave ();
@@ -765,6 +832,20 @@ bool CClientService::SetState (ClientServiceState eNewState) {
 		m_oStateChangeMutex.Leave ();
 	}
 	return bResult;
+}
+
+/// Sets the error message for the service. The message is reported as a "bad" alert.
+///
+/// @param[in] pszMessage the message to set
+void CClientService::SetErrorState (const TCHAR *pszMessage) {
+	m_oStateMutex.Enter ();
+	if (m_pszErrorState) {
+		free (m_pszErrorState);
+		m_pszErrorState = NULL;
+	}
+	m_pszErrorState = _tcsdup (pszMessage);
+	m_oStateMutex.Leave ();
+	CAlert::Bad (pszMessage);
 }
 
 /// Attempts to start the JVM host service. See CClientJVM for more information.
