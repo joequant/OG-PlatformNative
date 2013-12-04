@@ -848,3 +848,12 @@ void CConnector::OnExitRunningState (IRunnable *poOnExitRunningState) {
 void CConnector::OnEnterStableNonRunningState (IRunnable *poOnEnterStableNonRunningState) {
 	_Replace (&m_oOnEnterStableNonRunningState, poOnEnterStableNonRunningState);
 }
+
+/// Fetches any error message filed by the client explaining why the Java stack is not connected.
+///
+/// @param[out] pszBuffer the buffer to receive the text
+/// @param[in] cbBuffer the size of the pszBuffer buffer
+/// @return TRUE if a value was loaded into pszBuffer, FALSE if there was a problem (or no error)
+bool CConnector::GetClientErrorMessage (TCHAR *pszBuffer, size_t cbBuffer) const {
+	return m_poClient->GetErrorMessage (pszBuffer, cbBuffer / sizeof (TCHAR));
+}

@@ -62,7 +62,7 @@ private:
 					StringCchCopy (pszMessage, cch, pszSummary);
 					StringCchCat (pszMessage, cch, TEXT (".\n\n"));
 					for (dwCount = 0; dwCount < dwDetail; dwCount++) {
-						StringCchCat (pszMessage, cch, TEXT (" "));
+						if (dwCount) StringCchCat (pszMessage, cch, TEXT (" "));
 						StringCchCat (pszMessage, cch, ppszDetail[dwCount]);
 					}
 					m_poService->SetErrorState (pszMessage);
@@ -437,9 +437,12 @@ ClientServiceState CClientService::GetState () const {
 bool CClientService::GetErrorMessage (TCHAR *pszBuffer, size_t cchBuffer) const {
 	bool bResult = false;
 	m_oStateMutex.Enter ();
-	if ((m_eState == ERRORED) && m_pszErrorState) {
+	if (m_pszErrorState) {
+		LOGDEBUG (TEXT ("Returning error state: ") << m_pszErrorState);
 		StringCchCopy (pszBuffer, cchBuffer, m_pszErrorState);
 		bResult = true;
+	} else {
+		LOGDEBUG (TEXT ("No error state to return"));
 	}
 	m_oStateMutex.Leave ();
 	return bResult;
@@ -815,8 +818,9 @@ bool CClientService::SetState (ClientServiceState eNewState) {
 	} else {
 		eOriginalState = m_eState;
 		m_eState = eNewState;
-		if (m_pszErrorState && (eNewState != ERRORED)) {
+		if (m_pszErrorState && (eNewState == RUNNING)) {
 			// Clear the last error message
+			LOGDEBUG (TEXT ("Clearing error message"));
 			delete m_pszErrorState;
 			m_pszErrorState = NULL;
 		}
@@ -840,9 +844,11 @@ bool CClientService::SetState (ClientServiceState eNewState) {
 void CClientService::SetErrorState (const TCHAR *pszMessage) {
 	m_oStateMutex.Enter ();
 	if (m_pszErrorState) {
+		LOGDEBUG (TEXT ("Clearing previous error message"));
 		free (m_pszErrorState);
 		m_pszErrorState = NULL;
 	}
+	LOGDEBUG (TEXT ("Setting new error message to: ") << pszMessage);
 	m_pszErrorState = _tcsdup (pszMessage);
 	m_oStateMutex.Leave ();
 	CAlert::Bad (pszMessage);
