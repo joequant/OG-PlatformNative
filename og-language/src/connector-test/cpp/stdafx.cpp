@@ -7,7 +7,7 @@
 #include "stdafx.h"
 
 #ifndef __cplusplus_cli
-int main (int argc, TCHAR **argv) {
+int _tmain (int argc, TCHAR **argv) {
 	CAbstractTest::Main (argc, argv);
 	return 0;
 }

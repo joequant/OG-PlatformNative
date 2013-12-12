@@ -7,6 +7,7 @@
 package com.opengamma.language.connector;
 
 import com.opengamma.language.config.SystemInfo;
+import com.opengamma.language.debug.Unhandled;
 import com.opengamma.language.test.Test;
 import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.async.AsynchronousExecution;
@@ -63,6 +64,11 @@ public class UserMessagePayloadAdapter<T1, T2> implements UserMessagePayloadVisi
   @Override
   public T1 visitTest(final Test message, final T2 data) throws AsynchronousExecution {
     return getUnderlying().visitTest(message, data);
+  }
+
+  @Override
+  public T1 visitUnhandled(final Unhandled message, final T2 data) throws AsynchronousExecution {
+    return getUnderlying().visitUnhandled(message, data);
   }
 
 }

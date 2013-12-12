@@ -256,6 +256,7 @@ public:
 	void OnEnterRunningState (IRunnable *poRunnable);
 	void OnExitRunningState (IRunnable *poRunnable);
 	void OnEnterStableNonRunningState (IRunnable *poRunnable);
+	bool GetClientErrorMessage (TCHAR *pszBuffer, size_t cbBuffer) const;
 };
 
 #endif /* ifndef __inc_og_language_connector_connector_h */

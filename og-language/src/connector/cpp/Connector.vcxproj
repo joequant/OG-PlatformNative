@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_config_SystemInfo.h" />
+    <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_debug_Unhandled.h" />
     <ClInclude Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_test_Test.h" />
     <ClInclude Include="Alert.h" />
     <ClInclude Include="Client.h" />
@@ -207,6 +208,12 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_debug_Unhandled.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="..\..\..\target\generated-sources\connector\cpp\com_opengamma_language_test_Test.c">

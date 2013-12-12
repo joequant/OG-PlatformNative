@@ -46,6 +46,14 @@ CConfigMultiString::~CConfigMultiString () {
 	}
 }
 
+/// Processes the value, allocating a copy.
+///
+/// @param[in] pszValue the value to process, not NULL
+/// @return a heap allocated copy of the value (or a transformed version), NULL if out of memory
+PSTR CConfigMultiString::Malloc (PCSTR pszValue) {
+	return _strdup (pszValue);
+}
+
 BOOL CConfigMultiString::Read (CConfigSourceSection *poConfig) {
 	if (m_ppszValues) {
 		UINT n;
@@ -76,7 +84,7 @@ BOOL CConfigMultiString::Read (CConfigSourceSection *poConfig) {
 		if (poConfig->ReadString (szKey, szValue, sizeof (szValue), NULL) == 0) {
 			return FALSE;
 		}
-		m_ppszValues[nIndex] = _strdup (szValue);
+		m_ppszValues[nIndex] = Malloc (szValue);
 		if (!m_ppszValues[nIndex]) return FALSE;
 	}
 	return TRUE;

@@ -44,6 +44,8 @@ private:
 	PCSTR m_pszParameter;
 	UINT m_nValues;
 	PSTR *m_ppszValues;
+protected:
+	virtual PSTR Malloc (PCSTR pszValue);
 public:
 	CConfigMultiString (PCSTR pszCount, PCSTR pszParameter);
 	~CConfigMultiString ();

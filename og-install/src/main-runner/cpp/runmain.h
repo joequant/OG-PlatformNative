@@ -9,6 +9,8 @@
 
 #include <jvm.h>
 
+PCSTR GetToolUIFlag ();
+
 class CMain {
 private:
 	CMain () { }

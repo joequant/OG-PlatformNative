@@ -12,6 +12,18 @@
 static CRITICAL_SECTION g_cs;
 static CFeedback * volatile g_poConnected = NULL;
 
+static BOOL WINAPI _fixZOrderProc (HWND hwnd, LPARAM _poInstance) {
+	DWORD dwProcess;
+	if (GetWindowThreadProcessId (hwnd, &dwProcess)) {
+		if (dwProcess == GetCurrentProcessId ()) {
+			if (IsWindowVisible (hwnd) && (GetParent(hwnd) == NULL)) {
+				((CFeedback*)_poInstance)->SetAsParent (hwnd);
+			}
+		}
+	}
+	return TRUE;
+}
+
 static void JNICALL _status (JNIEnv *pEnv, jclass cls, jstring jstrMessage) {
 	EnterCriticalSection (&g_cs);
 	CFeedback *poInstance = g_poConnected;
@@ -20,9 +32,14 @@ static void JNICALL _status (JNIEnv *pEnv, jclass cls, jstring jstrMessage) {
 	if (poInstance) {
 		const char *pszMessage = pEnv->GetStringUTFChars (jstrMessage, NULL);
 		if (pszMessage) {
-			poInstance->SetStatusText (pszMessage);
+			if (!strcmp (pszMessage, TEXT ("#fixZOrder"))) {
+				EnumWindows (_fixZOrderProc, (LPARAM)poInstance);
+			} else {
+				poInstance->SetStatusText (pszMessage);
+			}
 			pEnv->ReleaseStringUTFChars (jstrMessage, pszMessage);
 		}
+		CFeedback::Release (poInstance);
 	}
 }
 

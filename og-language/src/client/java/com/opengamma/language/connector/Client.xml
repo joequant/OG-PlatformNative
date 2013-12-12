@@ -131,6 +131,21 @@
     </property>
     <property name="condition" ref="isDebugClient" />
   </bean>
+  <bean id="testClientContextFactory" class="com.opengamma.language.connector.ClientContextFactoryBean">
+    <constructor-arg ref="clientContextFactory" />
+    <property name="messageHandler">
+      <bean class="com.opengamma.language.connector.UserMessagePayloadHandler">
+        <constructor-arg ref="clientMessageHandler" />
+        <property name="nonDeliverableHandler">
+          <bean class="com.opengamma.language.test.TestMessageHandler.Unhandled">
+            <constructor-arg>
+              <bean factory-bean="clientMessageHandler" factory-method="getNonDeliverableHandler" />
+            </constructor-arg>
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
   
   <!-- Standard functions, procedures and livedata -->
   <bean id="defaultFunctionsLoader" class="com.opengamma.language.function.Loader">

@@ -7,6 +7,7 @@
 package com.opengamma.language.connector;
 
 import com.opengamma.language.config.SystemInfo;
+import com.opengamma.language.debug.Unhandled;
 import com.opengamma.language.test.Test;
 import com.opengamma.util.async.AsynchronousExecution;
 
@@ -31,5 +32,7 @@ public interface UserMessagePayloadVisitor<T1, T2> {
   T1 visitSystemInfo(SystemInfo message, T2 data) throws AsynchronousExecution;
 
   T1 visitTest(Test message, T2 data) throws AsynchronousExecution;
+
+  T1 visitUnhandled(Unhandled message, T2 data) throws AsynchronousExecution;
 
 }

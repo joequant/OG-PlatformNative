@@ -9,13 +9,20 @@ package com.opengamma.language.test;
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.MutableFudgeMsg;
+import org.fudgemsg.mapping.FudgeDeserializer;
+import org.fudgemsg.mapping.FudgeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opengamma.language.connector.Custom;
 import com.opengamma.language.connector.Main;
+import com.opengamma.language.connector.UserMessage;
 import com.opengamma.language.connector.UserMessagePayload;
 import com.opengamma.language.context.SessionContext;
+import com.opengamma.language.debug.UnhandledMessageHandler;
+import com.opengamma.language.debug.UnhandledMessageHandlerAdapter;
 import com.opengamma.language.test.Test.Operation;
+import com.opengamma.util.async.AsynchronousExecution;
 
 /**
  * Responds to the Test message to allow an unit test of the messaging infrastructures.
@@ -23,6 +30,45 @@ import com.opengamma.language.test.Test.Operation;
 public class TestMessageHandler {
 
   private static final Logger s_logger = LoggerFactory.getLogger(TestMessageHandler.class);
+
+  public static final class NonDeliverable extends Custom {
+
+    private static final long serialVersionUID = 1L;
+
+    private final int _nonce;
+
+    public NonDeliverable(final int nonce) {
+      _nonce = nonce;
+    }
+
+    @Override
+    public void toFudgeMsg(final FudgeSerializer serializer, final MutableFudgeMsg fudgeMsg) {
+      fudgeMsg.add("nonce", _nonce);
+    }
+
+    public static Custom fromFudgeMsg(final FudgeDeserializer deserializer, final FudgeMsg fudgeMsg) {
+      return new NonDeliverable(fudgeMsg.getInt("nonce"));
+    }
+
+  }
+
+  public static class Unhandled extends UnhandledMessageHandlerAdapter<SessionContext> {
+
+    protected Unhandled(final UnhandledMessageHandler<SessionContext> underlying) {
+      super(underlying);
+    }
+
+    @Override
+    public void unhandledMessage(final UserMessage message, final SessionContext context) throws AsynchronousExecution {
+      if (message.getPayload() instanceof NonDeliverable) {
+        s_logger.info("Non-deliverable message returned - sending ECHO_RESPONSE_A");
+        context.getMessageSender().send(new Test(Test.Operation.ECHO_RESPONSE_A, ((NonDeliverable) message.getPayload())._nonce));
+      } else {
+        super.unhandledMessage(message, context);
+      }
+    }
+
+  }
 
   /**
    * Returns the inline response to the message (or null for none), and sends asynchronous responses to the supplied sender.
@@ -56,6 +102,10 @@ public class TestMessageHandler {
         throw new IllegalArgumentException("ECHO_RESPONSE should not have been sent by the server");
       case ECHO_RESPONSE_A:
         throw new IllegalArgumentException("ECHO_RESPONSE_A should not have been sent by the server");
+      case NON_DELIVERY_REQUEST:
+        s_logger.info("NON_DELIVERY_REQUEST - sending non-deliverable payload");
+        context.getMessageSender().send(new NonDeliverable(message.getNonce()));
+        return null;
       case PAUSE_REQUEST:
         s_logger.info("PAUSE_REQUEST - suspending threads");
         Main.notifyPause();

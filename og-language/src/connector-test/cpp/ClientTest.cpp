@@ -141,6 +141,7 @@ static void Message () {
 		CThread::Sleep (100);
 	}
 	ASSERT (msg);
+	g_poService->SetMessageReceivedCallback (NULL);
 	int j;
 	ASSERT (UserMessage_getHandle (msg, &j) == FUDGE_OK);
 	ASSERT (i == j);
@@ -188,6 +189,7 @@ static void Stash () {
 		CThread::Sleep (100);
 	}
 	ASSERT (msg);
+	g_poService->SetMessageReceivedCallback (NULL);
 	int j;
 	ASSERT (UserMessage_getHandle (msg, &j) == FUDGE_OK);
 	ASSERT (i + 2 == j);

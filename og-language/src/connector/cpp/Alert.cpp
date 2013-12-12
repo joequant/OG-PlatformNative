@@ -74,9 +74,11 @@ static void _Display (PCTSTR pszMessage, DWORD dwFlags) {
 	assert (g_pszTitle);
 	NOTIFYICONDATA nid;
 	_InitialiseNID (&nid);
-	nid.uFlags = NIF_ICON | NIF_INFO | NIF_TIP;
+	nid.uFlags = NIF_ICON | NIF_TIP | NIF_INFO;
 	nid.hIcon = _GetIcon ();
-	StringCbPrintf (nid.szInfo, sizeof (nid.szInfo), TEXT ("%s"), pszMessage);
+	if (pszMessage) {
+		StringCbPrintf (nid.szInfo, sizeof (nid.szInfo), TEXT ("%s"), pszMessage);
+	}
 	StringCbPrintf (nid.szInfoTitle, sizeof (nid.szInfoTitle), TEXT ("%s"), g_pszTitle);
 	StringCbPrintf (nid.szTip, sizeof (nid.szTip), TEXT ("%s"), g_pszTitle);
 	nid.dwInfoFlags = dwFlags | NIIF_NOSOUND;
@@ -155,14 +157,14 @@ static bool _DisableImpl () {
 void CAlert::Bad (const TCHAR *pszMessage) {
 	g_oMutex.Enter ();
 	if (g_bEnabled) {
-		LOGERROR (TEXT ("Alert: ") << pszMessage);
+		LOGERROR (TEXT ("Alert: ") << (pszMessage ? pszMessage : TEXT ("null")));
 #ifdef _WIN32
 		_Display (pszMessage, NIIF_ERROR);
 #else
-		TODO (TEXT ("Display ") << pszMessage);
+		TODO (TEXT ("Display ") << (pszMessage ? pszMessage : TEXT ("null")));
 #endif
 	} else {
-		LOGDEBUG (TEXT ("Alert (disabled): ") << pszMessage);
+		LOGDEBUG (TEXT ("Alert (disabled): ") << (pszMessage ? pszMessage : TEXT ("null")));
 	}
 	g_oMutex.Leave ();
 }
@@ -175,14 +177,14 @@ void CAlert::Bad (const TCHAR *pszMessage) {
 void CAlert::Good (const TCHAR *pszMessage) {
 	g_oMutex.Enter ();
 	if (g_bEnabled) {
-		LOGINFO (TEXT ("Alert: ") << pszMessage);
+		LOGINFO (TEXT ("Alert: ") << (pszMessage ? pszMessage : TEXT ("null")));
 #ifdef _WIN32
 		_Display (pszMessage, NIIF_INFO);
 #else
-		TODO (TEXT ("Display ") << pszMessage);
+		TODO (TEXT ("Display ") << (pszMessage ? pszMessage : TEXT ("null")));
 #endif
 	} else {
-		LOGDEBUG (TEXT ("Alert (disabled): ") << pszMessage);
+		LOGDEBUG (TEXT ("Alert (disabled): ") << (pszMessage ? pszMessage : TEXT ("null")));
 	}
 	g_oMutex.Leave ();
 }

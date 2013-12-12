@@ -8,7 +8,21 @@
 #include "runmain.h"
 #include <errorref.h>
 
-static CConfigMultiString g_oArgumentStrings ("count", "arg%d");
+class CArgumentStrings : public CConfigMultiString {
+protected:
+	PSTR Malloc (PCSTR pszValue) {
+		if (!strcmp (pszValue, "%TOOL_UI_FLAG%")) {
+			pszValue = GetToolUIFlag ();
+		}
+		return CConfigMultiString::Malloc (pszValue);
+	}
+public:
+	CArgumentStrings ()
+		: CConfigMultiString ("count", "arg%d") {
+	}
+};
+
+static CArgumentStrings g_oArgumentStrings;
 static CConfigEntry *g_apoArgumentSection[1] = { &g_oArgumentStrings };
 static CConfigSection g_oArgumentSection ("Arguments", 1, g_apoArgumentSection);
 static CConfigString g_oInvokeClass ("class", "com/opengamma/install/launch/MainRunner");

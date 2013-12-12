@@ -139,7 +139,7 @@ static void VitalOperations () {
 	ASSERT (poCaller->Run (poRun5));
 	CThread::Sleep (TIMEOUT_COMPLETE / 6);
 	CAsynchronous::PoisonAndRelease (poCaller);
-	CThread::Sleep (TIMEOUT_COMPLETE);
+	CThread::Sleep (TIMEOUT_COMPLETE + (TIMEOUT_COMPLETE / 6));
 	ASSERT (nRun1 == 1); // started before the poison
 	ASSERT (nRun2 == 0); // non-vital operation skipped
 	ASSERT (nRun3 == 1);

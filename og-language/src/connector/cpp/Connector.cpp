@@ -8,6 +8,7 @@
 #include "Connector.h"
 #define FUDGE_NO_NAMESPACE
 #include "com_opengamma_language_connector_UserMessage.h"
+#include "com_opengamma_language_debug_Unhandled.h"
 #include <util/cpp/Error.h>
 
 LOGGING (com.opengamma.language.connector.Connector);
@@ -45,6 +46,59 @@ public:
 	/// Invokes OnMessage on the callback entry with the message.
 	void Run () {
 		m_poCallback->OnMessage (m_msg);
+	}
+
+};
+
+/// Asynchronous operation to bounce an unhandled message back to the Java stack. Note that
+/// this is a very minimal implementation; if the Java handling of non-deliverable messages
+/// will generate further messages into the C++ stack then it MUST NOT do so for ones that
+/// have already proved undeliverable or it will get caught in an infinite loop.
+class CUnhandledMessageDispatch : public CAsynchronous::COperation {
+private:
+
+	/// Connection to the Java stack
+	CConnector *m_poConnector;
+
+	/// Message to pass.
+	FudgeMsg m_msg;
+
+public:
+
+	/// Creates a new operation for the return message.
+	///
+	/// @param[in] poConnector connection to the Java stack
+	/// @param[in] msg undeliverable Fudge message
+	CUnhandledMessageDispatch (CConnector *poConnector, FudgeMsg msg)
+	: COperation () {
+		poConnector->Retain ();
+		m_poConnector = poConnector;
+		FudgeMsg_retain (msg);
+		m_msg = msg;
+	}
+
+
+	/// Destroys the operation
+	~CUnhandledMessageDispatch () {
+		CConnector::Release (m_poConnector);
+		FudgeMsg_release (m_msg);
+	}
+
+	/// Sends the non-deliverable message back to the Java stack
+	void Run () {
+		LOGINFO (TEXT ("Returning non-deliverable message"));
+		FudgeMsg msg;
+		if (FudgeMsg_create (&msg) == FUDGE_OK) {
+			if (Unhandled_addClass (msg) == FUDGE_OK) {
+				Unhandled_setFudgeMsgUnhandled (msg, m_msg);
+				m_poConnector->Send (msg);
+			} else {
+				LOGERROR (TEXT ("Couldn't build unhandled message response"));
+			}
+			FudgeMsg_release (msg);
+		} else {
+			LOGFATAL (TEXT ("Couldn't create Fudge message"));
+		}
 	}
 
 };
@@ -240,6 +294,7 @@ void CConnector::OnMessageReceived (FudgeMsg msg) {
 		}
 		if (FudgeMsg_getFields (pField, nFields, msgPayload) > 0) {
 			int i;
+			CAsynchronous::COperation *poDispatch;
 			m_oMutex.Enter ();
 			for (i = 0; i < nFields; i++) {
 				if ((pField[i].flags & FUDGE_FIELD_HAS_ORDINAL) && (pField[i].ordinal == 0) && (pField[i].type == FUDGE_TYPE_STRING)) {
@@ -247,7 +302,7 @@ void CConnector::OnMessageReceived (FudgeMsg msg) {
 					while (poCallback) {
 						if (poCallback->IsClass (pField[i].data.string)) {
 							LOGDEBUG (TEXT ("Dispatching message to user callback"));
-							CAsynchronous::COperation *poDispatch = new CConnectorMessageDispatch (poCallback, msgPayload);
+							poDispatch = new CConnectorMessageDispatch (poCallback, msgPayload);
 							if (poDispatch) {
 								if (!m_poDispatch->Run (poDispatch)) {
 									delete poDispatch;
@@ -263,7 +318,16 @@ void CConnector::OnMessageReceived (FudgeMsg msg) {
 					}
 				}
 			}
-			LOGWARN (TEXT ("Ignoring message"));
+			LOGWARN (TEXT ("No message handler defined for user message"));
+			poDispatch = new CUnhandledMessageDispatch (this, msg);
+			if (poDispatch) {
+				if (!m_poDispatch->Run (poDispatch)) {
+					delete poDispatch;
+					LOGWARN (TEXT ("Couldn't return message to sender"));
+				}
+			} else {
+				LOGFATAL (TEXT ("Out of memory"));
+			}
 dispatched:
 			m_oMutex.Leave ();
 		} else {
@@ -475,6 +539,13 @@ bool CConnector::WaitForStartup (unsigned long lTimeout) const {
 	CSemaphore oStartupSemaphore (0, 1);
 	m_oStartupSemaphorePtr.Set (&oStartupSemaphore);
 	ClientServiceState eState = m_poClient->GetState ();
+	if (eState == ERRORED) {
+		if (m_poClient->Start ()) {
+			eState = m_poClient->GetState ();
+		} else {
+			LOGERROR (TEXT ("Couldn't start client service, error ") << GetLastError ());
+		}
+	}
 	if ((eState != RUNNING) && (eState != STOPPED) && (eState != ERRORED)) {
 		LOGINFO (TEXT ("Waiting for client startup"));
 		oStartupSemaphore.Wait (lTimeout);
@@ -776,4 +847,13 @@ void CConnector::OnExitRunningState (IRunnable *poOnExitRunningState) {
 ///            Use NULL to request no callback and delete any previous one.
 void CConnector::OnEnterStableNonRunningState (IRunnable *poOnEnterStableNonRunningState) {
 	_Replace (&m_oOnEnterStableNonRunningState, poOnEnterStableNonRunningState);
+}
+
+/// Fetches any error message filed by the client explaining why the Java stack is not connected.
+///
+/// @param[out] pszBuffer the buffer to receive the text
+/// @param[in] cbBuffer the size of the pszBuffer buffer
+/// @return TRUE if a value was loaded into pszBuffer, FALSE if there was a problem (or no error)
+bool CConnector::GetClientErrorMessage (TCHAR *pszBuffer, size_t cbBuffer) const {
+	return m_poClient->GetErrorMessage (pszBuffer, cbBuffer / sizeof (TCHAR));
 }
