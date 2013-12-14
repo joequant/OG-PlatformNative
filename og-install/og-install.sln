@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wait for Startup", "src\wait-for-startup\cpp\Wait for Startup.vcxproj", "{D82AFC82-320A-447F-9DDE-CABDB7B6A836}"
@@ -12,6 +11,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServiceControl", "src\service-control\cpp\ServiceControl.vcxproj", "{B09FD09A-8514-48DE-B392-37E47CF911A6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RunTool", "src\run-tool\cpp\RunTool.vcxproj", "{71AC04AF-D65D-4312-B827-C5710AA04722}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Clean", "src\clean\cpp\Clean.vcxproj", "{611ABCFE-668F-4455-8CB5-744D282FFEF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +70,14 @@ Global
 		{71AC04AF-D65D-4312-B827-C5710AA04722}.Release|Win32.Build.0 = Release|Win32
 		{71AC04AF-D65D-4312-B827-C5710AA04722}.Release|x64.ActiveCfg = Release|x64
 		{71AC04AF-D65D-4312-B827-C5710AA04722}.Release|x64.Build.0 = Release|x64
+		{611ABCFE-668F-4455-8CB5-744D282FFEF7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{611ABCFE-668F-4455-8CB5-744D282FFEF7}.Debug|Win32.Build.0 = Debug|Win32
+		{611ABCFE-668F-4455-8CB5-744D282FFEF7}.Debug|x64.ActiveCfg = Debug|x64
+		{611ABCFE-668F-4455-8CB5-744D282FFEF7}.Debug|x64.Build.0 = Debug|x64
+		{611ABCFE-668F-4455-8CB5-744D282FFEF7}.Release|Win32.ActiveCfg = Release|Win32
+		{611ABCFE-668F-4455-8CB5-744D282FFEF7}.Release|Win32.Build.0 = Release|Win32
+		{611ABCFE-668F-4455-8CB5-744D282FFEF7}.Release|x64.ActiveCfg = Release|x64
+		{611ABCFE-668F-4455-8CB5-744D282FFEF7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
