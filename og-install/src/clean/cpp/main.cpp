@@ -93,7 +93,7 @@ static BOOL _FindErrors () {
 	oServices.Check ();
 	PCTSTR pszFatal = LogGetFatal ();
 	if (pszFatal) {
-		MessageBox (HWND_DESKTOP, pszFatal, TEXT ("OpenGamma pre-Installation Checklist"), MB_OK);
+		MessageBox (HWND_DESKTOP, pszFatal, TEXT ("OpenGamma pre-Installation Checklist"), MB_OK | MB_ICONSTOP | MB_SYSTEMMODAL);
 		return TRUE;
 	} else {
 		return FALSE;
