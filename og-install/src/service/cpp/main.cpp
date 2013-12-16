@@ -44,7 +44,7 @@ static DWORD CALLBACK _killThread (PVOID pReserved) {
 		sta.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
 		sta.dwCurrentState = SERVICE_STOPPED;
 		sta.dwWaitHint = DEFAULT_WAIT_HINT;
-		sta.dwWin32ExitCode = ERROR_TIMEOUT;
+		sta.dwServiceSpecificExitCode = ERROR_TIMEOUT;
 		SetServiceStatus (g_hStatus, &sta);
 		TerminateProcess (GetCurrentProcess (), 1);
 	}
