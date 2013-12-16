@@ -16,7 +16,7 @@ private:
 	int Delete (PCTSTR pszPath);
 	int Report (PCTSTR pszPath, DWORD dwIndent = 0);
 public:
-	void Watch (PCTSTR pszPath) { m_oWatch.Add (pszPath); }
+	void Watch (PCTSTR pszPath);
 	void Delete ();
 	void Report ();
 };

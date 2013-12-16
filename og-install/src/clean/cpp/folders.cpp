@@ -137,6 +137,27 @@ int CFolders::Report (PCTSTR pszPath, DWORD dwIndent) {
 	return nLines;
 }
 
+void CFolders::Watch (PCTSTR pszPath) {
+	size_t cchPath = _tcslen (pszPath);
+	if (cchPath > 2) {
+		if ((pszPath[cchPath - 1] == '.') && (pszPath[cchPath - 2] == '\\')) {
+			// E.g. C:\FooBar\. (should be C:\FooBar). This is because parameters must arrive as "fC:\FooBar\." because
+			// "fC:\FooBar\" will see the trailing slash from the Advanced Installer path as an escape for the quote.
+			PTSTR pszCopy = new TCHAR[cchPath - 1];
+			if (pszCopy) {
+				memcpy (pszCopy, pszPath, (cchPath - 2) * sizeof (TCHAR));
+				pszCopy[cchPath - 2] = 0;
+				m_oWatch.Add (pszCopy);
+				delete pszCopy;
+				return;
+			} else {
+				LogOutOfMemory ();
+			}
+		}
+	}
+	m_oWatch.Add (pszPath);
+}
+
 void CFolders::Delete () {
 	int i, nDeleted = 0;
 	for (i = 0; i < m_oWatch.Size (); i++) {
