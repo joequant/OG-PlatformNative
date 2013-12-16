@@ -82,6 +82,24 @@ static void _DeleteRegistryKeys () {
 	oRegistry.Delete ();
 }
 
+static BOOL _FindErrors () {
+	CServices oServices;
+	int i;
+	for (i = 1; i < __argc; i++) {
+		if (__targv[i] && (*__targv[i] == ARG_SERVICE)) {
+			oServices.Watch (__targv[i] + 1);
+		}
+	}
+	oServices.Check ();
+	PCTSTR pszFatal = LogGetFatal ();
+	if (pszFatal) {
+		MessageBox (HWND_DESKTOP, pszFatal, TEXT ("OpenGamma pre-Installation Checklist"), MB_OK);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
 #ifdef _DEBUG
 int main () {
 #else /* ifdef _DEBUG */
@@ -92,5 +110,5 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PTSTR pszCmdLi
 	_StopKillAndDeleteServices ();
 	_DeleteFolders ();
 	_DeleteRegistryKeys ();
-	return EXIT_SUCCESS;
+	return _FindErrors () ? EXIT_FAILURE : EXIT_SUCCESS;
 }

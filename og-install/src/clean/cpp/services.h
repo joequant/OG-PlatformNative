@@ -20,12 +20,14 @@ private:
 	void DeleteForcefully (PCTSTR pszShortName);
 	BOOL StopKillAndDelete (PCTSTR pszShortName);
 	void DetailedReport (LPENUM_SERVICE_STATUS_PROCESS lpService);
+	void Check (PCTSTR pszShortName);
 public:
 	CServices ();
 	~CServices ();
 	void Watch (PCTSTR pszShortName) { m_oWatch.Add (pszShortName); }
 	void StopKillAndDelete ();
 	void Report ();
+	void Check ();
 };
 
 #endif /* ifndef __inc_clean_services_h */

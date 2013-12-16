@@ -9,6 +9,8 @@
 
 void LogToFile (PCTSTR pszFilename);
 void LogPrintf (PCTSTR pszFormat, ...);
+void LogFatalProblem (PCTSTR pszMessage);
+PCTSTR LogGetFatal ();
 
 #define LogDebug(fmt,...) LogPrintf (TEXT ("%s:%d: ") fmt TEXT ("\n"), TEXT (__FILE__), __LINE__, __VA_ARGS__)
 #define LogOutOfMemory() LogDebug (TEXT ("Out of memory"))

@@ -129,6 +129,37 @@ void CServices::DetailedReport (LPENUM_SERVICE_STATUS_PROCESS lpService) {
 	}
 }
 
+void CServices::Check (PCTSTR pszShortName) {
+	SC_HANDLE hService = OpenService (GetServiceManager (), pszShortName, GENERIC_READ);
+	if (hService) {
+		LogPrintf (TEXT ("Service %s exists after clean-up\n"), pszShortName);
+		DWORD cbBuffer = 8192;
+		LPQUERY_SERVICE_CONFIG lpConfig = (LPQUERY_SERVICE_CONFIG)new BYTE[cbBuffer];
+		if (lpConfig) {
+			DWORD cbBytesNeeded;
+			if (QueryServiceConfig (hService, lpConfig, cbBuffer, &cbBytesNeeded)) {
+				LogPrintf (TEXT ("Service %s is configured after clean-up\n"), pszShortName);
+			} else {
+				DWORD dwError = GetLastError ();
+				LogPrintf (TEXT ("Error %d querying service configuration\n"), dwError);
+				if (dwError == ERROR_FILE_NOT_FOUND) {
+					PTSTR pszMessage = new TCHAR[512];
+					if (pszMessage) {
+						StringCchPrintf (pszMessage, 512, TEXT ("The %s service cannot be removed prior to re-installation. There are either programs using it which must be closed, or a reboot is needed before this installation can proceed."), pszShortName);
+						LogFatalProblem (pszMessage);
+						delete pszMessage;
+					} else {
+						LogOutOfMemory ();
+					}
+				}
+			}
+		} else {
+			LogOutOfMemory ();
+		}
+		CloseServiceHandle (hService);
+	}
+}
+
 CServices::CServices () {
 	m_hSCM = NULL;
 }
@@ -194,4 +225,11 @@ retry:
 		goto retry;
 	}
 	LogPrintf (TEXT ("%d services found\n\n"), nCount);
+}
+
+void CServices::Check () {
+	int i = 0;
+	for (i = 0; i < m_oWatch.Size (); i++) {
+		Check (m_oWatch.Get (i));
+	}
 }
