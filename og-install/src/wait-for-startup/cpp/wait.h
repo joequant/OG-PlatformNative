@@ -17,6 +17,7 @@ public:
 	static CParamString s_oServiceName;
 	static CParamString s_oHost;
 	static CParamInteger s_oPort;
+	static BOOL WaitForStop (CFeedback *poFeedback);
 	static BOOL WaitForStartup (CFeedback *poFeedback);
 };
 
