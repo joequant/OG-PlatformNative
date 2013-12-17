@@ -1,5 +1,5 @@
 <project name="OG-RStats">
-
+  <property name="root.dir" value="${basedir}${file.separator}.." />
   <import file="${common.dir}/version.xml" />
   <import file="${common.dir}/advanced-installer.xml" />
 
