@@ -15,6 +15,23 @@
   <packaging>pom</packaging>
   <name>OG-Platform-Native-IDE</name>
   <description>OpenGamma platform native aggregator project for IDEs</description>
+  <!-- ==================================================================== -->
+  <!-- OpenGamma public repositories -->
+  <!-- duplicated from corporate-pom to ensure this pom builds from scratch -->
+  <repositories>
+    <repository>
+      <id>og-public</id>
+      <name>OG Public</name>
+      <url>http://maven.opengamma.com/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>og-public</id>
+      <name>OG Public</name>
+      <url>http://maven.opengamma.com/nexus/content/groups/public</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <!-- ==================================================================== -->
   <modules>
