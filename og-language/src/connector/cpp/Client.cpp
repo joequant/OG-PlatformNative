@@ -126,8 +126,9 @@ private:
 		LOGDEBUG (TEXT ("Waiting for heartbeat response"));
 		FudgeMsgEnvelope env = m_poService->Recv (m_lHeartbeatTimeout);
 		if (env) {
-			m_poService->DispatchAndRelease (env);
-			m_poService->FirstConnectionOk ();
+			if (m_poService->DispatchAndRelease (env)) {
+				m_poService->FirstConnectionOk ();
+			}
 			return true;
 		} else {
 			LOGWARN (TEXT ("Heartbeat timeout exceeded"));
@@ -225,7 +226,7 @@ public:
 			LOGDEBUG (TEXT ("Waiting for first message"));
 			FudgeMsgEnvelope env = m_poService->Recv (m_lHeartbeatTimeout);
 			while (env) {
-				m_poService->DispatchAndRelease (env);
+				if (!m_poService->DispatchAndRelease (env)) goto endMessageLoop;
 				if (m_poService->HeartbeatNeeded (m_lHeartbeatTimeout) && !SendHeartbeat (false)) break;
 				LOGDEBUG (TEXT ("Waiting for message"));
 				env = m_poService->Recv (m_lHeartbeatTimeout);
@@ -245,7 +246,7 @@ public:
 					goto endMessageLoop;
 				}
 				do {
-					m_poService->DispatchAndRelease (env);
+					if (!m_poService->DispatchAndRelease (env)) goto endMessageLoop;
 					if (m_poService->HeartbeatNeeded (m_lHeartbeatTimeout) && !SendHeartbeat (false)) goto endMessageLoop;
 					LOGDEBUG (TEXT ("Waiting for message"));
 					env = m_poService->Recv (m_lHeartbeatTimeout);
@@ -599,10 +600,11 @@ bool CClientService::DispatchAndRelease (FudgeMsgEnvelope env) {
 				LOGDEBUG (TEXT ("Heartbeat received"));
 				break;
 			case POISON :
-				// This shouldn't be sent by the Java stack
-				LOGFATAL (TEXT ("Received poison from Java framework"));
-				assert (0);
-				break;
+				LOGINFO (TEXT ("Controlled stop signal from JVM"));
+				SetState (POISONED);
+				FudgeMsgEnvelope_release (env);
+				SetErrorState (TEXT ("The OpenGamma service has been stopped"));
+				return false;
 			case STASH : {
 				FudgeMsg msgStash;
 				if (ConnectorMessage_getStash (msg, &msgStash) == FUDGE_OK) {
@@ -641,7 +643,7 @@ bool CClientService::DispatchAndRelease (FudgeMsgEnvelope env) {
 		break;
 	}
 	FudgeMsgEnvelope_release (env);
-	return m_poPipes->IsConnected ();
+	return true;
 }
 
 /// Receives a message from the Java stack.

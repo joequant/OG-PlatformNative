@@ -24,6 +24,7 @@ namespace com.opengamma.language.test {
       STASH_REQUEST;        // must assert that it received the expected stash message, and respond with STASH_RESPONSE
       STASH_RESPONSE; 
       NON_DELIVERY_REQUEST; // must send a message not inherited from Test to the client and send ECHO_RESPONSE_A when it bounces
+      POISON_REQUEST_A;     // must response with POISON asynchronously
     }
     
     required Operation operation = 1;

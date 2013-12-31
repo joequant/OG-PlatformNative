@@ -27,6 +27,7 @@ import org.springframework.core.io.ClassPathResource;
 import com.opengamma.OpenGammaRuntimeException;
 import com.opengamma.language.context.SessionContextFactory;
 import com.opengamma.util.tuple.Pair;
+import com.opengamma.util.tuple.Pairs;
 
 /**
  * Reads OG-Language-oriented Spring configuration files, and interprets any language-specific extensions.
@@ -85,9 +86,9 @@ public class LanguageSpringContext {
   }
 
   /**
-   * Creates a Spring context from the base configuration file in OG-Language and any other Spring XML configuration
-   * files found in the configuration directory.  The directory must be specified using the system property named
-   * {@link #LANGUAGE_EXT_PATH}.
+   * Creates a Spring context from the base configuration file in OG-Language and any other Spring XML configuration files found in the configuration directory. The directory must be specified using
+   * the system property named {@link #LANGUAGE_EXT_PATH}.
+   * 
    * @return A Spring context built from all the XML config files.
    */
   public static GenericApplicationContext createSpringContext() {
@@ -110,17 +111,15 @@ public class LanguageSpringContext {
   }
 
   /**
-   * Searches the configuration directory for Spring XML files to load.  The directory must be specified using the
-   * system property named {@link #LANGUAGE_EXT_PATH}. The files are returned in filename alphabetical order (case
-   * insensitive) so that load order is deterministic.
-   * @return Names of all the XML files in the configuration directory with {@code file:} prepended (so Spring knows
-   * they are filesystem resources and not classpath resources)
+   * Searches the configuration directory for Spring XML files to load. The directory must be specified using the system property named {@link #LANGUAGE_EXT_PATH}. The files are returned in filename
+   * alphabetical order (case insensitive) so that load order is deterministic.
+   * 
+   * @return Names of all the XML files in the configuration directory with {@code file:} prepended (so Spring knows they are filesystem resources and not classpath resources)
    */
   private static String[] findSpringXmlConfig() {
     String extPath = System.getProperty(LANGUAGE_EXT_PATH);
     if (StringUtils.isEmpty(extPath)) {
-      throw new OpenGammaRuntimeException("The directory containing the Spring XML config files for language support " +
-                                              "must be specified in the system property " + LANGUAGE_EXT_PATH);
+      throw new OpenGammaRuntimeException("The directory containing the Spring XML config files for language support " + "must be specified in the system property " + LANGUAGE_EXT_PATH);
     }
     File extDir = new File(extPath);
     s_logger.debug("Scanning '{}' for Spring XML config files to load", extDir.getAbsolutePath());
@@ -146,21 +145,18 @@ public class LanguageSpringContext {
   }
 
   /**
-   * Returns the factories for a bound language. By default "clientContextFactory" and "sessionContextFactory" are used
-   * and should generally be extended in a language agnostic fashion, or use custom message filters with an explicit hierarchy
-   * that won't interfere with any other language bindings. If behaviors that will interfere are needed, custom factories
-   * can be specified. For a language "Foo", "FooClientContextFactory" and "FooSessionContextFactory" will take
-   * precedent over the defaults if they are defined.
+   * Returns the factories for a bound language. By default "clientContextFactory" and "sessionContextFactory" are used and should generally be extended in a language agnostic fashion, or use custom
+   * message filters with an explicit hierarchy that won't interfere with any other language bindings. If behaviors that will interfere are needed, custom factories can be specified. For a language
+   * "Foo", "FooClientContextFactory" and "FooSessionContextFactory" will take precedent over the defaults if they are defined.
    * 
    * @param languageID the language ID from the incoming client connection
-   * @return the {@link ClientFactory} and {@link SessionContextFactory} instances 
+   * @return the {@link ClientFactory} and {@link SessionContextFactory} instances
    */
   public Pair<ClientFactory, SessionContextFactory> getLanguageFactories(final String languageID) {
     Pair<ClientFactory, SessionContextFactory> factories = _languageFactories.get(languageID);
     if (factories == null) {
       s_logger.info("Resolving factories for {}", languageID);
-      final ClientContextFactory clientContextFactory = getBean(languageID + CLIENT_CONTEXT_FACTORY,
-          ClientContextFactory.class);
+      final ClientContextFactory clientContextFactory = getBean(languageID + CLIENT_CONTEXT_FACTORY, ClientContextFactory.class);
       final ClientFactory clientFactory;
       if (clientContextFactory == null) {
         if (_defaultClientFactory == null) {
@@ -171,8 +167,7 @@ public class LanguageSpringContext {
       } else {
         clientFactory = _clientFactories.createClientFactory(clientContextFactory.createClientContext());
       }
-      SessionContextFactory sessionContextFactory = getBean(languageID + SESSION_CONTEXT_FACTORY,
-          SessionContextFactory.class);
+      SessionContextFactory sessionContextFactory = getBean(languageID + SESSION_CONTEXT_FACTORY, SessionContextFactory.class);
       if (sessionContextFactory == null) {
         if (_defaultSessionContextFactory == null) {
           s_logger.error("No session context factory for {} defined and no default factory", languageID);
@@ -180,10 +175,23 @@ public class LanguageSpringContext {
         }
         sessionContextFactory = _defaultSessionContextFactory;
       }
-      factories = Pair.of(clientFactory, sessionContextFactory);
+      factories = Pairs.of(clientFactory, sessionContextFactory);
       _languageFactories.put(languageID, factories);
     }
     return factories;
+  }
+
+  /**
+   * Shuts down any client contexts that have been created by this class (through the constructor where the default factory gets constructed, and through calls to fetch the language specific
+   * factories).
+   */
+  public void shutdownClientContexts() {
+    if (_defaultClientFactory != null) {
+      _defaultClientFactory.getClientContext().shutdown();
+    }
+    for (Pair<ClientFactory, ?> clientFactory : _languageFactories.values()) {
+      clientFactory.getFirst().getClientContext().shutdown();
+    }
   }
 
   private <T> T getBean(final String beanName, final Class<T> clazz) {

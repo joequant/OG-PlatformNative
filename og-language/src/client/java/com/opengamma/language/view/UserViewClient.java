@@ -86,6 +86,7 @@ public final class UserViewClient implements UniqueIdentifiable {
       final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_VIEWDEF) {
         @Override
         public void callback(final ViewResultListener listener) {
+          s_logger.info("Dispatching cached view definition compiled message to {}", listener);
           listener.viewDefinitionCompiled(compiledViewDefinition, hasMarketDataPermissions);
         }
       };
@@ -108,6 +109,7 @@ public final class UserViewClient implements UniqueIdentifiable {
       final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_VIEWDEF) {
         @Override
         public void callback(final ViewResultListener listener) {
+          s_logger.info("Dispatching cached compilation failure message to {}", listener);
           listener.viewDefinitionCompilationFailed(valuationTime, exception);
         }
       };
@@ -179,6 +181,7 @@ public final class UserViewClient implements UniqueIdentifiable {
       final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_COMPLETED) {
         @Override
         public void callback(final ViewResultListener listener) {
+          s_logger.info("Dispatching cached process completed message to {}", listener);
           listener.processCompleted();
         }
       };
@@ -201,6 +204,7 @@ public final class UserViewClient implements UniqueIdentifiable {
       final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_TERMINATED) {
         @Override
         public void callback(final ViewResultListener listener) {
+          s_logger.info("Dispatching cached process terminated message to {}", listener);
           listener.processTerminated(executionInterrupted);
         }
       };
@@ -223,6 +227,7 @@ public final class UserViewClient implements UniqueIdentifiable {
       final ViewResultListenerEvent event = new ViewResultListenerEvent(ET_SHUTDOWN) {
         @Override
         public void callback(final ViewResultListener listener) {
+          s_logger.info("Dispatching cached client shutdown message to {}", listener);
           listener.clientShutdown(e);
         }
       };
