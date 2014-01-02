@@ -192,6 +192,8 @@ void ServiceSuspend () {
 }
 
 #ifdef _WIN32
+#define SERVICE_CONTROL_SOFTSTOP	128
+
 /// Win32 service signal handler. Responds to the STOP request only.
 ///
 /// @param[in] dwAction signal to handle
@@ -200,6 +202,10 @@ static void WINAPI _SignalHandler (DWORD dwAction) {
 	case SERVICE_CONTROL_STOP :
 		LOGINFO (TEXT ("STOP signal received from SCM"));
 		ServiceStop (TRUE);
+		break;
+	case SERVICE_CONTROL_SOFTSTOP :
+		LOGINFO (TEXT ("SOFTSTOP signal received from SCM"));
+		ServiceStop (FALSE);
 		break;
 	case SERVICE_CONTROL_INTERROGATE :
 		LOGDEBUG (TEXT ("INTERROGATE signal received from SCM"));
@@ -429,6 +435,34 @@ bool ServiceRunning () {
 	return (g_nServiceState != SERVICE_STATE_STOPPED);
 }
 
+#ifdef _WIN32
+static BOOL ControlService (PCTSTR pszServiceName, SC_HANDLE hSCM, DWORD dwAccessMask, DWORD dwControl) {
+	SC_HANDLE hService = OpenService (hSCM, pszServiceName, dwAccessMask);
+	if (hService) {
+		SERVICE_STATUS ss;
+		BOOL bResult;
+		if (ControlService (hService, dwControl, &ss)) {
+			LOGINFO (TEXT ("Stopped service ") << pszServiceName << TEXT (" with signal ") << dwControl);
+			bResult = TRUE;
+		} else {
+			DWORD dwError = GetLastError ();
+			if (dwError == 1062) {
+				LOGINFO (TEXT ("Service ") << pszServiceName << TEXT (" is not running"));
+				bResult = TRUE;
+			} else {
+				LOGWARN (TEXT ("Couldn't stop ") << pszServiceName << TEXT (", error ") << dwError);
+				bResult = FALSE;
+			}
+		}
+		CloseServiceHandle (hService);
+		return bResult;
+	} else {
+		LOGWARN (TEXT ("Couldn't open ") << pszServiceName << TEXT (" service for ") << dwAccessMask << TEXT (", error ") << GetLastError ());
+		return FALSE;
+	}
+}
+#endif /* ifdef _WIN32 */
+
 /// Configure the service.
 void ServiceConfigure () {
 	CErrorFeedback oFeedback;
@@ -446,17 +480,9 @@ void ServiceConfigure () {
 		PCTSTR pszServiceName = oSettings.GetServiceName ();
 		SC_HANDLE hSCM = OpenSCManager (NULL, NULL, GENERIC_READ);
 		if (hSCM) {
-			SC_HANDLE hService = OpenService (hSCM, pszServiceName, SERVICE_STOP);
-			if (hService) {
-				SERVICE_STATUS ss;
-				if (ControlService (hService, SERVICE_CONTROL_STOP, &ss)) {
-					LOGINFO (TEXT ("Stopped service ") << pszServiceName);
-				} else {
-					LOGWARN (TEXT ("Couldn't stop ") << pszServiceName << TEXT (", error ") << GetLastError ());
-				}
-				CloseServiceHandle (hService);
-			} else {
-				LOGWARN (TEXT ("Couldn't open ") << pszServiceName << TEXT (" service to restart"));
+			if (!ControlService (pszServiceName, hSCM, SERVICE_USER_DEFINED_CONTROL, SERVICE_CONTROL_SOFTSTOP)
+			 && !ControlService (pszServiceName, hSCM, SERVICE_STOP, SERVICE_CONTROL_STOP)) {
+				LOGWARN (TEXT ("Couldn't stop/restart ") << pszServiceName << TEXT (" service"));
 			}
 			CloseServiceHandle (hSCM);
 		} else {
