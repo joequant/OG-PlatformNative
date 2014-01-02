@@ -128,8 +128,7 @@ public class Main {
    * @param debug true if the bound language is a debug build
    * @return null if the connection started okay, an error message otherwise
    */
-  public static synchronized String svcAccept(final String userName, final String inputPipeName,
-      final String outputPipeName, final String languageID, final boolean debug) {
+  public static synchronized String svcAccept(final String userName, final String inputPipeName, final String outputPipeName, final String languageID, final boolean debug) {
     try {
       s_logger.info("Accepted {} connection from {}", languageID, userName);
       s_logger.debug("Using pipes IN:{} OUT:{}", inputPipeName, outputPipeName);
@@ -200,6 +199,7 @@ public class Main {
     if (stopping != null) {
       throw new OpenGammaRuntimeException("Already stopped by " + stopping.getName());
     }
+    s_springContext.shutdownClientContexts();
   }
 
   private static synchronized void forceStop() {

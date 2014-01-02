@@ -81,7 +81,7 @@ public class TestMessageHandler {
     switch (message.getOperation()) {
       case CRASH_REQUEST: {
         s_logger.info("CRASH_REQUEST - calling system.exit");
-        final MutableFudgeMsg msg = FudgeContext.GLOBAL_DEFAULT.newMessage();
+        final MutableFudgeMsg msg = FudgeContext.GLOBAL_DEFAULT.newMessage(context.getStashMessage().get());
         msg.add("foo", null, 42);
         context.getStashMessage().put(msg);
         System.exit(1);
@@ -123,6 +123,11 @@ public class TestMessageHandler {
           }
         }
         Thread.currentThread().suspend();
+        return null;
+      case POISON_REQUEST_A:
+        s_logger.info("POISON_REQUEST_A - triggering svcStop");
+        Main.svcStop();
+        // The svcStop will shut down the client context which should send a POISON message to the client and cause disconnection
         return null;
       case STASH_REQUEST: {
         s_logger.info("STASH_REQUEST - checking stash");
