@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/client/java"/>
-	<classpathentry kind="src" path="src/client-test/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-financial"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-analytics"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-engine"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-financial-types"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-master"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-provider"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-security"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-timeseries"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/og-util"/>
-	<classpathentry kind="var" path="M2_REPO/com/thoughtworks/paranamer/paranamer/2.5.5/paranamer-2.5.5.jar"/>
-	<classpathentry kind="output" path="target/bin"/>
-	<classpathentry kind="src" output="target/test-classes" path="src/client-test/java"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-financial"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-analytics"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-core"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-engine"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-financial-types"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-master"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-provider"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-security"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-timeseries"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-util"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/client-test/java"/>
 	<classpathentry exported="true" kind="lib" path="/Users/jim/.m2/repository/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/og-livedata"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
