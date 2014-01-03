@@ -368,7 +368,7 @@ int main (int argc, char **argv) {
 	CConfigString oClass ("class", argv[1]);
 	CConfigString oMethod ("method", "main");
 	CConfigMultiString oArgs ("argc", "arg%d");
-	CRunToolArgs oArgStrings (argc - 1, argv + 1);
+	CRunToolArgs oArgStrings (argc - 2, argv + 2);
 	oArgs.Read (&oArgStrings);
 	DWORD dwError = poJava->Invoke (&oClass, &oMethod, &oArgs);
 	if (dwError) {
