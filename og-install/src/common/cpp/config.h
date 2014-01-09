@@ -11,7 +11,7 @@ class CConfigSourceSection {
 public:
 	virtual ~CConfigSourceSection () { }
 	virtual int ReadInteger (PCSTR pszName, int nDefault) = 0;
-	virtual int ReadString (PCSTR pszName, PSTR pszBuffer, int cbBuffer, PCSTR pszDefault) = 0;
+	virtual size_t ReadString (PCSTR pszName, PSTR pszBuffer, size_t cbBuffer, PCSTR pszDefault) = 0;
 };
 
 class CConfigSource {

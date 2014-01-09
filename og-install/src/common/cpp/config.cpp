@@ -155,8 +155,8 @@ public:
 	int ReadInteger (PCSTR pszName, int nDefault) {
 		return GetPrivateProfileInt (m_pszSection, pszName, nDefault, m_pszFilename);
 	}
-	int ReadString (PCSTR pszName, PSTR pszBuffer, int cbBuffer, PCSTR pszDefault) {
-		return GetPrivateProfileString (m_pszSection, pszName, pszDefault, pszBuffer, cbBuffer, m_pszFilename);
+	size_t ReadString (PCSTR pszName, PSTR pszBuffer, size_t cbBuffer, PCSTR pszDefault) {
+		return GetPrivateProfileString (m_pszSection, pszName, pszDefault, pszBuffer, (DWORD)cbBuffer, m_pszFilename);
 	}
 };
 
