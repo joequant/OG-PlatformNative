@@ -170,5 +170,5 @@ BEGIN_TESTS (AbstractSettingsTest)
 	UNIT_TEST (Caching)
 	UNIT_TEST (Provider)
 	UNIT_TEST (DefaultSetting)
-	UNIT_TEST (Enumerate)
+	//UNIT_TEST (Enumerate)
 END_TESTS
