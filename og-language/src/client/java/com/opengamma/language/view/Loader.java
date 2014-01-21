@@ -110,6 +110,7 @@ public class Loader extends ContextInitializationBean {
     globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(
         FetchViewDefinitionFunction.INSTANCE,
         GetViewPortfolioFunction.INSTANCE,
+        GetViewProcessIdFunction.INSTANCE,
         GetViewResultFunction.INSTANCE,
         HistoricalExecutionSequenceFunction.INSTANCE,
         SetViewClientExecutionFlagFunction.INSTANCE,
