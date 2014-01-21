@@ -9,3 +9,5 @@
 *.vcxproj.user
 *~
 .settings
+.project
+.classpath
