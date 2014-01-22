@@ -43,6 +43,9 @@ LOGGING(com.opengamma.language.service.Settings);
 # ifndef DEFAULT_SDDL
 #  define DEFAULT_SDDL				NULL
 # endif /* ifndef DEFAULT_SDDL */
+# ifndef DEFAULT_SOFT_STOP
+#  define DEFAULT_SOFT_STOP		FALSE
+# endif /* ifndef DEFAULT_SOFT_STOP */
 #endif /* ifdef _WIN32 */
 #ifndef DEFAULT_SERVICE_NAME
 # ifdef _WIN32
@@ -631,5 +634,13 @@ const TCHAR *CSettings::GetServiceName () const {
 /// @return the SDDL string, or NULL to use the system defaults
 const TCHAR *CSettings::GetServiceSDDL () const {
 	return GetServiceSDDL (DEFAULT_SDDL);
+}
+
+/// Returns the soft-stop flag. When this is set, a service should wait for the last client to disconnect before
+/// stopping during reconfiguration events.
+///
+/// @return TRUE to soft-stop, FALSE to hard-stop
+BOOL CSettings::GetServiceSoftStop () const {
+	return GetServiceSoftStop (DEFAULT_SOFT_STOP);
 }
 #endif /* ifdef _WIN32 */

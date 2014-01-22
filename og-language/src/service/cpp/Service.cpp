@@ -194,7 +194,7 @@ void ServiceSuspend () {
 #ifdef _WIN32
 #define SERVICE_CONTROL_SOFTSTOP	128
 
-/// Win32 service signal handler. Responds to the STOP request only.
+/// Win32 service signal handler. Responds to the STOP requests only.
 ///
 /// @param[in] dwAction signal to handle
 static void WINAPI _SignalHandler (DWORD dwAction) {
@@ -480,7 +480,7 @@ void ServiceConfigure () {
 		PCTSTR pszServiceName = oSettings.GetServiceName ();
 		SC_HANDLE hSCM = OpenSCManager (NULL, NULL, GENERIC_READ);
 		if (hSCM) {
-			if (!ControlService (pszServiceName, hSCM, SERVICE_USER_DEFINED_CONTROL, SERVICE_CONTROL_SOFTSTOP)
+			if (!(oSettings.GetServiceSoftStop () && ControlService (pszServiceName, hSCM, SERVICE_USER_DEFINED_CONTROL, SERVICE_CONTROL_SOFTSTOP))
 			 && !ControlService (pszServiceName, hSCM, SERVICE_STOP, SERVICE_CONTROL_STOP)) {
 				LOGWARN (TEXT ("Couldn't stop/restart ") << pszServiceName << TEXT (" service"));
 			}
