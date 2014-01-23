@@ -29,6 +29,10 @@ static CConnectionPipe *g_poPipe = NULL;
 /// feedback to the user (e.g. logging or reporting to a service control manager).
 static unsigned long g_lBusyTimeout = 0;
 
+/// Flag for hard-stopping - the JVM is not notified so clients don't get to gracefully
+/// disconnect. They will see a fault and automatically reconnect instead.
+static volatile bool g_bHardStop = false;
+
 #ifdef _WIN32
 /// Service status handle for reporting to the SCM.
 static SERVICE_STATUS_HANDLE g_hServiceStatus = NULL;
@@ -193,6 +197,7 @@ void ServiceSuspend () {
 
 #ifdef _WIN32
 #define SERVICE_CONTROL_SOFTSTOP	128
+#define SERVICE_CONTROL_HARDSTOP	129
 
 /// Win32 service signal handler. Responds to the STOP requests only.
 ///
@@ -207,6 +212,14 @@ static void WINAPI _SignalHandler (DWORD dwAction) {
 		LOGINFO (TEXT ("SOFTSTOP signal received from SCM"));
 		ServiceStop (FALSE);
 		break;
+	case SERVICE_CONTROL_HARDSTOP : {
+		LOGINFO (TEXT ("HARDSTOP signal received from SCM"));
+		CErrorFeedback oServiceErrors;
+		oServiceErrors.Write (TEXT ("A different back-end OpenGamma server has been selected - disconnecting."));
+		g_bHardStop = TRUE;
+		ServiceStop (TRUE);
+		break;
+									}
 	case SERVICE_CONTROL_INTERROGATE :
 		LOGDEBUG (TEXT ("INTERROGATE signal received from SCM"));
 		break;
@@ -400,19 +413,19 @@ void ServiceRun (int nReason) {
 					if (!g_poPipe) {
 						g_oMutex.Leave ();
 						LOGINFO (TEXT ("Shutting down JVM after pipe close"));
-						g_poJVM->Stop ();
+						if (!g_bHardStop) g_poJVM->Stop ();
 						break;
 					}
 				}
 				g_oMutex.Leave ();
 			} else {
 				LOGERROR (TEXT ("Shutting down JVM after failing to read from pipe"));
-				g_poJVM->Stop ();
+				if (!g_bHardStop) g_poJVM->Stop ();
 				break;
 			}
 		} while (!g_poJVM->IsBusy (g_lBusyTimeout) && g_poJVM->IsRunning ());
 		_ReportStateStopping ();
-		while (g_poJVM->IsBusy (g_lBusyTimeout)) {
+		while (!g_bHardStop && g_poJVM->IsBusy (g_lBusyTimeout)) {
 			_ReportStateStopping ();
 		}
 		_ReportStateStopped ();
@@ -480,10 +493,15 @@ void ServiceConfigure () {
 		PCTSTR pszServiceName = oSettings.GetServiceName ();
 		SC_HANDLE hSCM = OpenSCManager (NULL, NULL, GENERIC_READ);
 		if (hSCM) {
-			if (!(oSettings.GetServiceSoftStop () && ControlService (pszServiceName, hSCM, SERVICE_USER_DEFINED_CONTROL, SERVICE_CONTROL_SOFTSTOP))
-			 && !ControlService (pszServiceName, hSCM, SERVICE_STOP, SERVICE_CONTROL_STOP)) {
+			do {
+				if (oSettings.GetServiceSoftStop ()) {
+					if (ControlService (pszServiceName, hSCM, SERVICE_USER_DEFINED_CONTROL, SERVICE_CONTROL_SOFTSTOP)) break;
+				} else {
+					if (ControlService (pszServiceName, hSCM, SERVICE_USER_DEFINED_CONTROL, SERVICE_CONTROL_HARDSTOP)) break;
+				}
+				if (ControlService (pszServiceName, hSCM, SERVICE_STOP, SERVICE_CONTROL_STOP)) break;
 				LOGWARN (TEXT ("Couldn't stop/restart ") << pszServiceName << TEXT (" service"));
-			}
+			} while (FALSE);
 			CloseServiceHandle (hSCM);
 		} else {
 			LOGWARN (TEXT ("Couldn't connect to service manager, error ") << GetLastError ());
