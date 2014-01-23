@@ -8,6 +8,7 @@
 #define __inc_og_language_service_connectionpipe_h
 
 #include "Public.h"
+#include "Settings.h"
 #include <util/cpp/NamedPipe.h>
 
 /// Implementation of the IPC connection for incoming requests.
@@ -44,7 +45,7 @@ public:
 	bool IsClosed () const { return m_poPipe->IsClosed (); }
 
 	~CConnectionPipe ();
-	static CConnectionPipe *Create (const TCHAR *pszSuffix = NULL);
+	static CConnectionPipe *Create (const CSettings *poSettings, const TCHAR *pszSuffix = NULL);
 	ClientConnect *ReadMessage ();
 	bool LazyClose (unsigned long dwTimeout = 0);
 };

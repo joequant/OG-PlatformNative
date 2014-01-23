@@ -54,7 +54,7 @@ private:
 	TCHAR *InvokeString (const char *pszMethod);
 public:
 	~CJVM ();
-	static CJVM *Create (CErrorFeedback *poFeedback);
+	static CJVM *Create (const CSettings *poSettings, CErrorFeedback *poFeedback);
 	void Start (CErrorFeedback *poFeedback, bool bAsync = true);
 	void Stop (bool bAsync = true);
 	void Halt ();

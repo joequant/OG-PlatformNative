@@ -249,15 +249,15 @@ static void _SignalHandler (int nSignal) {
 /// any system specific actions. E.g. the Windows implementation registers with the service control manager
 /// and can optionally set the security descriptor on the process to allow clients to kill/restart it.
 ///
+/// @param[in] poSettings the settings to use
 /// @param[in] nReason how the startup is occuring (e.g. SERVICE_RUN_INLINE) - different actions may be
 /// required depending on whether the code is running direct from main() or through another mechansim
-static void _ServiceStartup (int nReason) {
-	CSettings oSettings;
+static void _ServiceStartup (const CSettings *poSettings, int nReason) {
 #ifdef _WIN32
 	if (nReason == SERVICE_RUN_SCM) {
-		g_hServiceStatus = RegisterServiceCtrlHandler (oSettings.GetServiceName (), _SignalHandler);
+		g_hServiceStatus = RegisterServiceCtrlHandler (poSettings->GetServiceName (), _SignalHandler);
 	}
-	PCTSTR pszSDDL = oSettings.GetServiceSDDL ();
+	PCTSTR pszSDDL = poSettings->GetServiceSDDL ();
 	if (pszSDDL) {
 		LOGDEBUG (TEXT ("Setting security descriptor ") << pszSDDL);
 		PSECURITY_DESCRIPTOR psdRelative;
@@ -282,7 +282,7 @@ static void _ServiceStartup (int nReason) {
 				if (nReason == SERVICE_RUN_SCM) {
 					SC_HANDLE hSCM = OpenSCManager (NULL, NULL, GENERIC_READ);
 				    if (hSCM) {
-						SC_HANDLE hService = OpenService (hSCM, oSettings.GetServiceName (), GENERIC_WRITE | WRITE_DAC);
+						SC_HANDLE hService = OpenService (hSCM, poSettings->GetServiceName (), GENERIC_WRITE | WRITE_DAC);
 						if (hService) {
 							dwError = SetSecurityInfo (hService, SE_SERVICE, DACL_SECURITY_INFORMATION, NULL, NULL, paclD, NULL);
 							if (dwError == ERROR_SUCCESS) {
@@ -316,7 +316,7 @@ static void _ServiceStartup (int nReason) {
 	}
 #else /* ifdef _WIN32 */
 	if (nReason == SERVICE_RUN_DAEMON) {
-		const TCHAR *pszPID = oSettings.GetPidFile ();
+		const TCHAR *pszPID = poSettings->GetPidFile ();
 		if (pszPID) {
 			LOGDEBUG (TEXT ("Setting signal handler"));
 			sigset (SIGTERM, _SignalHandler);
@@ -333,19 +333,19 @@ static void _ServiceStartup (int nReason) {
 		}
 	}
 #endif /* ifdef _WIN32 */
-	g_lBusyTimeout = oSettings.GetBusyTimeout ();
+	g_lBusyTimeout = poSettings->GetBusyTimeout ();
 	_ReportStateStarting ();
 }
 
 /// Exitlude actions to stop the service, e.g. to remove any state that was created as part of _ServiceStartup.
 ///
+/// @param[in] poSettings the settings to use
 /// @param[in] nReason how the service was run (e.g. SERVICE_RUN_INLINE) - different actions may be required
 /// depending on whether the code is running direct from main() or through another mechanism.
-static void _ServiceStop (int nReason) {
-	CSettings oSettings;
+static void _ServiceStop (const CSettings *poSettings, int nReason) {
 #ifndef _WIN32
 	if (nReason == SERVICE_RUN_DAEMON) {
-		const TCHAR *pszPID = oSettings.GetPidFile ();
+		const TCHAR *pszPID = poSettings->GetPidFile ();
 		if (pszPID) {
 			LOGINFO (TEXT ("Removing PID file ") << pszPID);
 			unlink (pszPID);
@@ -359,19 +359,20 @@ static void _ServiceStop (int nReason) {
 /// @param[in] nReason how the service is running, e.g. SERVICE_RUN_INLINE, in case actions are different depending
 /// on how it was started.
 void ServiceRun (int nReason) {
-	_ServiceStartup (nReason);
+	CSettings oSettings;
+	_ServiceStartup (&oSettings, nReason);
 	{
 		CErrorFeedback oServiceErrors;
-		g_poJVM = CJVM::Create (&oServiceErrors);
+		g_poJVM = CJVM::Create (&oSettings, &oServiceErrors);
 		if (!g_poJVM) {
 			LOGERROR (TEXT ("Couldn't create JVM"));
 			_ReportStateErrored ();
-			_ServiceStop (nReason);
+			_ServiceStop (&oSettings, nReason);
 			return;
 		}
 		g_poJVM->Start (&oServiceErrors);
 	}
-	g_poPipe = CConnectionPipe::Create ();
+	g_poPipe = CConnectionPipe::Create (&oSettings);
 	if (!g_poPipe) {
 		LOGERROR (TEXT ("Couldn't create IPC pipe"));
 	}
@@ -438,7 +439,7 @@ void ServiceRun (int nReason) {
 	}
 	delete g_poJVM;
 	g_poJVM = NULL;
-	_ServiceStop (nReason);
+	_ServiceStop (&oSettings, nReason);
 }
 
 /// Tests if the service is running or not.

@@ -32,12 +32,12 @@ CConnectionPipe::~CConnectionPipe () {
 /// Creates a new IPC for incoming connection requests. The pipe name is retrieved from the settings and the
 /// given suffix added if supplied.
 ///
+/// @param[in] poSettings configuration settings, never NULL
 /// @param[in] pszSuffix optional suffix, use NULL to not add a suffix
 /// @return the new IPC or NULL if there was a problem
-CConnectionPipe *CConnectionPipe::Create (const TCHAR *pszSuffix) {
+CConnectionPipe *CConnectionPipe::Create (const CSettings *poSettings, const TCHAR *pszSuffix) {
 	TCHAR szPipeName[256];
-	CSettings settings;
-	const TCHAR *pszPipeName = settings.GetConnectionPipe ();
+	const TCHAR *pszPipeName = poSettings->GetConnectionPipe ();
 	if (pszSuffix) {
 		StringCbPrintf (szPipeName, sizeof (szPipeName), TEXT ("%s%s"), pszPipeName, pszSuffix);
 		pszPipeName = szPipeName;
@@ -49,7 +49,7 @@ CConnectionPipe *CConnectionPipe::Create (const TCHAR *pszSuffix) {
 		return NULL;
 	}
 	LOGINFO (TEXT ("Created connection pipe ") << pszPipeName);
-	return new CConnectionPipe (poPipe, settings.GetConnectionTimeout ());
+	return new CConnectionPipe (poPipe, poSettings->GetConnectionTimeout ());
 }
 
 /// Reads the next incoming connection message from the underlying pipe. This method will block until the
