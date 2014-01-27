@@ -403,7 +403,7 @@ void ServiceRun (int nReason) {
 					delete g_poPipe;
 					if (g_nServiceState == SERVICE_STATE_RUNNING) {
 						LOGINFO (TEXT ("Pipe closed with pending connection - reopening"));
-						g_poPipe = CConnectionPipe::Create ();
+						g_poPipe = CConnectionPipe::Create (&oSettings);
 						if (!g_poPipe) {
 							LOGERROR (TEXT ("Couldn't create IPC pipe"));
 						}
@@ -479,8 +479,9 @@ static BOOL ControlService (PCTSTR pszServiceName, SC_HANDLE hSCM, DWORD dwAcces
 
 /// Configure the service.
 void ServiceConfigure () {
+	CSettings oSettings;
 	CErrorFeedback oFeedback;
-	g_poJVM = CJVM::Create (&oFeedback);
+	g_poJVM = CJVM::Create (&oSettings, &oFeedback);
 	if (!g_poJVM) {
 		LOGERROR (TEXT ("Couldn't create JVM"));
 		return;
@@ -489,7 +490,6 @@ void ServiceConfigure () {
 	delete g_poJVM;
 	g_poJVM = NULL;
 	if (bRestart) {
-		CSettings oSettings;
 #ifdef _WIN32
 		PCTSTR pszServiceName = oSettings.GetServiceName ();
 		SC_HANDLE hSCM = OpenSCManager (NULL, NULL, GENERIC_READ);
