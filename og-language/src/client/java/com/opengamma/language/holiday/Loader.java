@@ -11,6 +11,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opengamma.core.holiday.impl.CachedHolidaySource;
 import com.opengamma.core.holiday.impl.RemoteHolidaySource;
 import com.opengamma.language.config.Configuration;
 import com.opengamma.language.context.ContextInitializationBean;
@@ -60,8 +61,7 @@ public class Loader extends ContextInitializationBean {
       return;
     }
     s_logger.info("Configuring holiday support");
-    globalContext.setHolidaySource(new RemoteHolidaySource(uri));
-    // TODO:
+    globalContext.setHolidaySource(new CachedHolidaySource(new RemoteHolidaySource(uri)));
   }
 
 }
