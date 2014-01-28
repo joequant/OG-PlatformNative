@@ -41,6 +41,7 @@
     <version.ehcache>2.6.3</version.ehcache>
     <version.activemq>5.3.0</version.activemq>
     <version.ant-contrib>1.0b3</version.ant-contrib>
+    <version.jacoco-maven-plugin>0.6.3.201306030806</version.jacoco-maven-plugin>
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.cpptasks-build-tests>true</skip.cpptasks-build-tests>
@@ -50,6 +51,7 @@
     <skip.integration-tests-java>true</skip.integration-tests-java>
     <skip.integration-tests-native>true</skip.integration-tests-native>
     <skip.generate-version-header>true</skip.generate-version-header>
+    <surefire.argline>-Dlogback.configurationFile=com/opengamma/util/warn-logback.xml</surefire.argline>
   </properties>
 
   <distributionManagement>
@@ -1024,6 +1026,64 @@
       </properties>
     </profile>
     <profile>
+      <id>coverage</id>
+      <activation>
+        <property>
+          <name>coverage</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${version.jacoco-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>prepare-agent</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>report</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${version.maven-surefire-plugin}</version>
+            <configuration>
+              <argLine>${surefire.argline} ${argLine}</argLine>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${version.jacoco-maven-plugin}</version>
+            <reportSets>
+              <reportSet>
+                <id>single</id>
+                <reports>
+                  <report>report</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
       <id>root-properties</id>
       <activation>
         <file>
@@ -1066,7 +1126,7 @@
         <version>${version.maven-surefire-plugin}</version>
         <configuration>
           <skipTests>true</skipTests>
-          <argLine>-Dlogback.configurationFile=com/opengamma/util/warn-logback.xml</argLine>
+          <argLine>${surefire.argline}</argLine>
           <parallel>classes</parallel>
           <threadCount>4</threadCount>
         </configuration>
