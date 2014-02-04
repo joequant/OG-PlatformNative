@@ -86,7 +86,14 @@ public final class ConfigurationWatchdog extends ContextInitializationBean {
   protected void initContext(final MutableGlobalContext context) {
     final ServerMetadata meta = new ServerMetadata(getConfiguration());
     context.setServerMetadata(meta);
-    final String lsid = meta.getLogicalServerId();
+    final String lsid;
+    try {
+      lsid = meta.getLogicalServerId();
+    } catch (Throwable t) {
+      s_logger.info("Caught exception", t);
+      restart(t.getMessage());
+      return;
+    }
     s_logger.info("Got logical server identifier {}", lsid);
     if (_watchdog == null) {
       synchronized (this) {

@@ -39,9 +39,22 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
      * Notifies of the value.
      * 
      * @param instance the instance produced
-     * @param error any exception thrown, null if there was no error
      */
-    void value(T instance, RuntimeException error);
+    void value(T instance);
+
+    /**
+     * Notifies of an exception.
+     * 
+     * @param exception the exception thrown
+     */
+    void exception(RuntimeException exception);
+
+    /**
+     * Notifies of an error.
+     * 
+     * @param error the error thrown
+     */
+    void error(Error error);
 
   }
 
@@ -57,15 +70,35 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
 
     @Override
     public void run() {
-      _listener.value(_instance, _error);
+      try {
+        if (_error != null) {
+          _listener.error(_error);
+        } else if (_exception != null) {
+          _listener.exception(_exception);
+        } else {
+          _listener.value(_instance);
+        }
+      } catch (Throwable t) {
+        s_logger.error("Caught exception", t);
+      }
     }
 
   }
 
   /**
+   * The executor to use, not null
+   */
+  private final Executor _executor;
+
+  /**
    * Holds any exception thrown by the underlying source.
    */
-  private volatile RuntimeException _error;
+  private volatile RuntimeException _exception;
+
+  /**
+   * Holds any error thrown by the underlying source.
+   */
+  private volatile Error _error;
 
   /**
    * Holds any result returned by the underlying source.
@@ -77,21 +110,41 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
    */
   private Collection<Runnable> _listeners = Collections.emptyList();
 
+  protected AsyncSupplier() {
+    this(EXECUTOR);
+  }
+
+  protected AsyncSupplier(final Executor executor) {
+    _executor = executor;
+  }
+
+  protected Executor getExecutor() {
+    return _executor;
+  }
+
   /**
    * Passes the result to any blocked callers to {@link #get} or listeners.
    * <p>
    * A sub-class is responsible for making sure this gets called, typically from a spawned thread or as the result of another supplier producing its value.
    */
-  public final void post(final T instance, RuntimeException error) {
+  public final void post(final T instance, final RuntimeException exception, final Error error) {
     if (instance == null) {
-      if (error == null) {
-        s_logger.debug("Null result available from {}", this);
+      if (exception == null) {
+        if (error == null) {
+          s_logger.debug("Null result available from {}", this);
+        } else {
+          s_logger.debug("Error available from {}", this);
+        }
       } else {
-        s_logger.debug("Error available from {}", this);
+        if (error != null) {
+          // Can't set both exception and error
+          throw new IllegalArgumentException();
+        }
+        s_logger.debug("Exception available from {}", this);
       }
     } else {
-      if (error != null) {
-        // Can't set both instance and error
+      if ((exception != null) || (error != null)) {
+        // Can't set both instance and exception/error
         throw new IllegalArgumentException();
       }
       s_logger.debug("Result available from {}", this);
@@ -100,6 +153,7 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
     synchronized (this) {
       assert _listeners != null;
       _instance = instance;
+      _exception = exception;
       _error = error;
       notifyAll();
       listeners = _listeners;
@@ -110,7 +164,7 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
       for (Runnable listener : listeners) {
         try {
           s_logger.debug("Notifying listener from {}", this);
-          EXECUTOR.execute(listener);
+          getExecutor().execute(listener);
         } catch (Throwable t) {
           s_logger.error("Couldn't notify listener from {} - {}", this, t);
           s_logger.warn("Caught exception", t);
@@ -137,7 +191,7 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
       }
     }
     s_logger.debug("Value already available at {}", this);
-    EXECUTOR.execute(notify);
+    getExecutor().execute(notify);
   }
 
   // Supplier
@@ -153,6 +207,9 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
       do {
         if (_error != null) {
           throw _error;
+        }
+        if (_exception != null) {
+          throw _exception;
         }
         if (_listeners == null) {
           s_logger.debug("Got {}", this);
@@ -178,14 +235,32 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
 
     public Filter(final AsyncSupplier<X> underlying, final Function1<X, Y> filter) {
       underlying.get(new Listener<X>() {
+
         @Override
-        public void value(final X instance, final RuntimeException error) {
-          if (error == null) {
-            post(filter.execute(instance), null);
-          } else {
-            post(null, error);
+        public void value(final X instance) {
+          final Y filtered;
+          try {
+            filtered = filter.execute(instance);
+          } catch (RuntimeException e) {
+            exception(e);
+            return;
+          } catch (Error e) {
+            error(e);
+            return;
           }
+          post(filtered, null, null);
         }
+
+        @Override
+        public void exception(final RuntimeException exception) {
+          post(null, exception, null);
+        }
+
+        @Override
+        public void error(final Error error) {
+          post(null, null, error);
+        }
+
       });
     }
 
@@ -197,7 +272,7 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
   public static abstract class Spawned<T> extends AsyncSupplier<T> {
 
     public void start() {
-      EXECUTOR.execute(new Runnable() {
+      getExecutor().execute(new Runnable() {
         @Override
         public void run() {
           doGet();
@@ -209,7 +284,8 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
 
     protected void doGet() {
       T instance = null;
-      RuntimeException error = null;
+      RuntimeException exception = null;
+      Error error = null;
       try {
         s_logger.info("Creating {}", this);
         instance = getImpl();
@@ -217,9 +293,13 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
       } catch (RuntimeException e) {
         s_logger.error("Couldn't create {} - {}", this, e);
         s_logger.warn("Caught exception", e);
+        exception = e;
+      } catch (Error e) {
+        s_logger.error("Couldn't create {} - {}", this, e);
+        s_logger.warn("Caught error", e);
         error = e;
       } finally {
-        post(instance, error);
+        post(instance, exception, error);
       }
     }
 
