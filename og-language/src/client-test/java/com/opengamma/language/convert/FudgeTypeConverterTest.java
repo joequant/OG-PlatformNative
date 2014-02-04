@@ -12,6 +12,7 @@ import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.mapping.FudgeSerializer;
 import org.testng.annotations.Test;
 
+import com.google.common.base.Suppliers;
 import com.opengamma.core.security.Security;
 import com.opengamma.financial.security.equity.EquitySecurity;
 import com.opengamma.language.definition.JavaTypeInfo;
@@ -26,7 +27,7 @@ import com.opengamma.util.test.TestGroup;
 @Test(groups = TestGroup.UNIT)
 public class FudgeTypeConverterTest extends AbstractConverterTest {
 
-  private final FudgeTypeConverter _converter = new FudgeTypeConverter (OpenGammaFudgeContext.getInstance ());
+  private final FudgeTypeConverter _converter = new FudgeTypeConverter(Suppliers.ofInstance(OpenGammaFudgeContext.getInstance()));
 
   public void testToCurrency() {
     final JavaTypeInfo<Currency> target = JavaTypeInfo.builder(Currency.class).get();
@@ -43,7 +44,7 @@ public class FudgeTypeConverterTest extends AbstractConverterTest {
     assertInvalidConversion(_converter, 42, target);
     assertConversionCount(1, _converter, target);
   }
-  
+
   private Security createSecurityObject() {
     return new EquitySecurity("X", "XC", "CN", Currency.USD);
   }
@@ -54,9 +55,9 @@ public class FudgeTypeConverterTest extends AbstractConverterTest {
     return FudgeSerializer.addClassHeader(serializer.objectToFudgeMsg(security), security.getClass(), Security.class);
   }
 
-  public void testToSecurity () {
-    final JavaTypeInfo<Security> target = JavaTypeInfo.builder(Security.class).get ();
-    assertEquals(_converter.canConvertTo(target),true);
+  public void testToSecurity() {
+    final JavaTypeInfo<Security> target = JavaTypeInfo.builder(Security.class).get();
+    assertEquals(_converter.canConvertTo(target), true);
     assertValidConversion(_converter, createSecurityMessage(), target, createSecurityObject());
     assertInvalidConversion(_converter, "", target);
     assertConversionCount(1, _converter, target);

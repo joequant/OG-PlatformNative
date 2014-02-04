@@ -13,6 +13,7 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.util.Map;
 
+import org.fudgemsg.FudgeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,27 +57,26 @@ public class AbstractConverterTest {
     final AggregatingTypeConverterProvider agg = new AggregatingTypeConverterProvider();
     final TypeConverterProviderBean bean = new TypeConverterProviderBean();
     addTypeConvertersToBean(bean);
-    agg.addTypeConverterProvider(new Converters());
+    agg.addTypeConverterProvider(new Converters(FudgeContext.GLOBAL_DEFAULT));
     agg.addTypeConverterProvider(bean);
     return agg;
   }
 
   /**
-   * Returns the type converters to configure the context with. By default uses the OG-Language default converters. Override
-   * this to use specific converters to test. A simple implementation calls {@link #useBean} and implements {@link #addTypeConvertersToBean}.
+   * Returns the type converters to configure the context with. By default uses the OG-Language default converters. Override this to use specific converters to test. A simple implementation calls
+   * {@link #useBean} and implements {@link #addTypeConvertersToBean}.
    * 
    * @return the type converter provider, not {@code null}
    */
   protected TypeConverterProvider getTypeConverters() {
-    return new Converters();
+    return new Converters(FudgeContext.GLOBAL_DEFAULT);
   }
 
   protected SessionContext getSessionContext() {
     return _sessionContext;
   }
 
-  protected <T, J> void assertValidConversion(final TypeConverter converter, final T value,
-      final JavaTypeInfo<J> target, final J expected) {
+  protected <T, J> void assertValidConversion(final TypeConverter converter, final T value, final JavaTypeInfo<J> target, final J expected) {
     final ValueConversionContext context = new ValueConversionContext(getSessionContext(), new DefaultValueConverter());
     converter.convertValue(context, value, target);
     if (context.isFailed()) {
@@ -118,8 +118,7 @@ public class AbstractConverterTest {
     }
   }
 
-  protected <T, J> void assertInvalidConversion(final TypeConverter converter, final T value,
-      final JavaTypeInfo<J> target) {
+  protected <T, J> void assertInvalidConversion(final TypeConverter converter, final T value, final JavaTypeInfo<J> target) {
     final ValueConversionContext context = new ValueConversionContext(getSessionContext(), new DefaultValueConverter());
     converter.convertValue(context, value, target);
     if (!context.isFailed()) {
@@ -129,8 +128,7 @@ public class AbstractConverterTest {
     }
   }
 
-  protected <J> void assertConversionCount(final int expected, final TypeConverter converter,
-      final JavaTypeInfo<J> target) {
+  protected <J> void assertConversionCount(final int expected, final TypeConverter converter, final JavaTypeInfo<J> target) {
     final Map<JavaTypeInfo<?>, Integer> conversions = converter.getConversionsTo(target);
     assertNotNull(conversions);
     assertEquals(expected, conversions.size());

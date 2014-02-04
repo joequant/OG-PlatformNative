@@ -95,6 +95,7 @@ public class LanguageSpringContext {
     s_logger.info("Starting OpenGamma language integration service");
     GenericApplicationContext context = new GenericApplicationContext();
     final XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(context);
+    xmlReader.setValidating(false);
     xmlReader.loadBeanDefinitions(new ClassPathResource(CLIENT_XML));
     String[] xmlFiles = findSpringXmlConfig();
     try {

@@ -10,14 +10,16 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.pool.PooledConnectionFactory;
 
+import com.opengamma.lambdava.functions.Function1;
 import com.opengamma.language.config.Configuration;
+import com.opengamma.language.connector.AsyncSupplier;
 import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.SingletonFactoryBean;
 
 /**
  * Configures an ActiveMQ JMS provider from the configuration document. The document must have a string entry giving the URL for the ActiveMQ server.
  */
-public class ActiveMQConnectionFactoryFactoryBean extends SingletonFactoryBean<ConnectionFactory> {
+public class ActiveMQConnectionFactoryFactoryBean extends SingletonFactoryBean<AsyncSupplier<ConnectionFactory>> {
 
   private Configuration _configuration;
   private String _configurationEntry = "activeMQ";
@@ -41,18 +43,22 @@ public class ActiveMQConnectionFactoryFactoryBean extends SingletonFactoryBean<C
   }
 
   @Override
-  protected ConnectionFactory createObject() {
+  protected AsyncSupplier<ConnectionFactory> createObject() {
     ArgumentChecker.notNull(getConfiguration(), "configuration");
-    final String brokerURL = getConfiguration().getStringConfiguration(getConfigurationEntry());
-    final PooledConnectionFactory factory;
-    if (brokerURL == null) {
-      factory = new PooledConnectionFactory();
-    } else {
-      factory = new PooledConnectionFactory(brokerURL);
-    }
-    // Workaround for [AMQ-4366]
-    factory.setIdleTimeout(0);
-    return factory;
+    return new AsyncSupplier.Filter<String, ConnectionFactory>(getConfiguration().getStringConfiguration(getConfigurationEntry()), new Function1<String, ConnectionFactory>() {
+      @Override
+      public ConnectionFactory execute(final String brokerURL) {
+        final PooledConnectionFactory factory;
+        if (brokerURL == null) {
+          factory = new PooledConnectionFactory();
+        } else {
+          factory = new PooledConnectionFactory(brokerURL);
+        }
+        // Workaround for [AMQ-4366]
+        factory.setIdleTimeout(0);
+        return factory;
+      }
+    });
   }
 
 }

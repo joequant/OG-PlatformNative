@@ -18,6 +18,7 @@ import org.fudgemsg.MutableFudgeMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.financial.user.rest.RemoteClient.ExternalTargetProvider;
 import com.opengamma.language.config.Configuration;
@@ -54,35 +55,49 @@ public class Loader extends ContextInitializationBean {
    */
   private String _configMaster = "configMaster";
 
+  private Supplier<URI> _configMasterUri;
+
   /**
    * The name of the field describing the {@link HistoricalTimeSeriesMaster} connection details.
    */
   private String _historicalTimeSeriesMaster = "historicalTimeSeriesMaster";
+
+  private Supplier<URI> _historicalTimeSeriesMasterUri;
 
   /**
    * The name of the field containing the {@link MarketDataSnapshotMaster} connection details.
    */
   private String _marketDataSnapshotMaster = "marketDataSnapshotMaster";
 
+  private Supplier<URI> _marketDataSnapshotMasterUri;
+
   /**
    * The name of the field containing the {@link PortfolioMaster} connection details.
    */
   private String _portfolioMaster = "portfolioMaster";
+
+  private Supplier<URI> _portfolioMasterUri;
 
   /**
    * The name of the field containing the {@link PositionMaster} connection details.
    */
   private String _positionMaster = "positionMaster";
 
+  private Supplier<URI> _positionMasterUri;
+
   /**
    * The name of the field containing the {@link SecurityMaster} connection details.
    */
   private String _securityMaster = "securityMaster";
 
+  private Supplier<URI> _securityMasterUri;
+
   /**
    * The name of the field containing "the per-user" client connection details.
    */
   private String _userData = "userData";
+
+  private Supplier<URI> _userDataUri;
 
   /**
    * The scheduler to use for any housekeeping, which can include I/O operations, such as heartbeating a client.
@@ -183,18 +198,25 @@ public class Loader extends ContextInitializationBean {
     ArgumentChecker.notNull(getGlobalContextFactory(), "globalContextFactory");
     ArgumentChecker.notNull(getUserContextFactory(), "userContextFactory");
     ArgumentChecker.notNull(getSessionContextFactory(), "sessionContextFactory");
+    _configMasterUri = getConfiguration().getURIConfiguration(getConfigMaster());
+    _positionMasterUri = getConfiguration().getURIConfiguration(getPositionMaster());
+    _portfolioMasterUri = getConfiguration().getURIConfiguration(getPortfolioMaster());
+    _securityMasterUri = getConfiguration().getURIConfiguration(getSecurityMaster());
+    _marketDataSnapshotMasterUri = getConfiguration().getURIConfiguration(getMarketDataSnapshotMaster());
+    _historicalTimeSeriesMasterUri = getConfiguration().getURIConfiguration(getHistoricalTimeSeriesMaster());
+    _userDataUri = getConfiguration().getURIConfiguration(getUserData());
   }
 
   @Override
   protected void initContext(final MutableGlobalContext globalContext) {
     s_logger.info("Configuring \"shared\" remote client support");
     final ExternalTargetProvider targets = new ExternalTargetProvider();
-    targets.setConfigMaster(getConfiguration().getURIConfiguration(getConfigMaster()));
-    targets.setPositionMaster(getConfiguration().getURIConfiguration(getPositionMaster()));
-    targets.setPortfolioMaster(getConfiguration().getURIConfiguration(getPortfolioMaster()));
-    targets.setSecurityMaster(getConfiguration().getURIConfiguration(getSecurityMaster()));
-    targets.setMarketDataSnapshotMaster(getConfiguration().getURIConfiguration(getMarketDataSnapshotMaster()));
-    targets.setHistoricalTimeSeriesMaster(getConfiguration().getURIConfiguration(getHistoricalTimeSeriesMaster()));
+    targets.setConfigMaster(_configMasterUri.get());
+    targets.setPositionMaster(_positionMasterUri.get());
+    targets.setPortfolioMaster(_portfolioMasterUri.get());
+    targets.setSecurityMaster(_securityMasterUri.get());
+    targets.setMarketDataSnapshotMaster(_marketDataSnapshotMasterUri.get());
+    targets.setHistoricalTimeSeriesMaster(_historicalTimeSeriesMasterUri.get());
     globalContext.setClient(new RemoteClient(null, getConfiguration().getFudgeContext(), targets));
   }
 
@@ -214,7 +236,8 @@ public class Loader extends ContextInitializationBean {
 
   protected void initClient(final MutableSessionContext sessionContext, final RemoteClient client) {
     if (getHousekeepingScheduler() != null) {
-      sessionContext.setClientHeartbeat(getHousekeepingScheduler().scheduleWithFixedDelay(client.createHeartbeatSender(), getClientHeartbeatPeriod(), getClientHeartbeatPeriod(), TimeUnit.MINUTES));
+      sessionContext.setClientHeartbeat(getHousekeepingScheduler().scheduleWithFixedDelay(client.createHeartbeatSender(), getClientHeartbeatPeriod(), getClientHeartbeatPeriod(),
+          TimeUnit.MINUTES));
     } else {
       s_logger.warn("No housekeeping scheduler set so no heartbeats will be sent; client may timeout");
     }
@@ -223,7 +246,7 @@ public class Loader extends ContextInitializationBean {
 
   @Override
   protected void initContext(final MutableSessionContext sessionContext) {
-    final URI uri = getConfiguration().getURIConfiguration(getUserData());
+    final URI uri = _userDataUri.get();
     if (uri == null) {
       s_logger.warn("Per-user remote engine clients not available");
       return;

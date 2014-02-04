@@ -10,6 +10,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.opengamma.financial.analytics.volatility.cube.rest.RemoteVolatilityCubeDefinitionSource;
 import com.opengamma.language.config.Configuration;
 import com.opengamma.language.context.ContextInitializationBean;
@@ -22,10 +23,11 @@ import com.opengamma.util.ArgumentChecker;
 public class Loader extends ContextInitializationBean {
 
   private static final Logger s_logger = LoggerFactory.getLogger(Loader.class);
-  
+
   private static final String CONFIGURATION_ENTRY = "volatilityCubeDefinitionSource";
   private Configuration _configuration;
-  
+  private Supplier<URI> _uri;
+
   public void setConfiguration(final Configuration configuration) {
     ArgumentChecker.notNull(configuration, "configuration");
     _configuration = configuration;
@@ -34,15 +36,16 @@ public class Loader extends ContextInitializationBean {
   public Configuration getConfiguration() {
     return _configuration;
   }
-  
+
   @Override
   protected void assertPropertiesSet() {
     ArgumentChecker.notNull(getConfiguration(), "configuration");
+    _uri = getConfiguration().getURIConfiguration(CONFIGURATION_ENTRY);
   }
 
   @Override
   protected void initContext(MutableGlobalContext globalContext) {
-    final URI uri = getConfiguration().getURIConfiguration(CONFIGURATION_ENTRY);
+    final URI uri = _uri.get();
     if (uri == null) {
       s_logger.warn("Volatility cube definition support not available");
       return;

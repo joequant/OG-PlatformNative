@@ -38,6 +38,13 @@ public class ProcedureProviderBean extends AbstractProcedureProvider implements 
     _procedures = new ArrayList<PublishedProcedure>(procedures);
   }
 
+  public void addProcedure(final PublishedProcedure procedure) {
+    if (_procedures == null) {
+      _procedures = new ArrayList<PublishedProcedure>();
+    }
+    _procedures.add(procedure);
+  }
+
   private Collection<PublishedProcedure> getProceduresInternal() {
     return _procedures;
   }

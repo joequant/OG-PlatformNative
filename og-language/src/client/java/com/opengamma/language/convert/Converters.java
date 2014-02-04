@@ -10,6 +10,8 @@ import java.util.Collection;
 
 import org.fudgemsg.FudgeContext;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.opengamma.language.invoke.AbstractTypeConverterProvider;
 import com.opengamma.language.invoke.TypeConverter;
 import com.opengamma.util.ArgumentChecker;
@@ -19,15 +21,14 @@ import com.opengamma.util.ArgumentChecker;
  */
 public final class Converters extends AbstractTypeConverterProvider {
 
-  private FudgeContext _fudgeContext = FudgeContext.GLOBAL_DEFAULT;
+  private final Supplier<FudgeContext> _fudgeContext;
 
-  public void setFudgeContext(final FudgeContext fudgeContext) {
-    ArgumentChecker.notNull(fudgeContext, "fudgeContext");
-    _fudgeContext = fudgeContext;
+  public Converters(final FudgeContext fudgeContext) {
+    this(Suppliers.ofInstance(fudgeContext));
   }
 
-  public FudgeContext getFudgeContext() {
-    return _fudgeContext;
+  public Converters(final Supplier<FudgeContext> fudgeContext) {
+    _fudgeContext = ArgumentChecker.notNull(fudgeContext, "fudgeContext");
   }
 
   @Override
@@ -37,7 +38,7 @@ public final class Converters extends AbstractTypeConverterProvider {
     converters.add(BoxingConverter.INSTANCE);
     converters.add(DataConverter.INSTANCE);
     converters.add(EnumConverter.INSTANCE);
-    converters.add(new FudgeTypeConverter(getFudgeContext()));
+    converters.add(new FudgeTypeConverter(_fudgeContext));
     converters.add(ListConverter.INSTANCE);
     converters.add(MapConverter.INSTANCE);
     converters.add(PrimitiveArrayConverter.INSTANCE);

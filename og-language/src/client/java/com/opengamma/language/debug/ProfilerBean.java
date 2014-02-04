@@ -13,6 +13,15 @@ import com.opengamma.util.test.Profiler;
 
 /**
  * Spring bean for configuring the debug profiler.
+ * <p>
+ * This can be enabled by adding, to any of the .xml files:
+ * 
+ * <pre>
+ *  &lt;bean class="com.opengamma.language.debug.ProfilerBean"&gt;
+ *    &lt;property name="outputPeriod" value="1000" /&gt;
+ *    &lt;property name="enabled" value="true" /&gt; <em>or</em> &lt;property name="condition" ref="isDebugStack" /&gt;
+ *  &lt;/bean&gt;
+ * </pre>
  */
 public final class ProfilerBean implements InitializingBean {
 

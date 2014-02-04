@@ -75,8 +75,8 @@ public class FetchTimeSeriesFunctionTest {
     }
 
     @Override
-    public HistoricalTimeSeries getHistoricalTimeSeries(ExternalIdBundle identifierBundle, LocalDate identifierValidityDate, String dataSource, String dataProvider, String dataField, LocalDate start,
-        boolean inclusiveStart, LocalDate end, boolean inclusiveEnd) {
+    public HistoricalTimeSeries getHistoricalTimeSeries(ExternalIdBundle identifierBundle, LocalDate identifierValidityDate, String dataSource, String dataProvider, String dataField,
+        LocalDate start, boolean inclusiveStart, LocalDate end, boolean inclusiveEnd) {
       throw new UnsupportedOperationException();
     }
 
@@ -103,8 +103,8 @@ public class FetchTimeSeriesFunctionTest {
     }
 
     @Override
-    public Map<ExternalIdBundle, HistoricalTimeSeries> getHistoricalTimeSeries(Set<ExternalIdBundle> identifierSet, String dataSource, String dataProvider, String dataField, LocalDate start,
-        boolean inclusiveStart, LocalDate end, boolean inclusiveEnd) {
+    public Map<ExternalIdBundle, HistoricalTimeSeries> getHistoricalTimeSeries(Set<ExternalIdBundle> identifierSet, String dataSource, String dataProvider, String dataField,
+        LocalDate start, boolean inclusiveStart, LocalDate end, boolean inclusiveEnd) {
       throw new UnsupportedOperationException();
     }
 
@@ -119,8 +119,8 @@ public class FetchTimeSeriesFunctionTest {
     }
 
     @Override
-    public HistoricalTimeSeries getHistoricalTimeSeries(ExternalIdBundle identifierBundle, LocalDate identifierValidityDate, String dataSource, String dataProvider, String dataField, LocalDate start,
-        boolean includeStart, LocalDate end, boolean includeEnd, int maxPoints) {
+    public HistoricalTimeSeries getHistoricalTimeSeries(ExternalIdBundle identifierBundle, LocalDate identifierValidityDate, String dataSource, String dataProvider, String dataField,
+        LocalDate start, boolean includeStart, LocalDate end, boolean includeEnd, int maxPoints) {
       throw new UnsupportedOperationException();
     }
 
@@ -142,8 +142,8 @@ public class FetchTimeSeriesFunctionTest {
     }
 
     @Override
-    public Pair<LocalDate, Double> getLatestDataPoint(ExternalIdBundle identifierBundle, LocalDate identifierValidityDate, String dataSource, String dataProvider, String dataField, LocalDate start,
-        boolean includeStart, LocalDate end, boolean includeEnd) {
+    public Pair<LocalDate, Double> getLatestDataPoint(ExternalIdBundle identifierBundle, LocalDate identifierValidityDate, String dataSource, String dataProvider, String dataField,
+        LocalDate start, boolean includeStart, LocalDate end, boolean includeEnd) {
       throw new UnsupportedOperationException();
     }
 
@@ -200,12 +200,10 @@ public class FetchTimeSeriesFunctionTest {
   private SessionContext createSessionContext(final HistoricalTimeSeriesSource historicalTimeSeriesSource) {
     final TestUtils testUtils = new TestUtils();
     testUtils.setHistoricalTimeSeriesSource(historicalTimeSeriesSource);
-    final Converters converters = new Converters();
-    converters.setFudgeContext(OpenGammaFudgeContext.getInstance());
     final TypeConverterProviderBean extra = new TypeConverterProviderBean();
     extra.setConverters(Arrays.asList(IdentifierConverter.INSTANCE));
     final AggregatingTypeConverterProvider agg = new AggregatingTypeConverterProvider();
-    agg.addTypeConverterProvider(converters);
+    agg.addTypeConverterProvider(new Converters(OpenGammaFudgeContext.getInstance()));
     agg.addTypeConverterProvider(extra);
     testUtils.setTypeConverters(agg);
     return testUtils.createSessionContext();
@@ -235,25 +233,22 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), null, null, null, null, null, null, null, null, null, null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), null, null, null, null, null, null, null, null, null, null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
   public void testUniqueIdMaxPoints() {
     final SessionContext sessionContext = createSessionContext(new TestHistoricalTimeSeriesSource() {
       @Override
-      public HistoricalTimeSeries getHistoricalTimeSeries(final UniqueId uniqueId, final LocalDate start, final boolean inclusiveStart, final LocalDate end, final boolean inclusiveEnd, final int maxPoints) {
+      public HistoricalTimeSeries getHistoricalTimeSeries(final UniqueId uniqueId, final LocalDate start, final boolean inclusiveStart, final LocalDate end, final boolean inclusiveEnd,
+          final int maxPoints) {
         assertEquals(uniqueId, UniqueId.of("Foo", "Bar"));
         assertEquals(-1, maxPoints);
         return result();
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), null, null, null, null, null, null, null, null, null, -1
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), null, null, null, null, null, null, null, null, null, -1 });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
@@ -270,9 +265,8 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), LocalDate.of(2011, 4, 1), null, null, null, Boolean.TRUE, Boolean.TRUE, null, null, null, null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), LocalDate.of(2011, 4, 1), null, null, null, Boolean.TRUE, Boolean.TRUE, null, null,
+        null, null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
@@ -288,16 +282,15 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), null, null, "field", null, null, null, "source", "provider", null, null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), null, null, "field", null, null, null, "source", "provider", null, null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
   public void testBundleSourceProviderAndFieldWithValidity() {
     final SessionContext sessionContext = createSessionContext(new TestHistoricalTimeSeriesSource() {
       @Override
-      public HistoricalTimeSeries getHistoricalTimeSeries(final ExternalIdBundle identifierBundle, final LocalDate identifierValidityDate, final String dataSource, final String dataProvider, final String dataField) {
+      public HistoricalTimeSeries getHistoricalTimeSeries(final ExternalIdBundle identifierBundle, final LocalDate identifierValidityDate, final String dataSource,
+          final String dataProvider, final String dataField) {
         assertEquals(identifierBundle, ExternalIdBundle.of(ExternalId.of("Foo", "Bar")));
         assertEquals(identifierValidityDate, LocalDate.of(2011, 5, 1));
         assertEquals(dataSource, "source");
@@ -307,17 +300,16 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), null, null, "field", null, null, null, "source", "provider", LocalDate.of(2011, 5, 1), null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), null, null, "field", null, null, null, "source", "provider", LocalDate.of(2011, 5, 1),
+        null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
   public void testBundleSourceProviderAndFieldSubset() {
     final SessionContext sessionContext = createSessionContext(new TestHistoricalTimeSeriesSource() {
       @Override
-      public HistoricalTimeSeries getHistoricalTimeSeries(final ExternalIdBundle identifierBundle, final String dataSource, final String dataProvider, final String dataField, final LocalDate start,
-          final boolean inclusiveStart, final LocalDate end, final boolean inclusiveEnd) {
+      public HistoricalTimeSeries getHistoricalTimeSeries(final ExternalIdBundle identifierBundle, final String dataSource, final String dataProvider, final String dataField,
+          final LocalDate start, final boolean inclusiveStart, final LocalDate end, final boolean inclusiveEnd) {
         assertEquals(identifierBundle, ExternalIdBundle.of(ExternalId.of("Foo", "Bar")));
         assertEquals(dataSource, "source");
         assertEquals(dataProvider, "provider");
@@ -330,17 +322,16 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), LocalDate.of(2011, 4, 1), null, "field", null, Boolean.TRUE, Boolean.TRUE, "source", "provider", null, null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), LocalDate.of(2011, 4, 1), null, "field", null, Boolean.TRUE, Boolean.TRUE, "source",
+        "provider", null, null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
   public void testBundleSourceProviderAndFieldSubsetWithValidity() {
     final SessionContext sessionContext = createSessionContext(new TestHistoricalTimeSeriesSource() {
       @Override
-      public HistoricalTimeSeries getHistoricalTimeSeries(final ExternalIdBundle identifierBundle, final LocalDate identifierValidityDate, final String dataSource, final String dataProvider,
-          final String dataField, final LocalDate start, final boolean inclusiveStart, final LocalDate end, final boolean inclusiveEnd) {
+      public HistoricalTimeSeries getHistoricalTimeSeries(final ExternalIdBundle identifierBundle, final LocalDate identifierValidityDate, final String dataSource,
+          final String dataProvider, final String dataField, final LocalDate start, final boolean inclusiveStart, final LocalDate end, final boolean inclusiveEnd) {
         assertEquals(identifierBundle, ExternalIdBundle.of(ExternalId.of("Foo", "Bar")));
         assertEquals(identifierValidityDate, LocalDate.of(2011, 5, 1));
         assertEquals(dataSource, "source");
@@ -354,9 +345,8 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), LocalDate.of(2011, 4, 1), null, "field", null, Boolean.TRUE, Boolean.TRUE, "source", "provider", LocalDate.of(2011, 5, 1), null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), LocalDate.of(2011, 4, 1), null, "field", null, Boolean.TRUE, Boolean.TRUE, "source",
+        "provider", LocalDate.of(2011, 5, 1), null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
@@ -371,9 +361,7 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), null, null, "field", "key", null, null, null, null, null, null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), null, null, "field", "key", null, null, null, null, null, null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
@@ -389,9 +377,7 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), null, null, "field", "key", null, null, null, null, LocalDate.of(2011, 5, 1), null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), null, null, "field", "key", null, null, null, null, LocalDate.of(2011, 5, 1), null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
@@ -411,17 +397,16 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), null, LocalDate.of(2011, 4, 1), "field", "key", Boolean.TRUE, Boolean.FALSE, null, null, null, null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), null, LocalDate.of(2011, 4, 1), "field", "key", Boolean.TRUE, Boolean.FALSE, null, null,
+        null, null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 
   public void testBundleUsingConfigurationSubsetWithValidity() {
     final SessionContext sessionContext = createSessionContext(new TestHistoricalTimeSeriesSource() {
       @Override
-      public HistoricalTimeSeries getHistoricalTimeSeries(final String dataField, final ExternalIdBundle identifierBundle, final LocalDate identifierValidityDate, final String resolutionKey,
-          final LocalDate start, final boolean inclusiveStart, final LocalDate end, final boolean inclusiveEnd) {
+      public HistoricalTimeSeries getHistoricalTimeSeries(final String dataField, final ExternalIdBundle identifierBundle, final LocalDate identifierValidityDate,
+          final String resolutionKey, final LocalDate start, final boolean inclusiveStart, final LocalDate end, final boolean inclusiveEnd) {
         assertEquals(dataField, "field");
         assertEquals(identifierBundle, ExternalIdBundle.of(ExternalId.of("Foo", "Bar")));
         assertEquals(identifierValidityDate, LocalDate.of(2011, 5, 1));
@@ -434,9 +419,8 @@ public class FetchTimeSeriesFunctionTest {
       }
     });
     final FetchTimeSeriesFunction function = new FetchTimeSeriesFunction();
-    final Object result = function.invokeImpl(sessionContext, new Object[] {
-        DataUtils.of("Foo~Bar"), null, LocalDate.of(2011, 4, 1), "field", "key", Boolean.TRUE, Boolean.FALSE, null, null, LocalDate.of(2011, 5, 1), null
-    });
+    final Object result = function.invokeImpl(sessionContext, new Object[] {DataUtils.of("Foo~Bar"), null, LocalDate.of(2011, 4, 1), "field", "key", Boolean.TRUE, Boolean.FALSE, null, null,
+        LocalDate.of(2011, 5, 1), null });
     assertTrue(result instanceof HistoricalTimeSeries);
   }
 

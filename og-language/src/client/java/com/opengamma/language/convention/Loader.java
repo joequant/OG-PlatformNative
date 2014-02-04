@@ -13,6 +13,7 @@ import net.sf.ehcache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.opengamma.core.convention.impl.EHCachingConventionSource;
 import com.opengamma.core.convention.impl.RemoteConventionSource;
 import com.opengamma.language.config.Configuration;
@@ -30,6 +31,7 @@ public class Loader extends ContextInitializationBean {
 
   private String _configurationEntry = "conventionSource";
   private Configuration _configuration;
+  private Supplier<URI> _uri;
   private CacheManager _cacheManager = CacheManager.getInstance();
 
   public void setConfiguration(final Configuration configuration) {
@@ -64,11 +66,12 @@ public class Loader extends ContextInitializationBean {
   @Override
   protected void assertPropertiesSet() {
     ArgumentChecker.notNull(getConfiguration(), "configuration");
+    _uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
   }
 
   @Override
   protected void initContext(final MutableGlobalContext globalContext) {
-    final URI uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
+    final URI uri = _uri.get();
     if (uri == null) {
       s_logger.warn("Convention support not available");
       return;

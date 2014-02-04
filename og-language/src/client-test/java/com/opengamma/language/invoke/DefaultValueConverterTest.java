@@ -40,7 +40,7 @@ public class DefaultValueConverterTest {
 
   public DefaultValueConverterTest() {
     final TestUtils testUtils = new TestUtils();
-    testUtils.setTypeConverters(new Converters());
+    testUtils.setTypeConverters(new Converters(FudgeContext.GLOBAL_DEFAULT));
     _sessionContext = testUtils.createSessionContext();
   }
 

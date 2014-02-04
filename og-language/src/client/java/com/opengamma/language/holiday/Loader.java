@@ -11,6 +11,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.opengamma.core.holiday.impl.CachedHolidaySource;
 import com.opengamma.core.holiday.impl.RemoteHolidaySource;
 import com.opengamma.language.config.Configuration;
@@ -27,6 +28,7 @@ public class Loader extends ContextInitializationBean {
 
   private String _configurationEntry = "holidaySource";
   private Configuration _configuration;
+  private Supplier<URI> _uri;
 
   public void setConfiguration(final Configuration configuration) {
     ArgumentChecker.notNull(configuration, "configuration");
@@ -51,11 +53,12 @@ public class Loader extends ContextInitializationBean {
   @Override
   protected void assertPropertiesSet() {
     ArgumentChecker.notNull(getConfiguration(), "configuration");
+    _uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
   }
 
   @Override
   protected void initContext(final MutableGlobalContext globalContext) {
-    final URI uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
+    final URI uri = _uri.get();
     if (uri == null) {
       s_logger.warn("Holiday support not available");
       return;

@@ -8,10 +8,10 @@ package com.opengamma.language.value;
 
 import java.net.URI;
 
-import org.fudgemsg.FudgeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.opengamma.financial.view.rest.RemoteAvailableOutputsProvider;
 import com.opengamma.language.config.Configuration;
 import com.opengamma.language.context.ContextInitializationBean;
@@ -30,7 +30,7 @@ public class Loader extends ContextInitializationBean {
 
   private String _configurationEntry = "availableOutputs";
   private Configuration _configuration;
-  private FudgeContext _fudgeContext = FudgeContext.GLOBAL_DEFAULT;
+  private Supplier<URI> _uri;
 
   public void setConfiguration(final Configuration configuration) {
     ArgumentChecker.notNull(configuration, "configuration");
@@ -50,21 +50,13 @@ public class Loader extends ContextInitializationBean {
     return _configurationEntry;
   }
 
-  public void setFudgeContext(final FudgeContext fudgeContext) {
-    ArgumentChecker.notNull(fudgeContext, "fudgeContext");
-    _fudgeContext = fudgeContext;
-  }
-
-  public FudgeContext getFudgeContext() {
-    return _fudgeContext;
-  }
-
   // ContextInitializationBean
 
   @Override
   protected void assertPropertiesSet() {
     ArgumentChecker.notNull(getConfiguration(), "configuration");
     ArgumentChecker.notNull(getGlobalContextFactory(), "globalContextFactory");
+    _uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
   }
 
   @Override
@@ -74,7 +66,7 @@ public class Loader extends ContextInitializationBean {
     functions.addFunction(ExpandComputedValuesFunction.INSTANCE);
     functions.addFunction(MarketDataRequirementNamesFunction.INSTANCE);
     functions.addFunction(ValueRequirementNamesFunction.INSTANCE);
-    final URI uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
+    final URI uri = _uri.get();
     if (uri != null) {
       functions.addFunction(GetAvailableOutputsFunction.INSTANCE);
       globalContext.setAvailableOutputsProvider(new RemoteAvailableOutputsProvider(uri));
@@ -82,10 +74,8 @@ public class Loader extends ContextInitializationBean {
       s_logger.warn("Available output support not available");
     }
     globalContext.getFunctionProvider().addProvider(functions);
-    globalContext.getTypeConverterProvider().addTypeConverterProvider(new TypeConverterProviderBean(
-        AvailableOutputsConverter.INSTANCE,
-        ValuePropertiesConverter.INSTANCE,
-        ComputationTargetTypeConverter.INSTANCE));
+    globalContext.getTypeConverterProvider().addTypeConverterProvider(
+        new TypeConverterProviderBean(AvailableOutputsConverter.INSTANCE, ValuePropertiesConverter.INSTANCE, ComputationTargetTypeConverter.INSTANCE));
   }
 
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.FudgeMsgFactory;
 import org.fudgemsg.MutableFudgeMsg;
@@ -266,7 +267,7 @@ public class ExternalFunctionHandlerTest {
     }
     assertNotNull(cons);
     assertNotNull(mtd);
-    testUtil.setTypeConverters(new Converters());
+    testUtil.setTypeConverters(new Converters(FudgeContext.GLOBAL_DEFAULT));
     final SessionContext sessionContext = testUtil.createSessionContext();
     Result result = cons.getInvoker().invoke(sessionContext, Arrays.asList(DataUtils.of(69)));
     assertNotNull(result);

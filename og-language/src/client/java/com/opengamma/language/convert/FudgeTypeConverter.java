@@ -23,6 +23,7 @@ import org.joda.beans.impl.direct.DirectBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.opengamma.language.Data;
 import com.opengamma.language.Value;
 import com.opengamma.language.definition.JavaTypeInfo;
@@ -30,8 +31,7 @@ import com.opengamma.language.definition.JavaTypeInfo.Builder;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
- * Conversions using the Fudge type and object dictionaries. Conversions will use secondary types if applicable, falling back to
- * the message/object builders otherwise.  
+ * Conversions using the Fudge type and object dictionaries. Conversions will use secondary types if applicable, falling back to the message/object builders otherwise.
  */
 public final class FudgeTypeConverter extends AbstractTypeConverter {
 
@@ -46,14 +46,27 @@ public final class FudgeTypeConverter extends AbstractTypeConverter {
   private static final Map<JavaTypeInfo<?>, Integer> FROM_FUDGE_MSG = TypeMap.of(ZERO_LOSS_NON_PREFERRED, FUDGE_MSG);
   private static final Map<JavaTypeInfo<?>, Integer> FROM_FUDGE_MSG_ALLOW_NULL = TypeMap.of(ZERO_LOSS_NON_PREFERRED, FUDGE_MSG_ALLOW_NULL);
 
-  private final FudgeContext _fudgeContext;
+  private volatile Supplier<FudgeContext> _fudgeContextInd;
+  private volatile FudgeContext _fudgeContext;
 
-  public FudgeTypeConverter(final FudgeContext fudgeContext) {
-    _fudgeContext = fudgeContext;
+  public FudgeTypeConverter(final Supplier<FudgeContext> fudgeContext) {
+    _fudgeContextInd = fudgeContext;
   }
 
   public FudgeContext getFudgeContext() {
-    return _fudgeContext;
+    do {
+      FudgeContext context = _fudgeContext;
+      if (context != null) {
+        return context;
+      }
+      Supplier<FudgeContext> contextInd = _fudgeContextInd;
+      if (contextInd != null) {
+        context = contextInd.get();
+        _fudgeContext = context;
+        _fudgeContextInd = null;
+        return context;
+      }
+    } while (true);
   }
 
   @Override
@@ -77,26 +90,28 @@ public final class FudgeTypeConverter extends AbstractTypeConverter {
       conversionContext.setFail();
       return;
     }
-    final FudgeFieldType fieldType = getFudgeContext().getTypeDictionary().getByJavaType(type.getRawClass());
+    final FudgeContext fudgeContext = getFudgeContext();
+    final FudgeFieldType fieldType = fudgeContext.getTypeDictionary().getByJavaType(type.getRawClass());
     try {
       if (fieldType == null) {
         // Try conversion from Fudge message
-        final FudgeDeserializer deserializer = new FudgeDeserializer(getFudgeContext());
+        final FudgeDeserializer deserializer = new FudgeDeserializer(fudgeContext);
         conversionContext.setResult(deserializer.fudgeMsgToObject(type.getRawClass(), (FudgeMsg) value));
       } else if (fieldType instanceof SecondaryFieldType<?, ?>) {
         // Try conversion from primary type
         conversionContext.setResult(((SecondaryFieldType<Object, Object>) fieldType).primaryToSecondary(value));
       } else {
-        final FudgeFieldType valueType = getFudgeContext().getTypeDictionary().getByJavaType(value.getClass());
+        final FudgeFieldType valueType = fudgeContext.getTypeDictionary().getByJavaType(value.getClass());
         if ((valueType == null) && (fieldType.getTypeId() == FudgeWireType.SUB_MESSAGE_TYPE_ID)) {
           // Serialization to a message
           final Class<?> valueClass = value.getClass();
-          if (getFudgeContext().getObjectDictionary().isDefaultObject(valueClass) && (conversionContext.getReentranceCount()==0 || !(Collection.class.isAssignableFrom(valueClass) || Map.class.isAssignableFrom(valueClass)))) {
-          //if (getFudgeContext().getObjectDictionary().isDefaultObject(valueClass)) {
+          if (fudgeContext.getObjectDictionary().isDefaultObject(valueClass) &&
+              (conversionContext.getReentranceCount() == 0 || !(Collection.class.isAssignableFrom(valueClass) || Map.class.isAssignableFrom(valueClass)))) {
+            //if (getFudgeContext().getObjectDictionary().isDefaultObject(valueClass)) {
             // Don't convert default objects to messages; they should be expressed using Data/Value constructs
             conversionContext.setFail();
           } else {
-            final FudgeSerializer serializer = new FudgeSerializer(getFudgeContext());
+            final FudgeSerializer serializer = new FudgeSerializer(fudgeContext);
             final MutableFudgeMsg msg = serializer.objectToFudgeMsg(value);
             if (msg.getByOrdinal(FudgeSerializer.TYPES_HEADER_ORDINAL) == null) {
               FudgeSerializer.addClassHeader(msg, valueClass, baseClass(valueClass));

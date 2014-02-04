@@ -38,6 +38,13 @@ public class LiveDataProviderBean extends AbstractLiveDataProvider implements In
     _liveData = new ArrayList<PublishedLiveData>(liveData);
   }
 
+  public void addLiveData(final PublishedLiveData liveData) {
+    if (_liveData == null) {
+      _liveData = new ArrayList<PublishedLiveData>();
+    }
+    _liveData.add(liveData);
+  }
+
   private Collection<PublishedLiveData> getLiveDataInternal() {
     return _liveData;
   }

@@ -13,6 +13,8 @@ import org.fudgemsg.FudgeContext;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.util.ArgumentChecker;
 
@@ -24,7 +26,7 @@ public final class ClientContextFactoryBean implements ClientContextFactory, Ini
   /**
    * The Fudge context to use for encoding/decoding messages sent and received.
    */
-  private FudgeContext _fudgeContext;
+  private Supplier<FudgeContext> _fudgeContext;
 
   /**
    * A scheduler to use for housekeeping tasks such as watchdogs.
@@ -74,7 +76,7 @@ public final class ClientContextFactoryBean implements ClientContextFactory, Ini
   }
 
   private void setDefaults() {
-    setFudgeContext(FudgeContext.GLOBAL_DEFAULT);
+    setFudgeContext(Suppliers.ofInstance(FudgeContext.GLOBAL_DEFAULT));
     setHousekeepingScheduler(Executors.newSingleThreadScheduledExecutor(new CustomizableThreadFactory("Scheduler-")));
     setMessageTimeout(3000);
     setHeartbeatTimeout(4000);
@@ -97,12 +99,12 @@ public final class ClientContextFactoryBean implements ClientContextFactory, Ini
     setClientExecutor(copyFrom.getClientExecutor());
   }
 
-  public void setFudgeContext(final FudgeContext fudgeContext) {
+  public void setFudgeContext(final Supplier<FudgeContext> fudgeContext) {
     ArgumentChecker.notNull(fudgeContext, "fudgeContext");
     _fudgeContext = fudgeContext;
   }
 
-  public FudgeContext getFudgeContext() {
+  public Supplier<FudgeContext> getFudgeContext() {
     return _fudgeContext;
   }
 
@@ -195,7 +197,8 @@ public final class ClientContextFactoryBean implements ClientContextFactory, Ini
 
   @Override
   public ClientContext createClientContext() {
-    return new ClientContext(getFudgeContext(), getHousekeepingScheduler(), getClientExecutor(), getMessageTimeout(), getHeartbeatTimeout(), getTerminationTimeout(), getMessageHandler());
+    return new ClientContext(getFudgeContext().get(), getHousekeepingScheduler(), getClientExecutor(), getMessageTimeout(), getHeartbeatTimeout(), getTerminationTimeout(),
+        getMessageHandler());
   }
 
 }

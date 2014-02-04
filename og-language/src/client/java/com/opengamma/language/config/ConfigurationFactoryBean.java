@@ -47,8 +47,7 @@ public final class ConfigurationFactoryBean extends SingletonFactoryBean<Configu
 
   @Override
   protected Configuration createObject() {
-    ArgumentChecker.notNull(getConfiguration(), "configuration");
-    final Configuration configuration = getConfiguration().fetchConfigurationObject(true);
+    final Configuration configuration = getConfiguration().fetchConfigurationObject();
     configuration.setFailOnInvalidURI(isFailOnInvalidURI());
     configuration.setFailOnMissingConfiguration(isFailOnMissingConfiguration());
     return configuration;

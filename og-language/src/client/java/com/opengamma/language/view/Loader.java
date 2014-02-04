@@ -13,6 +13,7 @@ import org.fudgemsg.FudgeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.opengamma.engine.DefaultComputationTargetResolver;
 import com.opengamma.financial.view.rest.RemoteViewProcessor;
 import com.opengamma.language.config.Configuration;
@@ -36,7 +37,8 @@ public class Loader extends ContextInitializationBean {
 
   private String _configurationEntry = "viewProcessor";
   private Configuration _configuration;
-  private JmsConnector _jmsConnector;
+  private Supplier<URI> _uri;
+  private Supplier<JmsConnector> _jmsConnector;
   private ScheduledExecutorService _housekeepingScheduler;
   private FudgeContext _fudgeContext = FudgeContext.GLOBAL_DEFAULT;
 
@@ -58,12 +60,12 @@ public class Loader extends ContextInitializationBean {
     return _configurationEntry;
   }
 
-  public void setJmsConnector(final JmsConnector jmsConnector) {
+  public void setJmsConnector(final Supplier<JmsConnector> jmsConnector) {
     ArgumentChecker.notNull(jmsConnector, "jmsConnector");
     _jmsConnector = jmsConnector;
   }
 
-  public JmsConnector getJmsConnector() {
+  public Supplier<JmsConnector> getJmsConnector() {
     return _jmsConnector;
   }
 
@@ -94,45 +96,29 @@ public class Loader extends ContextInitializationBean {
     ArgumentChecker.notNull(getGlobalContextFactory(), "globalContextFactory");
     ArgumentChecker.notNull(getUserContextFactory(), "userContextFactory");
     ArgumentChecker.notNull(getSessionContextFactory(), "sessionContextFactory");
+    _uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
   }
 
   @Override
   protected void initContext(final MutableGlobalContext globalContext) {
     // TODO: Still not the right place to set this (was in the OG-Excel project only), but the ViewProcessor is loaded after all of the other sources
     globalContext.setComputationTargetResolver(new DefaultComputationTargetResolver(globalContext.getSecuritySource(), globalContext.getPositionSource()));
-    final URI uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
+    final URI uri = _uri.get();
     if (uri == null) {
       s_logger.warn("View processor support not available");
       return;
     }
     s_logger.info("Configuring view processor support");
-    globalContext.setViewProcessor(new RemoteViewProcessor(uri, getJmsConnector(), getHousekeepingScheduler()));
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(
-        FetchViewDefinitionFunction.INSTANCE,
-        GetViewPortfolioFunction.INSTANCE,
-        GetViewProcessIdFunction.INSTANCE,
-        GetViewResultFunction.INSTANCE,
-        HistoricalExecutionSequenceFunction.INSTANCE,
-        SetViewClientExecutionFlagFunction.INSTANCE,
-        ViewClientDescriptorFunction.HISTORICAL_MARKET_DATA,
-        ViewClientDescriptorFunction.STATIC_MARKET_DATA,
-        ViewClientDescriptorFunction.STATIC_MARKET_DATA_SPECIFICATIONS,
-        ViewClientDescriptorFunction.STATIC_SNAPSHOT,
-        ViewClientDescriptorFunction.TICKING_MARKET_DATA,
-        ViewClientDescriptorFunction.TICKING_MARKET_DATA_SPECIFICATIONS,
-        ViewClientDescriptorFunction.TICKING_SNAPSHOT,
-        ViewClientFunction.INSTANCE,
-        ViewDefinitionFunction.INSTANCE,
-        ViewsFunction.INSTANCE,
-        ViewIdFunction.INSTANCE,
-        ViewPrimitiveCycleValueFunction.INSTANCE));
-    globalContext.getProcedureProvider().addProvider(new ProcedureProviderBean(
-        ConfigureViewClientProcedure.INSTANCE,
-        StoreViewDefinitionProcedure.INSTANCE,
-        TriggerViewCycleProcedure.INSTANCE));
-    globalContext.getTypeConverterProvider().addTypeConverterProvider(new TypeConverterProviderBean(
-        UserViewClientConverter.INSTANCE,
-        ViewClientDescriptorConverter.INSTANCE));
+    globalContext.setViewProcessor(new RemoteViewProcessor(uri, getJmsConnector().get(), getHousekeepingScheduler()));
+    globalContext.getFunctionProvider().addProvider(
+        new FunctionProviderBean(FetchViewDefinitionFunction.INSTANCE, GetViewPortfolioFunction.INSTANCE, GetViewProcessIdFunction.INSTANCE, GetViewResultFunction.INSTANCE,
+            HistoricalExecutionSequenceFunction.INSTANCE, SetViewClientExecutionFlagFunction.INSTANCE, ViewClientDescriptorFunction.HISTORICAL_MARKET_DATA,
+            ViewClientDescriptorFunction.STATIC_MARKET_DATA, ViewClientDescriptorFunction.STATIC_MARKET_DATA_SPECIFICATIONS, ViewClientDescriptorFunction.STATIC_SNAPSHOT,
+            ViewClientDescriptorFunction.TICKING_MARKET_DATA, ViewClientDescriptorFunction.TICKING_MARKET_DATA_SPECIFICATIONS, ViewClientDescriptorFunction.TICKING_SNAPSHOT,
+            ViewClientFunction.INSTANCE, ViewDefinitionFunction.INSTANCE, ViewsFunction.INSTANCE, ViewIdFunction.INSTANCE, ViewPrimitiveCycleValueFunction.INSTANCE));
+    globalContext.getProcedureProvider().addProvider(
+        new ProcedureProviderBean(ConfigureViewClientProcedure.INSTANCE, StoreViewDefinitionProcedure.INSTANCE, TriggerViewCycleProcedure.INSTANCE));
+    globalContext.getTypeConverterProvider().addTypeConverterProvider(new TypeConverterProviderBean(UserViewClientConverter.INSTANCE, ViewClientDescriptorConverter.INSTANCE));
   }
 
   @Override

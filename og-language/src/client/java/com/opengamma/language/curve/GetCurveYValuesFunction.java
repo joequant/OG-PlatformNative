@@ -31,11 +31,6 @@ public class GetCurveYValuesFunction extends AbstractFunctionInvoker implements 
 
   private static final Logger s_logger = LoggerFactory.getLogger(GetCurveYValuesFunction.class);
 
-  /**
-   * Default instance.
-   */
-  public static final GetCurveYValuesFunction INSTANCE = new GetCurveYValuesFunction();
-
   private final MetaFunction _meta;
 
   private static final int CURVE = 0;
@@ -52,7 +47,7 @@ public class GetCurveYValuesFunction extends AbstractFunctionInvoker implements 
     _meta = info.annotate(new MetaFunction(Categories.CURVE, "GetCurveYValues", getParameters(), this));
   }
 
-  protected GetCurveYValuesFunction() {
+  public GetCurveYValuesFunction() {
     this(new DefinitionAnnotater(GetCurveYValuesFunction.class));
   }
 
