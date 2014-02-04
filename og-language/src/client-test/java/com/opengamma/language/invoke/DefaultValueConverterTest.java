@@ -25,6 +25,8 @@ import com.opengamma.language.ValueUtils;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.Converters;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.test.TestUtils;
 import com.opengamma.util.test.TestGroup;
 import com.opengamma.util.tuple.Pair;
@@ -51,8 +53,8 @@ public class DefaultValueConverterTest {
   @Test
   public void testDirectAssignment() {
     // No converters needed
-    final JavaTypeInfo<String> stringType = JavaTypeInfo.builder(String.class).get();
-    final JavaTypeInfo<Integer> intType = JavaTypeInfo.builder(Integer.class).get();
+    final JavaTypeInfo<String> stringType = PrimitiveTypes.STRING;
+    final JavaTypeInfo<Integer> intType = PrimitiveTypes.INTEGER;
     Integer i = convert((Integer) 42, intType);
     assertNotNull(i);
     assertEquals((Integer) 42, i);
@@ -64,9 +66,9 @@ public class DefaultValueConverterTest {
   @Test
   public void testDirectConversion() {
     // One type converter needed
-    final JavaTypeInfo<Data> dataType = JavaTypeInfo.builder(Data.class).get();
-    final JavaTypeInfo<Value> valueType = JavaTypeInfo.builder(Value.class).get();
-    final JavaTypeInfo<Integer> intType = JavaTypeInfo.builder(Integer.class).get();
+    final JavaTypeInfo<Data> dataType = TransportTypes.DATA;
+    final JavaTypeInfo<Value> valueType = TransportTypes.VALUE;
+    final JavaTypeInfo<Integer> intType = PrimitiveTypes.INTEGER;
     Data d = convert(ValueUtils.of(42), dataType);
     assertNotNull(d);
     assertEquals((Integer) 42, d.getSingle().getIntValue());
@@ -84,8 +86,8 @@ public class DefaultValueConverterTest {
   @Test
   public void testChainConversion() {
     // Multiple type converters needed
-    final JavaTypeInfo<Data> dataType = JavaTypeInfo.builder(Data.class).get();
-    final JavaTypeInfo<Long> longType = JavaTypeInfo.builder(Long.class).get();
+    final JavaTypeInfo<Data> dataType = TransportTypes.DATA;
+    final JavaTypeInfo<Long> longType = PrimitiveTypes.LONG;
     Data d = convert((Short) (short) 42, dataType);
     assertNotNull(d);
     assertEquals((Integer) 42, d.getSingle().getIntValue());
@@ -128,17 +130,17 @@ public class DefaultValueConverterTest {
 
   @Test
   public void testBoxingConverter() {
-    convert(DataUtils.of(42.d), JavaTypeInfo.builder(Double.TYPE).get());
+    convert(DataUtils.of(42.d), PrimitiveTypes.BOOLEAN_PRIMITIVE);
   }
 
   @Test(expectedExceptions = InvalidConversionException.class)
   public void testNullConverter_fail() {
-    convert(new Data(), JavaTypeInfo.builder(String.class).get());
+    convert(new Data(), PrimitiveTypes.STRING);
   }
 
   @Test
   public void testNullConverter_ok() {
-    convert(new Data(), JavaTypeInfo.builder(String.class).allowNull().get());
+    convert(new Data(), PrimitiveTypes.STRING_ALLOW_NULL);
   }
 
   @Test
@@ -149,7 +151,7 @@ public class DefaultValueConverterTest {
         matrix[i][j] = (double) (i + 1) / (double) (j + 1);
       }
     }
-    final JavaTypeInfo<Data> dataType = JavaTypeInfo.builder(Data.class).get();
+    final JavaTypeInfo<Data> dataType = TransportTypes.DATA;
     final Data data = convert(matrix, dataType);
     assertNotNull(data);
     assertNotNull(data.getMatrix());
@@ -193,7 +195,7 @@ public class DefaultValueConverterTest {
 
   @Test
   public void testFudgeConversion() {
-    final JavaTypeInfo<Data> dataType = JavaTypeInfo.builder(Data.class).get();
+    final JavaTypeInfo<Data> dataType = TransportTypes.DATA;
     final FudgeObject object = new FudgeObject("Foo");
     final Data data = convert(object, dataType);
     assertNotNull(data);
@@ -204,7 +206,7 @@ public class DefaultValueConverterTest {
 
   @Test
   public void testWithDefault() {
-    JavaTypeInfo<Boolean> dataType = JavaTypeInfo.builder(Boolean.class).defaultValue(true).get();
+    JavaTypeInfo<Boolean> dataType = PrimitiveTypes.BOOLEAN_DEFAULT_TRUE;
     Boolean v = convert(null, dataType);
     assertEquals(Boolean.TRUE, v);
     v = convert("TRUE", dataType);
@@ -215,7 +217,7 @@ public class DefaultValueConverterTest {
     assertEquals(Boolean.TRUE, v);
     v = convert(DataUtils.of(new Value()), dataType);
     assertEquals(Boolean.TRUE, v);
-    dataType = JavaTypeInfo.builder(Boolean.class).defaultValue(false).get();
+    dataType = PrimitiveTypes.BOOLEAN_DEFAULT_FALSE;
     v = convert(null, dataType);
     assertEquals(Boolean.FALSE, v);
     v = convert("TRUE", dataType);

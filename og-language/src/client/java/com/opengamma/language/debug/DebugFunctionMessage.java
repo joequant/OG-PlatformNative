@@ -6,7 +6,6 @@
 
 package com.opengamma.language.debug;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.fudgemsg.FudgeContext;
@@ -15,12 +14,13 @@ import org.fudgemsg.mapping.FudgeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.FunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -45,9 +45,7 @@ public class DebugFunctionMessage implements PublishedFunction {
 
   @Override
   public MetaFunction getMetaFunction() {
-    final List<MetaParameter> args = Arrays
-        .asList(new MetaParameter("foo", JavaTypeInfo.builder(Data.class).defaultValue(null).get()), new MetaParameter(
-            "bar", JavaTypeInfo.builder(Data.class).defaultValue(null).get()));
+    final List<MetaParameter> args = ImmutableList.of(new MetaParameter("foo", TransportTypes.DATA_ALLOW_NULL), new MetaParameter("bar", TransportTypes.DATA_ALLOW_NULL));
     final FunctionInvoker invoker = new AbstractFunctionInvoker(args) {
       @Override
       public Object invokeImpl(SessionContext sessionContext, Object[] parameters) {

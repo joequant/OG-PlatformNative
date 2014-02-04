@@ -6,9 +6,9 @@
 
 package com.opengamma.language.position;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.position.Portfolio;
 import com.opengamma.core.position.PortfolioNode;
 import com.opengamma.core.position.Position;
@@ -22,6 +22,8 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.procedure.AbstractProcedureInvoker;
 import com.opengamma.language.procedure.MetaProcedure;
@@ -53,10 +55,10 @@ public class StorePortfolioProcedure extends AbstractProcedureInvoker.SingleResu
   private static final int MASTER = 2;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter portfolio = new MetaParameter("portfolio", JavaTypeInfo.builder(Portfolio.class).get());
-    final MetaParameter identifier = new MetaParameter("identifier", JavaTypeInfo.builder(UniqueId.class).allowNull().get());
+    final MetaParameter portfolio = new MetaParameter("portfolio", CoreModelTypes.PORTFOLIO);
+    final MetaParameter identifier = new MetaParameter("identifier", OpenGammaTypes.UNIQUE_ID_ALLOW_NULL);
     final MetaParameter target = new MetaParameter("master", JavaTypeInfo.builder(MasterID.class).defaultValue(MasterID.SESSION).get());
-    return Arrays.asList(portfolio, identifier, target);
+    return ImmutableList.of(portfolio, identifier, target);
   }
 
   private StorePortfolioProcedure(final DefinitionAnnotater info) {

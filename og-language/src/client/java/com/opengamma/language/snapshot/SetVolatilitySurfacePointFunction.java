@@ -5,11 +5,11 @@
  */
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableVolatilitySurfaceSnapshot;
 import com.opengamma.financial.analytics.volatility.surface.BloombergFXOptionVolatilitySurfaceInstrumentProvider.FXVolQuoteType;
@@ -18,6 +18,8 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -51,6 +53,8 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
      * Values of type Pair<Integer, FXVolQuoteType>.
      */
     INTEGER_FXVOLQUOTETYPE_PAIR;
+
+    public static JavaTypeInfo<ObjectType> TYPE_ALLOW_NULL = JavaTypeInfo.builder(ObjectType.class).allowNull().get();
   }
 
   private final MetaFunction _meta;
@@ -64,14 +68,9 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
   private static final int Y_CLASS = 6;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("snapshot", JavaTypeInfo.builder(ManageableVolatilitySurfaceSnapshot.class).get()),
-        new MetaParameter("x", JavaTypeInfo.builder(String.class).get()),
-        new MetaParameter("y", JavaTypeInfo.builder(String.class).get()),
-        new MetaParameter("overrideValue", JavaTypeInfo.builder(Double.class).allowNull().get()),
-        new MetaParameter("marketValue", JavaTypeInfo.builder(Double.class).allowNull().get()),
-        new MetaParameter("xc", JavaTypeInfo.builder(ObjectType.class).allowNull().get()),
-        new MetaParameter("yc", JavaTypeInfo.builder(ObjectType.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("snapshot", CoreModelTypes.MANAGEABLE_VOLATILITY_SURFACE_SNAPSHOT), new MetaParameter("x", PrimitiveTypes.STRING), new MetaParameter("y",
+        PrimitiveTypes.STRING), new MetaParameter("overrideValue", PrimitiveTypes.DOUBLE_ALLOW_NULL), new MetaParameter("marketValue", PrimitiveTypes.DOUBLE_ALLOW_NULL), new MetaParameter(
+        "xc", ObjectType.TYPE_ALLOW_NULL), new MetaParameter("yc", ObjectType.TYPE_ALLOW_NULL));
   }
 
   private SetVolatilitySurfacePointFunction(final DefinitionAnnotater info) {
@@ -102,8 +101,8 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
     }
   }
 
-  public static ManageableVolatilitySurfaceSnapshot invoke(final ManageableVolatilitySurfaceSnapshot snapshot, final String x, final String y,
-      final Double overrideValue, final Double marketValue, final ObjectType xType, final ObjectType yType) {
+  public static ManageableVolatilitySurfaceSnapshot invoke(final ManageableVolatilitySurfaceSnapshot snapshot, final String x, final String y, final Double overrideValue,
+      final Double marketValue, final ObjectType xType, final ObjectType yType) {
     final Pair<Object, Object> key = Pair.of(convert(xType, x, X_CLASS), convert(yType, y, Y_CLASS));
     if (snapshot.getValues() == null) {
       snapshot.setValues(new HashMap<Pair<Object, Object>, ValueSnapshot>());
@@ -122,7 +121,8 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
     return snapshot;
   }
 
-  public static ManageableVolatilitySurfaceSnapshot invoke(final ManageableVolatilitySurfaceSnapshot snapshot, final String x, final String y, final Double overrideValue, final Double marketValue) {
+  public static ManageableVolatilitySurfaceSnapshot invoke(final ManageableVolatilitySurfaceSnapshot snapshot, final String x, final String y, final Double overrideValue,
+      final Double marketValue) {
     for (Map.Entry<Pair<Object, Object>, ValueSnapshot> surfacePoint : snapshot.getValues().entrySet()) {
       final Object xObject = surfacePoint.getKey().getFirst();
       if (x.equals(StructuredMarketDataSnapshotUtil.toString(xObject))) {
@@ -151,10 +151,11 @@ public class SetVolatilitySurfacePointFunction extends AbstractFunctionInvoker i
       if (parameters[Y_CLASS] == null) {
         throw new InvokeInvalidArgumentException(Y_CLASS, "Must specify yc as well as xc");
       }
-      return invoke((ManageableVolatilitySurfaceSnapshot) parameters[SNAPSHOT], (String) parameters[X], (String) parameters[Y],
-          (Double) parameters[OVERRIDE_VALUE], (Double) parameters[MARKET_VALUE], (ObjectType) parameters[X_CLASS], (ObjectType) parameters[Y_CLASS]);
+      return invoke((ManageableVolatilitySurfaceSnapshot) parameters[SNAPSHOT], (String) parameters[X], (String) parameters[Y], (Double) parameters[OVERRIDE_VALUE],
+          (Double) parameters[MARKET_VALUE], (ObjectType) parameters[X_CLASS], (ObjectType) parameters[Y_CLASS]);
     } else {
-      return invoke((ManageableVolatilitySurfaceSnapshot) parameters[SNAPSHOT], (String) parameters[X], (String) parameters[Y], (Double) parameters[OVERRIDE_VALUE], (Double) parameters[MARKET_VALUE]);
+      return invoke((ManageableVolatilitySurfaceSnapshot) parameters[SNAPSHOT], (String) parameters[X], (String) parameters[Y], (Double) parameters[OVERRIDE_VALUE],
+          (Double) parameters[MARKET_VALUE]);
     }
   }
 

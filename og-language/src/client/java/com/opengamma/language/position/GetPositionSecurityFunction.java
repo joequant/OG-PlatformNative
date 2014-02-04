@@ -6,16 +6,16 @@
 
 package com.opengamma.language.position;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.DataNotFoundException;
 import com.opengamma.core.position.Position;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -36,8 +36,8 @@ public class GetPositionSecurityFunction extends AbstractFunctionInvoker impleme
   private static final int POSITION = 0;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter identifier = new MetaParameter("position", JavaTypeInfo.builder(Position.class).get());
-    return Arrays.asList(identifier);
+    final MetaParameter identifier = new MetaParameter("position", CoreModelTypes.POSITION);
+    return ImmutableList.of(identifier);
   }
 
   private GetPositionSecurityFunction(final DefinitionAnnotater info) {

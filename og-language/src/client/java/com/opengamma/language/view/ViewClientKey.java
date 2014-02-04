@@ -12,6 +12,7 @@ import org.fudgemsg.mapping.FudgeSerializer;
 import org.fudgemsg.types.IndicatorType;
 
 import com.opengamma.engine.view.client.ViewClient;
+import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -25,6 +26,8 @@ import com.opengamma.util.ArgumentChecker;
 public final class ViewClientKey {
 
   private static final String DEFAULT_CLIENT_NAME = "Default";
+
+  public static final JavaTypeInfo<ViewClientKey> TYPE = JavaTypeInfo.builder(ViewClientKey.class).get();
 
   private final boolean _useSharedProcess;
   private final String _clientName;

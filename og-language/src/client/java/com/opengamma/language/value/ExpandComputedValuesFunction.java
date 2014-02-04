@@ -6,12 +6,12 @@
 
 package com.opengamma.language.value;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.DataNotFoundException;
 import com.opengamma.core.position.Position;
 import com.opengamma.core.position.PositionSource;
@@ -30,6 +30,7 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -51,12 +52,9 @@ public class ExpandComputedValuesFunction extends AbstractFunctionInvoker implem
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("values", JavaTypeInfo.builder(List.class).parameter(ComputedValue.class).get()),
-        new MetaParameter("includeIdentifier", JavaTypeInfo.builder(Boolean.class).defaultValue(false).get()),
-        new MetaParameter("includeName", JavaTypeInfo.builder(Boolean.class).defaultValue(true).get()),
-        new MetaParameter("includeValue", JavaTypeInfo.builder(Boolean.class).defaultValue(true).get()),
-        new MetaParameter("includeType", JavaTypeInfo.builder(Boolean.class).defaultValue(false).get()));
+    return ImmutableList.of(new MetaParameter("values", JavaTypeInfo.builder(List.class).parameter(ComputedValue.class).get()), new MetaParameter("includeIdentifier",
+        PrimitiveTypes.BOOLEAN_DEFAULT_FALSE), new MetaParameter("includeName", PrimitiveTypes.BOOLEAN_DEFAULT_TRUE), new MetaParameter("includeValue", PrimitiveTypes.BOOLEAN_DEFAULT_TRUE),
+        new MetaParameter("includeType", PrimitiveTypes.BOOLEAN_DEFAULT_FALSE));
   }
 
   private ExpandComputedValuesFunction(final DefinitionAnnotater info) {

@@ -6,15 +6,15 @@
 
 package com.opengamma.language.identifier;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -32,7 +32,7 @@ public class LatestVersionFunction extends AbstractFunctionInvoker implements Pu
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(new MetaParameter("identifier", JavaTypeInfo.builder(UniqueId.class).get()));
+    return ImmutableList.of(new MetaParameter("identifier", OpenGammaTypes.UNIQUE_ID));
   }
 
   private LatestVersionFunction(final DefinitionAnnotater info) {

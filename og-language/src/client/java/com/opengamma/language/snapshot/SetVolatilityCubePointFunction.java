@@ -6,18 +6,20 @@
 
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.VolatilityPoint;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableVolatilityCubeSnapshot;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -36,13 +38,9 @@ public class SetVolatilityCubePointFunction extends AbstractFunctionInvoker impl
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("snapshot", JavaTypeInfo.builder(ManageableVolatilityCubeSnapshot.class).get()),
-        new MetaParameter("swapTenor", JavaTypeInfo.builder(Tenor.class).get()),
-        new MetaParameter("optionExpiry", JavaTypeInfo.builder(Tenor.class).get()),
-        new MetaParameter("relativeStrike", JavaTypeInfo.builder(Double.class).get()),
-        new MetaParameter("overrideValue", JavaTypeInfo.builder(Double.class).allowNull().get()),
-        new MetaParameter("marketValue", JavaTypeInfo.builder(Double.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("snapshot", CoreModelTypes.MANAGEABLE_CURVE_SNAPSHOT), new MetaParameter("swapTenor", OpenGammaTypes.TENOR), new MetaParameter("optionExpiry",
+        OpenGammaTypes.TENOR), new MetaParameter("relativeStrike", PrimitiveTypes.DOUBLE), new MetaParameter("overrideValue", PrimitiveTypes.DOUBLE_ALLOW_NULL), new MetaParameter(
+        "marketValue", PrimitiveTypes.DOUBLE_ALLOW_NULL));
   }
 
   // TODO: functions for the "other values", and "strikes" for a cube

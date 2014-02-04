@@ -6,24 +6,24 @@
 
 package com.opengamma.language.snapshot;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.CurveKey;
 import com.opengamma.core.marketdatasnapshot.CurveSnapshot;
-import com.opengamma.core.marketdatasnapshot.YieldCurveKey;
-import com.opengamma.core.marketdatasnapshot.YieldCurveSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableMarketDataSnapshot;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Retrieves a curve component of a snapshot
@@ -41,9 +41,7 @@ public class GetSnapshotCurveFunction extends AbstractFunctionInvoker implements
   private static final int NAME = 1;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("snapshot", JavaTypeInfo.builder(ManageableMarketDataSnapshot.class).get()),
-        new MetaParameter("name", JavaTypeInfo.builder(String.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("snapshot", CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT), new MetaParameter("name", PrimitiveTypes.STRING_ALLOW_NULL));
   }
 
   private GetSnapshotCurveFunction(final DefinitionAnnotater info) {

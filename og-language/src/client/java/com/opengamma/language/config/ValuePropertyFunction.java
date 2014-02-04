@@ -9,11 +9,12 @@ package com.opengamma.language.config;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -31,11 +32,8 @@ public class ValuePropertyFunction extends AbstractFunctionInvoker implements Pu
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("name", JavaTypeInfo.builder(String.class).get()),
-        new MetaParameter("value", JavaTypeInfo.builder(String.class).get().arrayOfWithAllowNull(true)),
-        new MetaParameter("configuration", JavaTypeInfo.builder(String.class).allowNull().get()),
-        new MetaParameter("optional", JavaTypeInfo.builder(Boolean.class).defaultValue(false).get()));
+    return ImmutableList.of(new MetaParameter("name", PrimitiveTypes.STRING), new MetaParameter("value", PrimitiveTypes.STRING.arrayOfWithAllowNull(true)), new MetaParameter(
+        "configuration", PrimitiveTypes.STRING_ALLOW_NULL), new MetaParameter("optional", PrimitiveTypes.BOOLEAN_DEFAULT_FALSE));
   }
 
   private ValuePropertyFunction(final DefinitionAnnotater info) {

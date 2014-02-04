@@ -6,8 +6,6 @@
 
 package com.opengamma.language.view;
 
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -15,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.engine.view.ViewComputationResultModel;
 import com.opengamma.engine.view.ViewDeltaResultModel;
 import com.opengamma.engine.view.client.ViewClient;
@@ -28,6 +27,7 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -52,10 +52,10 @@ public class GetViewResultFunction extends AbstractFunctionInvoker implements Pu
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter viewClient = new MetaParameter("viewClient", JavaTypeInfo.builder(ViewClientHandle.class).get());
+    final MetaParameter viewClient = new MetaParameter("viewClient", ViewClientHandle.TYPE);
     final MetaParameter waitForResult = new MetaParameter("waitForResult", JavaTypeInfo.builder(Integer.class).defaultValue(0).get());
-    final MetaParameter lastViewCycleId = new MetaParameter("lastViewCycleId", JavaTypeInfo.builder(UniqueId.class).allowNull().get());
-    return Arrays.asList(viewClient, waitForResult, lastViewCycleId);
+    final MetaParameter lastViewCycleId = new MetaParameter("lastViewCycleId", OpenGammaTypes.UNIQUE_ID_ALLOW_NULL);
+    return ImmutableList.of(viewClient, waitForResult, lastViewCycleId);
   }
 
   private GetViewResultFunction(final DefinitionAnnotater info) {

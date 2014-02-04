@@ -6,17 +6,17 @@
 
 package com.opengamma.language.debug;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.FunctionInvoker;
@@ -57,8 +57,7 @@ public class DebugFunctionDimension implements PublishedFunction {
 
   @Override
   public MetaFunction getMetaFunction() {
-    final List<MetaParameter> args = Arrays.asList(new MetaParameter("x", JavaTypeInfo.builder(Integer.class).defaultValue(null).get()), new MetaParameter("y", JavaTypeInfo.builder(Integer.class)
-        .defaultValue(null).get()));
+    final List<MetaParameter> args = ImmutableList.of(new MetaParameter("x", PrimitiveTypes.INTEGER_ALLOW_NULL), new MetaParameter("y", PrimitiveTypes.INTEGER_ALLOW_NULL));
     final FunctionInvoker invoker = new AbstractFunctionInvoker(args) {
       @Override
       public Object invokeImpl(final SessionContext sessionContext, final Object[] parameters) {

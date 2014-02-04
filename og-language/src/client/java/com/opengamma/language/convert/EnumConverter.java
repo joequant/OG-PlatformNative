@@ -15,10 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
- * Converts enums to/from strings.  
+ * Converts enums to/from strings.
  */
 public final class EnumConverter extends AbstractTypeConverter {
 
@@ -27,16 +28,10 @@ public final class EnumConverter extends AbstractTypeConverter {
    */
   public static final EnumConverter INSTANCE = new EnumConverter();
 
-  @SuppressWarnings("unchecked")
-  private static final JavaTypeInfo<Enum> ENUM = JavaTypeInfo.builder(Enum.class).get();
-  @SuppressWarnings("unchecked")
-  private static final JavaTypeInfo<Enum> ENUM_NULL = JavaTypeInfo.builder(Enum.class).allowNull().get();
-  private static final JavaTypeInfo<String> STRING = JavaTypeInfo.builder(String.class).get();
-  private static final JavaTypeInfo<String> STRING_NULL = JavaTypeInfo.builder(String.class).allowNull().get();
-  private static final Map<JavaTypeInfo<?>, Integer> TO_STRING = TypeMap.of(ZERO_LOSS, ENUM);
-  private static final Map<JavaTypeInfo<?>, Integer> TO_STRING_NULL = TypeMap.of(ZERO_LOSS, ENUM_NULL);
-  private static final Map<JavaTypeInfo<?>, Integer> TO_ENUM = TypeMap.of(MINOR_LOSS, STRING);
-  private static final Map<JavaTypeInfo<?>, Integer> TO_ENUM_NULL = TypeMap.of(MINOR_LOSS, STRING_NULL);
+  private static final Map<JavaTypeInfo<?>, Integer> TO_STRING = TypeMap.of(ZERO_LOSS, PrimitiveTypes.ENUM);
+  private static final Map<JavaTypeInfo<?>, Integer> TO_STRING_NULL = TypeMap.of(ZERO_LOSS, PrimitiveTypes.ENUM_ALLOW_NULL);
+  private static final Map<JavaTypeInfo<?>, Integer> TO_ENUM = TypeMap.of(MINOR_LOSS, PrimitiveTypes.STRING);
+  private static final Map<JavaTypeInfo<?>, Integer> TO_ENUM_NULL = TypeMap.of(MINOR_LOSS, PrimitiveTypes.STRING_ALLOW_NULL);
 
   private final ConcurrentMap<Class<?>, Map<String, Enum<?>>> _enumValues = new ConcurrentHashMap<Class<?>, Map<String, Enum<?>>>();
 
@@ -89,8 +84,8 @@ public final class EnumConverter extends AbstractTypeConverter {
   }
 
   /**
-   * Converts the raw string so that it may match one of the alternative enum values. The default implementation here converts
-   * it to lower case to match the behavior of {@link #cacheAlternativeEnumValue}.
+   * Converts the raw string so that it may match one of the alternative enum values. The default implementation here converts it to lower case to match the behavior of
+   * {@link #cacheAlternativeEnumValue}.
    * 
    * @param str original string
    * @return the alternative form of the string
@@ -100,8 +95,8 @@ public final class EnumConverter extends AbstractTypeConverter {
   }
 
   /**
-   * Inserts alternative string representations of the enum value into a cache. The default implementation here converts it to
-   * lower case to match the behavior of {@link #getAlternativeString} and inserts a form with underscores converted to spaces.
+   * Inserts alternative string representations of the enum value into a cache. The default implementation here converts it to lower case to match the behavior of {@link #getAlternativeString} and
+   * inserts a form with underscores converted to spaces.
    * 
    * @param cache cache to update, mapping alternative strings to enum values
    * @param enumEntry the enum value to cache

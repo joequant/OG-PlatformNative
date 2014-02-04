@@ -14,6 +14,8 @@ import java.util.Map;
 
 import com.opengamma.language.Value;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.CollectionTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
@@ -26,18 +28,13 @@ public class ListConverter extends AbstractTypeConverter {
    */
   public static final ListConverter INSTANCE = new ListConverter();
 
-  private static final JavaTypeInfo<Value> VALUE = JavaTypeInfo.builder(Value.class).get();
   private static final JavaTypeInfo<Value[]> VALUES = JavaTypeInfo.builder(Value[].class).get();
   private static final JavaTypeInfo<Value[]> VALUES_ALLOW_NULL = JavaTypeInfo.builder(Value[].class).allowNull().get();
-  @SuppressWarnings("unchecked")
-  private static final JavaTypeInfo<List> LIST = JavaTypeInfo.builder(List.class).get();
-  @SuppressWarnings("unchecked")
-  private static final JavaTypeInfo<List> LIST_ALLOW_NULL = JavaTypeInfo.builder(List.class).allowNull().get();
 
   private static final TypeMap TO_LIST = TypeMap.of(ZERO_LOSS, VALUES);
-  private static final TypeMap FROM_LIST = TypeMap.of(ZERO_LOSS, LIST);
+  private static final TypeMap FROM_LIST = TypeMap.of(ZERO_LOSS, CollectionTypes.LIST);
   private static final TypeMap TO_LIST_ALLOW_NULL = TypeMap.of(ZERO_LOSS, VALUES_ALLOW_NULL);
-  private static final TypeMap FROM_LIST_ALLOW_NULL = TypeMap.of(ZERO_LOSS, LIST_ALLOW_NULL);
+  private static final TypeMap FROM_LIST_ALLOW_NULL = TypeMap.of(ZERO_LOSS, CollectionTypes.LIST_ALLOW_NULL);
 
   protected ListConverter() {
   }
@@ -76,7 +73,7 @@ public class ListConverter extends AbstractTypeConverter {
         if (entry == null) {
           result[i++] = new Value();
         } else {
-          conversionContext.convertValue(entry, VALUE);
+          conversionContext.convertValue(entry, TransportTypes.VALUE);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;

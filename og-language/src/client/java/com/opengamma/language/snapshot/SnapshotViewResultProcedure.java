@@ -6,9 +6,9 @@
 
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.StructuredMarketDataSnapshot;
 import com.opengamma.engine.marketdata.snapshot.MarketDataSnapshotter;
 import com.opengamma.engine.resource.EngineResourceReference;
@@ -18,7 +18,6 @@ import com.opengamma.financial.marketdatasnapshot.MarketDataSnapshotterImpl;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.procedure.AbstractProcedureInvoker;
@@ -41,8 +40,8 @@ public class SnapshotViewResultProcedure extends AbstractProcedureInvoker.Single
   private static final int VIEW_CLIENT = 0;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter viewClient = new MetaParameter("viewClient", JavaTypeInfo.builder(ViewClientHandle.class).get());
-    return Arrays.asList(viewClient);
+    final MetaParameter viewClient = new MetaParameter("viewClient", ViewClientHandle.TYPE);
+    return ImmutableList.of(viewClient);
   }
 
   private SnapshotViewResultProcedure(final DefinitionAnnotater info) {

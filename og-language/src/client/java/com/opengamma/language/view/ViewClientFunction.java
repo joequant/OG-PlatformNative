@@ -6,14 +6,14 @@
 
 package com.opengamma.language.view;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -31,10 +31,10 @@ public class ViewClientFunction extends AbstractFunctionInvoker implements Publi
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter viewDescriptorParameter = new MetaParameter("viewDescriptor", JavaTypeInfo.builder(ViewClientDescriptor.class).get());
-    final MetaParameter useSharedProcessParameter = new MetaParameter("useSharedProcess", JavaTypeInfo.builder(Boolean.class).defaultValue(true).get());
-    final MetaParameter clientNameParameter = new MetaParameter("clientName", JavaTypeInfo.builder(String.class).allowNull().get());
-    return Arrays.asList(viewDescriptorParameter, useSharedProcessParameter, clientNameParameter);
+    final MetaParameter viewDescriptorParameter = new MetaParameter("viewDescriptor", ViewClientDescriptor.TYPE);
+    final MetaParameter useSharedProcessParameter = new MetaParameter("useSharedProcess", PrimitiveTypes.BOOLEAN_DEFAULT_TRUE);
+    final MetaParameter clientNameParameter = new MetaParameter("clientName", PrimitiveTypes.STRING_ALLOW_NULL);
+    return ImmutableList.of(viewDescriptorParameter, useSharedProcessParameter, clientNameParameter);
   }
 
   private ViewClientFunction(final DefinitionAnnotater info) {

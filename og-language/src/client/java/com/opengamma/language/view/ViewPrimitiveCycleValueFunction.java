@@ -5,12 +5,12 @@
  */
 package com.opengamma.language.view;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.BooleanUtils;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.engine.ComputationTargetSpecification;
 import com.opengamma.engine.value.ComputedValueResult;
 import com.opengamma.engine.value.ValueProperties;
@@ -20,8 +20,10 @@ import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.EngineTypes;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -40,13 +42,15 @@ public class ViewPrimitiveCycleValueFunction extends AbstractFunctionInvoker imp
 
   private final MetaFunction _meta;
 
+  // TODO: The valueRequirement parameter should be a "ValueRequirement" and a type converter parse any string supplied by the caller
+
   private static List<MetaParameter> parameters() {
-    final MetaParameter resultModel = new MetaParameter("resultModel", JavaTypeInfo.builder(ViewComputationResultModel.class).get());
-    final MetaParameter targetId = new MetaParameter("targetId", JavaTypeInfo.builder(UniqueId.class).get());
-    final MetaParameter valueRequirement = new MetaParameter("valueRequirement", JavaTypeInfo.builder(String.class).get());
-    final MetaParameter notAvailableValue = new MetaParameter("notAvailable_value", JavaTypeInfo.builder(String.class).allowNull().get());
-    final MetaParameter flattenValue = new MetaParameter("flattenValue", JavaTypeInfo.builder(Boolean.class).allowNull().get());
-    return Arrays.asList(resultModel, targetId, valueRequirement, notAvailableValue, flattenValue);
+    final MetaParameter resultModel = new MetaParameter("resultModel", EngineTypes.VIEW_COMPUTATION_RESULT_MODEL);
+    final MetaParameter targetId = new MetaParameter("targetId", OpenGammaTypes.UNIQUE_ID);
+    final MetaParameter valueRequirement = new MetaParameter("valueRequirement", PrimitiveTypes.STRING);
+    final MetaParameter notAvailableValue = new MetaParameter("notAvailable_value", PrimitiveTypes.STRING_ALLOW_NULL);
+    final MetaParameter flattenValue = new MetaParameter("flattenValue", PrimitiveTypes.BOOLEAN_ALLOW_NULL);
+    return ImmutableList.of(resultModel, targetId, valueRequirement, notAvailableValue, flattenValue);
   }
 
   private ViewPrimitiveCycleValueFunction(final DefinitionAnnotater info) {

@@ -6,14 +6,14 @@
 
 package com.opengamma.language.config;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -32,11 +32,8 @@ public class ViewCalculationRateFunction extends AbstractFunctionInvoker impleme
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("maxDelta", JavaTypeInfo.builder(Long.class).allowNull().get()),
-        new MetaParameter("minDelta", JavaTypeInfo.builder(Long.class).allowNull().get()),
-        new MetaParameter("maxFull", JavaTypeInfo.builder(Long.class).allowNull().get()),
-        new MetaParameter("minFull", JavaTypeInfo.builder(Long.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("maxDelta", PrimitiveTypes.LONG_ALLOW_NULL), new MetaParameter("minDelta", PrimitiveTypes.LONG_ALLOW_NULL), new MetaParameter("maxFull",
+        PrimitiveTypes.LONG_ALLOW_NULL), new MetaParameter("minFull", PrimitiveTypes.LONG_ALLOW_NULL));
   }
 
   private ViewCalculationRateFunction(final DefinitionAnnotater info) {
@@ -63,16 +60,13 @@ public class ViewCalculationRateFunction extends AbstractFunctionInvoker impleme
   }
 
   private static InvokeInvalidArgumentException createIAE(final int index, final long minDelta, final long maxDelta, final long minFull, final long maxFull) {
-    return new InvokeInvalidArgumentException(index, "Invalid recalculation time - minDelta = " + minDelta + "ms, maxDelta = " + maxDelta + "ms, minFull = " + minFull + "ms, maxFull = " + maxFull +
-        "ms");
+    return new InvokeInvalidArgumentException(index, "Invalid recalculation time - minDelta = " + minDelta + "ms, maxDelta = " + maxDelta + "ms, minFull = " + minFull + "ms, maxFull = " +
+        maxFull + "ms");
   }
 
   public static ViewCalculationRate invoke(final Long maxDelta, final Long minDelta, final Long maxFull, final Long minFull) {
-    final ViewCalculationRate vcr = new ViewCalculationRate(
-        getLong(minDelta, maxDelta, minFull, maxFull),
-        getLong(maxDelta, minDelta, maxFull, minFull),
-        getLong(minFull, maxFull, minDelta, maxDelta),
-        getLong(maxFull, minFull, maxDelta, minDelta));
+    final ViewCalculationRate vcr = new ViewCalculationRate(getLong(minDelta, maxDelta, minFull, maxFull), getLong(maxDelta, minDelta, maxFull, minFull), getLong(minFull, maxFull, minDelta,
+        maxDelta), getLong(maxFull, minFull, maxDelta, minDelta));
     if (vcr.getMinDelta() <= 0) {
       throw createIAE(1, minDelta, maxDelta, minFull, maxFull);
     }

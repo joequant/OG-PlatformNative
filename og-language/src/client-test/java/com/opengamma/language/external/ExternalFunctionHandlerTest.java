@@ -34,6 +34,7 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
 import com.opengamma.language.definition.Parameter;
+import com.opengamma.language.definition.types.CollectionTypes;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.Result;
 import com.opengamma.language.test.TestUtils;
@@ -44,8 +45,8 @@ import com.opengamma.util.test.TestGroup;
  */
 @Test(groups = TestGroup.UNIT)
 public class ExternalFunctionHandlerTest {
-  
-  private static final Logger s_logger=LoggerFactory.getLogger(ExternalFunctionHandlerTest.class);
+
+  private static final Logger s_logger = LoggerFactory.getLogger(ExternalFunctionHandlerTest.class);
 
   private Set<String> getExportedFunctions(final Class<?> clazz) {
     final ExternalFunctionHandler handler = new ExternalFunctionHandler(clazz);
@@ -53,7 +54,7 @@ public class ExternalFunctionHandlerTest {
     for (MetaFunction function : handler.getFunctions()) {
       functions.add(function.getName());
     }
-    s_logger.debug("{} functions = {}", clazz.getSimpleName (), functions);
+    s_logger.debug("{} functions = {}", clazz.getSimpleName(), functions);
     return functions;
   }
 
@@ -202,7 +203,7 @@ public class ExternalFunctionHandlerTest {
     assertEquals(functions.size(), 1);
     assertTrue(functions.contains("InvalidConstructed"));
   }
-  
+
   public static class WithoutAttributes {
 
     @ExternalFunction
@@ -225,18 +226,19 @@ public class ExternalFunctionHandlerTest {
     assertEquals(param1.getName(), "param1");
     assertEquals(param1.getDescription(), "The first parameter");
     assertEquals(param1.getRequired(), false);
-    assertEquals(param1.getJavaTypeInfo(), JavaTypeInfo.builder(Map.class).allowNull().get());
+    assertEquals(param1.getJavaTypeInfo(), CollectionTypes.MAP_ALLOW_NULL);
   }
 
   public static class WithAttributes {
-    
-    @ExternalFunction(name = "Name", description = "The description", category = Categories.MISC, alias = { "Foo", "Bar" })
-    public int func(@ExternalFunctionParam(allowNull = false, name = "param1", description = "Description 1", type = "java.util.Map<java.lang.String,java.util.Currency>") Map<String, String> param1) {
+
+    @ExternalFunction(name = "Name", description = "The description", category = Categories.MISC, alias = {"Foo", "Bar" })
+    public int func(
+        @ExternalFunctionParam(allowNull = false, name = "param1", description = "Description 1", type = "java.util.Map<java.lang.String,java.util.Currency>") Map<String, String> param1) {
       return 42;
     }
-    
+
   }
-  
+
   public void testWithAttributes() {
     final ExternalFunctionHandler handler = new ExternalFunctionHandler(WithAttributes.class);
     final MetaFunction function = handler.getFunctions().iterator().next();
@@ -252,7 +254,7 @@ public class ExternalFunctionHandlerTest {
     assertEquals(param1.getRequired(), true);
     assertEquals(param1.getJavaTypeInfo(), JavaTypeInfo.builder(Map.class).parameter(String.class).parameter(Currency.class).get());
   }
-  
+
   public void testInvoker() throws Exception {
     final TestUtils testUtil = new TestUtils();
     final ExternalFunctionHandler handler = new ExternalFunctionHandler(Constructed.class);

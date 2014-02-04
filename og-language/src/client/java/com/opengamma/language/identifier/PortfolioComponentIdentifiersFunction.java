@@ -6,13 +6,13 @@
 
 package com.opengamma.language.identifier;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.position.Portfolio;
 import com.opengamma.core.position.PortfolioNode;
 import com.opengamma.core.position.Position;
@@ -32,6 +32,8 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -54,13 +56,10 @@ public class PortfolioComponentIdentifiersFunction extends AbstractFunctionInvok
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("portfolioIdentifier", JavaTypeInfo.builder(UniqueId.class).get()),
-        new MetaParameter("preferredScheme", JavaTypeInfo.builder(ExternalSchemeRank.class).defaultValue(ExternalSchemeRank.DEFAULT).get()),
-        new MetaParameter("includeSecurity", JavaTypeInfo.builder(Boolean.class).defaultValue(true).get()),
-        new MetaParameter("includePosition", JavaTypeInfo.builder(Boolean.class).defaultValue(false).get()),
-        new MetaParameter("includeTrade", JavaTypeInfo.builder(Boolean.class).defaultValue(false).get()),
-        new MetaParameter("includePortfolioNode", JavaTypeInfo.builder(Boolean.class).defaultValue(false).get()));
+    return ImmutableList.of(new MetaParameter("portfolioIdentifier", OpenGammaTypes.UNIQUE_ID), new MetaParameter("preferredScheme", JavaTypeInfo.builder(ExternalSchemeRank.class)
+        .defaultValue(ExternalSchemeRank.DEFAULT).get()), new MetaParameter("includeSecurity", PrimitiveTypes.BOOLEAN_DEFAULT_TRUE), new MetaParameter("includePosition",
+        PrimitiveTypes.BOOLEAN_DEFAULT_FALSE), new MetaParameter("includeTrade", PrimitiveTypes.BOOLEAN_DEFAULT_FALSE), new MetaParameter("includePortfolioNode",
+        PrimitiveTypes.BOOLEAN_DEFAULT_FALSE));
   }
 
   private PortfolioComponentIdentifiersFunction(final DefinitionAnnotater info) {

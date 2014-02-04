@@ -6,16 +6,17 @@
 
 package com.opengamma.language.position;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.position.Position;
 import com.opengamma.core.position.impl.SimplePosition;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -37,10 +38,10 @@ public class SetPositionAttributeFunction extends AbstractFunctionInvoker implem
   private static final int VALUE = 2;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter security = new MetaParameter("position", JavaTypeInfo.builder(Position.class).get());
-    final MetaParameter attribute = new MetaParameter("attribute", JavaTypeInfo.builder(String.class).get());
-    final MetaParameter value = new MetaParameter("value", JavaTypeInfo.builder(String.class).allowNull().get());
-    return Arrays.asList(security, attribute, value);
+    final MetaParameter security = new MetaParameter("position", CoreModelTypes.POSITION);
+    final MetaParameter attribute = new MetaParameter("attribute", PrimitiveTypes.STRING);
+    final MetaParameter value = new MetaParameter("value", PrimitiveTypes.STRING_ALLOW_NULL);
+    return ImmutableList.of(security, attribute, value);
   }
 
   private SetPositionAttributeFunction(final DefinitionAnnotater info) {

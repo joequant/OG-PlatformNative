@@ -12,17 +12,12 @@ import com.opengamma.id.ObjectId;
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.convert.AbstractMappedConverter;
 import com.opengamma.language.convert.TypeMap;
-import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 
 /**
  * Converts identifier types. For example the ExternalId to/from a singleton bundle.
  */
 public class IdentifierConverter extends AbstractMappedConverter {
-
-  private static final JavaTypeInfo<ExternalId> EXTERNAL_ID = JavaTypeInfo.builder(ExternalId.class).allowNull().get();
-  private static final JavaTypeInfo<ExternalIdBundle> EXTERNAL_ID_BUNDLE = JavaTypeInfo.builder(ExternalIdBundle.class).allowNull().get();
-  private static final JavaTypeInfo<ObjectId> OBJECT_ID = JavaTypeInfo.builder(ObjectId.class).allowNull().get();
-  private static final JavaTypeInfo<UniqueId> UNIQUE_ID = JavaTypeInfo.builder(UniqueId.class).allowNull().get();
 
   /**
    * Default instance.
@@ -30,7 +25,7 @@ public class IdentifierConverter extends AbstractMappedConverter {
   public static final IdentifierConverter INSTANCE = new IdentifierConverter();
 
   protected IdentifierConverter() {
-    conversion(TypeMap.ZERO_LOSS, EXTERNAL_ID, EXTERNAL_ID_BUNDLE, new Action<ExternalId, ExternalIdBundle>() {
+    conversion(TypeMap.ZERO_LOSS, OpenGammaTypes.EXTERNAL_ID_ALLOW_NULL, OpenGammaTypes.EXTERNAL_ID_BUNDLE_ALLOW_NULL, new Action<ExternalId, ExternalIdBundle>() {
       @Override
       protected ExternalIdBundle convert(final ExternalId value) {
         return ExternalIdBundle.of(value);
@@ -53,7 +48,7 @@ public class IdentifierConverter extends AbstractMappedConverter {
       }
 
     });
-    conversion(TypeMap.ZERO_LOSS, UNIQUE_ID, OBJECT_ID, new Action<UniqueId, ObjectId>() {
+    conversion(TypeMap.ZERO_LOSS, OpenGammaTypes.UNIQUE_ID_ALLOW_NULL, OpenGammaTypes.OBJECT_ID_ALLOW_NULL, new Action<UniqueId, ObjectId>() {
       @Override
       protected ObjectId convert(final UniqueId value) {
         return value.getObjectId();

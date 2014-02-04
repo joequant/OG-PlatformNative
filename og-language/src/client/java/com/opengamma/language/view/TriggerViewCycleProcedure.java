@@ -5,14 +5,13 @@
  */
 package com.opengamma.language.view;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.engine.view.client.ViewClient;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
 import com.opengamma.language.procedure.AbstractProcedureInvoker;
 import com.opengamma.language.procedure.MetaProcedure;
@@ -29,10 +28,10 @@ public final class TriggerViewCycleProcedure extends AbstractProcedureInvoker.No
   public static final TriggerViewCycleProcedure INSTANCE = new TriggerViewCycleProcedure();
 
   private final MetaProcedure _meta;
-  
+
   private static List<MetaParameter> parameters() {
-    final MetaParameter viewClient = new MetaParameter("viewClient", JavaTypeInfo.builder(ViewClientHandle.class).get());
-    return Arrays.asList(viewClient);
+    final MetaParameter viewClient = new MetaParameter("viewClient", ViewClientHandle.TYPE);
+    return ImmutableList.of(viewClient);
   }
 
   private TriggerViewCycleProcedure(final DefinitionAnnotater info) {

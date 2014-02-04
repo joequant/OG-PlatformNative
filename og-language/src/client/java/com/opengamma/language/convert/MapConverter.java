@@ -13,6 +13,8 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import com.opengamma.language.Value;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.CollectionTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
@@ -25,18 +27,13 @@ public class MapConverter extends AbstractTypeConverter {
    */
   public static final MapConverter INSTANCE = new MapConverter();
 
-  private static final JavaTypeInfo<Value> VALUE = JavaTypeInfo.builder(Value.class).get();
   private static final JavaTypeInfo<Value[][]> VALUES = JavaTypeInfo.builder(Value[][].class).get();
   private static final JavaTypeInfo<Value[][]> VALUES_ALLOW_NULL = JavaTypeInfo.builder(Value[][].class).allowNull().get();
-  @SuppressWarnings("unchecked")
-  private static final JavaTypeInfo<Map> MAP = JavaTypeInfo.builder(Map.class).get();
-  @SuppressWarnings("unchecked")
-  private static final JavaTypeInfo<Map> MAP_ALLOW_NULL = JavaTypeInfo.builder(Map.class).allowNull().get();
 
   private static final TypeMap TO_MAP = TypeMap.of(ZERO_LOSS, VALUES);
-  private static final TypeMap FROM_MAP = TypeMap.of(ZERO_LOSS, MAP);
+  private static final TypeMap FROM_MAP = TypeMap.of(ZERO_LOSS, CollectionTypes.MAP);
   private static final TypeMap TO_MAP_ALLOW_NULL = TypeMap.of(ZERO_LOSS, VALUES_ALLOW_NULL);
-  private static final TypeMap FROM_MAP_ALLOW_NULL = TypeMap.of(ZERO_LOSS, MAP_ALLOW_NULL);
+  private static final TypeMap FROM_MAP_ALLOW_NULL = TypeMap.of(ZERO_LOSS, CollectionTypes.MAP_ALLOW_NULL);
 
   protected MapConverter() {
   }
@@ -86,7 +83,7 @@ public class MapConverter extends AbstractTypeConverter {
         if (entry.getKey() == null) {
           result[i][0] = new Value();
         } else {
-          conversionContext.convertValue(entry.getKey(), VALUE);
+          conversionContext.convertValue(entry.getKey(), TransportTypes.VALUE);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;
@@ -96,7 +93,7 @@ public class MapConverter extends AbstractTypeConverter {
         if (entry.getValue() == null) {
           result[i++][1] = new Value();
         } else {
-          conversionContext.convertValue(entry.getValue(), VALUE);
+          conversionContext.convertValue(entry.getValue(), TransportTypes.VALUE);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;

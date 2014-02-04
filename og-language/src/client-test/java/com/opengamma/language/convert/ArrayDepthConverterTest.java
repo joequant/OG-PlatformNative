@@ -9,6 +9,7 @@ package com.opengamma.language.convert;
 import org.testng.annotations.Test;
 
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.util.test.TestGroup;
 
@@ -22,25 +23,25 @@ public class ArrayDepthConverterTest extends AbstractConverterTest {
 
   @Test
   public void testFromEmptyArray() {
-    final JavaTypeInfo<String> stringType = JavaTypeInfo.builder(String.class).get();
+    final JavaTypeInfo<String> stringType = PrimitiveTypes.STRING;
     assertInvalidConversion(_converter, new String[0], stringType);
   }
 
   @Test
   public void testFromSingleElementArray() {
-    final JavaTypeInfo<String> stringType = JavaTypeInfo.builder(String.class).get();
+    final JavaTypeInfo<String> stringType = PrimitiveTypes.STRING;
     assertValidConversion(_converter, new String[] {"Foo" }, stringType, "Foo");
   }
 
   @Test
   public void testFromMultiElementArray() {
-    final JavaTypeInfo<String> stringType = JavaTypeInfo.builder(String.class).get();
+    final JavaTypeInfo<String> stringType = PrimitiveTypes.STRING;
     assertInvalidConversion(_converter, new String[] {"Foo", "Bar" }, stringType);
   }
 
   @Test
   public void testFromTwoDSingleElementArray() {
-    final JavaTypeInfo<String> stringType = JavaTypeInfo.builder(String.class).get();
+    final JavaTypeInfo<String> stringType = PrimitiveTypes.STRING;
     final JavaTypeInfo<String[]> stringArrayType = JavaTypeInfo.builder(String[].class).get();
     assertValidConversion(_converter, new String[][] {new String[] {"Foo", "Bar" } }, stringArrayType, new String[] {"Foo", "Bar" });
     assertInvalidConversion(_converter, new String[][] {new String[] {"Foo", "Bar" } }, stringType);

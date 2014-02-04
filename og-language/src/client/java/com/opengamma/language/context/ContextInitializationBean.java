@@ -6,15 +6,38 @@
 
 package com.opengamma.language.context;
 
+import net.sf.ehcache.CacheManager;
+
 import org.springframework.beans.factory.InitializingBean;
 
+import com.google.common.base.Supplier;
+import com.opengamma.language.connector.AsyncSupplier.Spawned;
 import com.opengamma.language.connector.Conditional;
 
 /**
- * Attaches a context initialization hook based on a conditional. The class can be used for any of
- * {@link SessionContext}, {@link UserContext} or {@link GlobalContext}.
+ * Attaches a context initialization hook based on a conditional. The class can be used for any of {@link SessionContext}, {@link UserContext} or {@link GlobalContext}.
  */
 public class ContextInitializationBean implements InitializingBean {
+
+  protected static final Supplier<CacheManager> DEFAULT_CACHE_MANAGER;
+
+  static {
+    final Spawned<CacheManager> cacheManager = new Spawned<CacheManager>() {
+
+      @Override
+      protected CacheManager getImpl() {
+        return CacheManager.getInstance();
+      }
+
+      @Override
+      public String toString() {
+        return "DefaultCacheManager";
+      }
+
+    };
+    cacheManager.start();
+    DEFAULT_CACHE_MANAGER = cacheManager;
+  }
 
   private Conditional _condition;
   private SessionContextFactoryBean _sessionContextFactory;
@@ -84,8 +107,8 @@ public class ContextInitializationBean implements InitializingBean {
   }
 
   /**
-   * Cleans up a user context 
-   *
+   * Cleans up a user context
+   * 
    * @param context the context
    */
   protected void doneContext(final MutableUserContext context) {
@@ -102,74 +125,70 @@ public class ContextInitializationBean implements InitializingBean {
   // InitializingBean
 
   /**
-   * After the properties are set, an initialization handler is attached to the context factory
-   * which will invoke one of the {@link #initContext} methods when it initializes if the
-   * condition holds at the point of initialization when tested against that context.
+   * After the properties are set, an initialization handler is attached to the context factory which will invoke one of the {@link #initContext} methods when it initializes if the condition holds at
+   * the point of initialization when tested against that context.
    */
   @Override
   public final void afterPropertiesSet() {
     assertPropertiesSet();
     boolean validFactory = false;
     if (getGlobalContextFactory() != null) {
-      getGlobalContextFactory().setGlobalContextEventHandler(
-          new AbstractGlobalContextEventHandler(getGlobalContextFactory().getGlobalContextEventHandler()) {
-            @Override
-            protected void initContextImpl(final MutableGlobalContext context) {
-              if (Conditional.holds(getCondition(), context)) {
-                ContextInitializationBean.this.initContext(context);
-              }
-            }
-          });
+      getGlobalContextFactory().setGlobalContextEventHandler(new AbstractGlobalContextEventHandler(getGlobalContextFactory().getGlobalContextEventHandler()) {
+        @Override
+        protected void initContextImpl(final MutableGlobalContext context) {
+          if (Conditional.holds(getCondition(), context)) {
+            ContextInitializationBean.this.initContext(context);
+          }
+        }
+      });
       validFactory = true;
     }
     if (getUserContextFactory() != null) {
-      getUserContextFactory().setUserContextEventHandler(
-          new AbstractUserContextEventHandler(getUserContextFactory().getUserContextEventHandler()) {
+      getUserContextFactory().setUserContextEventHandler(new AbstractUserContextEventHandler(getUserContextFactory().getUserContextEventHandler()) {
 
-            private boolean _initialised;
+        private boolean _initialised;
 
-            @Override
-            protected void initContextImpl(final MutableUserContext context) {
-              if (Conditional.holds(getCondition(), context)) {
-                ContextInitializationBean.this.initContext(context);
-                _initialised = true;
-              }
-            }
+        @Override
+        protected void initContextImpl(final MutableUserContext context) {
+          if (Conditional.holds(getCondition(), context)) {
+            ContextInitializationBean.this.initContext(context);
+            _initialised = true;
+          }
+        }
 
-            @Override
-            protected void doneContextImpl(final MutableUserContext context) {
-              if (_initialised) {
-                ContextInitializationBean.this.doneContext(context);
-                _initialised = false;
-              }
-            }
+        @Override
+        protected void doneContextImpl(final MutableUserContext context) {
+          if (_initialised) {
+            ContextInitializationBean.this.doneContext(context);
+            _initialised = false;
+          }
+        }
 
-          });
+      });
       validFactory = true;
     }
     if (getSessionContextFactory() != null) {
-      getSessionContextFactory().setSessionContextEventHandler(
-          new AbstractSessionContextEventHandler(getSessionContextFactory().getSessionContextEventHandler()) {
+      getSessionContextFactory().setSessionContextEventHandler(new AbstractSessionContextEventHandler(getSessionContextFactory().getSessionContextEventHandler()) {
 
-            private boolean _initialised;
+        private boolean _initialised;
 
-            @Override
-            protected void initContextImpl(final MutableSessionContext context) {
-              if (Conditional.holds(getCondition(), context)) {
-                ContextInitializationBean.this.initContext(context);
-                _initialised = true;
-              }
-            }
+        @Override
+        protected void initContextImpl(final MutableSessionContext context) {
+          if (Conditional.holds(getCondition(), context)) {
+            ContextInitializationBean.this.initContext(context);
+            _initialised = true;
+          }
+        }
 
-            @Override
-            protected void doneContextImpl(final MutableSessionContext context) {
-              if (_initialised) {
-                ContextInitializationBean.this.doneContext(context);
-                _initialised = false;
-              }
-            }
+        @Override
+        protected void doneContextImpl(final MutableSessionContext context) {
+          if (_initialised) {
+            ContextInitializationBean.this.doneContext(context);
+            _initialised = false;
+          }
+        }
 
-          });
+      });
       validFactory = true;
     }
     if (!validFactory) {

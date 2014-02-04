@@ -121,8 +121,7 @@ public final class JavaTypeInfo<T> {
   private final T _defaultValue;
   private final JavaTypeInfo<?>[] _parameter;
 
-  private JavaTypeInfo(final Class<T> rawClass, final boolean allowNull, final boolean hasDefaultValue,
-      final T defaultValue, final JavaTypeInfo<?>[] parameter) {
+  private JavaTypeInfo(final Class<T> rawClass, final boolean allowNull, final boolean hasDefaultValue, final T defaultValue, final JavaTypeInfo<?>[] parameter) {
     _rawClass = rawClass;
     _allowNull = allowNull;
     _hasDefaultValue = hasDefaultValue;

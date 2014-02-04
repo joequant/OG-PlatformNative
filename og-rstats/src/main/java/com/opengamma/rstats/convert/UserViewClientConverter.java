@@ -21,6 +21,7 @@ import com.opengamma.language.convert.ValueConversionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 import com.opengamma.language.procedure.AbstractProcedureInvoker;
 import com.opengamma.language.procedure.MetaProcedure;
@@ -31,8 +32,7 @@ import com.opengamma.language.view.ViewClientHandle;
 import com.opengamma.rstats.data.RDataInfo;
 
 /**
- * Converts a view client handle to an R-object representing the detached handle. When the R-object is discarded, the handle
- * will be released. 
+ * Converts a view client handle to an R-object representing the detached handle. When the R-object is discarded, the handle will be released.
  */
 public class UserViewClientConverter extends AbstractTypeConverter {
 
@@ -45,7 +45,7 @@ public class UserViewClientConverter extends AbstractTypeConverter {
 
     @Override
     public MetaProcedure getMetaProcedure() {
-      final MetaParameter arg = new MetaParameter("identifier", JavaTypeInfo.builder(UniqueId.class).get());
+      final MetaParameter arg = new MetaParameter("identifier", OpenGammaTypes.UNIQUE_ID);
       final List<MetaParameter> args = Arrays.asList(arg);
       return new MetaProcedure(Categories.VIEW, "destroy." + R_CLASS, args, new AbstractProcedureInvoker.NoResult(args) {
         @Override
@@ -60,11 +60,8 @@ public class UserViewClientConverter extends AbstractTypeConverter {
     }
   }
 
-  private static final JavaTypeInfo<UniqueId> UNIQUE_ID = JavaTypeInfo.builder(UniqueId.class).get();
-  private static final JavaTypeInfo<ViewClientHandle> VIEW_CLIENT_HANDLE = JavaTypeInfo.builder(ViewClientHandle.class).get();
-
-  private static final TypeMap TO_DATA = TypeMap.of(ZERO_LOSS, VIEW_CLIENT_HANDLE);
-  private static final TypeMap TO_VIEW_CLIENT_HANDLE = TypeMap.of(ZERO_LOSS, UNIQUE_ID);
+  private static final TypeMap TO_DATA = TypeMap.of(ZERO_LOSS, ViewClientHandle.TYPE);
+  private static final TypeMap TO_VIEW_CLIENT_HANDLE = TypeMap.of(ZERO_LOSS, OpenGammaTypes.UNIQUE_ID);
 
   @Override
   public String getTypeConverterKey() {

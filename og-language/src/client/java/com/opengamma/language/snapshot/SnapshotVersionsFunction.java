@@ -5,7 +5,6 @@
  */
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -15,14 +14,16 @@ import org.slf4j.LoggerFactory;
 import org.threeten.bp.Clock;
 import org.threeten.bp.Instant;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableMarketDataSnapshot;
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.client.CombiningMaster;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.ThreeTenTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -47,9 +48,9 @@ public class SnapshotVersionsFunction extends AbstractFunctionInvoker implements
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter snapshot = new MetaParameter("snapshot", JavaTypeInfo.builder(UniqueId.class).get());
-    final MetaParameter correction = new MetaParameter("correction", JavaTypeInfo.builder(Instant.class).allowNull().get());
-    return Arrays.asList(snapshot, correction);
+    final MetaParameter snapshot = new MetaParameter("snapshot", OpenGammaTypes.UNIQUE_ID);
+    final MetaParameter correction = new MetaParameter("correction", ThreeTenTypes.INSTANT_ALLOW_NULL);
+    return ImmutableList.of(snapshot, correction);
   }
 
   private SnapshotVersionsFunction(final DefinitionAnnotater info) {
@@ -72,8 +73,8 @@ public class SnapshotVersionsFunction extends AbstractFunctionInvoker implements
   // use a type converter to reduce it to a matrix.
 
   public static Object[][] invoke(final SessionContext context, final UniqueId snapshot, final Instant correction) {
-    final MarketDataSnapshotHistoryRequest request = new MarketDataSnapshotHistoryRequest(snapshot.getObjectId(), null,
-        (correction != null) ? correction : Clock.systemDefaultZone().instant());
+    final MarketDataSnapshotHistoryRequest request = new MarketDataSnapshotHistoryRequest(snapshot.getObjectId(), null, (correction != null) ? correction : Clock.systemDefaultZone()
+        .instant());
     // TODO: this is bad as there is no way of navigating the pages, but we don't want to hang if a lot of data comes back
     request.setPagingRequest(PagingRequest.ofPage(1, 100));
     request.setIncludeData(false);

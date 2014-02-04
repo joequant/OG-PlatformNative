@@ -20,10 +20,8 @@ import com.opengamma.language.procedure.ProcedureRepository;
 import com.opengamma.language.view.SessionViewClients;
 
 /**
- * An information context specific to a given client instance. The external client process may
- * be longer lived than the Java framework. In these cases, any session state that must remain
- * for the lifetime of the actual client must be "stashed" and the session context initialized
- * based on the result of the stash.
+ * An information context specific to a given client instance. The external client process may be longer lived than the Java framework. In these cases, any session state that must remain for the
+ * lifetime of the actual client must be "stashed" and the session context initialized based on the result of the stash.
  */
 public abstract class SessionContext extends AbstractContext<UserContext> {
 
@@ -77,8 +75,7 @@ public abstract class SessionContext extends AbstractContext<UserContext> {
 
   public abstract void initContext(SessionContextInitializationEventHandler preInitialize);
 
-  public abstract void initContextWithStash(SessionContextInitializationEventHandler preInitialize,
-      FudgeMsg stash);
+  public abstract void initContextWithStash(SessionContextInitializationEventHandler preInitialize, FudgeMsg stash);
 
   public abstract void doneContext();
 

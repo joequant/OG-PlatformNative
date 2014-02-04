@@ -17,6 +17,8 @@ import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.util.test.TestGroup;
 
@@ -30,7 +32,7 @@ public class ValueConverterTest extends AbstractConverterTest {
 
   @Test
   public void testToValue() {
-    final JavaTypeInfo<Value> target = JavaTypeInfo.builder(Value.class).get();
+    final JavaTypeInfo<Value> target = TransportTypes.VALUE;
     assertEquals(true, _valueConverter.canConvertTo(target));
     assertValidConversion(_valueConverter, Boolean.TRUE, target, ValueUtils.of(true));
     assertValidConversion(_valueConverter, (Integer) 42, target, ValueUtils.of(42));
@@ -43,13 +45,13 @@ public class ValueConverterTest extends AbstractConverterTest {
 
   @Test
   public void testToData() {
-    final JavaTypeInfo<Data> target = JavaTypeInfo.builder(Data.class).get();
+    final JavaTypeInfo<Data> target = TransportTypes.DATA;
     assertEquals(false, _valueConverter.canConvertTo(target));
   }
 
   @Test
   public void testToBoolean() {
-    final JavaTypeInfo<Boolean> target = JavaTypeInfo.builder(Boolean.class).get();
+    final JavaTypeInfo<Boolean> target = PrimitiveTypes.BOOLEAN;
     assertEquals(true, _valueConverter.canConvertTo(target));
     assertValidConversion(_valueConverter, ValueUtils.of(true), target, Boolean.TRUE);
     assertConversionCount(1, _valueConverter, target);
@@ -57,7 +59,7 @@ public class ValueConverterTest extends AbstractConverterTest {
 
   @Test
   public void testToInteger() {
-    final JavaTypeInfo<Integer> target = JavaTypeInfo.builder(Integer.class).get();
+    final JavaTypeInfo<Integer> target = PrimitiveTypes.INTEGER;
     assertEquals(true, _valueConverter.canConvertTo(target));
     assertValidConversion(_valueConverter, ValueUtils.of(42), target, (Integer) 42);
     assertConversionCount(1, _valueConverter, target);
@@ -65,7 +67,7 @@ public class ValueConverterTest extends AbstractConverterTest {
 
   @Test
   public void testToDouble() {
-    final JavaTypeInfo<Double> target = JavaTypeInfo.builder(Double.class).get();
+    final JavaTypeInfo<Double> target = PrimitiveTypes.DOUBLE;
     assertEquals(true, _valueConverter.canConvertTo(target));
     assertValidConversion(_valueConverter, ValueUtils.of(3.14), target, (Double) 3.14);
     assertConversionCount(1, _valueConverter, target);
@@ -73,7 +75,7 @@ public class ValueConverterTest extends AbstractConverterTest {
 
   @Test
   public void testToString() {
-    final JavaTypeInfo<String> target = JavaTypeInfo.builder(String.class).get();
+    final JavaTypeInfo<String> target = PrimitiveTypes.STRING;
     assertEquals(true, _valueConverter.canConvertTo(target));
     assertValidConversion(_valueConverter, ValueUtils.of("foo"), target, "foo");
     assertConversionCount(1, _valueConverter, target);
@@ -81,10 +83,9 @@ public class ValueConverterTest extends AbstractConverterTest {
 
   @Test
   public void testToMessage() {
-    final JavaTypeInfo<FudgeMsg> target = JavaTypeInfo.builder(FudgeMsg.class).get();
+    final JavaTypeInfo<FudgeMsg> target = TransportTypes.FUDGE_MSG;
     assertEquals(true, _valueConverter.canConvertTo(target));
-    assertValidConversion(_valueConverter, ValueUtils.of(FudgeContext.EMPTY_MESSAGE), target,
-        FudgeContext.EMPTY_MESSAGE);
+    assertValidConversion(_valueConverter, ValueUtils.of(FudgeContext.EMPTY_MESSAGE), target, FudgeContext.EMPTY_MESSAGE);
     assertConversionCount(1, _valueConverter, target);
   }
 

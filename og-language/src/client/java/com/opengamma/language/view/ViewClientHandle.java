@@ -10,16 +10,18 @@ import org.slf4j.LoggerFactory;
 
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
+import com.opengamma.language.definition.JavaTypeInfo;
 
 /**
- * A locked handle encapsulating a view client instance. The handle should be unlocked when it is finished with, although failure
- * to do so will unlock the handle when it is garbage collected.
+ * A locked handle encapsulating a view client instance. The handle should be unlocked when it is finished with, although failure to do so will unlock the handle when it is garbage collected.
  * <p>
  * This is not suitable for concurrent use by multiple threads.
  */
 public abstract class ViewClientHandle {
 
   private static final Logger s_logger = LoggerFactory.getLogger(ViewClientHandle.class);
+
+  public static final JavaTypeInfo<ViewClientHandle> TYPE = JavaTypeInfo.builder(ViewClientHandle.class).get();
 
   private final UserViewClient _viewClient;
   private ViewClients<?, ?> _viewClients;
@@ -43,6 +45,7 @@ public abstract class ViewClientHandle {
     return _viewClient;
   }
 
+  @Override
   protected void finalize() throws Throwable {
     try {
       if (unlockImpl()) {
@@ -92,8 +95,7 @@ public abstract class ViewClientHandle {
   }
 
   /**
-   * Detaches the object from the handle into the {@link SessionContext}. The object remains "reachable" from the session context
-   * by its {@link UniqueId}.
+   * Detaches the object from the handle into the {@link SessionContext}. The object remains "reachable" from the session context by its {@link UniqueId}.
    * 
    * @param target the session context to detach the handle into
    * @return the unique id to reference the detached object by

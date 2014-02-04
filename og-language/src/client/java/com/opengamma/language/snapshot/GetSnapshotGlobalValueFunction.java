@@ -6,17 +6,19 @@
 
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableMarketDataSnapshot;
 import com.opengamma.id.ExternalId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -35,10 +37,8 @@ public class GetSnapshotGlobalValueFunction extends AbstractFunctionInvoker impl
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("snapshot", JavaTypeInfo.builder(ManageableMarketDataSnapshot.class).get()),
-        new MetaParameter("valueName", JavaTypeInfo.builder(String.class).get()),
-        new MetaParameter("identifier", JavaTypeInfo.builder(ExternalId.class).get()));
+    return ImmutableList.of(new MetaParameter("snapshot", CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT), new MetaParameter("valueName", PrimitiveTypes.STRING), new MetaParameter(
+        "identifier", OpenGammaTypes.EXTERNAL_ID));
   }
 
   private GetSnapshotGlobalValueFunction(final DefinitionAnnotater info) {
@@ -55,7 +55,7 @@ public class GetSnapshotGlobalValueFunction extends AbstractFunctionInvoker impl
     if (values == null) {
       throw new InvokeInvalidArgumentException(0, "Snapshot does not contain value");
     }
-    return Arrays.asList(UnstructuredMarketDataSnapshotUtil.getOverrideValue(values), UnstructuredMarketDataSnapshotUtil.getMarketValue(values));
+    return ImmutableList.of(UnstructuredMarketDataSnapshotUtil.getOverrideValue(values), UnstructuredMarketDataSnapshotUtil.getMarketValue(values));
   }
 
   // AbstractFunctionInvoker

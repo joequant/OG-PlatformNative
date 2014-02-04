@@ -16,8 +16,8 @@ import com.opengamma.language.Data;
 import com.opengamma.language.Value;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.FunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -91,7 +91,7 @@ public class ExternalIdBundleFunction implements PublishedFunction {
   public MetaFunction getMetaFunction() {
     final List<MetaParameter> args = new ArrayList<MetaParameter>(MAX_PARAMETERS);
     for (int i = 1; i <= MAX_PARAMETERS; i++) {
-      final MetaParameter param = new MetaParameter("id" + i, JavaTypeInfo.builder(Data.class).allowNull().get());
+      final MetaParameter param = new MetaParameter("id" + i, TransportTypes.DATA_ALLOW_NULL);
       param.setDescription("The " + Ordinal.get(i) + " identifier (or array of identifiers) to add to the bundle");
       args.add(param);
     }

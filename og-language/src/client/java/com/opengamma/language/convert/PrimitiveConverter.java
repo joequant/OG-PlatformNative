@@ -10,6 +10,15 @@ import static com.opengamma.language.convert.TypeMap.MAJOR_LOSS;
 import static com.opengamma.language.convert.TypeMap.MINOR_LOSS;
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS_NON_PREFERRED;
+import static com.opengamma.language.definition.types.PrimitiveTypes.BOOLEAN;
+import static com.opengamma.language.definition.types.PrimitiveTypes.BYTE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.CHARACTER;
+import static com.opengamma.language.definition.types.PrimitiveTypes.DOUBLE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.FLOAT;
+import static com.opengamma.language.definition.types.PrimitiveTypes.INTEGER;
+import static com.opengamma.language.definition.types.PrimitiveTypes.LONG;
+import static com.opengamma.language.definition.types.PrimitiveTypes.SHORT;
+import static com.opengamma.language.definition.types.PrimitiveTypes.STRING;
 
 import java.util.Map;
 
@@ -25,16 +34,6 @@ public class PrimitiveConverter extends AbstractTypeConverter {
    * Default instance.
    */
   public static final PrimitiveConverter INSTANCE = new PrimitiveConverter();
-
-  private static final JavaTypeInfo<Boolean> BOOLEAN = JavaTypeInfo.builder(Boolean.class).get();
-  private static final JavaTypeInfo<Byte> BYTE = JavaTypeInfo.builder(Byte.class).get();
-  private static final JavaTypeInfo<Character> CHARACTER = JavaTypeInfo.builder(Character.class).get();
-  private static final JavaTypeInfo<Double> DOUBLE = JavaTypeInfo.builder(Double.class).get();
-  private static final JavaTypeInfo<Float> FLOAT = JavaTypeInfo.builder(Float.class).get();
-  private static final JavaTypeInfo<Integer> INTEGER = JavaTypeInfo.builder(Integer.class).get();
-  private static final JavaTypeInfo<Long> LONG = JavaTypeInfo.builder(Long.class).get();
-  private static final JavaTypeInfo<Short> SHORT = JavaTypeInfo.builder(Short.class).get();
-  private static final JavaTypeInfo<String> STRING = JavaTypeInfo.builder(String.class).get();
 
   private static final TypeMap TO_BOOLEAN = TypeMap.of(MINOR_LOSS, CHARACTER, STRING).with(MAJOR_LOSS, BYTE, DOUBLE, FLOAT, INTEGER, LONG, SHORT);
   private static final TypeMap TO_BYTE = TypeMap.of(ZERO_LOSS, BOOLEAN, INTEGER, LONG, SHORT, STRING).with(MINOR_LOSS, DOUBLE, FLOAT);

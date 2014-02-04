@@ -6,9 +6,9 @@
 
 package com.opengamma.language.view;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.DataNotFoundException;
 import com.opengamma.core.config.impl.ConfigItem;
 import com.opengamma.engine.view.ViewDefinition;
@@ -21,6 +21,8 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.EngineTypes;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.procedure.AbstractProcedureInvoker;
 import com.opengamma.language.procedure.MetaProcedure;
@@ -45,10 +47,10 @@ public class StoreViewDefinitionProcedure extends AbstractProcedureInvoker.Singl
   private static final int MASTER = 2;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter viewDefinition = new MetaParameter("viewDefinition", JavaTypeInfo.builder(ViewDefinition.class).get());
-    final MetaParameter identifier = new MetaParameter("identifier", JavaTypeInfo.builder(UniqueId.class).allowNull().get());
+    final MetaParameter viewDefinition = new MetaParameter("viewDefinition", EngineTypes.VIEW_DEFINITION);
+    final MetaParameter identifier = new MetaParameter("identifier", OpenGammaTypes.UNIQUE_ID_ALLOW_NULL);
     final MetaParameter target = new MetaParameter("master", JavaTypeInfo.builder(MasterID.class).defaultValue(MasterID.SESSION).get());
-    return Arrays.asList(viewDefinition, identifier, target);
+    return ImmutableList.of(viewDefinition, identifier, target);
   }
 
   private StoreViewDefinitionProcedure(final DefinitionAnnotater info) {

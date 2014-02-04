@@ -15,7 +15,8 @@ import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
-import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.TimeSeriesTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.invoke.TypeConverterProvider;
 import com.opengamma.language.invoke.TypeConverterProviderBean;
 import com.opengamma.language.test.AbstractConverterTest;
@@ -42,13 +43,13 @@ public class LocalDateDoubleTimeSeriesConverterTest extends AbstractConverterTes
 
   public void testFromData() {
     final LocalDateDoubleTimeSeriesConverter converter = new LocalDateDoubleTimeSeriesConverter();
-    assertValidConversion(converter, createData(), JavaTypeInfo.builder(LocalDateDoubleTimeSeries.class).get(), createTimeSeries());
+    assertValidConversion(converter, createData(), TimeSeriesTypes.LOCAL_DATE_DOUBLE_TIME_SERIES, createTimeSeries());
   }
 
-  public void testToData () {
-    final LocalDateDoubleTimeSeriesConverter converter = new LocalDateDoubleTimeSeriesConverter ();
+  public void testToData() {
+    final LocalDateDoubleTimeSeriesConverter converter = new LocalDateDoubleTimeSeriesConverter();
     final Data expectedData = RDataInfo.create().wrapperClass("TimeSeries").applyTo(createData());
-    assertValidConversion(converter, createTimeSeries(), JavaTypeInfo.builder(Data.class).get(), expectedData);
+    assertValidConversion(converter, createTimeSeries(), TransportTypes.DATA, expectedData);
   }
 
   @Override

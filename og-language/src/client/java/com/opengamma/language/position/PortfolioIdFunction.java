@@ -14,8 +14,8 @@ import com.opengamma.language.client.CombiningMaster;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -38,23 +38,23 @@ public class PortfolioIdFunction extends AbstractFunctionInvoker implements Publ
    * Default instance.
    */
   public static final PortfolioIdFunction INSTANCE = new PortfolioIdFunction();
-  
+
   private final MetaFunction _meta;
-  
+
   private static List<MetaParameter> parameters() {
-    final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).get());
+    final MetaParameter name = new MetaParameter("name", PrimitiveTypes.STRING);
     return ImmutableList.of(name);
   }
-  
+
   protected PortfolioIdFunction() {
     this(new DefinitionAnnotater(PortfolioIdFunction.class));
   }
-  
+
   private PortfolioIdFunction(final DefinitionAnnotater info) {
     super(info.annotate(parameters()));
     _meta = info.annotate(new MetaFunction(Categories.POSITION, "PortfolioId", getParameters(), this));
   }
-  
+
   public UniqueId invoke(final CombinedPortfolioMaster combinedPortfolioMaster, final String portfolioName) {
     final PortfolioSearchRequest request = new PortfolioSearchRequest();
     request.setName(portfolioName);
@@ -86,7 +86,7 @@ public class PortfolioIdFunction extends AbstractFunctionInvoker implements Publ
       return resultIds.get(0);
     } else {
       throw new InvokeInvalidArgumentException("No matching portfolio found");
-    }    
+    }
   }
 
   @Override
@@ -98,6 +98,6 @@ public class PortfolioIdFunction extends AbstractFunctionInvoker implements Publ
   @Override
   public MetaFunction getMetaFunction() {
     return _meta;
-  }  
-  
+  }
+
 }

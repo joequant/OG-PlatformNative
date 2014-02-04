@@ -15,8 +15,8 @@ import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -36,7 +36,7 @@ public class FetchViewDefinitionFunction extends AbstractFunctionInvoker impleme
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter viewDefinitionId = new MetaParameter("id", JavaTypeInfo.builder(UniqueId.class).get());
+    final MetaParameter viewDefinitionId = new MetaParameter("id", OpenGammaTypes.UNIQUE_ID);
     return ImmutableList.of(viewDefinitionId);
   }
 

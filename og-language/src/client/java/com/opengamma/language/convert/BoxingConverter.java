@@ -7,30 +7,27 @@
 package com.opengamma.language.convert;
 
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
-
-import com.opengamma.language.definition.JavaTypeInfo;
+import static com.opengamma.language.definition.types.PrimitiveTypes.BOOLEAN;
+import static com.opengamma.language.definition.types.PrimitiveTypes.BOOLEAN_PRIMITIVE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.BYTE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.BYTE_PRIMITIVE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.CHARACTER;
+import static com.opengamma.language.definition.types.PrimitiveTypes.CHARACTER_PRIMITIVE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.DOUBLE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.DOUBLE_PRIMITIVE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.FLOAT;
+import static com.opengamma.language.definition.types.PrimitiveTypes.FLOAT_PRIMITIVE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.INTEGER;
+import static com.opengamma.language.definition.types.PrimitiveTypes.INTEGER_PRIMITIVE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.LONG;
+import static com.opengamma.language.definition.types.PrimitiveTypes.LONG_PRIMITIVE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.SHORT;
+import static com.opengamma.language.definition.types.PrimitiveTypes.SHORT_PRIMITIVE;
 
 /**
  * Unbox the primitive types.
  */
 public class BoxingConverter extends AbstractMappedConverter {
-
-  private static final JavaTypeInfo<Boolean> BOOLEAN_PRIMITIVE = JavaTypeInfo.builder(boolean.class).get();
-  private static final JavaTypeInfo<Boolean> BOOLEAN_OBJECT = JavaTypeInfo.builder(Boolean.class).get();
-  private static final JavaTypeInfo<Byte> BYTE_PRIMITIVE = JavaTypeInfo.builder(byte.class).get();
-  private static final JavaTypeInfo<Byte> BYTE_OBJECT = JavaTypeInfo.builder(Byte.class).get();
-  private static final JavaTypeInfo<Character> CHARACTER_PRIMITIVE = JavaTypeInfo.builder(char.class).get();
-  private static final JavaTypeInfo<Character> CHARACTER_OBJECT = JavaTypeInfo.builder(Character.class).get();
-  private static final JavaTypeInfo<Double> DOUBLE_PRIMITIVE = JavaTypeInfo.builder(double.class).get();
-  private static final JavaTypeInfo<Double> DOUBLE_OBJECT = JavaTypeInfo.builder(Double.class).get();
-  private static final JavaTypeInfo<Float> FLOAT_PRIMITIVE = JavaTypeInfo.builder(float.class).get();
-  private static final JavaTypeInfo<Float> FLOAT_OBJECT = JavaTypeInfo.builder(Float.class).get();
-  private static final JavaTypeInfo<Integer> INTEGER_PRIMITIVE = JavaTypeInfo.builder(int.class).get();
-  private static final JavaTypeInfo<Integer> INTEGER_OBJECT = JavaTypeInfo.builder(Integer.class).get();
-  private static final JavaTypeInfo<Long> LONG_PRIMITIVE = JavaTypeInfo.builder(long.class).get();
-  private static final JavaTypeInfo<Long> LONG_OBJECT = JavaTypeInfo.builder(Long.class).get();
-  private static final JavaTypeInfo<Short> SHORT_PRIMITIVE = JavaTypeInfo.builder(short.class).get();
-  private static final JavaTypeInfo<Short> SHORT_OBJECT = JavaTypeInfo.builder(Short.class).get();
 
   private static final Action<?, ?> s_identity = new Action<Object, Object>() {
     @Override
@@ -50,14 +47,14 @@ public class BoxingConverter extends AbstractMappedConverter {
   }
 
   protected BoxingConverter() {
-    conversion(ZERO_LOSS, BOOLEAN_PRIMITIVE, BOOLEAN_OBJECT, BoxingConverter.<Boolean>identity(), BoxingConverter.<Boolean>identity());
-    conversion(ZERO_LOSS, BYTE_PRIMITIVE, BYTE_OBJECT, BoxingConverter.<Byte>identity(), BoxingConverter.<Byte>identity());
-    conversion(ZERO_LOSS, CHARACTER_PRIMITIVE, CHARACTER_OBJECT, BoxingConverter.<Character>identity(), BoxingConverter.<Character>identity());
-    conversion(ZERO_LOSS, DOUBLE_PRIMITIVE, DOUBLE_OBJECT, BoxingConverter.<Double>identity(), BoxingConverter.<Double>identity());
-    conversion(ZERO_LOSS, FLOAT_PRIMITIVE, FLOAT_OBJECT, BoxingConverter.<Float>identity(), BoxingConverter.<Float>identity());
-    conversion(ZERO_LOSS, INTEGER_PRIMITIVE, INTEGER_OBJECT, BoxingConverter.<Integer>identity(), BoxingConverter.<Integer>identity());
-    conversion(ZERO_LOSS, LONG_PRIMITIVE, LONG_OBJECT, BoxingConverter.<Long>identity(), BoxingConverter.<Long>identity());
-    conversion(ZERO_LOSS, SHORT_PRIMITIVE, SHORT_OBJECT, BoxingConverter.<Short>identity(), BoxingConverter.<Short>identity());
+    conversion(ZERO_LOSS, BOOLEAN_PRIMITIVE, BOOLEAN, BoxingConverter.<Boolean>identity(), BoxingConverter.<Boolean>identity());
+    conversion(ZERO_LOSS, BYTE_PRIMITIVE, BYTE, BoxingConverter.<Byte>identity(), BoxingConverter.<Byte>identity());
+    conversion(ZERO_LOSS, CHARACTER_PRIMITIVE, CHARACTER, BoxingConverter.<Character>identity(), BoxingConverter.<Character>identity());
+    conversion(ZERO_LOSS, DOUBLE_PRIMITIVE, DOUBLE, BoxingConverter.<Double>identity(), BoxingConverter.<Double>identity());
+    conversion(ZERO_LOSS, FLOAT_PRIMITIVE, FLOAT, BoxingConverter.<Float>identity(), BoxingConverter.<Float>identity());
+    conversion(ZERO_LOSS, INTEGER_PRIMITIVE, INTEGER, BoxingConverter.<Integer>identity(), BoxingConverter.<Integer>identity());
+    conversion(ZERO_LOSS, LONG_PRIMITIVE, LONG, BoxingConverter.<Long>identity(), BoxingConverter.<Long>identity());
+    conversion(ZERO_LOSS, SHORT_PRIMITIVE, SHORT, BoxingConverter.<Short>identity(), BoxingConverter.<Short>identity());
   }
 
 }

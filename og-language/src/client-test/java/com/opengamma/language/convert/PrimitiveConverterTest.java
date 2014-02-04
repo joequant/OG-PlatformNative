@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.util.test.TestGroup;
 
@@ -64,14 +65,10 @@ public class PrimitiveConverterTest extends AbstractConverterTest {
       new Object[] {Short.MIN_VALUE, true, null, null, (double) Short.MIN_VALUE, (float) Short.MIN_VALUE, (int) Short.MIN_VALUE, (long) Short.MIN_VALUE, null,
           Short.toString(Short.MIN_VALUE) },
       new Object[] {Short.MAX_VALUE, true, null, null, (double) Short.MAX_VALUE, (float) Short.MAX_VALUE, (int) Short.MAX_VALUE, (long) Short.MAX_VALUE, null,
-          Short.toString(Short.MAX_VALUE) },
-      new Object[] {"", null, null, null, null, null, null, null, null, null },
-      new Object[] {"T", true, null, 'T', null, null, null, null, null, null },
-      new Object[] {"True", true, null, null, null, null, null, null, null, null },
-      new Object[] {"F", false, null, 'F', null, null, null, null, null, null },
-      new Object[] {"False", false, null, null, null, null, null, null, null, null },
-      new Object[] {"0", null, (byte) 0, '0', 0.0d, 0.0f, 0, 0L, (short) 0, null },
-      new Object[] {"42", null, (byte) 42, null, 42.0d, 42.0f, 42, 42L, (short) 42, null },
+          Short.toString(Short.MAX_VALUE) }, new Object[] {"", null, null, null, null, null, null, null, null, null },
+      new Object[] {"T", true, null, 'T', null, null, null, null, null, null }, new Object[] {"True", true, null, null, null, null, null, null, null, null },
+      new Object[] {"F", false, null, 'F', null, null, null, null, null, null }, new Object[] {"False", false, null, null, null, null, null, null, null, null },
+      new Object[] {"0", null, (byte) 0, '0', 0.0d, 0.0f, 0, 0L, (short) 0, null }, new Object[] {"42", null, (byte) 42, null, 42.0d, 42.0f, 42, 42L, (short) 42, null },
       new Object[] {"3.14", null, null, null, 3.14d, 3.14f, null, null, null, null } };
 
   @SuppressWarnings("unchecked")
@@ -103,56 +100,47 @@ public class PrimitiveConverterTest extends AbstractConverterTest {
 
   @Test
   public void testToBoolean() {
-    final JavaTypeInfo<Boolean> type = JavaTypeInfo.builder(Boolean.class).get();
-    assertConversions(type, 1);
+    assertConversions(PrimitiveTypes.BOOLEAN, 1);
   }
 
   @Test
   public void testToByte() {
-    final JavaTypeInfo<Byte> type = JavaTypeInfo.builder(Byte.class).get();
-    assertConversions(type, 2);
+    assertConversions(PrimitiveTypes.BYTE, 2);
   }
 
   @Test
   public void testToCharacter() {
-    final JavaTypeInfo<Character> type = JavaTypeInfo.builder(Character.class).get();
-    assertConversions(type, 3);
+    assertConversions(PrimitiveTypes.CHARACTER, 3);
   }
 
   @Test
   public void testToDouble() {
-    final JavaTypeInfo<Double> type = JavaTypeInfo.builder(Double.class).get();
-    assertConversions(type, 4);
+    assertConversions(PrimitiveTypes.DOUBLE, 4);
   }
 
   @Test
   public void testToFloat() {
-    final JavaTypeInfo<Float> type = JavaTypeInfo.builder(Float.class).get();
-    assertConversions(type, 5);
+    assertConversions(PrimitiveTypes.FLOAT, 5);
   }
 
   @Test
   public void testToInteger() {
-    final JavaTypeInfo<Integer> type = JavaTypeInfo.builder(Integer.class).get();
-    assertConversions(type, 6);
+    assertConversions(PrimitiveTypes.INTEGER, 6);
   }
 
   @Test
   public void testToLong() {
-    final JavaTypeInfo<Long> type = JavaTypeInfo.builder(Long.class).get();
-    assertConversions(type, 7);
+    assertConversions(PrimitiveTypes.LONG, 7);
   }
 
   @Test
   public void testToShort() {
-    final JavaTypeInfo<Short> type = JavaTypeInfo.builder(Short.class).get();
-    assertConversions(type, 8);
+    assertConversions(PrimitiveTypes.SHORT, 8);
   }
 
   @Test
   public void testToString() {
-    final JavaTypeInfo<String> type = JavaTypeInfo.builder(String.class).get();
-    assertConversions(type, 9);
+    assertConversions(PrimitiveTypes.STRING, 9);
   }
 
 }

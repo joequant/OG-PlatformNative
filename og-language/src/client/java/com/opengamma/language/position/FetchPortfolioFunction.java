@@ -6,17 +6,17 @@
 
 package com.opengamma.language.position;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.DataNotFoundException;
 import com.opengamma.id.UniqueId;
 import com.opengamma.id.VersionCorrection;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -31,14 +31,14 @@ public class FetchPortfolioFunction extends AbstractFunctionInvoker implements P
    * Default instance
    */
   public static final FetchPortfolioFunction INSTANCE = new FetchPortfolioFunction();
-  
+
   private final MetaFunction _meta;
-  
+
   private static final int IDENTIFIER = 0;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter identifier = new MetaParameter("identifier", JavaTypeInfo.builder(UniqueId.class).get());
-    return Arrays.asList(identifier);
+    final MetaParameter identifier = new MetaParameter("identifier", OpenGammaTypes.UNIQUE_ID);
+    return ImmutableList.of(identifier);
   }
 
   private FetchPortfolioFunction(final DefinitionAnnotater info) {

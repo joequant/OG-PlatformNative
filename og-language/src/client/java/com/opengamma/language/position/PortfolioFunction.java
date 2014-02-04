@@ -6,9 +6,9 @@
 
 package com.opengamma.language.position;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.position.Portfolio;
 import com.opengamma.core.position.PortfolioNode;
 import com.opengamma.core.position.impl.SimplePortfolio;
@@ -16,8 +16,9 @@ import com.opengamma.core.position.impl.SimplePortfolioNode;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -38,9 +39,9 @@ public class PortfolioFunction extends AbstractFunctionInvoker implements Publis
   private static final int ROOT_NODE = 1;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).get());
-    final MetaParameter node = new MetaParameter("rootNode", JavaTypeInfo.builder(PortfolioNode.class).get());
-    return Arrays.asList(name, node);
+    final MetaParameter name = new MetaParameter("name", PrimitiveTypes.STRING);
+    final MetaParameter node = new MetaParameter("rootNode", CoreModelTypes.PORTFOLIO_NODE);
+    return ImmutableList.of(name, node);
   }
 
   private PortfolioFunction(final DefinitionAnnotater info) {

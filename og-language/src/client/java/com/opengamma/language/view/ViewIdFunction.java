@@ -15,8 +15,8 @@ import com.opengamma.id.VersionCorrection;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -36,7 +36,7 @@ public class ViewIdFunction extends AbstractFunctionInvoker implements Published
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).get());
+    final MetaParameter name = new MetaParameter("name", PrimitiveTypes.STRING);
     return ImmutableList.of(name);
   }
 

@@ -6,11 +6,11 @@
 
 package com.opengamma.language.value;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.threeten.bp.Instant;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.engine.view.helper.AvailableOutputs;
 import com.opengamma.engine.view.helper.AvailableOutputsProvider;
 import com.opengamma.id.UniqueId;
@@ -19,6 +19,8 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.ThreeTenTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -46,11 +48,11 @@ public class GetAvailableOutputsFunction extends AbstractFunctionInvoker impleme
   private static final int EVALUATION_TIME = 3;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter portfolio = new MetaParameter("portfolio", JavaTypeInfo.builder(UniqueId.class).get());
+    final MetaParameter portfolio = new MetaParameter("portfolio", OpenGammaTypes.UNIQUE_ID);
     final MetaParameter nodeSample = new MetaParameter("nodeSample", JavaTypeInfo.builder(Integer.class).defaultValue(DEFAULT_NODE_SAMPLE).get());
     final MetaParameter positionSample = new MetaParameter("positionSample", JavaTypeInfo.builder(Integer.class).defaultValue(DEFAULT_POSITION_SAMPLE).get());
-    final MetaParameter evaluationTime = new MetaParameter("evaluationTime", JavaTypeInfo.builder(Instant.class).allowNull().get());
-    return Arrays.asList(portfolio, nodeSample, positionSample, evaluationTime);
+    final MetaParameter evaluationTime = new MetaParameter("evaluationTime", ThreeTenTypes.INSTANT_ALLOW_NULL);
+    return ImmutableList.of(portfolio, nodeSample, positionSample, evaluationTime);
   }
 
   private GetAvailableOutputsFunction(final DefinitionAnnotater info) {
@@ -62,7 +64,8 @@ public class GetAvailableOutputsFunction extends AbstractFunctionInvoker impleme
     this(new DefinitionAnnotater(GetAvailableOutputsFunction.class));
   }
 
-  public static AvailableOutputs invoke(final AvailableOutputsProvider provider, final UniqueId portfolio, final Integer nodeSample, final Integer positionSample, final Instant evaluationTime) {
+  public static AvailableOutputs invoke(final AvailableOutputsProvider provider, final UniqueId portfolio, final Integer nodeSample, final Integer positionSample,
+      final Instant evaluationTime) {
     return provider.getPortfolioOutputs(portfolio, evaluationTime, nodeSample, positionSample);
   }
 
@@ -77,8 +80,8 @@ public class GetAvailableOutputsFunction extends AbstractFunctionInvoker impleme
 
   @Override
   protected Object invokeImpl(final SessionContext sessionContext, final Object[] parameters) {
-    return invoke(sessionContext.getGlobalContext().getAvailableOutputsProvider(), (UniqueId) parameters[PORTFOLIO], (Integer) parameters[NODE_SAMPLE], (Integer) parameters[POSITION_SAMPLE],
-        (Instant) parameters[EVALUATION_TIME]);
+    return invoke(sessionContext.getGlobalContext().getAvailableOutputsProvider(), (UniqueId) parameters[PORTFOLIO], (Integer) parameters[NODE_SAMPLE],
+        (Integer) parameters[POSITION_SAMPLE], (Instant) parameters[EVALUATION_TIME]);
   }
 
 }

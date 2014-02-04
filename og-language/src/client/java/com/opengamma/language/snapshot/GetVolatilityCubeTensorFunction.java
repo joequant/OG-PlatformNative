@@ -7,12 +7,12 @@
 package com.opengamma.language.snapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
 import com.opengamma.core.marketdatasnapshot.VolatilityPoint;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableVolatilityCubeSnapshot;
@@ -20,8 +20,9 @@ import com.opengamma.language.Value;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -40,10 +41,8 @@ public class GetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("snapshot", JavaTypeInfo.builder(ManageableVolatilityCubeSnapshot.class).get()),
-        new MetaParameter("marketValue", JavaTypeInfo.builder(Boolean.class).defaultValue(Boolean.TRUE).get()),
-        new MetaParameter("overrideValue", JavaTypeInfo.builder(Boolean.class).defaultValue(Boolean.FALSE).get()));
+    return ImmutableList.of(new MetaParameter("snapshot", CoreModelTypes.MANAGEABLE_VOLATILITY_CUBE_SNAPSHOT), new MetaParameter("marketValue", PrimitiveTypes.BOOLEAN_DEFAULT_TRUE),
+        new MetaParameter("overrideValue", PrimitiveTypes.BOOLEAN_DEFAULT_FALSE));
   }
 
   private GetVolatilityCubeTensorFunction(final DefinitionAnnotater info) {

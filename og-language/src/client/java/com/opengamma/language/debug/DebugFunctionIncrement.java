@@ -6,17 +6,17 @@
 
 package com.opengamma.language.debug;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.FunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -65,7 +65,7 @@ public class DebugFunctionIncrement implements PublishedFunction {
 
   @Override
   public MetaFunction getMetaFunction() {
-    final List<MetaParameter> args = Arrays.asList(new MetaParameter("x", JavaTypeInfo.builder(Data.class).get()));
+    final List<MetaParameter> args = ImmutableList.of(new MetaParameter("x", TransportTypes.DATA));
     final FunctionInvoker invoker = new AbstractFunctionInvoker(args) {
       @Override
       public Object invokeImpl(SessionContext sessionContext, Object[] parameters) {

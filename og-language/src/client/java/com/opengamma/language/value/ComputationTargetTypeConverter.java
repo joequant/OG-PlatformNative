@@ -9,15 +9,13 @@ package com.opengamma.language.value;
 import com.opengamma.engine.target.ComputationTargetType;
 import com.opengamma.language.convert.AbstractMappedConverter;
 import com.opengamma.language.convert.TypeMap;
-import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.EngineTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 
 /**
  * Converts {@link ComputationTargetType} instances to/from their string representation.
  */
 public class ComputationTargetTypeConverter extends AbstractMappedConverter {
-
-  private static final JavaTypeInfo<ComputationTargetType> COMPUTATION_TARGET_TYPE = JavaTypeInfo.builder(ComputationTargetType.class).allowNull().get();
-  private static final JavaTypeInfo<String> STRING = JavaTypeInfo.builder(String.class).allowNull().get();
 
   /**
    * Default instance.
@@ -25,7 +23,7 @@ public class ComputationTargetTypeConverter extends AbstractMappedConverter {
   public static final ComputationTargetTypeConverter INSTANCE = new ComputationTargetTypeConverter();
 
   protected ComputationTargetTypeConverter() {
-    conversion(TypeMap.ZERO_LOSS, COMPUTATION_TARGET_TYPE, STRING, new Action<ComputationTargetType, String>() {
+    conversion(TypeMap.ZERO_LOSS, EngineTypes.COMPUTATION_TARGET_TYPE_ALLOW_NULL, PrimitiveTypes.STRING_ALLOW_NULL, new Action<ComputationTargetType, String>() {
       @Override
       protected String convert(final ComputationTargetType value) {
         return value.toString();

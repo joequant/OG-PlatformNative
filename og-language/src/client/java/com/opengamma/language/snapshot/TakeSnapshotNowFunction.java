@@ -29,8 +29,8 @@ import com.opengamma.language.context.GlobalContext;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -61,7 +61,7 @@ public class TakeSnapshotNowFunction extends AbstractFunctionInvoker implements 
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return ImmutableList.of(new MetaParameter("view_client_id", JavaTypeInfo.builder(UniqueId.class).get()));
+    return ImmutableList.of(new MetaParameter("view_client_id", OpenGammaTypes.UNIQUE_ID));
   }
 
   protected TakeSnapshotNowFunction() {
@@ -82,7 +82,8 @@ public class TakeSnapshotNowFunction extends AbstractFunctionInvoker implements 
       resultListener.awaitResult();
 
       if (resultListener.getCycleReference() != null) {
-        final MarketDataSnapshotter snapshotter = new MarketDataSnapshotterImpl(globalContext.getComputationTargetResolver(), globalContext.getVolatilityCubeDefinitionSource(), globalContext.getHistoricalTimeSeriesSource());
+        final MarketDataSnapshotter snapshotter = new MarketDataSnapshotterImpl(globalContext.getComputationTargetResolver(), globalContext.getVolatilityCubeDefinitionSource(),
+            globalContext.getHistoricalTimeSeriesSource());
         return snapshotter.createSnapshot(viewClient.getViewClient(), resultListener.getCycleReference());
       } else {
         throw new OpenGammaRuntimeException("Unable to obtain cycle from view client " + viewClient.getViewClient().getUniqueId(), resultListener.getException());

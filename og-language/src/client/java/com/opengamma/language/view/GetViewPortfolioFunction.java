@@ -14,8 +14,8 @@ import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -31,43 +31,43 @@ public class GetViewPortfolioFunction extends AbstractFunctionInvoker implements
    * Default instance.
    */
   public static final GetViewPortfolioFunction INSTANCE = new GetViewPortfolioFunction();
-  
+
   private final MetaFunction _meta;
-  
+
   // TODO: this should take a ViewDefinition object and we use type conversion to go from a unique id to the object
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter viewDefinitionId = new MetaParameter("id", JavaTypeInfo.builder(UniqueId.class).get());
+    final MetaParameter viewDefinitionId = new MetaParameter("id", OpenGammaTypes.UNIQUE_ID);
     return ImmutableList.of(viewDefinitionId);
   }
-  
+
   protected GetViewPortfolioFunction() {
-    this (new DefinitionAnnotater(GetViewPortfolioFunction.class));
+    this(new DefinitionAnnotater(GetViewPortfolioFunction.class));
   }
-  
+
   private GetViewPortfolioFunction(final DefinitionAnnotater info) {
     super(info.annotate(parameters()));
     _meta = info.annotate(new MetaFunction(Categories.VIEW, "GetViewPortfolio", getParameters(), this));
   }
-  
+
   @Override
   public MetaFunction getMetaFunction() {
     return _meta;
   }
-  
+
   public UniqueId invoke(ConfigSource configSource, UniqueId viewDefinitionId) {
-    
+
     ViewDefinition viewDefinition = configSource.getConfig(ViewDefinition.class, viewDefinitionId);
     if (viewDefinition == null) {
-      throw  new InvokeInvalidArgumentException("View definition not found");
+      throw new InvokeInvalidArgumentException("View definition not found");
     }
     return viewDefinition.getPortfolioId();
   }
 
   @Override
   protected Object invokeImpl(SessionContext sessionContext, Object[] parameters) throws AsynchronousExecution {
-    final ConfigSource configSource = sessionContext.getGlobalContext().getViewProcessor().getConfigSource();  
-    final UniqueId viewDefinitionId  = (UniqueId) parameters[0]; 
+    final ConfigSource configSource = sessionContext.getGlobalContext().getViewProcessor().getConfigSource();
+    final UniqueId viewDefinitionId = (UniqueId) parameters[0];
     return invoke(configSource, viewDefinitionId);
   }
 

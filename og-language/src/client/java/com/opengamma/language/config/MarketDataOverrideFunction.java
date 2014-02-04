@@ -7,10 +7,10 @@
 package com.opengamma.language.config;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.OpenGammaRuntimeException;
 import com.opengamma.engine.ComputationTargetSpecification;
 import com.opengamma.engine.target.ComputationTargetRequirement;
@@ -26,6 +26,10 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.EngineTypes;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -41,9 +45,6 @@ public class MarketDataOverrideFunction extends AbstractFunctionInvoker implemen
    */
   public static final MarketDataOverrideFunction INSTANCE = new MarketDataOverrideFunction();
 
-  private static final JavaTypeInfo<ExternalId> EXTERNAL_ID = JavaTypeInfo.builder(ExternalId.class).get();
-  private static final JavaTypeInfo<UniqueId> UNIQUE_ID = JavaTypeInfo.builder(UniqueId.class).get();
-
   private static final int VALUE = 0;
   private static final int VALUE_REQUIREMENT = 1;
   private static final int VALUE_NAME = 2;
@@ -54,13 +55,9 @@ public class MarketDataOverrideFunction extends AbstractFunctionInvoker implemen
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("value", JavaTypeInfo.builder(Data.class).allowNull().get()),
-        new MetaParameter("valueRequirement", JavaTypeInfo.builder(ValueRequirement.class).allowNull().get()),
-        new MetaParameter("valueName", JavaTypeInfo.builder(String.class).allowNull().get()),
-        new MetaParameter("identifier", JavaTypeInfo.builder(Data.class).allowNull().get()),
-        new MetaParameter("type", JavaTypeInfo.builder(ComputationTargetType.class).allowNull().get()),
-        new MetaParameter("operation", JavaTypeInfo.builder(Operation.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("value", TransportTypes.DATA_ALLOW_NULL), new MetaParameter("valueRequirement", EngineTypes.VALUE_REQUIREMENT_ALLOW_NULL), new MetaParameter(
+        "valueName", PrimitiveTypes.STRING_ALLOW_NULL), new MetaParameter("identifier", TransportTypes.DATA_ALLOW_NULL), new MetaParameter("type",
+        EngineTypes.COMPUTATION_TARGET_TYPE_ALLOW_NULL), new MetaParameter("operation", JavaTypeInfo.builder(Operation.class).allowNull().get()));
   }
 
   private MarketDataOverrideFunction(final DefinitionAnnotater info) {
@@ -149,10 +146,10 @@ public class MarketDataOverrideFunction extends AbstractFunctionInvoker implemen
         throw new InvokeInvalidArgumentException(IDENTIFIER, "argument must be supplied when value requirement is omitted");
       }
       if (parameters[TYPE] == null) {
-        final ExternalId externalId = sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, parameters[IDENTIFIER], EXTERNAL_ID);
+        final ExternalId externalId = sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, parameters[IDENTIFIER], OpenGammaTypes.EXTERNAL_ID);
         return invoke(convertData(value), (String) parameters[VALUE_NAME], externalId, (Operation) parameters[OPERATION]);
       } else {
-        final UniqueId uniqueId = sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, parameters[IDENTIFIER], UNIQUE_ID);
+        final UniqueId uniqueId = sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, parameters[IDENTIFIER], OpenGammaTypes.UNIQUE_ID);
         return invoke(convertData(value), (String) parameters[VALUE_NAME], uniqueId, (ComputationTargetType) parameters[TYPE], (Operation) parameters[OPERATION]);
       }
     } else {

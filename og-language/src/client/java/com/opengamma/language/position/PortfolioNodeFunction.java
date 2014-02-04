@@ -6,9 +6,9 @@
 
 package com.opengamma.language.position;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.position.PortfolioNode;
 import com.opengamma.core.position.Position;
 import com.opengamma.core.position.impl.SimplePortfolioNode;
@@ -17,6 +17,7 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -38,10 +39,10 @@ public class PortfolioNodeFunction extends AbstractFunctionInvoker implements Pu
   private static final int POSITIONS = 2;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).allowNull().get());
+    final MetaParameter name = new MetaParameter("name", PrimitiveTypes.STRING_ALLOW_NULL);
     final MetaParameter nodes = new MetaParameter("nodes", JavaTypeInfo.builder(List.class).allowNull().parameter(JavaTypeInfo.builder(PortfolioNode.class).get()).get());
     final MetaParameter positions = new MetaParameter("positions", JavaTypeInfo.builder(List.class).allowNull().parameter(JavaTypeInfo.builder(Position.class).get()).get());
-    return Arrays.asList(name, nodes, positions);
+    return ImmutableList.of(name, nodes, positions);
   }
 
   private PortfolioNodeFunction(final DefinitionAnnotater info) {

@@ -6,17 +6,19 @@
 
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableMarketDataSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableUnstructuredMarketDataSnapshot;
 import com.opengamma.id.ExternalId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -40,12 +42,8 @@ public class SetSnapshotGlobalValueFunction extends AbstractFunctionInvoker impl
   private static final int MARKET_VALUE = 4;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("snapshot", JavaTypeInfo.builder(ManageableMarketDataSnapshot.class).get()),
-        new MetaParameter("valueName", JavaTypeInfo.builder(String.class).get()),
-        new MetaParameter("identifier", JavaTypeInfo.builder(ExternalId.class).get()),
-        new MetaParameter("overrideValue", JavaTypeInfo.builder(Double.class).allowNull().get()),
-        new MetaParameter("marketValue", JavaTypeInfo.builder(Double.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("snapshot", CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT), new MetaParameter("valueName", PrimitiveTypes.STRING), new MetaParameter(
+        "identifier", OpenGammaTypes.EXTERNAL_ID), new MetaParameter("overrideValue", PrimitiveTypes.DOUBLE_ALLOW_NULL), new MetaParameter("marketValue", PrimitiveTypes.DOUBLE_ALLOW_NULL));
   }
 
   private SetSnapshotGlobalValueFunction(final DefinitionAnnotater info) {

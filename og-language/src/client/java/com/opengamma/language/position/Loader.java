@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.opengamma.core.position.impl.EHCachingPositionSource;
 import com.opengamma.core.position.impl.RemotePositionSource;
 import com.opengamma.language.config.Configuration;
@@ -33,7 +34,7 @@ public class Loader extends ContextInitializationBean {
   private String _configurationEntry = "positionSource";
   private Configuration _configuration;
   private Supplier<URI> _uri;
-  private CacheManager _cacheManager = CacheManager.getInstance();
+  private Supplier<CacheManager> _cacheManager = DEFAULT_CACHE_MANAGER;
 
   public void setConfiguration(final Configuration configuration) {
     ArgumentChecker.notNull(configuration, "configuration");
@@ -55,11 +56,11 @@ public class Loader extends ContextInitializationBean {
 
   public void setCacheManager(final CacheManager cacheManager) {
     ArgumentChecker.notNull(cacheManager, "cacheManager");
-    _cacheManager = cacheManager;
+    _cacheManager = Suppliers.ofInstance(cacheManager);
   }
 
   public CacheManager getCacheManager() {
-    return _cacheManager;
+    return _cacheManager.get();
   }
 
   // ContextInitializationBean

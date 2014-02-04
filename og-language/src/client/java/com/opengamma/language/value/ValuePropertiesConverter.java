@@ -9,15 +9,13 @@ package com.opengamma.language.value;
 import com.opengamma.engine.value.ValueProperties;
 import com.opengamma.language.convert.AbstractMappedConverter;
 import com.opengamma.language.convert.TypeMap;
-import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.EngineTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 
 /**
  * Converts {@link ValueProperties} instances to/from their string representation.
  */
 public class ValuePropertiesConverter extends AbstractMappedConverter {
-
-  private static final JavaTypeInfo<ValueProperties> VALUE_PROPERTIES = JavaTypeInfo.builder(ValueProperties.class).get();
-  private static final JavaTypeInfo<String> STRING = JavaTypeInfo.builder(String.class).get();
 
   /**
    * Default instance.
@@ -25,7 +23,7 @@ public class ValuePropertiesConverter extends AbstractMappedConverter {
   public static final ValuePropertiesConverter INSTANCE = new ValuePropertiesConverter();
 
   protected ValuePropertiesConverter() {
-    conversion(TypeMap.ZERO_LOSS, VALUE_PROPERTIES, STRING, new Action<ValueProperties, String>() {
+    conversion(TypeMap.ZERO_LOSS, EngineTypes.VALUE_PROPERTIES, PrimitiveTypes.STRING, new Action<ValueProperties, String>() {
       @Override
       protected String convert(final ValueProperties value) {
         return value.toString();

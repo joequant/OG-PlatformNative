@@ -15,8 +15,7 @@ import com.opengamma.language.definition.JavaTypeInfo;
  */
 public class ExternalSchemeRankConverter extends AbstractMappedConverter {
 
-  private static final JavaTypeInfo<String[]> STRING_ARRAY = JavaTypeInfo.builder(String[].class).allowNull().get();
-  private static final JavaTypeInfo<ExternalSchemeRank> EXTERNAL_SCHEME_RANK = JavaTypeInfo.builder(ExternalSchemeRank.class).allowNull().get();
+  private static final JavaTypeInfo<String[]> STRING_ARRAY_ALLOW_NULL = JavaTypeInfo.builder(String[].class).allowNull().get();
 
   /**
    * Default instance.
@@ -24,13 +23,13 @@ public class ExternalSchemeRankConverter extends AbstractMappedConverter {
   public static final ExternalSchemeRankConverter INSTANCE = new ExternalSchemeRankConverter();
 
   protected ExternalSchemeRankConverter() {
-    conversion(TypeMap.ZERO_LOSS, STRING_ARRAY, EXTERNAL_SCHEME_RANK, new Action<String[], ExternalSchemeRank>() {
+    conversion(TypeMap.ZERO_LOSS, STRING_ARRAY_ALLOW_NULL, ExternalSchemeRank.TYPE_ALLOW_NULL, new Action<String[], ExternalSchemeRank>() {
       @Override
       protected ExternalSchemeRank convert(final String[] value) {
         return ExternalSchemeRank.ofStrings(value);
       }
     });
-    conversion(TypeMap.MINOR_LOSS, EXTERNAL_SCHEME_RANK, STRING_ARRAY, new Action<ExternalSchemeRank, String[]>() {
+    conversion(TypeMap.MINOR_LOSS, ExternalSchemeRank.TYPE_ALLOW_NULL, STRING_ARRAY_ALLOW_NULL, new Action<ExternalSchemeRank, String[]>() {
       @Override
       protected String[] convert(final ExternalSchemeRank value) {
         return value.asStrings();

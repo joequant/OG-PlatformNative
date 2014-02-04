@@ -8,6 +8,16 @@ package com.opengamma.rstats.convert;
 import static com.opengamma.language.convert.TypeMap.MAJOR_LOSS;
 import static com.opengamma.language.convert.TypeMap.MINOR_LOSS;
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
+import static com.opengamma.language.definition.types.OpenGammaTypes.EXPIRY;
+import static com.opengamma.language.definition.types.OpenGammaTypes.EXPIRY_ALLOW_NULL;
+import static com.opengamma.language.definition.types.ThreeTenTypes.INSTANT;
+import static com.opengamma.language.definition.types.ThreeTenTypes.INSTANT_ALLOW_NULL;
+import static com.opengamma.language.definition.types.ThreeTenTypes.LOCAL_DATE;
+import static com.opengamma.language.definition.types.ThreeTenTypes.LOCAL_DATE_ALLOW_NULL;
+import static com.opengamma.language.definition.types.ThreeTenTypes.ZONED_DATE_TIME;
+import static com.opengamma.language.definition.types.ThreeTenTypes.ZONED_DATE_TIME_ALLOW_NULL;
+import static com.opengamma.language.definition.types.TransportTypes.VALUE;
+import static com.opengamma.language.definition.types.TransportTypes.VALUE_ALLOW_NULL;
 import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
 
 import java.util.Map;
@@ -34,32 +44,21 @@ import com.opengamma.util.time.Expiry;
  * <p>
  * The following are represented as strings:
  * <ul>
- *  <li>LocalDate
+ * <li>LocalDate
  * </ul>
  * The following are represented as doubles (seconds since 1970-01-01 epoch):
  * <ul>
- *  <li>Expiry*
- *  <li>Instant
- *  <li>ZonedDateTime*
+ * <li>Expiry*
+ * <li>Instant
+ * <li>ZonedDateTime*
  * </ul>
  * * although sent to R as a double, they can also be received as strings
- * 
  */
 public class DateTimeConverter extends AbstractTypeConverter {
 
-  private static final JavaTypeInfo<Value> VALUE = JavaTypeInfo.builder(Value.class).get();
-  private static final JavaTypeInfo<Value> VALUE_ALLOW_NULL = JavaTypeInfo.builder(Value.class).allowNull().get();
-  private static final JavaTypeInfo<Instant> INSTANT = JavaTypeInfo.builder(Instant.class).get();
-  private static final JavaTypeInfo<Instant> INSTANT_ALLOW_NULL = JavaTypeInfo.builder(Instant.class).allowNull().get();
-  private static final JavaTypeInfo<LocalDate> LOCAL_DATE = JavaTypeInfo.builder(LocalDate.class).get();
-  private static final JavaTypeInfo<LocalDate> LOCAL_DATE_ALLOW_NULL = JavaTypeInfo.builder(LocalDate.class).allowNull().get();
-  private static final JavaTypeInfo<ZonedDateTime> ZONED_DATE_TIME = JavaTypeInfo.builder(ZonedDateTime.class).get();
-  private static final JavaTypeInfo<ZonedDateTime> ZONED_DATE_TIME_ALLOW_NULL = JavaTypeInfo.builder(ZonedDateTime.class).allowNull().get();
-  private static final JavaTypeInfo<Expiry> EXPIRY = JavaTypeInfo.builder(Expiry.class).get();
-  private static final JavaTypeInfo<Expiry> EXPIRY_ALLOW_NULL = JavaTypeInfo.builder(Expiry.class).allowNull().get();
-
   private static final TypeMap TO_VALUE = TypeMap.of(ZERO_LOSS, INSTANT, LOCAL_DATE).with(MINOR_LOSS, ZONED_DATE_TIME).with(MAJOR_LOSS, EXPIRY);
-  private static final TypeMap TO_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, INSTANT_ALLOW_NULL, LOCAL_DATE_ALLOW_NULL).with(MINOR_LOSS, ZONED_DATE_TIME_ALLOW_NULL).with(MAJOR_LOSS, EXPIRY_ALLOW_NULL);
+  private static final TypeMap TO_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, INSTANT_ALLOW_NULL, LOCAL_DATE_ALLOW_NULL).with(MINOR_LOSS, ZONED_DATE_TIME_ALLOW_NULL)
+      .with(MAJOR_LOSS, EXPIRY_ALLOW_NULL);
   private static final TypeMap FROM_VALUE = TypeMap.of(MINOR_LOSS, VALUE);
   private static final TypeMap FROM_VALUE_ALLOW_NULL = TypeMap.of(MINOR_LOSS, VALUE_ALLOW_NULL);
 

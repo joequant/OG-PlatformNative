@@ -7,17 +7,18 @@
 package com.opengamma.language.position;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.position.Position;
 import com.opengamma.core.position.impl.SimplePosition;
 import com.opengamma.id.ExternalId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -40,10 +41,10 @@ public class PositionFunction extends AbstractFunctionInvoker implements Publish
   private static final int QUANTITY = 1;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter security = new MetaParameter("security", JavaTypeInfo.builder(ExternalId.class).get());
+    final MetaParameter security = new MetaParameter("security", OpenGammaTypes.EXTERNAL_ID);
     // TODO: quantity should be BigDecimal and use type converter from double or integer
-    final MetaParameter quantity = new MetaParameter("quantity", JavaTypeInfo.builder(Double.class).get());
-    return Arrays.asList(security, quantity);
+    final MetaParameter quantity = new MetaParameter("quantity", PrimitiveTypes.DOUBLE);
+    return ImmutableList.of(security, quantity);
   }
 
   private PositionFunction(final DefinitionAnnotater info) {

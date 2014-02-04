@@ -6,15 +6,16 @@
 
 package com.opengamma.language.position;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.position.Position;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -35,9 +36,9 @@ public class GetPositionAttributeFunction extends AbstractFunctionInvoker implem
   private static final int ATTRIBUTE = 1;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter security = new MetaParameter("position", JavaTypeInfo.builder(Position.class).get());
-    final MetaParameter attribute = new MetaParameter("attribute", JavaTypeInfo.builder(String.class).get());
-    return Arrays.asList(security, attribute);
+    final MetaParameter security = new MetaParameter("position", CoreModelTypes.POSITION);
+    final MetaParameter attribute = new MetaParameter("attribute", PrimitiveTypes.STRING);
+    return ImmutableList.of(security, attribute);
   }
 
   private GetPositionAttributeFunction(final DefinitionAnnotater info) {

@@ -16,11 +16,10 @@ import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
- * Provides the most primitive level of view client type conversion. View clients are converted to/from the {@link ViewClientKey}
- * representation which is least efficient but all that is available in the general case. A specific language binding that can
- * track objects should replace this with a conversion scheme that can work with the references detached from {@link UserViewClients}.
+ * Provides the most primitive level of view client type conversion. View clients are converted to/from the {@link ViewClientKey} representation which is least efficient but all that is available in
+ * the general case. A specific language binding that can track objects should replace this with a conversion scheme that can work with the references detached from {@link UserViewClients}.
  * <p>
- * It is expected that functions which take a {@link ViewClientHandle} as a parameter should unlock it when they are done. 
+ * It is expected that functions which take a {@link ViewClientHandle} as a parameter should unlock it when they are done.
  */
 public class UserViewClientConverter extends AbstractTypeConverter {
 
@@ -29,18 +28,14 @@ public class UserViewClientConverter extends AbstractTypeConverter {
    */
   public static final UserViewClientConverter INSTANCE = new UserViewClientConverter();
 
-  private static final JavaTypeInfo<ViewClientKey> VIEW_CLIENT_KEY = JavaTypeInfo.builder(ViewClientKey.class).get();
-  private static final JavaTypeInfo<ViewClientHandle> VIEW_CLIENT_HANDLE = JavaTypeInfo.builder(ViewClientHandle.class).get();
-
-  private static final TypeMap TO_VIEW_CLIENT_KEY = TypeMap.of(ZERO_LOSS, VIEW_CLIENT_HANDLE);
-  private static final TypeMap TO_VIEW_CLIENT_HANDLE = TypeMap.of(ZERO_LOSS, VIEW_CLIENT_KEY);
+  private static final TypeMap TO_VIEW_CLIENT_KEY = TypeMap.of(ZERO_LOSS, ViewClientHandle.TYPE);
+  private static final TypeMap TO_VIEW_CLIENT_HANDLE = TypeMap.of(ZERO_LOSS, ViewClientKey.TYPE);
 
   protected UserViewClientConverter() {
   }
 
   /**
-   * The key used by the default type converter. A binding specific converter should be declared with this key to replace the
-   * default.
+   * The key used by the default type converter. A binding specific converter should be declared with this key to replace the default.
    * 
    * @return the key
    */

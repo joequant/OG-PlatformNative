@@ -14,6 +14,8 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.opengamma.language.Value;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.CollectionTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
@@ -26,18 +28,13 @@ public class SetConverter extends AbstractTypeConverter {
    */
   public static final SetConverter INSTANCE = new SetConverter();
 
-  private static final JavaTypeInfo<Value> VALUE = JavaTypeInfo.builder(Value.class).get();
   private static final JavaTypeInfo<Value[]> VALUES = JavaTypeInfo.builder(Value[].class).get();
   private static final JavaTypeInfo<Value[]> VALUES_ALLOW_NULL = JavaTypeInfo.builder(Value[].class).allowNull().get();
-  @SuppressWarnings("unchecked")
-  private static final JavaTypeInfo<Set> SET = JavaTypeInfo.builder(Set.class).get();
-  @SuppressWarnings("unchecked")
-  private static final JavaTypeInfo<Set> SET_ALLOW_NULL = JavaTypeInfo.builder(Set.class).allowNull().get();
 
   private static final TypeMap TO_SET = TypeMap.of(ZERO_LOSS, VALUES);
-  private static final TypeMap FROM_SET = TypeMap.of(ZERO_LOSS, SET);
+  private static final TypeMap FROM_SET = TypeMap.of(ZERO_LOSS, CollectionTypes.SET);
   private static final TypeMap TO_SET_ALLOW_NULL = TypeMap.of(ZERO_LOSS, VALUES_ALLOW_NULL);
-  private static final TypeMap FROM_SET_ALLOW_NULL = TypeMap.of(ZERO_LOSS, SET_ALLOW_NULL);
+  private static final TypeMap FROM_SET_ALLOW_NULL = TypeMap.of(ZERO_LOSS, CollectionTypes.SET_ALLOW_NULL);
 
   protected SetConverter() {
   }
@@ -76,7 +73,7 @@ public class SetConverter extends AbstractTypeConverter {
         if (entry == null) {
           result[i++] = new Value();
         } else {
-          conversionContext.convertValue(entry, VALUE);
+          conversionContext.convertValue(entry, TransportTypes.VALUE);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;

@@ -22,6 +22,9 @@ import com.opengamma.language.ValueUtils;
 import com.opengamma.language.convert.TypeMap;
 import com.opengamma.language.convert.ValueConversionContext;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.ThreeTenTypes;
+import com.opengamma.language.definition.types.TimeSeriesTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 import com.opengamma.rstats.data.RDataInfo;
 import com.opengamma.timeseries.date.localdate.ImmutableLocalDateDoubleTimeSeries;
@@ -37,13 +40,8 @@ public class LocalDateDoubleTimeSeriesConverter extends AbstractTypeConverter {
 
   // TODO: handle nulls
 
-  private static final JavaTypeInfo<Data> DATA = JavaTypeInfo.builder(Data.class).get();
-  private static final JavaTypeInfo<Value> VALUE = JavaTypeInfo.builder(Value.class).get();
-  private static final JavaTypeInfo<LocalDate> LOCAL_DATE = JavaTypeInfo.builder(LocalDate.class).get();
-  private static final JavaTypeInfo<LocalDateDoubleTimeSeries> LOCAL_DATE_DOUBLE_TIME_SERIES = JavaTypeInfo.builder(LocalDateDoubleTimeSeries.class).get();
-
-  private static final TypeMap TO_LOCAL_DATE_DOUBLE_TIME_SERIES = TypeMap.of(ZERO_LOSS, DATA);
-  private static final TypeMap FROM_LOCAL_DATE_DOUBLE_TIME_SERIES = TypeMap.of(ZERO_LOSS, LOCAL_DATE_DOUBLE_TIME_SERIES);
+  private static final TypeMap TO_LOCAL_DATE_DOUBLE_TIME_SERIES = TypeMap.of(ZERO_LOSS, TransportTypes.DATA);
+  private static final TypeMap FROM_LOCAL_DATE_DOUBLE_TIME_SERIES = TypeMap.of(ZERO_LOSS, TimeSeriesTypes.LOCAL_DATE_DOUBLE_TIME_SERIES);
 
   @Override
   public boolean canConvertTo(final JavaTypeInfo<?> targetType) {
@@ -61,7 +59,7 @@ public class LocalDateDoubleTimeSeriesConverter extends AbstractTypeConverter {
       }
       final List<LocalDate> timeSeriesDates = new ArrayList<LocalDate>(values.length - 1);
       final List<Double> timeSeriesValues = new ArrayList<Double>(values.length - 1);
-      conversionContext.convertValue(values[0], LOCAL_DATE);
+      conversionContext.convertValue(values[0], ThreeTenTypes.LOCAL_DATE);
       if (conversionContext.isFailed()) {
         conversionContext.setFail();
         return;
@@ -91,7 +89,7 @@ public class LocalDateDoubleTimeSeriesConverter extends AbstractTypeConverter {
       final LocalDate latest = timeSeries.getLatestTime();
       final int size = DateUtils.getDaysBetween(earliest, true, latest, true);
       final Value[] values = new Value[size + 1];
-      conversionContext.convertValue(earliest, VALUE);
+      conversionContext.convertValue(earliest, TransportTypes.VALUE);
       if (conversionContext.isFailed()) {
         conversionContext.setFail();
         return;

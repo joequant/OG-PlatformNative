@@ -16,6 +16,7 @@ import com.opengamma.id.VersionCorrection;
 import com.opengamma.language.convert.TypeMap;
 import com.opengamma.language.convert.ValueConversionContext;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
@@ -28,7 +29,7 @@ public class ViewClientDescriptorConverter extends AbstractTypeConverter {
    */
   public static final ViewClientDescriptorConverter INSTANCE = new ViewClientDescriptorConverter();
 
-  private static final TypeMap TO_VIEW_CLIENT_DESCRIPTOR = TypeMap.of(ZERO_LOSS, JavaTypeInfo.builder(String.class).get());
+  private static final TypeMap TO_VIEW_CLIENT_DESCRIPTOR = TypeMap.of(ZERO_LOSS, PrimitiveTypes.STRING);
 
   protected ViewClientDescriptorConverter() {
   }

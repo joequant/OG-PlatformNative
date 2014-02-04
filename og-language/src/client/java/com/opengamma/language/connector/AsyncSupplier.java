@@ -28,6 +28,8 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
 
   private static final Logger s_logger = LoggerFactory.getLogger(AsyncSupplier.class);
 
+  public static Executor EXECUTOR = Executors.newCachedThreadPool();
+
   /**
    * Listener for notification when the value becomes available.
    */
@@ -43,20 +45,37 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
 
   }
 
+  private final class Notifier implements Runnable {
+
+    private final Listener<T> _listener;
+
+    public Notifier(final Listener<T> listener) {
+      _listener = listener;
+    }
+
+    // Runnable
+
+    @Override
+    public void run() {
+      _listener.value(_instance, _error);
+    }
+
+  }
+
   /**
    * Holds any exception thrown by the underlying source.
    */
-  private RuntimeException _error;
+  private volatile RuntimeException _error;
 
   /**
    * Holds any result returned by the underlying source.
    */
-  private T _instance;
+  private volatile T _instance;
 
   /**
    * Holds any listeners that have been registered, or null if a result/error has been posted.
    */
-  private Collection<Listener<T>> _listeners = Collections.emptySet();
+  private Collection<Runnable> _listeners = Collections.emptyList();
 
   /**
    * Passes the result to any blocked callers to {@link #get} or listeners.
@@ -77,7 +96,7 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
       }
       s_logger.debug("Result available from {}", this);
     }
-    final Collection<Listener<T>> listeners;
+    final Collection<Runnable> listeners;
     synchronized (this) {
       assert _listeners != null;
       _instance = instance;
@@ -88,10 +107,10 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
     }
     if (!listeners.isEmpty()) {
       s_logger.info("Notifying listeners from {}", this);
-      for (Listener<T> listener : listeners) {
+      for (Runnable listener : listeners) {
         try {
           s_logger.debug("Notifying listener from {}", this);
-          listener.value(instance, error);
+          EXECUTOR.execute(listener);
         } catch (Throwable t) {
           s_logger.error("Couldn't notify listener from {} - {}", this, t);
           s_logger.warn("Caught exception", t);
@@ -106,22 +125,19 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
    * @param listener the listener to register, not null
    */
   public final void get(final Listener<T> listener) {
-    T instance;
-    RuntimeException error;
+    final Runnable notify = new Notifier(listener);
     synchronized (this) {
       if (_listeners != null) {
         s_logger.debug("Registering listener for {}", this);
         if (_listeners.isEmpty()) {
-          _listeners = new ArrayList<Listener<T>>();
+          _listeners = new ArrayList<Runnable>();
         }
-        _listeners.add(listener);
+        _listeners.add(notify);
         return;
       }
-      instance = _instance;
-      error = _error;
     }
     s_logger.debug("Value already available at {}", this);
-    listener.value(instance, error);
+    EXECUTOR.execute(notify);
   }
 
   // Supplier
@@ -155,8 +171,6 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
     }
   }
 
-  public static Executor EXECUTOR = Executors.newCachedThreadPool();
-
   /**
    * Implementation which converts a value produced by another supplier.
    */
@@ -167,12 +181,7 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
         @Override
         public void value(final X instance, final RuntimeException error) {
           if (error == null) {
-            EXECUTOR.execute(new Runnable() {
-              @Override
-              public void run() {
-                post(filter.execute(instance), null);
-              }
-            });
+            post(filter.execute(instance), null);
           } else {
             post(null, error);
           }

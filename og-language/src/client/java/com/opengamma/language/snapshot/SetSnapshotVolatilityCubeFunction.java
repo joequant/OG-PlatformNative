@@ -6,18 +6,19 @@
 
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.VolatilityCubeKey;
 import com.opengamma.core.marketdatasnapshot.VolatilityCubeSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableMarketDataSnapshot;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -40,10 +41,8 @@ public class SetSnapshotVolatilityCubeFunction extends AbstractFunctionInvoker i
   private static final int CUBE = 2;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("snapshot", JavaTypeInfo.builder(ManageableMarketDataSnapshot.class).get()),
-        new MetaParameter("name", JavaTypeInfo.builder(String.class).get()),
-        new MetaParameter("cube", JavaTypeInfo.builder(VolatilityCubeSnapshot.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("snapshot", CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT), new MetaParameter("name", PrimitiveTypes.STRING), new MetaParameter("cube",
+        CoreModelTypes.VOLATILITY_CUBE_SNAPSHOT_ALLOW_NULL));
   }
 
   private SetSnapshotVolatilityCubeFunction(final DefinitionAnnotater info) {

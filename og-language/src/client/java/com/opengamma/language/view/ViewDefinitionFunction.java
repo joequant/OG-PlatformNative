@@ -6,11 +6,11 @@
 
 package com.opengamma.language.view;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.position.impl.PortfolioMapper;
 import com.opengamma.core.position.impl.SecurityTypeMapperFunction;
 import com.opengamma.engine.value.ValueProperties;
@@ -22,8 +22,9 @@ import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -54,10 +55,10 @@ public class ViewDefinitionFunction extends AbstractFunctionInvoker implements P
   private static final int REQUIREMENTS = 2;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).get());
-    final MetaParameter portfolio = new MetaParameter("portfolio", JavaTypeInfo.builder(UniqueId.class).get());
-    final MetaParameter requirements = new MetaParameter("requirements", JavaTypeInfo.builder(String.class).get().arrayOfWithAllowNull(true));
-    return Arrays.asList(name, portfolio, requirements);
+    final MetaParameter name = new MetaParameter("name", PrimitiveTypes.STRING);
+    final MetaParameter portfolio = new MetaParameter("portfolio", OpenGammaTypes.UNIQUE_ID);
+    final MetaParameter requirements = new MetaParameter("requirements", PrimitiveTypes.STRING.arrayOfWithAllowNull(true));
+    return ImmutableList.of(name, portfolio, requirements);
   }
 
   private ViewDefinitionFunction(final DefinitionAnnotater info) {
@@ -109,7 +110,8 @@ public class ViewDefinitionFunction extends AbstractFunctionInvoker implements P
     definition.setMaxDeltaCalculationPeriod(getDefaultMaxDelta());
     definition.setMinFullCalculationPeriod(getDefaultMinFull());
     definition.setMaxFullCalculationPeriod(getDefaultMaxFull());
-    final Set<String> portfolioSecurityTypes = PortfolioMapper.mapToSet(PortfolioUtils.getResolvedPortfolio(context.getGlobalContext(), portfolio).getRootNode(), new SecurityTypeMapperFunction());
+    final Set<String> portfolioSecurityTypes = PortfolioMapper.mapToSet(PortfolioUtils.getResolvedPortfolio(context.getGlobalContext(), portfolio).getRootNode(),
+        new SecurityTypeMapperFunction());
     for (Map.Entry<String, Set<Pair<String, ValueProperties>>> configurationPortfolioRequirements : portfolioRequirementsByConfiguration.entrySet()) {
       ViewCalculationConfiguration config = new ViewCalculationConfiguration(definition, configurationPortfolioRequirements.getKey());
       // We don't know why particular values have been requested and what they might be applicable to, so best thing is

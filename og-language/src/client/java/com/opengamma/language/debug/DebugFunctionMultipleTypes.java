@@ -6,17 +6,18 @@
 
 package com.opengamma.language.debug;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.MutableFudgeMsg;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.FunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -28,8 +29,7 @@ import com.opengamma.language.function.PublishedFunction;
 public class DebugFunctionMultipleTypes implements PublishedFunction {
 
   private FudgeMsg execute(final byte byteValue, final boolean booleanValue, final char charValue, final double doubleValue, final float floatValue, final int intValue,
-      final long longValue,
-      final short shortValue, final String stringValue, final FudgeMsg messageValue) {
+      final long longValue, final short shortValue, final String stringValue, final FudgeMsg messageValue) {
     final MutableFudgeMsg message = FudgeContext.GLOBAL_DEFAULT.newMessage();
     message.add("byte", byteValue);
     message.add("boolean", booleanValue);
@@ -50,25 +50,18 @@ public class DebugFunctionMultipleTypes implements PublishedFunction {
 
   @Override
   public MetaFunction getMetaFunction() {
-    final List<MetaParameter> args = Arrays.asList(
-        new MetaParameter("byte", JavaTypeInfo.builder(Byte.TYPE).get()),
-        new MetaParameter("boolean", JavaTypeInfo.builder(Boolean.TYPE).get()),
-        new MetaParameter("char", JavaTypeInfo.builder(Character.TYPE).get()),
-        new MetaParameter("double", JavaTypeInfo.builder(Double.TYPE).get()),
-        new MetaParameter("float", JavaTypeInfo.builder(Float.TYPE).get()),
-        new MetaParameter("int", JavaTypeInfo.builder(Integer.TYPE).get()),
-        new MetaParameter("long", JavaTypeInfo.builder(Long.TYPE).get()),
-        new MetaParameter("short", JavaTypeInfo.builder(Short.TYPE).get()),
-        new MetaParameter("string", JavaTypeInfo.builder(String.class).allowNull().get()),
-        new MetaParameter("message", JavaTypeInfo.builder(FudgeMsg.class).allowNull().get()));
+    final List<MetaParameter> args = ImmutableList.of(new MetaParameter("byte", PrimitiveTypes.BYTE_PRIMITIVE), new MetaParameter("boolean", PrimitiveTypes.BOOLEAN_PRIMITIVE),
+        new MetaParameter("char", PrimitiveTypes.CHARACTER_PRIMITIVE), new MetaParameter("double", PrimitiveTypes.DOUBLE_PRIMITIVE), new MetaParameter("float",
+            PrimitiveTypes.FLOAT_PRIMITIVE), new MetaParameter("int", PrimitiveTypes.INTEGER_PRIMITIVE), new MetaParameter("long", PrimitiveTypes.LONG_PRIMITIVE), new MetaParameter("short",
+            PrimitiveTypes.SHORT_PRIMITIVE), new MetaParameter("string", PrimitiveTypes.STRING_ALLOW_NULL), new MetaParameter("message", TransportTypes.FUDGE_MSG_ALLOW_NULL));
     final FunctionInvoker invoker = new AbstractFunctionInvoker(args) {
       @Override
       public Object invokeImpl(SessionContext sessionContext, Object[] parameters) {
         if (parameters.length != 10) {
           throw new IllegalArgumentException("Wrong number of parameters");
         }
-        return execute((Byte) parameters[0], (Boolean) parameters[1], (Character) parameters[2], (Double) parameters[3], (Float) parameters[4], (Integer) parameters[5], (Long) parameters[6],
-            (Short) parameters[7], (String) parameters[8], (FudgeMsg) parameters[9]);
+        return execute((Byte) parameters[0], (Boolean) parameters[1], (Character) parameters[2], (Double) parameters[3], (Float) parameters[4], (Integer) parameters[5],
+            (Long) parameters[6], (Short) parameters[7], (String) parameters[8], (FudgeMsg) parameters[9]);
       }
     };
     return new MetaFunction(Categories.DEBUG, "DebugFunctionMultipleTypes", args, invoker);

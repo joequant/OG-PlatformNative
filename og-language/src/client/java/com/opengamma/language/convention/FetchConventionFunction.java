@@ -5,20 +5,20 @@
  */
 package com.opengamma.language.convention;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.convention.Convention;
 import com.opengamma.id.ExternalIdBundle;
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -42,9 +42,9 @@ public class FetchConventionFunction extends AbstractFunctionInvoker implements 
   private static final int UNIQUE_ID = 1;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter identifiers = new MetaParameter("identifiers", JavaTypeInfo.builder(ExternalIdBundle.class).allowNull().get());
-    final MetaParameter uniqueIdentifier = new MetaParameter("uniqueId", JavaTypeInfo.builder(UniqueId.class).allowNull().get());
-    return Arrays.asList(identifiers, uniqueIdentifier);
+    final MetaParameter identifiers = new MetaParameter("identifiers", OpenGammaTypes.EXTERNAL_ID_BUNDLE_ALLOW_NULL);
+    final MetaParameter uniqueIdentifier = new MetaParameter("uniqueId", OpenGammaTypes.UNIQUE_ID_ALLOW_NULL);
+    return ImmutableList.of(identifiers, uniqueIdentifier);
   }
 
   private FetchConventionFunction(final DefinitionAnnotater info) {

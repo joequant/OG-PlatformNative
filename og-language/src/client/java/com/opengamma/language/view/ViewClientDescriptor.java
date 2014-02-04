@@ -5,7 +5,6 @@
  */
 package com.opengamma.language.view;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.fudgemsg.FudgeMsg;
@@ -14,7 +13,6 @@ import org.fudgemsg.mapping.FudgeDeserializer;
 import org.fudgemsg.mapping.FudgeSerializer;
 import org.threeten.bp.Instant;
 
-import com.opengamma.engine.marketdata.spec.LiveMarketDataSpecification;
 import com.opengamma.engine.marketdata.spec.MarketData;
 import com.opengamma.engine.marketdata.spec.MarketDataSpecification;
 import com.opengamma.engine.view.execution.ExecutionFlags;
@@ -26,10 +24,10 @@ import com.opengamma.engine.view.execution.ViewCycleExecutionSequence;
 import com.opengamma.engine.view.execution.ViewExecutionOptions;
 import com.opengamma.id.UniqueId;
 import com.opengamma.id.VersionCorrection;
+import com.opengamma.language.definition.JavaTypeInfo;
 
 /**
- * Object describing all of the parameters required to construct a view client - i.e. the view
- * and execution options.
+ * Object describing all of the parameters required to construct a view client - i.e. the view and execution options.
  */
 public final class ViewClientDescriptor {
 
@@ -37,6 +35,8 @@ public final class ViewClientDescriptor {
    * Default value of samplePeriod.
    */
   public static final int DEFAULT_SAMPLE_PERIOD = 86400;
+
+  public static JavaTypeInfo<ViewClientDescriptor> TYPE = JavaTypeInfo.builder(ViewClientDescriptor.class).get();
 
   private final UniqueId _viewId;
   private final ViewExecutionOptions _executionOptions;
@@ -49,7 +49,7 @@ public final class ViewClientDescriptor {
   public UniqueId getViewId() {
     return _viewId;
   }
-  
+
   public ViewExecutionOptions getExecutionOptions() {
     return _executionOptions;
   }
@@ -60,11 +60,10 @@ public final class ViewClientDescriptor {
   }
 
   /**
-   * Returns a descriptor for ticking live market data. The view will recalculate when market data changes and obey time
-   * thresholds on the view definition.
+   * Returns a descriptor for ticking live market data. The view will recalculate when market data changes and obey time thresholds on the view definition.
    * 
-   * @param viewId  unique identifier of the view, not null
-   * @param dataSource  the data source, null for the default
+   * @param viewId unique identifier of the view, not null
+   * @param dataSource the data source, null for the default
    * @return the descriptor
    * @deprecated use version the takes valuation time and portfolio VC and pass nulls
    */
@@ -72,13 +71,12 @@ public final class ViewClientDescriptor {
   public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final String dataSource) {
     return tickingMarketData(viewId, dataSource, null, null);
   }
-  
+
   /**
-   * Returns a descriptor for ticking live market data. The view will recalculate when market data changes and obey time
-   * thresholds on the view definition.
+   * Returns a descriptor for ticking live market data. The view will recalculate when market data changes and obey time thresholds on the view definition.
    * 
-   * @param viewId  unique identifier of the view, not null
-   * @param dataSource  the data source, null for the default
+   * @param viewId unique identifier of the view, not null
+   * @param dataSource the data source, null for the default
    * @return the descriptor
    */
   public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final String dataSource, Instant valuationTime, VersionCorrection portfolioVersionCorrection) {
@@ -98,17 +96,17 @@ public final class ViewClientDescriptor {
     cycleOptions.setMarketDataSpecification(marketDataSpec);
     return new ViewClientDescriptor(viewId, ExecutionOptions.of(new InfiniteViewCycleExecutionSequence(), cycleOptions.create(), ExecutionFlags.triggersEnabled().get()));
   }
-  
+
   /**
-   * Returns a descriptor for ticking live market data. The view will recalculate when market data changes and obey time
-   * thresholds on the view definition.
+   * Returns a descriptor for ticking live market data. The view will recalculate when market data changes and obey time thresholds on the view definition.
    * 
-   * @param viewId  unique identifier of the view, not null
-   * @param marketDataSpecifications  a list of the market data specifications, not null
+   * @param viewId unique identifier of the view, not null
+   * @param marketDataSpecifications a list of the market data specifications, not null
    * @param valuationTime TODO
    * @return the descriptor
    */
-  public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications, Instant valuationTime, VersionCorrection portfolioVersionCorrection) {
+  public static ViewClientDescriptor tickingMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications, Instant valuationTime,
+      VersionCorrection portfolioVersionCorrection) {
     Builder executionOptions = ViewCycleExecutionOptions.builder().setMarketDataSpecifications(marketDataSpecifications);
     if (valuationTime != null) {
       executionOptions = executionOptions.setValuationTime(valuationTime);
@@ -120,11 +118,11 @@ public final class ViewClientDescriptor {
   }
 
   /**
-   * Returns a descriptor for a static live market data view. The view will recalculate when manually triggered and will not start
-   * until the first trigger is received (allowing injected overrides to be set up before the first). 
+   * Returns a descriptor for a static live market data view. The view will recalculate when manually triggered and will not start until the first trigger is received (allowing injected overrides to
+   * be set up before the first).
    * 
-   * @param viewId  unique identifier of the view, not null
-   * @param dataSource  the data source, null for the default
+   * @param viewId unique identifier of the view, not null
+   * @param dataSource the data source, null for the default
    * @return the descriptor
    */
   public static ViewClientDescriptor staticMarketData(final UniqueId viewId, final String dataSource) {
@@ -134,28 +132,29 @@ public final class ViewClientDescriptor {
     final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions.create(), ExecutionFlags.none().waitForInitialTrigger().awaitMarketData().get());
     return new ViewClientDescriptor(viewId, options);
   }
-  
+
   /**
-   * Returns a descriptor for a static live market data view. The view will recalculate when manually triggered and will not start
-   * until the first trigger is received (allowing injected overrides to be set up before the first). 
+   * Returns a descriptor for a static live market data view. The view will recalculate when manually triggered and will not start until the first trigger is received (allowing injected overrides to
+   * be set up before the first).
    * 
-   * @param viewId  unique identifier of the view, not null
-   * @param marketDataSpecifications  a list of the market data specifications, not null
+   * @param viewId unique identifier of the view, not null
+   * @param marketDataSpecifications a list of the market data specifications, not null
    * @return the descriptor
    */
   public static ViewClientDescriptor staticMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications) {
     return staticMarketData(viewId, marketDataSpecifications, null, null);
   }
-  
+
   /**
-   * Returns a descriptor for a static live market data view. The view will recalculate when manually triggered and will not start
-   * until the first trigger is received (allowing injected overrides to be set up before the first). 
+   * Returns a descriptor for a static live market data view. The view will recalculate when manually triggered and will not start until the first trigger is received (allowing injected overrides to
+   * be set up before the first).
    * 
-   * @param viewId  unique identifier of the view, not null
-   * @param marketDataSpecifications  a list of the market data specifications, not null
+   * @param viewId unique identifier of the view, not null
+   * @param marketDataSpecifications a list of the market data specifications, not null
    * @return the descriptor
    */
-  public static ViewClientDescriptor staticMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications, Instant valuationTime, VersionCorrection portfolioVersionCorrection) {
+  public static ViewClientDescriptor staticMarketData(final UniqueId viewId, final List<MarketDataSpecification> marketDataSpecifications, Instant valuationTime,
+      VersionCorrection portfolioVersionCorrection) {
     final ViewCycleExecutionSequence cycleSequence = new InfiniteViewCycleExecutionSequence();
     final ViewCycleExecutionOptions.Builder cycleOptions = ViewCycleExecutionOptions.builder();
     cycleOptions.setMarketDataSpecifications(marketDataSpecifications);
@@ -168,11 +167,10 @@ public final class ViewClientDescriptor {
     final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions.create(), ExecutionFlags.none().waitForInitialTrigger().awaitMarketData().get());
     return new ViewClientDescriptor(viewId, options);
   }
-  
+
   /**
-   * Returns a descriptor for a view that can be manually iterated over a historical data sample. Cycles will only trigger
-   * manually and will not start until the first trigger is received (allowing injected market data to be set up before the
-   * first).
+   * Returns a descriptor for a view that can be manually iterated over a historical data sample. Cycles will only trigger manually and will not start until the first trigger is received (allowing
+   * injected market data to be set up before the first).
    * 
    * @param viewId unique identifier of the view, not null
    * @param firstValuationTime first valuation time of the sample, not null
@@ -184,16 +182,15 @@ public final class ViewClientDescriptor {
    */
   public static ViewClientDescriptor historicalMarketData(final UniqueId viewId, final Instant firstValuationTime, final Instant lastValuationTime, final int samplePeriod,
       final String timeSeriesResolverKey, final String timeSeriesFieldResolverKey) {
-    ViewCycleExecutionSequence executionSequence = HistoricalExecutionSequenceFunction.generate(
-        firstValuationTime, lastValuationTime, samplePeriod, timeSeriesResolverKey, timeSeriesFieldResolverKey);
+    ViewCycleExecutionSequence executionSequence = HistoricalExecutionSequenceFunction.generate(firstValuationTime, lastValuationTime, samplePeriod, timeSeriesResolverKey,
+        timeSeriesFieldResolverKey);
     final ViewExecutionOptions options = ExecutionOptions.of(executionSequence, null, ExecutionFlags.none().waitForInitialTrigger().get());
     return new ViewClientDescriptor(viewId, options);
   }
 
   /**
-   * Returns a descriptor for a view that can be manually iterated over a historical data sample. Cycles will only trigger
-   * manually and will not start until the first trigger is received (allowing injected market data to be set up before the
-   * first).
+   * Returns a descriptor for a view that can be manually iterated over a historical data sample. Cycles will only trigger manually and will not start until the first trigger is received (allowing
+   * injected market data to be set up before the first).
    * 
    * @param viewId unique identifier of the view, not null
    * @param firstValuationTime first valuation time of the sample, not null
@@ -206,9 +203,8 @@ public final class ViewClientDescriptor {
   }
 
   /**
-   * Returns a descriptor for a view that can be manually iterated over a historical data sample. Cycles will only trigger
-   * manually and will not start until the first trigger is received (allowing injected market data to be set up before the
-   * first).
+   * Returns a descriptor for a view that can be manually iterated over a historical data sample. Cycles will only trigger manually and will not start until the first trigger is received (allowing
+   * injected market data to be set up before the first).
    * 
    * @param viewId unique identifier of the view, not null
    * @param firstValuationTime first valuation time of the sample, not null
@@ -223,9 +219,8 @@ public final class ViewClientDescriptor {
   }
 
   /**
-   * Returns a descriptor for a view that can be manually iterated over a historical data sample. Cycles will only trigger
-   * manually and will not start until the first trigger is received (allowing injected market data to be set up before the
-   * first).
+   * Returns a descriptor for a view that can be manually iterated over a historical data sample. Cycles will only trigger manually and will not start until the first trigger is received (allowing
+   * injected market data to be set up before the first).
    * 
    * @param viewId unique identifier of the view, not null
    * @param firstValuationTime first valuation time of the sample, not null
@@ -237,13 +232,12 @@ public final class ViewClientDescriptor {
   }
 
   /**
-   * Returns a descriptor for a view that will use market data from a snapshot. Cycles will be triggered when the snapshot
-   * changes (if an unversioned identifier is supplied) or manually.
+   * Returns a descriptor for a view that will use market data from a snapshot. Cycles will be triggered when the snapshot changes (if an unversioned identifier is supplied) or manually.
    * 
    * @param viewId unique identifier of the view, not null
    * @param snapshotId unique identifier of the market data snapshot, not null
    * @param valuationTime valuation time to use, null for current time
-   * @return the descriptor 
+   * @return the descriptor
    * @deprecated use call with portfolio version correction parameter and pass null
    */
   @Deprecated
@@ -252,14 +246,13 @@ public final class ViewClientDescriptor {
   }
 
   /**
-   * Returns a descriptor for a view that will use market data from a snapshot. Cycles will be triggered when the snapshot
-   * changes (if an unversioned identifier is supplied) or manually.
+   * Returns a descriptor for a view that will use market data from a snapshot. Cycles will be triggered when the snapshot changes (if an unversioned identifier is supplied) or manually.
    * 
    * @param viewId unique identifier of the view, not null
    * @param snapshotId unique identifier of the market data snapshot, not null
    * @param valuationTime valuation time to use, null for current time
    * @param portfolioVersionCorrection the version correction to use when resolving the portfolio, null for latest portfolio
-   * @return the descriptor 
+   * @return the descriptor
    */
   public static ViewClientDescriptor tickingSnapshot(final UniqueId viewId, final UniqueId snapshotId, final Instant valuationTime, final VersionCorrection portfolioVersionCorrection) {
     final ViewCycleExecutionSequence cycleSequence = new InfiniteViewCycleExecutionSequence();
@@ -274,12 +267,11 @@ public final class ViewClientDescriptor {
     final ViewExecutionOptions options = ExecutionOptions.of(cycleSequence, cycleOptions.create(), flags.get());
     return new ViewClientDescriptor(viewId, options);
   }
-  
+
   /**
-   * Returns a descriptor for a view that will use market data from a snapshot. The view will recalculate when triggered
-   * manually and will not start until the first trigger is received (allowing injected overrides to be set up before the
-   * first). E.g. if created with an unversioned snapshot identifier, changes to the snapshot will not trigger a cycle
-   * but will be observed (the latest version will be taken) when a cycle is manually triggered.
+   * Returns a descriptor for a view that will use market data from a snapshot. The view will recalculate when triggered manually and will not start until the first trigger is received (allowing
+   * injected overrides to be set up before the first). E.g. if created with an unversioned snapshot identifier, changes to the snapshot will not trigger a cycle but will be observed (the latest
+   * version will be taken) when a cycle is manually triggered.
    * 
    * @param viewId unique identifier of the view, not null
    * @param snapshotId unique identifier of the market data snapshot, not null
@@ -287,15 +279,15 @@ public final class ViewClientDescriptor {
    * @return the descriptor
    * @deprecated use version that takes portfolioVersionCorrection and pass null
    */
+  @Deprecated
   public static ViewClientDescriptor staticSnapshot(final UniqueId viewId, final UniqueId snapshotId, final Instant valuationTime) {
     return staticSnapshot(viewId, snapshotId, valuationTime, null);
   }
-  
+
   /**
-   * Returns a descriptor for a view that will use market data from a snapshot. The view will recalculate when triggered
-   * manually and will not start until the first trigger is received (allowing injected overrides to be set up before the
-   * first). E.g. if created with an unversioned snapshot identifier, changes to the snapshot will not trigger a cycle
-   * but will be observed (the latest version will be taken) when a cycle is manually triggered.
+   * Returns a descriptor for a view that will use market data from a snapshot. The view will recalculate when triggered manually and will not start until the first trigger is received (allowing
+   * injected overrides to be set up before the first). E.g. if created with an unversioned snapshot identifier, changes to the snapshot will not trigger a cycle but will be observed (the latest
+   * version will be taken) when a cycle is manually triggered.
    * 
    * @param viewId unique identifier of the view, not null
    * @param snapshotId unique identifier of the market data snapshot, not null
@@ -339,6 +331,7 @@ public final class ViewClientDescriptor {
 
   /**
    * Produces the Fudge encoding of the View Client Descriptor:
+   * 
    * <pre>
    * message ViewClientDescriptor {
    *   required string viewId;

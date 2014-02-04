@@ -5,13 +5,13 @@
  */
 package com.opengamma.language.view;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.engine.marketdata.MarketDataInjector;
 import com.opengamma.financial.marketdata.MarketDataAddOperation;
 import com.opengamma.financial.marketdata.MarketDataMultiplyOperation;
@@ -47,9 +47,9 @@ public class ConfigureViewClientProcedure extends AbstractProcedureInvoker.NoRes
   private final MetaProcedure _meta;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter viewClient = new MetaParameter("viewClient", JavaTypeInfo.builder(ViewClientHandle.class).get());
+    final MetaParameter viewClient = new MetaParameter("viewClient", ViewClientHandle.TYPE);
     final MetaParameter configuration = new MetaParameter("configuration", JavaTypeInfo.builder(Set.class).allowNull().parameter(JavaTypeInfo.builder(ConfigurationItem.class).get()).get());
-    return Arrays.asList(viewClient, configuration);
+    return ImmutableList.of(viewClient, configuration);
   }
 
   private ConfigureViewClientProcedure(final DefinitionAnnotater info) {

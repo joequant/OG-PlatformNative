@@ -6,18 +6,19 @@
 
 package com.opengamma.language.view;
 
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.engine.view.execution.ExecutionOptions;
 import com.opengamma.engine.view.execution.ViewExecutionFlags;
 import com.opengamma.engine.view.execution.ViewExecutionOptions;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.EngineTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -41,10 +42,8 @@ public class SetViewClientExecutionFlagFunction extends AbstractFunctionInvoker 
   // TODO: allow the "flag" parameter to take a set of flags (e.g. a vector from R or a range from Excel)
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("viewClient", JavaTypeInfo.builder(ViewClientDescriptor.class).get()),
-        new MetaParameter("flag", JavaTypeInfo.builder(ViewExecutionFlags.class).get()),
-        new MetaParameter("include", JavaTypeInfo.builder(Boolean.class).defaultValue(Boolean.TRUE).get()));
+    return ImmutableList.of(new MetaParameter("viewClient", ViewClientDescriptor.TYPE), new MetaParameter("flag", EngineTypes.VIEW_EXECUTION_FLAGS), new MetaParameter("include",
+        PrimitiveTypes.BOOLEAN_DEFAULT_TRUE));
   }
 
   private SetViewClientExecutionFlagFunction(final DefinitionAnnotater info) {

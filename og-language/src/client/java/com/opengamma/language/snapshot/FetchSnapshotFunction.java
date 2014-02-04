@@ -6,9 +6,9 @@
 
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.DataNotFoundException;
 import com.opengamma.core.marketdatasnapshot.MarketDataSnapshotSource;
 import com.opengamma.core.marketdatasnapshot.StructuredMarketDataSnapshot;
@@ -16,8 +16,8 @@ import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -38,8 +38,8 @@ public class FetchSnapshotFunction extends AbstractFunctionInvoker implements Pu
   private static final int IDENTIFIER = 0;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter identifierParameter = new MetaParameter("identifier", JavaTypeInfo.builder(UniqueId.class).get());
-    return Arrays.asList(identifierParameter);
+    final MetaParameter identifierParameter = new MetaParameter("identifier", OpenGammaTypes.UNIQUE_ID);
+    return ImmutableList.of(identifierParameter);
   }
 
   private FetchSnapshotFunction(final DefinitionAnnotater info) {

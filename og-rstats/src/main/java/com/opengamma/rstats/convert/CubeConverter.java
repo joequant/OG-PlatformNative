@@ -12,16 +12,16 @@ import com.opengamma.language.ValueUtils;
 import com.opengamma.language.convert.AbstractMappedConverter;
 import com.opengamma.language.convert.TypeMap;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.rstats.data.RDataInfo;
 
 /**
- * Converts cube (3D matrix) objects. The R encoding is a vector. This is the number
- * of dimensions, followed by the dimension counts, followed by the data.
+ * Converts cube (3D matrix) objects. The R encoding is a vector. This is the number of dimensions, followed by the dimension counts, followed by the data.
  */
 public class CubeConverter extends AbstractMappedConverter {
 
   public CubeConverter() {
-    conversion(TypeMap.ZERO_LOSS, JavaTypeInfo.builder(Value[][][].class).allowNull().get(), JavaTypeInfo.builder(Data.class).allowNull().get(), new Action<Value[][][], Data>() {
+    conversion(TypeMap.ZERO_LOSS, JavaTypeInfo.builder(Value[][][].class).allowNull().get(), TransportTypes.DATA_ALLOW_NULL, new Action<Value[][][], Data>() {
       @Override
       protected Data convert(Value[][][] value) {
         final int zlen = value.length;

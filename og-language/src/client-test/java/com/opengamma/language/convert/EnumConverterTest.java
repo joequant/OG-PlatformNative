@@ -11,6 +11,7 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.util.test.TestGroup;
 
@@ -23,13 +24,11 @@ public class EnumConverterTest extends AbstractConverterTest {
   private final EnumConverter _converter = new EnumConverter();
 
   public static enum TestEnum {
-    FOO,
-    BAR,
-    FOO_BAR;
+    FOO, BAR, FOO_BAR;
   }
 
   public void testToString() {
-    final JavaTypeInfo<String> target = JavaTypeInfo.builder(String.class).get();
+    final JavaTypeInfo<String> target = PrimitiveTypes.STRING;
     assertEquals(_converter.canConvertTo(target), true);
     assertValidConversion(_converter, TestEnum.FOO, target, "FOO");
     assertConversionCount(1, _converter, target);

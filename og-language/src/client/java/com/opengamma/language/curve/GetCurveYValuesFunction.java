@@ -6,18 +6,19 @@
 
 package com.opengamma.language.curve;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.analytics.math.curve.Curve;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.AnalyticsTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -37,9 +38,9 @@ public class GetCurveYValuesFunction extends AbstractFunctionInvoker implements 
   private static final int X_VALUES = 1;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter curve = new MetaParameter("curve", JavaTypeInfo.builder(Curve.class).get());
+    final MetaParameter curve = new MetaParameter("curve", AnalyticsTypes.CURVE);
     final MetaParameter xValues = new MetaParameter("xValues", JavaTypeInfo.builder(Double[].class).get());
-    return Arrays.asList(curve, xValues);
+    return ImmutableList.of(curve, xValues);
   }
 
   private GetCurveYValuesFunction(final DefinitionAnnotater info) {

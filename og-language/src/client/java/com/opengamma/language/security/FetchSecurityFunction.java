@@ -5,10 +5,10 @@
  */
 package com.opengamma.language.security;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.DataNotFoundException;
 import com.opengamma.core.security.Security;
 import com.opengamma.id.ExternalIdBundle;
@@ -16,8 +16,8 @@ import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -39,9 +39,9 @@ public class FetchSecurityFunction extends AbstractFunctionInvoker implements Pu
   private static final int UNIQUE_ID = 1;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter identifiers = new MetaParameter("identifiers", JavaTypeInfo.builder(ExternalIdBundle.class).allowNull().get());
-    final MetaParameter uniqueIdentifier = new MetaParameter("uniqueId", JavaTypeInfo.builder(UniqueId.class).allowNull().get());
-    return Arrays.asList(identifiers, uniqueIdentifier);
+    final MetaParameter identifiers = new MetaParameter("identifiers", OpenGammaTypes.EXTERNAL_ID_BUNDLE_ALLOW_NULL);
+    final MetaParameter uniqueIdentifier = new MetaParameter("uniqueId", OpenGammaTypes.UNIQUE_ID_ALLOW_NULL);
+    return ImmutableList.of(identifiers, uniqueIdentifier);
   }
 
   private FetchSecurityFunction(final DefinitionAnnotater info) {

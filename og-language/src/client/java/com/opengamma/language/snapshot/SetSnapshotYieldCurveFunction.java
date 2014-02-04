@@ -6,18 +6,19 @@
 
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.marketdatasnapshot.YieldCurveKey;
 import com.opengamma.core.marketdatasnapshot.YieldCurveSnapshot;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableMarketDataSnapshot;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
@@ -40,10 +41,8 @@ public class SetSnapshotYieldCurveFunction extends AbstractFunctionInvoker imple
   private static final int YIELD_CURVE = 2;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("snapshot", JavaTypeInfo.builder(ManageableMarketDataSnapshot.class).get()),
-        new MetaParameter("name", JavaTypeInfo.builder(String.class).get()),
-        new MetaParameter("yieldCurve", JavaTypeInfo.builder(YieldCurveSnapshot.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("snapshot", CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT), new MetaParameter("name", PrimitiveTypes.STRING), new MetaParameter("yieldCurve",
+        CoreModelTypes.YIELD_CURVE_SNAPSHOT_ALLOW_NULL));
   }
 
   private SetSnapshotYieldCurveFunction(final DefinitionAnnotater info) {

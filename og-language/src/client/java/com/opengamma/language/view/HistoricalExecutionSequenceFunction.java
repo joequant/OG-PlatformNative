@@ -8,7 +8,6 @@ package com.opengamma.language.view;
 import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.engine.marketdata.spec.HistoricalMarketDataSpecification;
 import com.opengamma.engine.marketdata.spec.MarketData;
 import com.opengamma.engine.view.execution.ArbitraryViewCycleExecutionSequence;
@@ -25,8 +25,9 @@ import com.opengamma.engine.view.execution.ViewCycleExecutionSequence;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
+import com.opengamma.language.definition.types.ThreeTenTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -48,11 +49,8 @@ public class HistoricalExecutionSequenceFunction extends AbstractFunctionInvoker
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    return Arrays.asList(
-        new MetaParameter("from", JavaTypeInfo.builder(Instant.class).get()),
-        new MetaParameter("to", JavaTypeInfo.builder(Instant.class).get()),
-        new MetaParameter("samplePeriod", JavaTypeInfo.builder(Integer.class).allowNull().get()),
-        new MetaParameter("timeSeriesResolver", JavaTypeInfo.builder(String.class).allowNull().get()));
+    return ImmutableList.of(new MetaParameter("from", ThreeTenTypes.INSTANT), new MetaParameter("to", ThreeTenTypes.INSTANT), new MetaParameter("samplePeriod",
+        PrimitiveTypes.INTEGER_ALLOW_NULL), new MetaParameter("timeSeriesResolver", PrimitiveTypes.STRING_ALLOW_NULL));
   }
 
   private HistoricalExecutionSequenceFunction() {
@@ -64,14 +62,15 @@ public class HistoricalExecutionSequenceFunction extends AbstractFunctionInvoker
     _meta = info.annotate(new MetaFunction(Categories.VIEW, "HistoricalExecutionSequence", getParameters(), this));
   }
 
-  public static ViewCycleExecutionSequence generate(final Instant from, final Instant to, Integer samplePeriodSeconds, final String timeSeriesResolverKey, final String timeSeriesFieldResolverKey) {
+  public static ViewCycleExecutionSequence generate(final Instant from, final Instant to, Integer samplePeriodSeconds, final String timeSeriesResolverKey,
+      final String timeSeriesFieldResolverKey) {
     ArgumentChecker.notNull(from, "from");
     ArgumentChecker.notNull(to, "to");
     if (samplePeriodSeconds == null) {
       samplePeriodSeconds = DEFAULT_SAMPLE_PERIOD_SECONDS;
     }
-    final Collection<ViewCycleExecutionOptions> cycles = new ArrayList<ViewCycleExecutionOptions>(
-        ((int) (to.getEpochSecond() - from.getEpochSecond()) + samplePeriodSeconds - 1) / samplePeriodSeconds);
+    final Collection<ViewCycleExecutionOptions> cycles = new ArrayList<ViewCycleExecutionOptions>(((int) (to.getEpochSecond() - from.getEpochSecond()) + samplePeriodSeconds - 1) /
+        samplePeriodSeconds);
     for (Instant valuationTime = from; !valuationTime.isAfter(to); valuationTime = valuationTime.plus(samplePeriodSeconds, SECONDS)) {
       final LocalDate date = ZonedDateTime.ofInstant(valuationTime, ZoneOffset.UTC).toLocalDate();
       final HistoricalMarketDataSpecification spec = MarketData.historical(date, timeSeriesResolverKey);

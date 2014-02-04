@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.util.test.TestGroup;
 
@@ -28,7 +29,7 @@ public class ArrayTypeConverterTest extends AbstractConverterTest {
   public void testCanConvertTo() {
     assertEquals(true, _converter.canConvertTo(JavaTypeInfo.builder(String.class).arrayOf().get()));
     assertEquals(true, _converter.canConvertTo(JavaTypeInfo.builder(String.class).arrayOf().get()));
-    assertEquals(false, _converter.canConvertTo(JavaTypeInfo.builder(String.class).get()));
+    assertEquals(false, _converter.canConvertTo(PrimitiveTypes.STRING));
     assertEquals(true, _converter.canConvertTo(JavaTypeInfo.builder(Integer.class).arrayOf().get()));
     assertEquals(false, _converter.canConvertTo(JavaTypeInfo.builder(int[].class).get()));
   }

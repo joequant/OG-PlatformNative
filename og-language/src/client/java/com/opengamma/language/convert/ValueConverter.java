@@ -7,6 +7,18 @@
 package com.opengamma.language.convert;
 
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
+import static com.opengamma.language.definition.types.PrimitiveTypes.BOOLEAN;
+import static com.opengamma.language.definition.types.PrimitiveTypes.BOOLEAN_ALLOW_NULL;
+import static com.opengamma.language.definition.types.PrimitiveTypes.DOUBLE;
+import static com.opengamma.language.definition.types.PrimitiveTypes.DOUBLE_ALLOW_NULL;
+import static com.opengamma.language.definition.types.PrimitiveTypes.INTEGER;
+import static com.opengamma.language.definition.types.PrimitiveTypes.INTEGER_ALLOW_NULL;
+import static com.opengamma.language.definition.types.PrimitiveTypes.STRING;
+import static com.opengamma.language.definition.types.PrimitiveTypes.STRING_ALLOW_NULL;
+import static com.opengamma.language.definition.types.TransportTypes.FUDGE_MSG;
+import static com.opengamma.language.definition.types.TransportTypes.FUDGE_MSG_ALLOW_NULL;
+import static com.opengamma.language.definition.types.TransportTypes.VALUE;
+import static com.opengamma.language.definition.types.TransportTypes.VALUE_ALLOW_NULL;
 
 import java.util.Map;
 
@@ -28,23 +40,10 @@ public final class ValueConverter extends AbstractTypeConverter {
    */
   public static final ValueConverter INSTANCE = new ValueConverter();
 
-  private static final JavaTypeInfo<Value> VALUE_NOT_NULL = JavaTypeInfo.builder(Value.class).get();
-  private static final JavaTypeInfo<Value> VALUE_NULL = JavaTypeInfo.builder(Value.class).allowNull().get();
-  private static final JavaTypeInfo<Boolean> BOOLEAN_NOT_NULL = JavaTypeInfo.builder(Boolean.class).get();
-  private static final JavaTypeInfo<Boolean> BOOLEAN_NULL = JavaTypeInfo.builder(Boolean.class).allowNull().get();
-  private static final JavaTypeInfo<Integer> INTEGER_NOT_NULL = JavaTypeInfo.builder(Integer.class).get();
-  private static final JavaTypeInfo<Integer> INTEGER_NULL = JavaTypeInfo.builder(Integer.class).allowNull().get();
-  private static final JavaTypeInfo<Double> DOUBLE_NOT_NULL = JavaTypeInfo.builder(Double.class).get();
-  private static final JavaTypeInfo<Double> DOUBLE_NULL = JavaTypeInfo.builder(Double.class).allowNull().get();
-  private static final JavaTypeInfo<String> STRING_NOT_NULL = JavaTypeInfo.builder(String.class).get();
-  private static final JavaTypeInfo<String> STRING_NULL = JavaTypeInfo.builder(String.class).allowNull().get();
-  private static final JavaTypeInfo<FudgeMsg> MESSAGE_NOT_NULL = JavaTypeInfo.builder(FudgeMsg.class).get();
-  private static final JavaTypeInfo<FudgeMsg> MESSAGE_NULL = JavaTypeInfo.builder(FudgeMsg.class).allowNull().get();
-
-  private static final TypeMap TO_VALUE_NOT_NULL = TypeMap.of(ZERO_LOSS, BOOLEAN_NOT_NULL, INTEGER_NOT_NULL, DOUBLE_NOT_NULL, STRING_NOT_NULL, MESSAGE_NOT_NULL);
-  private static final TypeMap TO_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, BOOLEAN_NULL, INTEGER_NULL, DOUBLE_NULL, STRING_NULL, MESSAGE_NULL);
-  private static final TypeMap FROM_VALUE_NOT_NULL = TypeMap.of(ZERO_LOSS, VALUE_NOT_NULL);
-  private static final TypeMap FROM_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, VALUE_NULL);
+  private static final TypeMap TO_VALUE_NOT_NULL = TypeMap.of(ZERO_LOSS, BOOLEAN, INTEGER, DOUBLE, STRING, FUDGE_MSG);
+  private static final TypeMap TO_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, BOOLEAN_ALLOW_NULL, INTEGER_ALLOW_NULL, DOUBLE_ALLOW_NULL, STRING_ALLOW_NULL, FUDGE_MSG_ALLOW_NULL);
+  private static final TypeMap FROM_VALUE_NOT_NULL = TypeMap.of(ZERO_LOSS, VALUE);
+  private static final TypeMap FROM_VALUE_ALLOW_NULL = TypeMap.of(ZERO_LOSS, VALUE_ALLOW_NULL);
 
   protected ValueConverter() {
   }

@@ -28,6 +28,7 @@ import com.opengamma.language.Data;
 import com.opengamma.language.Value;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.JavaTypeInfo.Builder;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
@@ -39,12 +40,10 @@ public final class FudgeTypeConverter extends AbstractTypeConverter {
 
   private static final JavaTypeInfo<Object> OBJECT = JavaTypeInfo.builder(Object.class).get();
   private static final JavaTypeInfo<Object> OBJECT_ALLOW_NULL = JavaTypeInfo.builder(Object.class).allowNull().get();
-  private static final JavaTypeInfo<FudgeMsg> FUDGE_MSG = JavaTypeInfo.builder(FudgeMsg.class).get();
-  private static final JavaTypeInfo<FudgeMsg> FUDGE_MSG_ALLOW_NULL = JavaTypeInfo.builder(FudgeMsg.class).allowNull().get();
   private static final Map<JavaTypeInfo<?>, Integer> FROM_OBJECT = TypeMap.of(ZERO_LOSS_NON_PREFERRED, OBJECT);
   private static final Map<JavaTypeInfo<?>, Integer> FROM_OBJECT_ALLOW_NULL = TypeMap.of(ZERO_LOSS_NON_PREFERRED, OBJECT_ALLOW_NULL);
-  private static final Map<JavaTypeInfo<?>, Integer> FROM_FUDGE_MSG = TypeMap.of(ZERO_LOSS_NON_PREFERRED, FUDGE_MSG);
-  private static final Map<JavaTypeInfo<?>, Integer> FROM_FUDGE_MSG_ALLOW_NULL = TypeMap.of(ZERO_LOSS_NON_PREFERRED, FUDGE_MSG_ALLOW_NULL);
+  private static final Map<JavaTypeInfo<?>, Integer> FROM_FUDGE_MSG = TypeMap.of(ZERO_LOSS_NON_PREFERRED, TransportTypes.FUDGE_MSG);
+  private static final Map<JavaTypeInfo<?>, Integer> FROM_FUDGE_MSG_ALLOW_NULL = TypeMap.of(ZERO_LOSS_NON_PREFERRED, TransportTypes.FUDGE_MSG_ALLOW_NULL);
 
   private volatile Supplier<FudgeContext> _fudgeContextInd;
   private volatile FudgeContext _fudgeContext;

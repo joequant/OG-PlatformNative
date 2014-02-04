@@ -6,9 +6,9 @@
 
 package com.opengamma.language.timeseries;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.id.ExternalId;
 import com.opengamma.id.ExternalIdBundle;
@@ -21,6 +21,9 @@ import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.OpenGammaTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
+import com.opengamma.language.definition.types.TimeSeriesTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.procedure.AbstractProcedureInvoker;
 import com.opengamma.language.procedure.MetaProcedure;
@@ -54,15 +57,15 @@ public class StoreTimeSeriesProcedure extends AbstractProcedureInvoker.SingleRes
   private static final int MASTER = 7;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter timeseries = new MetaParameter("timeseries", JavaTypeInfo.builder(LocalDateDoubleTimeSeries.class).get());
-    final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).get());
-    final MetaParameter identifier = new MetaParameter("identifier", JavaTypeInfo.builder(ExternalIdBundle.class).get());
-    final MetaParameter dataField = new MetaParameter("dataField", JavaTypeInfo.builder(String.class).get());
-    final MetaParameter dataSource = new MetaParameter("dataSource", JavaTypeInfo.builder(String.class).get());
-    final MetaParameter dataProvider = new MetaParameter("dataProvider", JavaTypeInfo.builder(String.class).get());
-    final MetaParameter observationTime = new MetaParameter("observationTime", JavaTypeInfo.builder(String.class).get());
+    final MetaParameter timeseries = new MetaParameter("timeseries", TimeSeriesTypes.LOCAL_DATE_DOUBLE_TIME_SERIES);
+    final MetaParameter name = new MetaParameter("name", PrimitiveTypes.STRING);
+    final MetaParameter identifier = new MetaParameter("identifier", OpenGammaTypes.EXTERNAL_ID_BUNDLE);
+    final MetaParameter dataField = new MetaParameter("dataField", PrimitiveTypes.STRING);
+    final MetaParameter dataSource = new MetaParameter("dataSource", PrimitiveTypes.STRING);
+    final MetaParameter dataProvider = new MetaParameter("dataProvider", PrimitiveTypes.STRING);
+    final MetaParameter observationTime = new MetaParameter("observationTime", PrimitiveTypes.STRING);
     final MetaParameter master = new MetaParameter("master", JavaTypeInfo.builder(MasterID.class).defaultValue(MasterID.SESSION).get());
-    return Arrays.asList(timeseries, name, identifier, dataField, dataSource, dataProvider, observationTime, master);
+    return ImmutableList.of(timeseries, name, identifier, dataField, dataSource, dataProvider, observationTime, master);
   }
 
   private StoreTimeSeriesProcedure(final DefinitionAnnotater info) {
@@ -74,8 +77,8 @@ public class StoreTimeSeriesProcedure extends AbstractProcedureInvoker.SingleRes
     this(new DefinitionAnnotater(StoreTimeSeriesProcedure.class));
   }
 
-  protected static UniqueId invoke(final HistoricalTimeSeriesMaster master, final LocalDateDoubleTimeSeries timeSeries, final String name, final ExternalIdBundle identifier, final String dataField,
-      final String dataSource, final String dataProvider, final String observationTime) {
+  protected static UniqueId invoke(final HistoricalTimeSeriesMaster master, final LocalDateDoubleTimeSeries timeSeries, final String name, final ExternalIdBundle identifier,
+      final String dataField, final String dataSource, final String dataProvider, final String observationTime) {
     final HistoricalTimeSeriesInfoSearchRequest searchRequest = new HistoricalTimeSeriesInfoSearchRequest();
     for (ExternalId externalId : identifier) {
       searchRequest.addExternalId(externalId);
@@ -111,9 +114,8 @@ public class StoreTimeSeriesProcedure extends AbstractProcedureInvoker.SingleRes
     return master.correctTimeSeriesDataPoints(document, timeSeries);
   }
 
-  public static final UniqueId invoke(final SessionContext sessionContext, final LocalDateDoubleTimeSeries timeSeries, final String name, final ExternalIdBundle identifier, final String dataField,
-      final String dataSource,
-      final String dataProvider, final String observationTime, final MasterID master) {
+  public static final UniqueId invoke(final SessionContext sessionContext, final LocalDateDoubleTimeSeries timeSeries, final String name, final ExternalIdBundle identifier,
+      final String dataField, final String dataSource, final String dataProvider, final String observationTime, final MasterID master) {
     final RemoteClient client = ContextRemoteClient.get(sessionContext, master);
     final HistoricalTimeSeriesMaster tsMaster;
     try {

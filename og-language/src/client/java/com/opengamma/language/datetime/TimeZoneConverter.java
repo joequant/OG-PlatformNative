@@ -10,15 +10,13 @@ import org.threeten.bp.ZoneId;
 
 import com.opengamma.language.convert.AbstractMappedConverter;
 import com.opengamma.language.convert.TypeMap;
-import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
+import com.opengamma.language.definition.types.ThreeTenTypes;
 
 /**
  * Converts time zone related objects.
  */
 public class TimeZoneConverter extends AbstractMappedConverter {
-
-  private static final JavaTypeInfo<ZoneId> ZONE_ID = JavaTypeInfo.builder(ZoneId.class).allowNull().get();
-  private static final JavaTypeInfo<String> STRING = JavaTypeInfo.builder(String.class).allowNull().get();
 
   /**
    * Default instance.
@@ -26,7 +24,7 @@ public class TimeZoneConverter extends AbstractMappedConverter {
   public static final TimeZoneConverter INSTANCE = new TimeZoneConverter();
 
   protected TimeZoneConverter() {
-    conversion(TypeMap.ZERO_LOSS, ZONE_ID, STRING, new Action<ZoneId, String>() {
+    conversion(TypeMap.ZERO_LOSS, ThreeTenTypes.ZONE_ID_ALLOW_NULL, PrimitiveTypes.STRING_ALLOW_NULL, new Action<ZoneId, String>() {
       @Override
       protected String convert(final ZoneId value) {
         return value.getId();

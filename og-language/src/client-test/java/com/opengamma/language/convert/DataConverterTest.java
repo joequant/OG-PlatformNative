@@ -15,6 +15,8 @@ import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.PrimitiveTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.util.test.TestGroup;
 
@@ -33,16 +35,16 @@ public class DataConverterTest extends AbstractConverterTest {
   }
 
   private Value[] createValue_1() {
-    return new Value[] {createValue(), createValue()};
+    return new Value[] {createValue(), createValue() };
   }
 
   private Value[][] createValue_2() {
-    return new Value[][] {createValue_1(), createValue_1()};
+    return new Value[][] {createValue_1(), createValue_1() };
   }
 
   @Test
   public void testToData() {
-    final JavaTypeInfo<Data> target = JavaTypeInfo.builder(Data.class).get();
+    final JavaTypeInfo<Data> target = TransportTypes.DATA;
     assertEquals(true, _dataConverter.canConvertTo(target));
     Data data = DataUtils.of(createValue());
     assertValidConversion(_dataConverter, data.getSingle(), target, data);
@@ -56,13 +58,13 @@ public class DataConverterTest extends AbstractConverterTest {
 
   @Test
   public void testToString() {
-    final JavaTypeInfo<String> target = JavaTypeInfo.builder(String.class).get();
+    final JavaTypeInfo<String> target = PrimitiveTypes.STRING;
     assertEquals(false, _dataConverter.canConvertTo(target));
   }
 
   @Test
   public void testToValue() {
-    final JavaTypeInfo<Value> target = JavaTypeInfo.builder(Value.class).get();
+    final JavaTypeInfo<Value> target = TransportTypes.VALUE;
     assertEquals(true, _dataConverter.canConvertTo(target));
     final Data data = DataUtils.of(createValue());
     assertValidConversion(_dataConverter, data, target, data.getSingle());

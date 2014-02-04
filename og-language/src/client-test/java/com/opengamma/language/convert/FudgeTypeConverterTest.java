@@ -16,6 +16,8 @@ import com.google.common.base.Suppliers;
 import com.opengamma.core.security.Security;
 import com.opengamma.financial.security.equity.EquitySecurity;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.test.AbstractConverterTest;
 import com.opengamma.util.fudgemsg.OpenGammaFudgeContext;
 import com.opengamma.util.money.Currency;
@@ -56,7 +58,7 @@ public class FudgeTypeConverterTest extends AbstractConverterTest {
   }
 
   public void testToSecurity() {
-    final JavaTypeInfo<Security> target = JavaTypeInfo.builder(Security.class).get();
+    final JavaTypeInfo<Security> target = CoreModelTypes.SECURITY;
     assertEquals(_converter.canConvertTo(target), true);
     assertValidConversion(_converter, createSecurityMessage(), target, createSecurityObject());
     assertInvalidConversion(_converter, "", target);
@@ -64,7 +66,7 @@ public class FudgeTypeConverterTest extends AbstractConverterTest {
   }
 
   public void testToFudgeMsg() {
-    final JavaTypeInfo<FudgeMsg> target = JavaTypeInfo.builder(FudgeMsg.class).get();
+    final JavaTypeInfo<FudgeMsg> target = TransportTypes.FUDGE_MSG;
     assertEquals(_converter.canConvertTo(target), true);
     assertValidConversion(_converter, createSecurityObject(), target, createSecurityMessage());
     assertInvalidConversion(_converter, "", target);

@@ -11,8 +11,8 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -26,12 +26,12 @@ import com.opengamma.util.async.AsynchronousExecution;
 public class EncodeDealFunction implements PublishedFunction {
 
   private final MetaFunction _metaFunction;
-  
+
   public EncodeDealFunction() {
-    MetaParameter dealParam = new MetaParameter("deal", JavaTypeInfo.builder(Deal.class).get());
+    MetaParameter dealParam = new MetaParameter("deal", CoreModelTypes.DEAL);
     List<MetaParameter> params = ImmutableList.of(dealParam);
     _metaFunction = new MetaFunction(Categories.SECURITY, "EncodeDeal", params, new AbstractFunctionInvoker(params) {
-      
+
       @Override
       protected Object invokeImpl(SessionContext sessionContext, Object[] parameters) throws AsynchronousExecution {
         Deal deal = (Deal) parameters[0];
@@ -51,10 +51,10 @@ public class EncodeDealFunction implements PublishedFunction {
         }
         return sb.toString();
       }
-      
+
     });
   }
-  
+
   @Override
   public MetaFunction getMetaFunction() {
     return _metaFunction;

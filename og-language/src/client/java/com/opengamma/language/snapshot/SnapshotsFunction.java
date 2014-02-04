@@ -5,12 +5,12 @@
  */
 package com.opengamma.language.snapshot;
 
-import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.client.CombiningMaster;
@@ -42,7 +42,7 @@ public class SnapshotsFunction extends AbstractFunctionInvoker implements Publis
 
   private static List<MetaParameter> parameters() {
     final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).defaultValue("*").get());
-    return Arrays.asList(name);
+    return ImmutableList.of(name);
   }
 
   private SnapshotsFunction(final DefinitionAnnotater info) {

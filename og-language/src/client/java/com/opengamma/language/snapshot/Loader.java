@@ -19,8 +19,9 @@ import com.opengamma.language.config.Configuration;
 import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.language.definition.Categories;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.CoreModelTypes;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.FunctionProviderBean;
 import com.opengamma.language.object.GetAttributeFunction;
 import com.opengamma.language.object.SetAttributeFunction;
@@ -94,15 +95,15 @@ public class Loader extends ContextInitializationBean {
             TakeSnapshotNowFunction.INSTANCE,
             // REVIEW 2011-12-01 andrew -- Why did I do the following? Why not put entries into ObjectFunctionProvider?
             new GetAttributeFunction(Categories.MARKET_DATA, "GetSnapshotName", "Fetches the name of a snapshot", ManageableMarketDataSnapshot.meta().name(), new MetaParameter("snapshot",
-                JavaTypeInfo.builder(ManageableMarketDataSnapshot.class).get()).description("The snapshot to query")), new SetAttributeFunction(Categories.MARKET_DATA, "SetSnapshotName",
-                "Updates the name of a snapshot, returning the updated snapshot", ManageableMarketDataSnapshot.meta().name(), new MetaParameter("snapshot", JavaTypeInfo.builder(
-                    ManageableMarketDataSnapshot.class).get()).description("The snapshot to update"), new MetaParameter("name", JavaTypeInfo.builder(String.class).get())
+                CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT).description("The snapshot to query")), new SetAttributeFunction(Categories.MARKET_DATA, "SetSnapshotName",
+                "Updates the name of a snapshot, returning the updated snapshot", ManageableMarketDataSnapshot.meta().name(), new MetaParameter("snapshot",
+                    CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT).description("The snapshot to update"), new MetaParameter("name", PrimitiveTypes.STRING)
                     .description("The new name for the snapshot")), new GetAttributeFunction(Categories.MARKET_DATA, "GetSnapshotBasisViewName",
-                "Fetches the view name the snapshot was originally based on", ManageableMarketDataSnapshot.meta().name(), new MetaParameter("snapshot", JavaTypeInfo.builder(
-                    ManageableMarketDataSnapshot.class).get()).description("The snapshot to query")), new SetAttributeFunction(Categories.MARKET_DATA, "SetSnapshotBasisViewName",
+                "Fetches the view name the snapshot was originally based on", ManageableMarketDataSnapshot.meta().name(), new MetaParameter("snapshot",
+                    CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT).description("The snapshot to query")), new SetAttributeFunction(Categories.MARKET_DATA, "SetSnapshotBasisViewName",
                 "Updates the view name the snapshot was originally based on, returning the updated snapshot", ManageableMarketDataSnapshot.meta().name(), new MetaParameter("snapshot",
-                    JavaTypeInfo.builder(ManageableMarketDataSnapshot.class).get()).description("The snapshot to update"),
-                new MetaParameter("name", JavaTypeInfo.builder(String.class).get()).description("The new basis view name for the snapshot"))));
+                    CoreModelTypes.MANAGEABLE_MARKET_DATA_SNAPSHOT).description("The snapshot to update"), new MetaParameter("name", PrimitiveTypes.STRING)
+                    .description("The new basis view name for the snapshot"))));
     globalContext.getProcedureProvider().addProvider(new ProcedureProviderBean(SnapshotViewResultProcedure.INSTANCE, StoreSnapshotProcedure.INSTANCE));
     // TODO: type converters
   }

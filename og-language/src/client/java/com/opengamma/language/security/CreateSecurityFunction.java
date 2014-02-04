@@ -10,8 +10,8 @@ import java.util.List;
 
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.object.CreateObjectFunction;
 import com.opengamma.master.security.ManageableSecurity;
 
@@ -26,12 +26,14 @@ public class CreateSecurityFunction<T extends ManageableSecurity> extends Create
     super(Categories.SECURITY, clazz.getSimpleName(), clazz, description, parameterNames, parameterDescriptions);
   }
 
+  @Override
   protected List<MetaParameter> getPrependedParameters() {
-    final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).get());
+    final MetaParameter name = new MetaParameter("name", PrimitiveTypes.STRING);
     name.setDescription("The display name or label of the security");
     return Collections.singletonList(name);
   }
 
+  @Override
   protected Object postConstruction(final SessionContext context, final T newInstance, final Object[] parameters) {
     newInstance.setName((String) parameters[0]);
     return newInstance;

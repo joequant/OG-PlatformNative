@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import com.opengamma.id.ExternalId;
 import com.opengamma.id.ExternalIdBundle;
 import com.opengamma.id.ExternalScheme;
+import com.opengamma.language.definition.JavaTypeInfo;
 
 /**
  * Ranks schemes, allowing the preferred ones to be extracted from identifier bundles.
@@ -27,6 +28,9 @@ public final class ExternalSchemeRank {
    * Default instance with the locally defined preferences (as found in the classpath).
    */
   public static final ExternalSchemeRank DEFAULT = createDefault();
+
+  public static final JavaTypeInfo<ExternalSchemeRank> TYPE = JavaTypeInfo.builder(ExternalSchemeRank.class).get();
+  public static final JavaTypeInfo<ExternalSchemeRank> TYPE_ALLOW_NULL = JavaTypeInfo.builder(ExternalSchemeRank.class).allowNull().get();
 
   /**
    * Ranks the schemes - the lower the numerical value, the more preferred the scheme is.
@@ -97,8 +101,7 @@ public final class ExternalSchemeRank {
   }
 
   /**
-   * Ranks a given scheme. The lower the number, the more preferred the scheme is. If the scheme isn't recognized by the
-   * ranking, {@code Integer.MAX_VALUE} is returned.
+   * Ranks a given scheme. The lower the number, the more preferred the scheme is. If the scheme isn't recognized by the ranking, {@code Integer.MAX_VALUE} is returned.
    * 
    * @param scheme the scheme, not null
    * @return the rank
@@ -113,8 +116,7 @@ public final class ExternalSchemeRank {
   }
 
   /**
-   * Ranks a given scheme. The lower the number, the more preferred the scheme is. If the scheme isn't recognized by the
-   * ranking, {@code Integer.MAX_VALUE} is returned.
+   * Ranks a given scheme. The lower the number, the more preferred the scheme is. If the scheme isn't recognized by the ranking, {@code Integer.MAX_VALUE} is returned.
    * 
    * @param scheme the scheme, not null
    * @return the rank

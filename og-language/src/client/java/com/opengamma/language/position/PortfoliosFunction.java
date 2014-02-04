@@ -6,20 +6,20 @@
 
 package com.opengamma.language.position;
 
-import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.language.client.CombiningMaster;
 import com.opengamma.language.client.MasterID;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
-import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.MetaParameter;
+import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -43,8 +43,8 @@ public class PortfoliosFunction extends AbstractFunctionInvoker implements Publi
   private final MetaFunction _meta;
 
   private static List<MetaParameter> parameters() {
-    final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).allowNull().get());
-    return Arrays.asList(name);
+    final MetaParameter name = new MetaParameter("name", PrimitiveTypes.STRING_ALLOW_NULL);
+    return ImmutableList.of(name);
   }
 
   private PortfoliosFunction(final DefinitionAnnotater info) {
