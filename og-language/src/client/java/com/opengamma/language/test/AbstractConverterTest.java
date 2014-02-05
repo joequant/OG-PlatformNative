@@ -48,6 +48,14 @@ public class AbstractConverterTest {
     throw new UnsupportedOperationException();
   }
 
+  protected FudgeContext getFudgeContext() {
+    return FudgeContext.GLOBAL_DEFAULT;
+  }
+
+  protected TypeConverterProvider getDefaultTypeConverters() {
+    return new Converters(getFudgeContext());
+  }
+
   /**
    * Creates a {@link TypeConverterProviderBean} and passes it to {@link #addTypeConvertersToBean} to be populated.
    * 
@@ -57,7 +65,7 @@ public class AbstractConverterTest {
     final AggregatingTypeConverterProvider agg = new AggregatingTypeConverterProvider();
     final TypeConverterProviderBean bean = new TypeConverterProviderBean();
     addTypeConvertersToBean(bean);
-    agg.addTypeConverterProvider(new Converters(FudgeContext.GLOBAL_DEFAULT));
+    agg.addTypeConverterProvider(getDefaultTypeConverters());
     agg.addTypeConverterProvider(bean);
     return agg;
   }
@@ -69,16 +77,14 @@ public class AbstractConverterTest {
    * @return the type converter provider, not {@code null}
    */
   protected TypeConverterProvider getTypeConverters() {
-    return new Converters(FudgeContext.GLOBAL_DEFAULT);
+    return getDefaultTypeConverters();
   }
 
   protected SessionContext getSessionContext() {
     return _sessionContext;
   }
 
-  protected <T, J> void assertValidConversion(final TypeConverter converter, final T value, final JavaTypeInfo<J> target, final J expected) {
-    final ValueConversionContext context = new ValueConversionContext(getSessionContext(), new DefaultValueConverter());
-    converter.convertValue(context, value, target);
+  private <T, J> void assertValidConversion(final ValueConversionContext context, final T value, final JavaTypeInfo<J> target, final J expected) {
     if (context.isFailed()) {
       s_logger.warn("Can't convert from {}/{} to {}, expected {}", new Object[] {value.getClass(), value, target, expected });
       fail();
@@ -116,6 +122,18 @@ public class AbstractConverterTest {
         fail();
       }
     }
+  }
+
+  protected <T, J> void assertValidConversion(final T value, final JavaTypeInfo<J> target, final J expected) {
+    final ValueConversionContext context = new ValueConversionContext(getSessionContext(), new DefaultValueConverter());
+    context.convertValue(value, target);
+    assertValidConversion(context, value, target, expected);
+  }
+
+  protected <T, J> void assertValidConversion(final TypeConverter converter, final T value, final JavaTypeInfo<J> target, final J expected) {
+    final ValueConversionContext context = new ValueConversionContext(getSessionContext(), new DefaultValueConverter());
+    converter.convertValue(context, value, target);
+    assertValidConversion(context, value, target, expected);
   }
 
   protected <T, J> void assertInvalidConversion(final TypeConverter converter, final T value, final JavaTypeInfo<J> target) {

@@ -10,7 +10,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -201,7 +200,7 @@ public class FetchTimeSeriesFunctionTest {
     final TestUtils testUtils = new TestUtils();
     testUtils.setHistoricalTimeSeriesSource(historicalTimeSeriesSource);
     final TypeConverterProviderBean extra = new TypeConverterProviderBean();
-    extra.setConverters(Arrays.asList(IdentifierConverter.INSTANCE));
+    extra.addConverter(IdentifierConverter.INSTANCE);
     final AggregatingTypeConverterProvider agg = new AggregatingTypeConverterProvider();
     agg.addTypeConverterProvider(new Converters(OpenGammaFudgeContext.getInstance()));
     agg.addTypeConverterProvider(extra);

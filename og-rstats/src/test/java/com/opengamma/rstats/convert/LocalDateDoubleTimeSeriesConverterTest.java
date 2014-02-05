@@ -6,8 +6,6 @@
 
 package com.opengamma.rstats.convert;
 
-import java.util.Arrays;
-
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
 
@@ -54,7 +52,7 @@ public class LocalDateDoubleTimeSeriesConverterTest extends AbstractConverterTes
 
   @Override
   protected void addTypeConvertersToBean(final TypeConverterProviderBean bean) {
-    bean.setConverters(Arrays.asList(new DateTimeConverter()));
+    bean.addConverter(new DateTimeConverter());
   }
 
   @Override
