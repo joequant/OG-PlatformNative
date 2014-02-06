@@ -107,7 +107,11 @@ public class GetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
         if (value == null) {
           value = new Data();
         }
-        result.put(name, value);
+        Data existing = result.get(name);
+        if (existing == null) {
+          result.put(name, value);
+        }
+        // TODO: Handle repeated field values
       }
     }
     return result;
