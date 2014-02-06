@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
+import com.opengamma.financial.security.swap.SwapSecurity;
 import com.opengamma.util.test.TestGroup;
 
 /**
@@ -28,23 +29,10 @@ public class JavaTypeInfoTest {
   private static final Logger s_logger = LoggerFactory.getLogger(JavaTypeInfoTest.class);
 
   private JavaTypeInfo.Builder<?>[] createBuilders() {
-    return new JavaTypeInfo.Builder<?>[] {
-        JavaTypeInfo.builder(Boolean.TYPE),
-        JavaTypeInfo.builder(Boolean.class),
-        JavaTypeInfo.builder(Character.TYPE),
-        JavaTypeInfo.builder(Character.class),
-        JavaTypeInfo.builder(Double.TYPE),
-        JavaTypeInfo.builder(Double.class),
-        JavaTypeInfo.builder(Float.TYPE),
-        JavaTypeInfo.builder(Float.class),
-        JavaTypeInfo.builder(Integer.TYPE),
-        JavaTypeInfo.builder(Integer.class),
-        JavaTypeInfo.builder(Long.TYPE),
-        JavaTypeInfo.builder(Long.class),
-        JavaTypeInfo.builder(Short.TYPE),
-        JavaTypeInfo.builder(Short.class),
-        JavaTypeInfo.builder(String.class),
-        JavaTypeInfo.builder(Map.class),
+    return new JavaTypeInfo.Builder<?>[] {JavaTypeInfo.builder(Boolean.TYPE), JavaTypeInfo.builder(Boolean.class), JavaTypeInfo.builder(Character.TYPE),
+        JavaTypeInfo.builder(Character.class), JavaTypeInfo.builder(Double.TYPE), JavaTypeInfo.builder(Double.class), JavaTypeInfo.builder(Float.TYPE), JavaTypeInfo.builder(Float.class),
+        JavaTypeInfo.builder(Integer.TYPE), JavaTypeInfo.builder(Integer.class), JavaTypeInfo.builder(Long.TYPE), JavaTypeInfo.builder(Long.class), JavaTypeInfo.builder(Short.TYPE),
+        JavaTypeInfo.builder(Short.class), JavaTypeInfo.builder(String.class), JavaTypeInfo.builder(Map.class),
         JavaTypeInfo.builder(Map.class).parameter(JavaTypeInfo.builder(String.class).get()).parameter(JavaTypeInfo.builder(Integer.class).get()),
         JavaTypeInfo.builder(Map.class).parameter(JavaTypeInfo.builder(Integer.class).get()).parameter(JavaTypeInfo.builder(String.class).get()) };
   }
@@ -116,6 +104,16 @@ public class JavaTypeInfoTest {
       s_logger.debug("String {} -> {}", str, parsed);
       assertEquals(parsed, type);
     }
+  }
+
+  public void testValidShorthandStrings() {
+    assertEquals(JavaTypeInfo.parseString("String[]"), JavaTypeInfo.builder(String.class).arrayOf().get());
+    assertEquals(JavaTypeInfo.parseString("java.util.List<SwapSecurity>"), JavaTypeInfo.builder(List.class).parameter(SwapSecurity.class).get());
+  }
+
+  @Test(expectedExceptions = IllegalArgumentException.class)
+  public void testInvalidShorthandString() {
+    JavaTypeInfo.parseString("Map");
   }
 
 }

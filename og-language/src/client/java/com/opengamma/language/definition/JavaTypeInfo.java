@@ -7,6 +7,8 @@
 package com.opengamma.language.definition;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +26,8 @@ import com.opengamma.util.tuple.Pair;
 public final class JavaTypeInfo<T> {
 
   private static final JavaTypeInfo<Object> OBJECT = builder(Object.class).get();
+
+  private static final ClassResolver s_resolver = new ClassResolver();
 
   /**
    * Constructs {@link JavaTypeInfo} instances.
@@ -343,24 +347,15 @@ public final class JavaTypeInfo<T> {
     }
   }
 
-  private static Class<?> findClass(final String className) throws ClassNotFoundException {
-    if ("boolean".equals(className)) {
-      return Boolean.TYPE;
-    } else if ("char".equals(className)) {
-      return Character.TYPE;
-    } else if ("double".equals(className)) {
-      return Double.TYPE;
-    } else if ("float".equals(className)) {
-      return Float.TYPE;
-    } else if ("int".equals(className)) {
-      return Integer.TYPE;
-    } else if ("long".equals(className)) {
-      return Long.TYPE;
-    } else if ("short".equals(className)) {
-      return Short.TYPE;
-    } else {
-      return Class.forName(className);
-    }
+  /**
+   * Resolves a class name as used in description strings.
+   * 
+   * @param className the name to resolve, not null
+   * @return the resolved class, not null
+   * @throws ClassNotFoundException if the class is not valid
+   */
+  public static Class<?> resolve(final String className) throws ClassNotFoundException {
+    return s_resolver.resolve(className);
   }
 
   /**
@@ -374,7 +369,7 @@ public final class JavaTypeInfo<T> {
     for (i = 0; i < str.length(); i++) {
       switch (str.charAt(i)) {
         case '<': {
-          final JavaTypeInfo.Builder<?> builder = JavaTypeInfo.builder(findClass(str.substring(0, i)));
+          final JavaTypeInfo.Builder<?> builder = JavaTypeInfo.builder(resolve(str.substring(0, i)));
           String remainder = str.substring(i + 1);
           do {
             final Pair<JavaTypeInfo<?>, String> param = parseStringImpl(remainder);
@@ -399,16 +394,45 @@ public final class JavaTypeInfo<T> {
         }
         case ',':
         case '>': {
-          return Pair.<JavaTypeInfo<?>, String>of(JavaTypeInfo.builder(findClass(str.substring(0, i))).get(), str.substring(i));
+          return Pair.<JavaTypeInfo<?>, String>of(JavaTypeInfo.builder(resolve(str.substring(0, i))).get(), str.substring(i));
         }
         case '[': {
-          return checkArray(Pair.<JavaTypeInfo<?>, String>of(JavaTypeInfo.builder(findClass(str.substring(0, i))).get(), str.substring(i)));
+          return checkArray(Pair.<JavaTypeInfo<?>, String>of(JavaTypeInfo.builder(resolve(str.substring(0, i))).get(), str.substring(i)));
         }
       }
     }
-    return Pair.<JavaTypeInfo<?>, String>of(JavaTypeInfo.builder(findClass(str)).get(), "");
+    return Pair.<JavaTypeInfo<?>, String>of(JavaTypeInfo.builder(resolve(str)).get(), "");
   }
 
+/**
+   * Parses a string description of a {@code JavaTypeInfo} instance.
+   * <pre>
+   * JavaTypeInfo ::= ArrayJavaTypeInfo | ParameterizedJavaTypeInfo | SimpleJavaTypeInfo
+   * 
+   * ArrayJavaTypeInfo ::= JavaTypeInfo "[]"
+   * 
+   * ParameterizedJavaTypeInfo ::= JavaTypeInfo "<" JavaTypeInfo ParameterizedJavaTypeInfoTail
+   * 
+   * ParameterizedJavaTypeInfoTail ::= "," JavaTypeInfo ParameterizedJavaTypeInfoTail
+   *                                 | ">"
+   * 
+   * SimpleJavaTypeInfo ::= ClassName
+   * 
+   * ClassName ::= FullyQualifiedClassName | PrimitiveType | BeanClassName
+   * 
+   * FullyQualifiedClassName ::=
+   *   (for example "com.opengamma.example.Foo")
+   *   
+   * PrimitiveType ::= "boolean" | "char" | "double" | "float" | "int" | "long" | "short" | "String"
+   * 
+   * BeanClassName ::=
+   *   (for example "SwapSecurity")
+   * </pre>
+   * 
+   * @param str the string description to parse, not null
+   * @return the type info, not null
+   * @throws IllegalArgumentException if the description string is not valid
+   */
   public static JavaTypeInfo<?> parseString(final String str) {
     try {
       final Pair<JavaTypeInfo<?>, String> parsed = parseStringImpl(str);
@@ -424,6 +448,23 @@ public final class JavaTypeInfo<T> {
   public static <T> Builder<T> builder(final Class<T> rawClass) {
     ArgumentChecker.notNull(rawClass, "rawClass");
     return new Builder<T>(rawClass);
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked" })
+  public static Builder<?> builder(final Type type) {
+    if (type instanceof Class<?>) {
+      return new Builder((Class<?>) type);
+    }
+    if (type instanceof ParameterizedType) {
+      final ParameterizedType ptype = (ParameterizedType) type;
+      final Builder<?> builder = builder(ptype.getRawType());
+      for (Type typeArg : ptype.getActualTypeArguments()) {
+        builder.parameter(builder(typeArg).get());
+      }
+      return builder;
+    } else {
+      throw new IllegalArgumentException("Can't handle " + type);
+    }
   }
 
 }
