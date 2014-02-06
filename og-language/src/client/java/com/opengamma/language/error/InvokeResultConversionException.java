@@ -7,7 +7,7 @@
 package com.opengamma.language.error;
 
 /**
- * Exception wrapper for {@link Constants.ERROR_RESULT_CONVERSION}.
+ * Exception wrapper for {@link Constants#ERROR_RESULT_CONVERSION}.
  */
 public class InvokeResultConversionException extends AbstractException {
 
@@ -56,6 +56,7 @@ public class InvokeResultConversionException extends AbstractException {
     return getIntValue();
   }
 
+  @Override
   public String getMessage() {
     return getStringValue();
   }

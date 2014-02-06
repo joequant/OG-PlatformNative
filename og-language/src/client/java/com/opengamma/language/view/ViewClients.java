@@ -40,7 +40,7 @@ import com.opengamma.language.context.AbstractContext;
   protected abstract Logger getLogger();
 
   /**
-   * Releases any remaining view clients. Do not call {@link #lockViewClient} or {@link #unlockViewClient} again. 
+   * Releases any remaining view clients. Do not call {@link #lockViewClient} or {@link #releaseViewClient} again.
    */
   protected void destroyAll() {
     getLogger().info("Destroy all called");

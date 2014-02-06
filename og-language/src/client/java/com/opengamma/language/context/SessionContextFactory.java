@@ -11,7 +11,7 @@ package com.opengamma.language.context;
 public interface SessionContextFactory {
 
   /**
-   * Creates a new {@link SessionContext} object for a user.The session context is not initialized at construction - the caller must initialize it by calling {@link SessionContext.initContext} when it
+   * Creates a new {@link SessionContext} object for a user.The session context is not initialized at construction - the caller must initialize it by calling {@link SessionContext#initContext} when it
    * is ready to use it.
    * 
    * @param userName the name of the user

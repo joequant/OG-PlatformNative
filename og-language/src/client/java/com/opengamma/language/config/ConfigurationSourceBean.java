@@ -62,7 +62,7 @@ public final class ConfigurationSourceBean implements InitializingBean {
   /**
    * Fetches the Fudge message describing the configuration.
    * 
-   * @param useCached whether to allow a previously cached message rather than fetch a new one
+   * @param useCachedMessage whether to allow a previously cached message rather than fetch a new one
    * @return the Fudge configuration description, not null
    * @throws ConnectorStartupError if there is a fault fetching the configuration
    */

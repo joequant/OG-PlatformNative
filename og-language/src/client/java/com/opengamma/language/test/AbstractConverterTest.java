@@ -142,7 +142,8 @@ public class AbstractConverterTest {
   }
 
   protected <J> void assertConversionCount(final int expected, final TypeConverter converter, final JavaTypeInfo<J> target) {
-    final Map<JavaTypeInfo<?>, Integer> conversions = converter.getConversionsTo(null, target);
+    final ValueConversionContext context = new ValueConversionContext(getSessionContext(), new DefaultValueConverter());
+    final Map<JavaTypeInfo<?>, Integer> conversions = converter.getConversionsTo(context, target);
     assertNotNull(conversions);
     assertEquals(expected, conversions.size());
   }

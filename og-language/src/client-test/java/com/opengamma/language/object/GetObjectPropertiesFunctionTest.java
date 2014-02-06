@@ -27,7 +27,7 @@ import com.opengamma.util.money.CurrencyAmount;
 import com.opengamma.util.test.TestGroup;
 
 /**
- * Tests the {@link GetObjectFunctionProperties} class.
+ * Tests the {@link GetObjectPropertiesFunction} class.
  */
 @Test(groups = TestGroup.UNIT)
 public class GetObjectPropertiesFunctionTest {

@@ -74,7 +74,7 @@ public class TestMessageHandler {
    * Returns the inline response to the message (or null for none), and sends asynchronous responses to the supplied sender.
    * 
    * @param message received test message
-   * @param sender message sender for asynchronous messages
+   * @param context the session context
    */
   @SuppressWarnings("deprecation")
   public static UserMessagePayload testMessage(final Test message, final SessionContext context) {

@@ -57,6 +57,12 @@
     </antcall>
   </target>
 
+  <target name="site" description="Calls `mvn site` to build the site documentation">
+    <antcall target="mvn-call">
+      <param name="phase" value="site" />
+    </antcall>
+  </target>
+
   <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check,init"> 
     <property name="mvn.args" value="" />
     <condition property="env.MVN_ARGS" value="">

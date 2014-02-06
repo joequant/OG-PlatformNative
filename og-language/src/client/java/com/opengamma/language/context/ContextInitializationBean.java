@@ -77,7 +77,7 @@ public class ContextInitializationBean implements InitializingBean {
   }
 
   /**
-   * Called from {@link afterPropertiesSet} before any other action taken.
+   * Called from {@link #afterPropertiesSet} before any other action taken.
    */
   protected void assertPropertiesSet() {
   }

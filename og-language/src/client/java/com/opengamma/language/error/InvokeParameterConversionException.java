@@ -7,7 +7,7 @@
 package com.opengamma.language.error;
 
 /**
- * Exception wrapper for {@link Constants.ERROR_PARAMETER_CONVERSION}.
+ * Exception wrapper for {@link Constants#ERROR_PARAMETER_CONVERSION}.
  */
 public class InvokeParameterConversionException extends AbstractException {
 
@@ -40,6 +40,7 @@ public class InvokeParameterConversionException extends AbstractException {
     return getIntValue();
   }
 
+  @Override
   public String getMessage() {
     return getStringValue();
   }

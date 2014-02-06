@@ -5,6 +5,8 @@
  */
 package com.opengamma.language.view;
 
+import com.opengamma.engine.view.client.ViewClient;
+
 /**
  * Language specific data extension to {@link UserViewClient}.
  */

@@ -7,8 +7,7 @@
 package com.opengamma.language.error;
 
 /**
- * Exception wrapper for {@link Constants.ERROR_INTERNAL}. This should only be
- * used when none of the other exception constants are more appropriate.
+ * Exception wrapper for {@link Constants#ERROR_INTERNAL}. This should only be used when none of the other exception constants are more appropriate.
  */
 public class InvokeInternalException extends AbstractException {
 
@@ -31,6 +30,7 @@ public class InvokeInternalException extends AbstractException {
     setStringValue(message);
   }
 
+  @Override
   public String getMessage() {
     return getStringValue();
   }

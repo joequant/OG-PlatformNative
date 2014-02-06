@@ -52,6 +52,7 @@
     <skip.integration-tests-native>true</skip.integration-tests-native>
     <skip.generate-version-header>true</skip.generate-version-header>
     <surefire.argline>-Dlogback.configurationFile=com/opengamma/util/warn-logback.xml</surefire.argline>
+    <checkstyle.skip>true</checkstyle.skip>
   </properties>
 
   <distributionManagement>

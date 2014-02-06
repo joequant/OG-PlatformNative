@@ -7,7 +7,7 @@
 package com.opengamma.language.error;
 
 /**
- * Exception wrapper for {@link Constants.ERROR_INVALID_ARGUMENT}.
+ * Exception wrapper for {@link Constants#ERROR_INVALID_ARGUMENT}.
  */
 public class InvokeInvalidArgumentException extends AbstractException {
 
@@ -50,6 +50,7 @@ public class InvokeInvalidArgumentException extends AbstractException {
     return getValue().getIntValue();
   }
 
+  @Override
   public String getMessage() {
     return getStringValue();
   }
