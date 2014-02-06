@@ -97,7 +97,7 @@ public abstract class AbstractMappedConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public final Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public final Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     return _conversions.get(targetType.withoutDefault()).getFirst();
   }
 

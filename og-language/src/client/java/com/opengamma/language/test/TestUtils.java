@@ -5,6 +5,8 @@
  */
 package com.opengamma.language.test;
 
+import org.fudgemsg.FudgeContext;
+
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.position.PositionSource;
 import com.opengamma.core.security.SecuritySource;
@@ -27,7 +29,9 @@ import com.opengamma.language.context.SessionContextEventHandler;
 import com.opengamma.language.context.SessionContextFactoryBean;
 import com.opengamma.language.context.UserContextEventHandler;
 import com.opengamma.language.context.UserContextFactoryBean;
+import com.opengamma.language.convert.FudgeTypeConverter;
 import com.opengamma.language.invoke.TypeConverterProvider;
+import com.opengamma.util.fudgemsg.OpenGammaFudgeContext;
 
 public class TestUtils {
 
@@ -78,6 +82,7 @@ public class TestUtils {
 
   private HistoricalTimeSeriesSource _historicalTimeSeriesSource;
   private TypeConverterProvider _typeConverters;
+  private FudgeContext _typeConverterFudgeContext = OpenGammaFudgeContext.getInstance();
   private ViewProcessor _viewProcessor;
   private SecuritySource _securitySource;
   private PositionSource _positionSource;
@@ -102,6 +107,14 @@ public class TestUtils {
 
   public TypeConverterProvider getTypeConverters() {
     return _typeConverters;
+  }
+
+  public void setTypeConverterFudgeContext(final FudgeContext fudgeContext) {
+    _typeConverterFudgeContext = fudgeContext;
+  }
+
+  public FudgeContext getTypeConverterFudgeContext() {
+    return _typeConverterFudgeContext;
   }
 
   public void setViewProcessor(final ViewProcessor viewProcessor) {
@@ -163,6 +176,7 @@ public class TestUtils {
         }
         if (getTypeConverters() != null) {
           globalContext.getTypeConverterProvider().addTypeConverterProvider(getTypeConverters());
+          FudgeTypeConverter.setFudgeContext(globalContext, getTypeConverterFudgeContext());
         }
         if (getViewProcessor() != null) {
           globalContext.setViewProcessor(getViewProcessor());

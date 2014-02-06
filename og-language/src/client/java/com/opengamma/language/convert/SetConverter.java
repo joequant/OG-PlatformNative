@@ -87,7 +87,7 @@ public class SetConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     if (targetType.getRawClass() == Set.class) {
       return targetType.isAllowNull() ? TO_SET_ALLOW_NULL : TO_SET;
     } else {

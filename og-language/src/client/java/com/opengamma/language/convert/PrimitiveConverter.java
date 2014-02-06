@@ -74,7 +74,7 @@ public class PrimitiveConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     final Class<?> clazz = targetType.getRawClass();
     if ((clazz == Boolean.class) || (clazz == Boolean.TYPE)) {
       return TO_BOOLEAN;

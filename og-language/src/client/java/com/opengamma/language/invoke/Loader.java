@@ -11,8 +11,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.fudgemsg.FudgeContext;
+
+import com.google.common.base.Supplier;
 import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
+import com.opengamma.language.convert.FudgeTypeConverter;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -21,6 +25,7 @@ import com.opengamma.util.ArgumentChecker;
 public class Loader extends ContextInitializationBean {
 
   private List<TypeConverterProvider> _typeConverterProviders;
+  private Supplier<FudgeContext> _fudgeContext;
 
   public void setTypeConverterProvider(final TypeConverterProvider typeConverterProvider) {
     ArgumentChecker.notNull(typeConverterProvider, "typeConverterProvider");
@@ -45,6 +50,14 @@ public class Loader extends ContextInitializationBean {
     return _typeConverterProviders;
   }
 
+  public void setFudgeContext(final Supplier<FudgeContext> fudgeContext) {
+    _fudgeContext = fudgeContext;
+  }
+
+  public Supplier<FudgeContext> getFudgeContext() {
+    return _fudgeContext;
+  }
+
   // ContextInitializationBean
 
   @Override
@@ -56,6 +69,10 @@ public class Loader extends ContextInitializationBean {
   protected void initContext(final MutableGlobalContext globalContext) {
     for (TypeConverterProvider typeConverterProvider : getTypeConverterProviders()) {
       globalContext.getTypeConverterProvider().addTypeConverterProvider(typeConverterProvider);
+    }
+    Supplier<FudgeContext> fudgeContext = getFudgeContext();
+    if (fudgeContext != null) {
+      FudgeTypeConverter.setFudgeContext(globalContext, fudgeContext.get());
     }
   }
 

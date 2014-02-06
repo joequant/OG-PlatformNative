@@ -30,7 +30,6 @@ import com.opengamma.language.invoke.AggregatingTypeConverterProvider;
 import com.opengamma.language.invoke.TypeConverterProviderBean;
 import com.opengamma.language.test.TestUtils;
 import com.opengamma.timeseries.date.localdate.LocalDateDoubleTimeSeries;
-import com.opengamma.util.fudgemsg.OpenGammaFudgeContext;
 import com.opengamma.util.test.TestGroup;
 import com.opengamma.util.tuple.Pair;
 
@@ -202,7 +201,7 @@ public class FetchTimeSeriesFunctionTest {
     final TypeConverterProviderBean extra = new TypeConverterProviderBean();
     extra.addConverter(IdentifierConverter.INSTANCE);
     final AggregatingTypeConverterProvider agg = new AggregatingTypeConverterProvider();
-    agg.addTypeConverterProvider(new Converters(OpenGammaFudgeContext.getInstance()));
+    agg.addTypeConverterProvider(new Converters());
     agg.addTypeConverterProvider(extra);
     testUtils.setTypeConverters(agg);
     return testUtils.createSessionContext();

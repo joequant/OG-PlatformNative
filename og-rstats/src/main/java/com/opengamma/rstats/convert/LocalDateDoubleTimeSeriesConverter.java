@@ -113,7 +113,7 @@ public class LocalDateDoubleTimeSeriesConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     if (targetType.getRawClass() == LocalDateDoubleTimeSeries.class) {
       return TO_LOCAL_DATE_DOUBLE_TIME_SERIES;
     } else {

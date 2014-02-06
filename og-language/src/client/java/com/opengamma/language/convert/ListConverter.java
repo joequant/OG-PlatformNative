@@ -86,7 +86,7 @@ public class ListConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     if (targetType.getRawClass() == List.class) {
       return targetType.isAllowNull() ? TO_LIST_ALLOW_NULL : TO_LIST;
     } else {

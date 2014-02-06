@@ -65,7 +65,7 @@ public class ArrayDepthConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     TypeMap conversions = TypeMap.builder();
     if (targetType.isArray()) {
       conversions.with(ZERO_LOSS, targetType.getArrayElementType());

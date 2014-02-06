@@ -269,7 +269,8 @@ public class ExternalFunctionHandlerTest {
     }
     assertNotNull(cons);
     assertNotNull(mtd);
-    testUtil.setTypeConverters(new Converters(FudgeContext.GLOBAL_DEFAULT));
+    testUtil.setTypeConverters(new Converters());
+    testUtil.setTypeConverterFudgeContext(FudgeContext.GLOBAL_DEFAULT);
     final SessionContext sessionContext = testUtil.createSessionContext();
     Result result = cons.getInvoker().invoke(sessionContext, Arrays.asList(DataUtils.of(69)));
     assertNotNull(result);

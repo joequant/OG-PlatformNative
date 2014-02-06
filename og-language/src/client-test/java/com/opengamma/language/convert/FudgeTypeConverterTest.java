@@ -12,14 +12,12 @@ import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.mapping.FudgeSerializer;
 import org.testng.annotations.Test;
 
-import com.google.common.base.Suppliers;
 import com.opengamma.core.security.Security;
 import com.opengamma.financial.security.equity.EquitySecurity;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.types.CoreModelTypes;
 import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.test.AbstractConverterTest;
-import com.opengamma.util.fudgemsg.OpenGammaFudgeContext;
 import com.opengamma.util.money.Currency;
 import com.opengamma.util.test.TestGroup;
 
@@ -29,7 +27,7 @@ import com.opengamma.util.test.TestGroup;
 @Test(groups = TestGroup.UNIT)
 public class FudgeTypeConverterTest extends AbstractConverterTest {
 
-  private final FudgeTypeConverter _converter = new FudgeTypeConverter(Suppliers.ofInstance(OpenGammaFudgeContext.getInstance()));
+  private final FudgeTypeConverter _converter = new FudgeTypeConverter();
 
   public void testToCurrency() {
     final JavaTypeInfo<Currency> target = JavaTypeInfo.builder(Currency.class).get();
@@ -52,7 +50,7 @@ public class FudgeTypeConverterTest extends AbstractConverterTest {
   }
 
   private FudgeMsg createSecurityMessage() {
-    final FudgeSerializer serializer = new FudgeSerializer(_converter.getFudgeContext());
+    final FudgeSerializer serializer = new FudgeSerializer(FudgeTypeConverter.getFudgeContext(getSessionContext().getGlobalContext()));
     final Security security = createSecurityObject();
     return FudgeSerializer.addClassHeader(serializer.objectToFudgeMsg(security), security.getClass(), Security.class);
   }

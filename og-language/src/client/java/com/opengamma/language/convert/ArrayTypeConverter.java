@@ -81,7 +81,7 @@ public class ArrayTypeConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     if ((targetType.getRawClass() == Value[].class) || (targetType.getRawClass() == Value[][].class)) {
       return TO_VALUE;
     } else {

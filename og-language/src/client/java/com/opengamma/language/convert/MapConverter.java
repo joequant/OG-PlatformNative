@@ -107,7 +107,7 @@ public class MapConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     if (targetType.getRawClass() == Map.class) {
       return targetType.isAllowNull() ? TO_MAP_ALLOW_NULL : TO_MAP;
     } else {

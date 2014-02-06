@@ -66,7 +66,7 @@ public class UserViewClientConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     if (targetType.getRawClass() == ViewClientKey.class) {
       return TO_VIEW_CLIENT_KEY;
     } else {

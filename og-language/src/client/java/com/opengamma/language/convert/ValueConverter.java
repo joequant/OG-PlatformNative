@@ -64,7 +64,7 @@ public final class ValueConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, JavaTypeInfo<?> targetType) {
     final Class<?> clazz = targetType.getRawClass();
     if (clazz == Value.class) {
       return (targetType.isAllowNull() || targetType.isDefaultValue()) ? TO_VALUE_ALLOW_NULL : TO_VALUE_NOT_NULL;

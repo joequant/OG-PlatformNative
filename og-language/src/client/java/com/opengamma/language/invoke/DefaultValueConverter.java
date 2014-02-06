@@ -124,8 +124,7 @@ public class DefaultValueConverter extends ValueConverter {
         return other._nextState == null;
       } else {
         // state converters are from a single list, so test by reference
-        return _nextStateConverter == other._nextStateConverter
-            && _nextState.equals(other._nextState);
+        return _nextStateConverter == other._nextStateConverter && _nextState.equals(other._nextState);
       }
     }
 
@@ -292,7 +291,7 @@ public class DefaultValueConverter extends ValueConverter {
       consideredConverters.clear();
       for (TypeConverter converter : getConvertersTo(conversionContext, explore.getTargetType())) {
         if (!explore.visited(converter)) {
-          final Map<JavaTypeInfo<?>, Integer> alternativeTypes = converter.getConversionsTo(explore.getTargetType());
+          final Map<JavaTypeInfo<?>, Integer> alternativeTypes = converter.getConversionsTo(conversionContext, explore.getTargetType());
           if ((alternativeTypes != null) && !alternativeTypes.isEmpty()) {
             for (Map.Entry<JavaTypeInfo<?>, Integer> alternativeType : alternativeTypes.entrySet()) {
               // Only try types not already used on the chain, and only use the first converter (most recently added) for a type

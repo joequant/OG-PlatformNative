@@ -9,7 +9,9 @@ package com.opengamma.language.convert;
 import static com.opengamma.language.convert.TypeMap.ZERO_LOSS_NON_PREFERRED;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeFieldType;
@@ -23,9 +25,10 @@ import org.joda.beans.impl.direct.DirectBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Supplier;
 import com.opengamma.language.Data;
 import com.opengamma.language.Value;
+import com.opengamma.language.context.GlobalContext;
+import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.JavaTypeInfo.Builder;
 import com.opengamma.language.definition.types.TransportTypes;
@@ -45,33 +48,38 @@ public final class FudgeTypeConverter extends AbstractTypeConverter {
   private static final Map<JavaTypeInfo<?>, Integer> FROM_FUDGE_MSG = TypeMap.of(ZERO_LOSS_NON_PREFERRED, TransportTypes.FUDGE_MSG);
   private static final Map<JavaTypeInfo<?>, Integer> FROM_FUDGE_MSG_ALLOW_NULL = TypeMap.of(ZERO_LOSS_NON_PREFERRED, TransportTypes.FUDGE_MSG_ALLOW_NULL);
 
-  private volatile Supplier<FudgeContext> _fudgeContextInd;
-  private volatile FudgeContext _fudgeContext;
+  private static final String FUDGE_CONTEXT = "FudgeTypeConverter.FudgeContext";
 
-  public FudgeTypeConverter(final Supplier<FudgeContext> fudgeContext) {
-    _fudgeContextInd = fudgeContext;
+  private final Class<?>[] _rawTypes;
+
+  public FudgeTypeConverter() {
+    this(new Class[] {Map.class, List.class, Set.class });
   }
 
-  public FudgeContext getFudgeContext() {
-    do {
-      FudgeContext context = _fudgeContext;
-      if (context != null) {
-        return context;
-      }
-      Supplier<FudgeContext> contextInd = _fudgeContextInd;
-      if (contextInd != null) {
-        context = contextInd.get();
-        _fudgeContext = context;
-        _fudgeContextInd = null;
-        return context;
-      }
-    } while (true);
+  public FudgeTypeConverter(final Class<?>[] rawTypes) {
+    _rawTypes = rawTypes;
+  }
+
+  public static void setFudgeContext(final MutableGlobalContext context, final FudgeContext fudgeContext) {
+    context.setValue(FUDGE_CONTEXT, fudgeContext);
+  }
+
+  public static FudgeContext getFudgeContext(final GlobalContext context) {
+    return context.getValue(FUDGE_CONTEXT);
   }
 
   @Override
   public synchronized boolean canConvertTo(final JavaTypeInfo<?> targetType) {
     final Class<?> rawType = targetType.getRawClass();
-    return ((rawType != Data.class) && (rawType != Value.class) && !getFudgeContext().getObjectDictionary().isDefaultObject(rawType));
+    if ((rawType == Data.class) || (rawType == Value.class) || rawType.isArray()) {
+      return false;
+    }
+    for (Class<?> clazz : _rawTypes) {
+      if (clazz.isAssignableFrom(rawType)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @SuppressWarnings("unchecked")
@@ -89,7 +97,7 @@ public final class FudgeTypeConverter extends AbstractTypeConverter {
       conversionContext.setFail();
       return;
     }
-    final FudgeContext fudgeContext = getFudgeContext();
+    final FudgeContext fudgeContext = getFudgeContext(conversionContext.getGlobalContext());
     final FudgeFieldType fieldType = fudgeContext.getTypeDictionary().getByJavaType(type.getRawClass());
     try {
       if (fieldType == null) {
@@ -147,8 +155,8 @@ public final class FudgeTypeConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
-    final FudgeFieldType fieldType = getFudgeContext().getTypeDictionary().getByJavaType(targetType.getRawClass());
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
+    final FudgeFieldType fieldType = getFudgeContext(conversionContext.getGlobalContext()).getTypeDictionary().getByJavaType(targetType.getRawClass());
     if (fieldType == null) {
       // Arbitrary object type found; conversion may be possible from a Fudge message
       s_logger.debug("Possible conversion from FudgeMsg to arbitrary object {}", targetType);

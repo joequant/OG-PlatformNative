@@ -152,7 +152,7 @@ public class DateTimeConverter extends AbstractTypeConverter {
   }
 
   @Override
-  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final JavaTypeInfo<?> targetType) {
+  public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
     final Class<?> clazz = targetType.getRawClass();
     if (clazz == Value.class) {
       return targetType.isAllowNull() ? TO_VALUE_ALLOW_NULL : TO_VALUE;

@@ -13,7 +13,6 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.util.Map;
 
-import org.fudgemsg.FudgeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,12 +47,8 @@ public class AbstractConverterTest {
     throw new UnsupportedOperationException();
   }
 
-  protected FudgeContext getFudgeContext() {
-    return FudgeContext.GLOBAL_DEFAULT;
-  }
-
   protected TypeConverterProvider getDefaultTypeConverters() {
-    return new Converters(getFudgeContext());
+    return new Converters();
   }
 
   /**
@@ -147,7 +142,7 @@ public class AbstractConverterTest {
   }
 
   protected <J> void assertConversionCount(final int expected, final TypeConverter converter, final JavaTypeInfo<J> target) {
-    final Map<JavaTypeInfo<?>, Integer> conversions = converter.getConversionsTo(target);
+    final Map<JavaTypeInfo<?>, Integer> conversions = converter.getConversionsTo(null, target);
     assertNotNull(conversions);
     assertEquals(expected, conversions.size());
   }

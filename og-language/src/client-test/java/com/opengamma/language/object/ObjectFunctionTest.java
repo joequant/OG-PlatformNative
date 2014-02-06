@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ * Copyright (C) 2014 - present by OpenGamma Inc. and the OpenGamma group of companies
  *
  * Please see distribution for license.
  */
@@ -28,7 +28,6 @@ import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.Converters;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.test.TestUtils;
-import com.opengamma.util.fudgemsg.OpenGammaFudgeContext;
 import com.opengamma.util.money.Currency;
 import com.opengamma.util.money.CurrencyAmount;
 import com.opengamma.util.test.TestGroup;
@@ -41,7 +40,7 @@ public class ObjectFunctionTest {
 
   private SessionContext createSessionContext() {
     final TestUtils testUtils = new TestUtils();
-    testUtils.setTypeConverters(new Converters(OpenGammaFudgeContext.getInstance()));
+    testUtils.setTypeConverters(new Converters());
     return testUtils.createSessionContext();
   }
 

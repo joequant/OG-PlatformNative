@@ -156,9 +156,10 @@ public class DefaultBeans implements InitializingBean {
   protected InitializingBean createDefaultTypeConversions() {
     final com.opengamma.language.invoke.Loader loader = new com.opengamma.language.invoke.Loader();
     loader.setGlobalContextFactory(getGlobalContextFactory());
+    loader.setFudgeContext(getFudgeContext());
     final Collection<TypeConverterProvider> providers = new ArrayList<TypeConverterProvider>(2);
     // For odd converters, use the provider bean. If a package exports more than a couple, create a Converters instance. If a package provides other services, create a loader -->
-    providers.add(new com.opengamma.language.convert.Converters(getFudgeContext()));
+    providers.add(new com.opengamma.language.convert.Converters());
     loader.setTypeConverterProviders(providers);
     return loader;
   }
