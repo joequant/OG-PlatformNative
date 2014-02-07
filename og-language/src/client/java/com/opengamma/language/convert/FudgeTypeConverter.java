@@ -61,7 +61,7 @@ public final class FudgeTypeConverter extends AbstractTypeConverter {
   }
 
   public static void setFudgeContext(final MutableGlobalContext context, final FudgeContext fudgeContext) {
-    context.setValue(FUDGE_CONTEXT, fudgeContext);
+    context.replaceValue(FUDGE_CONTEXT, fudgeContext);
   }
 
   public static FudgeContext getFudgeContext(final GlobalContext context) {

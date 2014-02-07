@@ -205,4 +205,14 @@ public class MutableGlobalContext extends GlobalContext {
     super.setValue(key, value);
   }
 
+  @Override
+  public void removeOrReplaceValue(final String key, final Object value) {
+    super.removeOrReplaceValue(key, value);
+  }
+
+  @Override
+  public void replaceValue(final String key, final Object value) {
+    super.replaceValue(key, value);
+  }
+
 }
