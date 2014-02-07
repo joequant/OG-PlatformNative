@@ -18,6 +18,7 @@ public class Converters extends AbstractTypeConverterProvider {
 
   @Override
   protected void loadTypeConverters(final Collection<TypeConverter> converters) {
+    converters.add(ExternalIdBundleConverter.INSTANCE);
     converters.add(ExternalSchemeRankConverter.INSTANCE);
     converters.add(IdentifierConverter.INSTANCE);
   }
