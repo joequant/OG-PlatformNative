@@ -87,7 +87,7 @@ public class GetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
     }
   }
 
-  protected static Map<String, Data> getBeanProperties(final SessionContext sessionContext, final Bean object) {
+  private static Map<String, Data> getBeanProperties(final SessionContext sessionContext, final Bean object) {
     final MetaBean meta = object.metaBean();
     final ValueConverter converter = sessionContext.getGlobalContext().getValueConverter();
     final Map<String, Data> result = new HashMap<String, Data>();
@@ -97,7 +97,7 @@ public class GetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
     return result;
   }
 
-  protected static Map<String, Data> getFudgeMsgProperties(final SessionContext sessionContext, final FudgeMsg object) {
+  private static Map<String, Data> getFudgeMsgProperties(final SessionContext sessionContext, final FudgeMsg object) {
     final ValueConverter converter = sessionContext.getGlobalContext().getValueConverter();
     final Map<String, Data> result = new HashMap<String, Data>();
     for (FudgeField field : object) {

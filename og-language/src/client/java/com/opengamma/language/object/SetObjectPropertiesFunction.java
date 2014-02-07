@@ -14,6 +14,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
 
 import com.google.common.collect.ImmutableList;
 import com.opengamma.language.Data;
@@ -100,7 +101,9 @@ public class SetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
     if (bean instanceof ImmutableBean) {
       final MetaBean metaBean = bean.metaBean();
       final BeanBuilder<?> builder = metaBean.builder();
-      builder.setAll(bean.metaBean().createPropertyMap(bean));
+      for (MetaProperty<?> property : bean.metaBean().metaPropertyIterable()) {
+        builder.set(property, property.get(bean));
+      }
       return setBeanProperties(sessionContext, metaBean, builder, properties);
     } else {
       final MetaBean metaBean = bean.metaBean();

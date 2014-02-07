@@ -60,7 +60,7 @@ public class GetObjectPropertyFunction extends AbstractFunctionInvoker implement
     this(new DefinitionAnnotater(GetObjectPropertyFunction.class));
   }
 
-  protected static Object getFudgeMsgProperty(final SessionContext sessionContext, final FudgeMsg object, final String property) {
+  private static Object getFudgeMsgProperty(final SessionContext sessionContext, final FudgeMsg object, final String property) {
     // TODO: Handle repeated field
     FudgeField field = object.getByName(property);
     if (field != null) {
@@ -79,7 +79,7 @@ public class GetObjectPropertyFunction extends AbstractFunctionInvoker implement
     }
   }
 
-  protected static Object getBeanProperty(final SessionContext sessionContext, final Bean object, final String property) {
+  private static Object getBeanProperty(final SessionContext sessionContext, final Bean object, final String property) {
     if ("class".equals(property)) {
       return object.getClass().getName();
     }
@@ -96,7 +96,7 @@ public class GetObjectPropertyFunction extends AbstractFunctionInvoker implement
     }
   }
 
-  protected static Object getObjectProperty(final SessionContext sessionContext, final Object object, final String property) {
+  private static Object getObjectProperty(final SessionContext sessionContext, final Object object, final String property) {
     if ("class".equals(property)) {
       return object.getClass().getName();
     }
