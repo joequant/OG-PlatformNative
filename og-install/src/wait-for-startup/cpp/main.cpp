@@ -6,15 +6,25 @@
 
 #include <windows.h>
 #include "resource.h"
+#include "service.h"
 #include "wait.h"
 
 static CParamFlag g_oSilent ("silent");
 static CParamFlagInvert g_oGUI ("gui", &g_oSilent);
-static CParam *g_apoParams[6] = { &CWait::s_oServiceName, &CWait::s_oHost, &CWait::s_oPort, &CFeedback::s_oTitle, &g_oSilent, &g_oGUI };
+static CParamFlag g_oRestart ("restart");
+static CParam *g_apoParams[7] = { &CWait::s_oServiceName, &CWait::s_oHost, &CWait::s_oPort, &CFeedback::s_oTitle, &g_oSilent, &g_oGUI, &g_oRestart };
 static CParams g_oParams (sizeof (g_apoParams) / sizeof (*g_apoParams), g_apoParams);
 
 DWORD CALLBACK _main (LPVOID pReserved) {
 	CFeedback *poFeedback = (CFeedback*)pReserved;
+	if (g_oRestart.IsSet ()) {
+		CService oService (&CWait::s_oServiceName, &CWait::s_oHost, &CWait::s_oPort);
+		if (oService.Stop ()) {
+			if (CWait::WaitForStop (poFeedback)) {
+				oService.Start ();
+			}
+		}
+	}
 	BOOL bResult = CWait::WaitForStartup (poFeedback);
 	if (poFeedback) {
 		poFeedback->Destroy ();

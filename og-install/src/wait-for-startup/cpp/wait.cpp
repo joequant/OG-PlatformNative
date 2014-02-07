@@ -13,6 +13,85 @@ CParamString CWait::s_oServiceName ("s", NULL, TRUE);
 CParamString CWait::s_oHost ("h", "localhost", FALSE);
 CParamInteger CWait::s_oPort ("p", 8080, FALSE);
 
+BOOL CWait::WaitForStop (CFeedback *poFeedback) {
+	CService oService (&s_oServiceName, &s_oHost, &s_oPort);
+	char szStatus[MAX_PATH] = "";
+	if (poFeedback) {
+		poFeedback->SetStatusText ("Waiting for the OpenGamma engine to stop");
+	}
+	int nClock = 0;
+	int nStatus;
+	do {
+		nStatus = oService.GetStatus ();
+		switch (nStatus) {
+		case SERVICE_STATUS_BAD_CONFIG :
+			StringCbPrintf (szStatus, sizeof (szStatus), "Configuration error");
+			break;
+		case SERVICE_STATUS_BAD_WINSOCK :
+			StringCbPrintf (szStatus, sizeof (szStatus), "%s, error %d", "Couldn't start Winsock", GetLastError ());
+			break;
+		case SERVICE_STATUS_BAD_SCM :
+			StringCbPrintf (szStatus, sizeof (szStatus), "%s, error %d", "Couldn't connect to SCM", GetLastError ());
+			break;
+		case SERVICE_STATUS_NOT_INSTALLED :
+			StringCbPrintf (szStatus, sizeof (szStatus), "The %s service was not installed", s_oServiceName.GetString ());
+			break;
+		case SERVICE_STATUS_CONNECTOR_ERROR :
+			StringCbPrintf (szStatus, sizeof (szStatus), "%s, error %d", "Couldn't open service", GetLastError ());
+			break;
+		case SERVICE_STATUS_STOPPED :
+			if (poFeedback) {
+				poFeedback->SetStatusText ("The OpenGamma engine service has been stopped");
+			}
+			break;
+		case SERVICE_STATUS_BUSY :
+			if (poFeedback) {
+				switch ((nClock++) & 3) {
+				case 0 :
+					poFeedback->SetStatusText ("Restarting the OpenGamma engine ");
+					break;
+				case 1 :
+					poFeedback->SetStatusText ("Restarting the OpenGamma engine .");
+					break;
+				case 2 :
+					poFeedback->SetStatusText ("Restarting the OpenGamma engine ..");
+					break;
+				case 3 :
+					poFeedback->SetStatusText ("Restarting the OpenGamma engine ...");
+					break;
+				}
+			}
+			break;
+		case SERVICE_STATUS_QUERY_ERROR :
+			StringCbPrintf (szStatus, sizeof (szStatus), "%s, error %d", "Couldn't query service status", GetLastError ());
+			break;
+		case SERVICE_STATUS_OK :
+			StringCbPrintf (szStatus, sizeof (szStatus), "The OpenGamma engine service could not be restarted");
+			break;
+		case SERVICE_STATUS_STARTING :
+			StringCbPrintf (szStatus, sizeof (szStatus), "The OpenGamma engine service could not be restarted");
+			break;
+		}
+		if (nStatus == SERVICE_STATUS_STOPPED) {
+			break;
+		} else if (!*szStatus) {
+			Sleep (1000);
+			continue;
+		} else {
+			break;
+		}
+	} while (TRUE);
+	if (*szStatus) {
+		if (poFeedback) {
+			poFeedback->BringToTop ();
+			poFeedback->Alert (szStatus, "OpenGamma Installation", MB_OK | MB_ICONSTOP);
+		}
+		return FALSE;
+	} else {
+		return TRUE;
+	}
+}
+
 BOOL CWait::WaitForStartup (CFeedback *poFeedback) {
 	CService oService (&s_oServiceName, &s_oHost, &s_oPort);
 	char szStatus[MAX_PATH] = "";

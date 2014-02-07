@@ -29,6 +29,10 @@ static CConnectionPipe *g_poPipe = NULL;
 /// feedback to the user (e.g. logging or reporting to a service control manager).
 static unsigned long g_lBusyTimeout = 0;
 
+/// Flag for hard-stopping - the JVM is not notified so clients don't get to gracefully
+/// disconnect. They will see a fault and automatically reconnect instead.
+static volatile bool g_bHardStop = false;
+
 #ifdef _WIN32
 /// Service status handle for reporting to the SCM.
 static SERVICE_STATUS_HANDLE g_hServiceStatus = NULL;
@@ -192,7 +196,10 @@ void ServiceSuspend () {
 }
 
 #ifdef _WIN32
-/// Win32 service signal handler. Responds to the STOP request only.
+#define SERVICE_CONTROL_SOFTSTOP	128
+#define SERVICE_CONTROL_HARDSTOP	129
+
+/// Win32 service signal handler. Responds to the STOP requests only.
 ///
 /// @param[in] dwAction signal to handle
 static void WINAPI _SignalHandler (DWORD dwAction) {
@@ -201,6 +208,18 @@ static void WINAPI _SignalHandler (DWORD dwAction) {
 		LOGINFO (TEXT ("STOP signal received from SCM"));
 		ServiceStop (TRUE);
 		break;
+	case SERVICE_CONTROL_SOFTSTOP :
+		LOGINFO (TEXT ("SOFTSTOP signal received from SCM"));
+		ServiceStop (FALSE);
+		break;
+	case SERVICE_CONTROL_HARDSTOP : {
+		LOGINFO (TEXT ("HARDSTOP signal received from SCM"));
+		CErrorFeedback oServiceErrors;
+		oServiceErrors.Write (TEXT ("A different back-end OpenGamma server has been selected - disconnecting."));
+		g_bHardStop = TRUE;
+		ServiceStop (TRUE);
+		break;
+									}
 	case SERVICE_CONTROL_INTERROGATE :
 		LOGDEBUG (TEXT ("INTERROGATE signal received from SCM"));
 		break;
@@ -230,15 +249,15 @@ static void _SignalHandler (int nSignal) {
 /// any system specific actions. E.g. the Windows implementation registers with the service control manager
 /// and can optionally set the security descriptor on the process to allow clients to kill/restart it.
 ///
+/// @param[in] poSettings the settings to use
 /// @param[in] nReason how the startup is occuring (e.g. SERVICE_RUN_INLINE) - different actions may be
 /// required depending on whether the code is running direct from main() or through another mechansim
-static void _ServiceStartup (int nReason) {
-	CSettings oSettings;
+static void _ServiceStartup (const CSettings *poSettings, int nReason) {
 #ifdef _WIN32
 	if (nReason == SERVICE_RUN_SCM) {
-		g_hServiceStatus = RegisterServiceCtrlHandler (oSettings.GetServiceName (), _SignalHandler);
+		g_hServiceStatus = RegisterServiceCtrlHandler (poSettings->GetServiceName (), _SignalHandler);
 	}
-	PCTSTR pszSDDL = oSettings.GetServiceSDDL ();
+	PCTSTR pszSDDL = poSettings->GetServiceSDDL ();
 	if (pszSDDL) {
 		LOGDEBUG (TEXT ("Setting security descriptor ") << pszSDDL);
 		PSECURITY_DESCRIPTOR psdRelative;
@@ -263,7 +282,7 @@ static void _ServiceStartup (int nReason) {
 				if (nReason == SERVICE_RUN_SCM) {
 					SC_HANDLE hSCM = OpenSCManager (NULL, NULL, GENERIC_READ);
 				    if (hSCM) {
-						SC_HANDLE hService = OpenService (hSCM, oSettings.GetServiceName (), GENERIC_WRITE | WRITE_DAC);
+						SC_HANDLE hService = OpenService (hSCM, poSettings->GetServiceName (), GENERIC_WRITE | WRITE_DAC);
 						if (hService) {
 							dwError = SetSecurityInfo (hService, SE_SERVICE, DACL_SECURITY_INFORMATION, NULL, NULL, paclD, NULL);
 							if (dwError == ERROR_SUCCESS) {
@@ -297,7 +316,7 @@ static void _ServiceStartup (int nReason) {
 	}
 #else /* ifdef _WIN32 */
 	if (nReason == SERVICE_RUN_DAEMON) {
-		const TCHAR *pszPID = oSettings.GetPidFile ();
+		const TCHAR *pszPID = poSettings->GetPidFile ();
 		if (pszPID) {
 			LOGDEBUG (TEXT ("Setting signal handler"));
 			sigset (SIGTERM, _SignalHandler);
@@ -314,19 +333,19 @@ static void _ServiceStartup (int nReason) {
 		}
 	}
 #endif /* ifdef _WIN32 */
-	g_lBusyTimeout = oSettings.GetBusyTimeout ();
+	g_lBusyTimeout = poSettings->GetBusyTimeout ();
 	_ReportStateStarting ();
 }
 
 /// Exitlude actions to stop the service, e.g. to remove any state that was created as part of _ServiceStartup.
 ///
+/// @param[in] poSettings the settings to use
 /// @param[in] nReason how the service was run (e.g. SERVICE_RUN_INLINE) - different actions may be required
 /// depending on whether the code is running direct from main() or through another mechanism.
-static void _ServiceStop (int nReason) {
-	CSettings oSettings;
+static void _ServiceStop (const CSettings *poSettings, int nReason) {
 #ifndef _WIN32
 	if (nReason == SERVICE_RUN_DAEMON) {
-		const TCHAR *pszPID = oSettings.GetPidFile ();
+		const TCHAR *pszPID = poSettings->GetPidFile ();
 		if (pszPID) {
 			LOGINFO (TEXT ("Removing PID file ") << pszPID);
 			unlink (pszPID);
@@ -340,19 +359,20 @@ static void _ServiceStop (int nReason) {
 /// @param[in] nReason how the service is running, e.g. SERVICE_RUN_INLINE, in case actions are different depending
 /// on how it was started.
 void ServiceRun (int nReason) {
-	_ServiceStartup (nReason);
+	CSettings oSettings;
+	_ServiceStartup (&oSettings, nReason);
 	{
 		CErrorFeedback oServiceErrors;
-		g_poJVM = CJVM::Create (&oServiceErrors);
+		g_poJVM = CJVM::Create (&oSettings, &oServiceErrors);
 		if (!g_poJVM) {
 			LOGERROR (TEXT ("Couldn't create JVM"));
 			_ReportStateErrored ();
-			_ServiceStop (nReason);
+			_ServiceStop (&oSettings, nReason);
 			return;
 		}
 		g_poJVM->Start (&oServiceErrors);
 	}
-	g_poPipe = CConnectionPipe::Create ();
+	g_poPipe = CConnectionPipe::Create (&oSettings);
 	if (!g_poPipe) {
 		LOGERROR (TEXT ("Couldn't create IPC pipe"));
 	}
@@ -383,7 +403,7 @@ void ServiceRun (int nReason) {
 					delete g_poPipe;
 					if (g_nServiceState == SERVICE_STATE_RUNNING) {
 						LOGINFO (TEXT ("Pipe closed with pending connection - reopening"));
-						g_poPipe = CConnectionPipe::Create ();
+						g_poPipe = CConnectionPipe::Create (&oSettings);
 						if (!g_poPipe) {
 							LOGERROR (TEXT ("Couldn't create IPC pipe"));
 						}
@@ -394,19 +414,19 @@ void ServiceRun (int nReason) {
 					if (!g_poPipe) {
 						g_oMutex.Leave ();
 						LOGINFO (TEXT ("Shutting down JVM after pipe close"));
-						g_poJVM->Stop ();
+						if (!g_bHardStop) g_poJVM->Stop ();
 						break;
 					}
 				}
 				g_oMutex.Leave ();
 			} else {
 				LOGERROR (TEXT ("Shutting down JVM after failing to read from pipe"));
-				g_poJVM->Stop ();
+				if (!g_bHardStop) g_poJVM->Stop ();
 				break;
 			}
 		} while (!g_poJVM->IsBusy (g_lBusyTimeout) && g_poJVM->IsRunning ());
 		_ReportStateStopping ();
-		while (g_poJVM->IsBusy (g_lBusyTimeout)) {
+		while (!g_bHardStop && g_poJVM->IsBusy (g_lBusyTimeout)) {
 			_ReportStateStopping ();
 		}
 		_ReportStateStopped ();
@@ -419,7 +439,7 @@ void ServiceRun (int nReason) {
 	}
 	delete g_poJVM;
 	g_poJVM = NULL;
-	_ServiceStop (nReason);
+	_ServiceStop (&oSettings, nReason);
 }
 
 /// Tests if the service is running or not.
@@ -429,10 +449,39 @@ bool ServiceRunning () {
 	return (g_nServiceState != SERVICE_STATE_STOPPED);
 }
 
+#ifdef _WIN32
+static BOOL ControlService (PCTSTR pszServiceName, SC_HANDLE hSCM, DWORD dwAccessMask, DWORD dwControl) {
+	SC_HANDLE hService = OpenService (hSCM, pszServiceName, dwAccessMask);
+	if (hService) {
+		SERVICE_STATUS ss;
+		BOOL bResult;
+		if (ControlService (hService, dwControl, &ss)) {
+			LOGINFO (TEXT ("Stopped service ") << pszServiceName << TEXT (" with signal ") << dwControl);
+			bResult = TRUE;
+		} else {
+			DWORD dwError = GetLastError ();
+			if (dwError == 1062) {
+				LOGINFO (TEXT ("Service ") << pszServiceName << TEXT (" is not running"));
+				bResult = TRUE;
+			} else {
+				LOGWARN (TEXT ("Couldn't stop ") << pszServiceName << TEXT (", error ") << dwError);
+				bResult = FALSE;
+			}
+		}
+		CloseServiceHandle (hService);
+		return bResult;
+	} else {
+		LOGWARN (TEXT ("Couldn't open ") << pszServiceName << TEXT (" service for ") << dwAccessMask << TEXT (", error ") << GetLastError ());
+		return FALSE;
+	}
+}
+#endif /* ifdef _WIN32 */
+
 /// Configure the service.
 void ServiceConfigure () {
+	CSettings oSettings;
 	CErrorFeedback oFeedback;
-	g_poJVM = CJVM::Create (&oFeedback);
+	g_poJVM = CJVM::Create (&oSettings, &oFeedback);
 	if (!g_poJVM) {
 		LOGERROR (TEXT ("Couldn't create JVM"));
 		return;
@@ -441,23 +490,19 @@ void ServiceConfigure () {
 	delete g_poJVM;
 	g_poJVM = NULL;
 	if (bRestart) {
-		CSettings oSettings;
 #ifdef _WIN32
 		PCTSTR pszServiceName = oSettings.GetServiceName ();
 		SC_HANDLE hSCM = OpenSCManager (NULL, NULL, GENERIC_READ);
 		if (hSCM) {
-			SC_HANDLE hService = OpenService (hSCM, pszServiceName, SERVICE_STOP);
-			if (hService) {
-				SERVICE_STATUS ss;
-				if (ControlService (hService, SERVICE_CONTROL_STOP, &ss)) {
-					LOGINFO (TEXT ("Stopped service ") << pszServiceName);
+			do {
+				if (oSettings.GetServiceSoftStop ()) {
+					if (ControlService (pszServiceName, hSCM, SERVICE_USER_DEFINED_CONTROL, SERVICE_CONTROL_SOFTSTOP)) break;
 				} else {
-					LOGWARN (TEXT ("Couldn't stop ") << pszServiceName << TEXT (", error ") << GetLastError ());
+					if (ControlService (pszServiceName, hSCM, SERVICE_USER_DEFINED_CONTROL, SERVICE_CONTROL_HARDSTOP)) break;
 				}
-				CloseServiceHandle (hService);
-			} else {
-				LOGWARN (TEXT ("Couldn't open ") << pszServiceName << TEXT (" service to restart"));
-			}
+				if (ControlService (pszServiceName, hSCM, SERVICE_STOP, SERVICE_CONTROL_STOP)) break;
+				LOGWARN (TEXT ("Couldn't stop/restart ") << pszServiceName << TEXT (" service"));
+			} while (FALSE);
 			CloseServiceHandle (hSCM);
 		} else {
 			LOGWARN (TEXT ("Couldn't connect to service manager, error ") << GetLastError ());

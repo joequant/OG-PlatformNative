@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.nio.channels.Channels;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -122,26 +121,36 @@ public class Client implements Runnable {
       @Override
       public void run() {
         s_logger.info("Starting message writer thread");
-        while (true) {
-          FudgeMsgEnvelope msg;
-          try {
-            s_logger.debug("Waiting for message to write");
-            msg = getOutputMessageBuffer().take();
-          } catch (final InterruptedException e) {
-            s_logger.warn("Interrupted receiving message from output queue");
-            continue;
-          }
-          if (msg.getMessage().getNumFields() > 0) {
+        if (getClientContext().registerForShutdown(getOutputMessageBuffer())) {
+          while (true) {
+            FudgeMsgEnvelope msg;
             try {
-              s_logger.debug("Writing message {}", msg);
-              _writer.writeMessageEnvelope(msg);
-            } catch (final Throwable t) {
-              s_logger.error("Exception during message write", t);
+              s_logger.debug("Waiting for message to write");
+              msg = getOutputMessageBuffer().take();
+            } catch (final InterruptedException e) {
+              s_logger.warn("Interrupted receiving message from output queue");
+              continue;
             }
-          } else {
-            s_logger.info("Poison message found on output queue");
-            getOutputMessageBuffer().add(msg);
-            break;
+            if (msg.getMessage().getNumFields() > 0) {
+              try {
+                s_logger.debug("Writing message {}", msg);
+                _writer.writeMessageEnvelope(msg);
+              } catch (final Throwable t) {
+                s_logger.error("Exception during message write", t);
+              }
+            } else {
+              s_logger.info("Poison message found on output queue - keep it there");
+              getOutputMessageBuffer().add(msg);
+              break;
+            }
+          }
+          getClientContext().unregisterForShutdown(getOutputMessageBuffer());
+        } else {
+          s_logger.info("Shutdown already initiated - writing poison message");
+          try {
+            _writer.writeMessageEnvelope(getClientContext().getShutdownMessage());
+          } catch (final Throwable t) {
+            s_logger.error("Exception during message write", t);
           }
         }
         s_logger.info("Message writer thread terminated");
@@ -181,8 +190,7 @@ public class Client implements Runnable {
         context.setMessageSender(new MessageSender() {
 
           @Override
-          public UserMessagePayload call(final UserMessagePayload message, final long timeoutMillis)
-              throws TimeoutException {
+          public UserMessagePayload call(final UserMessagePayload message, final long timeoutMillis) throws TimeoutException {
             // TODO: implement this if/when we need it
             throw new UnsupportedOperationException();
           }
@@ -256,13 +264,12 @@ public class Client implements Runnable {
     sender.start();
     // The "termination" timeout is used for the startup delay before the watchdog thread starts as the first connection can
     // be rather slow while waiting (for example) for the function list to be built if it is not already cached
-    final ScheduledFuture<?> watchdogFuture = getClientContext().getHousekeepingScheduler().scheduleWithFixedDelay(watchdog,
-        getClientContext().getTerminationTimeout(), getClientContext().getHeartbeatTimeout() * 2, TimeUnit.MILLISECONDS);
+    final ScheduledFuture<?> watchdogFuture = getClientContext().getHousekeepingScheduler().scheduleWithFixedDelay(watchdog, getClientContext().getTerminationTimeout(),
+        getClientContext().getHeartbeatTimeout() * 2, TimeUnit.MILLISECONDS);
     // Main read loop - this thread is always available to read to avoid process deadlock. The loop will
     // abort on I/O error or if the watchdog fires (triggering an I/O error)
     try {
-      boolean contextInitialized = false;
-      Queue<Runnable> deferredMessages = null;
+      DeferredDispatches deferredMessages = new DeferredDispatches();
       @SuppressWarnings("resource" /* pipe gets closed during disconnect call, don't want it closed when reader falls out of scope */)
       final FudgeMsgReader reader = new FudgeMsgReader(getInputPipe());
       final FudgeDeserializer deserializer = new FudgeDeserializer(getClientContext().getFudgeContext());
@@ -276,15 +283,10 @@ public class Client implements Runnable {
             if (deferredMessages == null) {
               getExecutor().execute(dispatch);
             } else {
-              synchronized (deferredMessages) {
-                if (deferredMessages.isEmpty()) {
-                  s_logger.debug("Dispatching post-initialisation user message");
-                  getExecutor().execute(dispatch);
-                  deferredMessages = null;
-                } else {
-                  s_logger.debug("Deferring user message dispatch until after context initialisation");
-                  deferredMessages.add(dispatch);
-                }
+              if (!deferredMessages.defer(dispatch)) {
+                s_logger.debug("Dispatching post initialisation user message");
+                deferredMessages = null;
+                getExecutor().execute(dispatch);
               }
             }
             break;
@@ -299,11 +301,11 @@ public class Client implements Runnable {
                 } else {
                   s_logger.debug("Ignoring heartbeat request - other messages pending");
                 }
-                if (!contextInitialized) {
-                  sendLSID();
-                  deferredMessages = new LinkedList<Runnable>();
-                  initializeContext(message.getStash(), deferredMessages);
-                  contextInitialized = true;
+                if (deferredMessages != null) {
+                  if (deferredMessages.begin()) {
+                    sendLSID();
+                    initializeContext(message.getStash(), deferredMessages);
+                  }
                 }
                 break;
               case POISON:
@@ -433,19 +435,47 @@ public class Client implements Runnable {
     };
   }
 
-  private void initializeContext(final FudgeMsg stash, final Queue<Runnable> deferredDispatches) {
-    deferredDispatches.add(null);
+  private static class DeferredDispatches extends LinkedList<Runnable> {
+
+    private static final long serialVersionUID = 1L;
+
+    private int _state;
+
+    public synchronized boolean defer(final Runnable dispatch) {
+      if (_state == 2) {
+        return false;
+      } else {
+        s_logger.debug("Deferring user message dispatch until after context initialisation");
+        add(dispatch);
+        return true;
+      }
+    }
+
+    public synchronized boolean begin() {
+      if (_state == 0) {
+        _state = 1;
+        return true;
+      }
+      return false;
+    }
+
+    public synchronized void end(final ExecutorService executor) {
+      assert _state == 1;
+      _state = 2;
+      while (!isEmpty()) {
+        s_logger.debug("Dispatching deferred user message");
+        executor.execute(remove());
+      }
+    }
+
+  }
+
+  private void initializeContext(final FudgeMsg stash, final DeferredDispatches deferredDispatches) {
     getExecutor().execute(new Runnable() {
       @Override
       public void run() {
         initializeContext(stash);
-        synchronized (deferredDispatches) {
-          deferredDispatches.remove(); // First item is the NULL posted above
-          while (!deferredDispatches.isEmpty()) {
-            s_logger.debug("Dispatching deferred user message");
-            getExecutor().execute(deferredDispatches.remove());
-          }
-        }
+        deferredDispatches.end(getExecutor());
       }
     });
   }

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opengamma.lang.annotation.ExternalFunction;
+import com.opengamma.language.connector.Main;
 import com.opengamma.language.function.AbstractFunctionProvider;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.util.annotation.AnnotationCache;
@@ -91,12 +92,14 @@ public class ExternalFunctionProvider extends AbstractFunctionProvider {
   }
 
   public ExternalFunctionProvider() {
-    new Thread(new Runnable() {
+    final Thread slave = new Thread(new Runnable() {
       @Override
       public void run() {
         getFunctions();
       }
-    }).start();
+    });
+    slave.setContextClassLoader(Main.class.getClassLoader());
+    slave.start();
   }
 
   protected synchronized List<MetaFunction> getFunctions() {

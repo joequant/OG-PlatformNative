@@ -38,6 +38,7 @@ import com.opengamma.engine.view.listener.ViewResultListener;
 import com.opengamma.id.UniqueId;
 import com.opengamma.livedata.UserPrincipal;
 import com.opengamma.util.test.TestGroup;
+import com.opengamma.util.test.TestLifecycle;
 import com.opengamma.util.test.Timeout;
 
 /**
@@ -70,7 +71,8 @@ public class RegressionTest {
   private void createFunctionRepository() {
     final InMemoryFunctionRepository functions = new InMemoryFunctionRepository();
     final ComputationTarget target = createDummyTarget();
-    functions.addFunction(MockFunction.getMockFunction(target, new ValueSpecification("Dummy", target.toSpecification(), ValueProperties.with(ValuePropertyNames.FUNCTION, "Mock").get()), 42d));
+    functions.addFunction(MockFunction.getMockFunction(target, new ValueSpecification("Dummy", target.toSpecification(), ValueProperties.with(ValuePropertyNames.FUNCTION, "Mock").get()),
+        42d));
     _env.setFunctionRepository(functions);
   }
 
@@ -160,35 +162,40 @@ public class RegressionTest {
   }
 
   public void testHistoricalData() {
-    final Instant firstValuationInstant = Instant.now().minus(90, DAYS);
-    final Instant lastValuationInstant = firstValuationInstant.plus(30, DAYS);
-    final UniqueId viewId = createRegressionView();
-    createFunctionRepository();
-    final ViewClientDescriptor viewClientDescriptor = ViewClientDescriptor.historicalMarketData(viewId, firstValuationInstant, lastValuationInstant);
-    _env.init();
-    final ViewClient viewClient = _env.getViewProcessor().createViewClient(UserPrincipal.getTestUser());
+    TestLifecycle.begin();
     try {
-      viewClient.setResultListener(createResultListener());
-      viewClient.attachToViewProcess(viewClientDescriptor.getViewId(), viewClientDescriptor.getExecutionOptions(), true);
-      Instant valuationInstant = firstValuationInstant;
-      boolean compiled = false;
-      do {
+      final Instant firstValuationInstant = Instant.now().minus(90, DAYS);
+      final Instant lastValuationInstant = firstValuationInstant.plus(30, DAYS);
+      final UniqueId viewId = createRegressionView();
+      createFunctionRepository();
+      final ViewClientDescriptor viewClientDescriptor = ViewClientDescriptor.historicalMarketData(viewId, firstValuationInstant, lastValuationInstant);
+      _env.init();
+      final ViewClient viewClient = _env.getViewProcessor().createViewClient(UserPrincipal.getTestUser());
+      try {
+        viewClient.setResultListener(createResultListener());
+        viewClient.attachToViewProcess(viewClientDescriptor.getViewId(), viewClientDescriptor.getExecutionOptions(), true);
+        Instant valuationInstant = firstValuationInstant;
+        boolean compiled = false;
+        do {
+          viewClient.triggerCycle();
+          if (!compiled) {
+            assertEquals(getResult(), "COMPILED");
+            compiled = true;
+          }
+          final Object result = getResult();
+          s_logger.debug("Got result {}", result);
+          assertTrue(result instanceof ViewComputationResultModel);
+          ViewComputationResultModel model = (ViewComputationResultModel) result;
+          assertEquals(valuationInstant, model.getViewCycleExecutionOptions().getValuationTime());
+          valuationInstant = valuationInstant.plus(1, DAYS);
+        } while (!valuationInstant.isAfter(lastValuationInstant));
         viewClient.triggerCycle();
-        if (!compiled) {
-          assertEquals(getResult(), "COMPILED");
-          compiled = true;
-        }
-        final Object result = getResult();
-        s_logger.debug("Got result {}", result);
-        assertTrue(result instanceof ViewComputationResultModel);
-        ViewComputationResultModel model = (ViewComputationResultModel) result;
-        assertEquals(valuationInstant, model.getViewCycleExecutionOptions().getValuationTime());
-        valuationInstant = valuationInstant.plus(1, DAYS);
-      } while (!valuationInstant.isAfter(lastValuationInstant));
-      viewClient.triggerCycle();
-      assertEquals(getResult(), "COMPLETED");
+        assertEquals(getResult(), "COMPLETED");
+      } finally {
+        viewClient.shutdown();
+      }
     } finally {
-      viewClient.shutdown();
+      TestLifecycle.end();
     }
   }
 

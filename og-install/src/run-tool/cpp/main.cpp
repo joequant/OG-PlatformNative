@@ -109,7 +109,7 @@ private:
 	char m_szLib[MAX_PATH];
 	char *m_apsz[3];
 	int m_nCount;
-	int Path (PSTR pszValue, PSTR pszBuffer, int cbBuffer) {
+	size_t Path (PSTR pszValue, PSTR pszBuffer, size_t cbBuffer) {
 		StringCbCopy (pszBuffer, cbBuffer, pszValue);
 		return strlen (pszValue);
 	}
@@ -175,7 +175,7 @@ public:
 		if (!strcmp (pszName, "count")) return m_nCount;
 		return nDefault;
 	}
-	int ReadString (PCSTR pszName, PSTR pszBuffer, int cbBuffer, PCSTR pszDefault) {
+	size_t ReadString (PCSTR pszName, PSTR pszBuffer, size_t cbBuffer, PCSTR pszDefault) {
 		if (!strcmp (pszName, "path0")) return Path (m_apsz[0], pszBuffer, cbBuffer);
 		if (!strcmp (pszName, "path1")) return Path (m_apsz[1], pszBuffer, cbBuffer);
 		if (!strcmp (pszName, "path2")) return Path (m_apsz[2], pszBuffer, cbBuffer);
@@ -240,6 +240,15 @@ public:
 			ParseOptions (sz);
 		}
 		while ((*pargc > 1) && !strncmp (argv[1], "-D", 2)) {
+			if (!strncmp (argv[1] + 2, "tool.gui", 8)) {
+				if (!strcmp (argv[1] + 10, "=true")) {
+					// Suppress the console window
+					FreeConsole ();
+				} else if (!strncmp (argv[1] + 10, ".console=", 9)) {
+					// Treat -Dtool.gui.console as -Dtool.gui but without console suppression
+					memmove (argv[1] + 10, argv[1] + 18, strlen (argv[1] + 18) + 1);
+				}
+			}
 			if (m_nCount < sizeof (m_apsz) / sizeof (char*)) {
 				m_apsz[m_nCount++] = _strdup (argv[1]);
 			}
@@ -257,7 +266,7 @@ public:
 		if (!strcmp (pszName, "count")) return m_nCount;
 		return nDefault;
 	}
-	int ReadString (PCSTR pszName, PSTR pszBuffer, int cbBuffer, PCSTR pszDefault) {
+	size_t ReadString (PCSTR pszName, PSTR pszBuffer, size_t cbBuffer, PCSTR pszDefault) {
 		if (!strncmp (pszName, "opt", 3)) {
 			int nOpt = atoi (pszName + 3);
 			if ((nOpt >= 0) && nOpt < m_nCount) {
@@ -287,7 +296,7 @@ public:
 		if (!strcmp (pszName, "argc")) return m_nArgs;
 		return nDefault;
 	}
-	int ReadString (PCSTR pszName, PSTR pszBuffer, int cbBuffer, PCSTR pszDefault) {
+	size_t ReadString (PCSTR pszName, PSTR pszBuffer, size_t cbBuffer, PCSTR pszDefault) {
 		if (!strncmp (pszName, "arg", 3)) {
 			int nArg = atoi (pszName + 3);
 			if ((nArg >= 0) && nArg < m_nArgs) {
@@ -368,7 +377,7 @@ int main (int argc, char **argv) {
 	CConfigString oClass ("class", argv[1]);
 	CConfigString oMethod ("method", "main");
 	CConfigMultiString oArgs ("argc", "arg%d");
-	CRunToolArgs oArgStrings (argc - 1, argv + 1);
+	CRunToolArgs oArgStrings (argc - 2, argv + 2);
 	oArgs.Read (&oArgStrings);
 	DWORD dwError = poJava->Invoke (&oClass, &oMethod, &oArgs);
 	if (dwError) {

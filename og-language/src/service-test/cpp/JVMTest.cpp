@@ -19,8 +19,9 @@ LOGGING (com.opengamma.language.service.JVMTest);
  * Tries to start the JVM and invoke the same methods as MainTest/TestStartStop does.
  */
 static void StartStop () {
+	CSettings oSettings;
 	CErrorFeedback oFeedback;
-	CJVM *pJvm = CJVM::Create (&oFeedback);
+	CJVM *pJvm = CJVM::Create (&oSettings, &oFeedback);
 	ASSERT (pJvm);
 	ASSERT (!pJvm->IsBusy (0));
 	ASSERT (!pJvm->IsRunning ());

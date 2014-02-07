@@ -20,12 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import com.opengamma.util.tuple.Pair;
+import com.opengamma.util.tuple.Pairs;
 
 /**
- * Creates {@link ExecutorService} instances that limit the number of threads they create to a "per-client" threshold
- * and a "per-system" threshold. If there are reasons for limiting the number of threads the process should start the
- * system threshold should be used. If the service is shared by a number of clients, and a level of "fairness" is
- * required then a client threshold will prevent any one from saturating the system with requests.
+ * Creates {@link ExecutorService} instances that limit the number of threads they create to a "per-client" threshold and a "per-system" threshold. If there are reasons for limiting the number of
+ * threads the process should start the system threshold should be used. If the service is shared by a number of clients, and a level of "fairness" is required then a client threshold will prevent any
+ * one from saturating the system with requests.
  */
 public final class ClientExecutor {
 
@@ -169,7 +169,7 @@ public final class ClientExecutor {
             } else {
               _activeClientThreads--;
               s_logger.debug("Total thread limit exceeded, queuing command for {}", this);
-              _commands.add(Pair.of(this, command));
+              _commands.add(Pairs.of(this, command));
             }
           } else {
             s_logger.debug("Client thread limit exceeded, queuing command for {}", this);

@@ -18,8 +18,9 @@ LOGGING (com.opengamma.language.service.ConnectionPipeTest);
 #define TIMEOUT_JOIN	(TIMEOUT * 4)
 
 static CConnectionPipe *_CreateTestPipe () {
+	CSettings oSettings;
 	// TODO: use the current user's name as a test suffix
-	CConnectionPipe *po = CConnectionPipe::Create (TEXT ("TEST"));
+	CConnectionPipe *po = CConnectionPipe::Create (&oSettings, TEXT ("TEST"));
 	ASSERT (po);
 	return po;
 }

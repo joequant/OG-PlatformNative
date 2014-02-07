@@ -336,11 +336,11 @@ static jstring JNICALL _version (JNIEnv *pEnv, jclass cls) {
 
 /// Creates a new JVM instance.
 ///
+/// @param[in] poSettings the settings to use
 /// @param[in] poFeedback the feedback reporting mechansim for errors, never NULL
 /// @return the JVM, or NULL if there was a problem
-CJVM *CJVM::Create (CErrorFeedback *poFeedback) {
-	CSettings oSettings;
-	const TCHAR *pszLibrary = oSettings.GetJvmLibrary ();
+CJVM *CJVM::Create (const CSettings *poSettings, CErrorFeedback *poFeedback) {
+	const TCHAR *pszLibrary = poSettings->GetJvmLibrary ();
 	LOGDEBUG (TEXT ("Loading library ") << pszLibrary << TEXT (" and creating JVM"));
 	CLibrary *poLibrary = _LoadJVMLibrary (pszLibrary);
 	if (!poLibrary) {
@@ -399,10 +399,10 @@ CJVM *CJVM::Create (CErrorFeedback *poFeedback) {
 	JavaVMOption option[4];
 	memset (&option, 0, sizeof (option));
 	args.options = option;
-	if ((option[args.nOptions].optionString = _OptionClassPath (&oSettings)) != NULL) args.nOptions++;
+	if ((option[args.nOptions].optionString = _OptionClassPath (poSettings)) != NULL) args.nOptions++;
 	if ((option[args.nOptions].optionString = strdup ("-Dcom.sun.management.jmxremote")) != NULL) args.nOptions++;
-	if ((option[args.nOptions].optionString = _OptionMemory ("ms", oSettings.GetJvmMinHeap ())) != NULL) args.nOptions++;
-	if ((option[args.nOptions].optionString = _OptionMemory ("mx", oSettings.GetJvmMaxHeap ())) != NULL) args.nOptions++;
+	if ((option[args.nOptions].optionString = _OptionMemory ("ms", poSettings->GetJvmMinHeap ())) != NULL) args.nOptions++;
+	if ((option[args.nOptions].optionString = _OptionMemory ("mx", poSettings->GetJvmMaxHeap ())) != NULL) args.nOptions++;
 	// TODO [PLAT-1116] additional option strings from registry
 	LOGDEBUG (TEXT ("Creating JVM"));
 	jint err = procCreateVM (&pJVM, &pEnv, &args);
@@ -424,7 +424,7 @@ CJVM *CJVM::Create (CErrorFeedback *poFeedback) {
 		return NULL;
 	}
 	CProperties oProperties (pEnv);
-	oProperties.SetProperties (&oSettings);
+	oProperties.SetProperties (poSettings);
 	CJVM *pJvm = new CJVM (poLibrary, pJVM, pEnv);
 	if (!pJvm) {
 		LOGFATAL (TEXT ("Out of memory"));

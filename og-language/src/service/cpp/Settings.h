@@ -31,6 +31,7 @@
 #define SETTINGS_SERVICE_NAME				SERVICE_SETTINGS_SERVICE_NAME
 #ifdef _WIN32
 #define SETTINGS_SERVICE_SDDL				TEXT ("serviceSDDL")
+#define SETTINGS_SOFT_STOP				TEXT ("serviceSoftStop")
 #endif
 
 int JavaVersionFragment (const TCHAR *pszVersion, int nFragment);
@@ -55,6 +56,7 @@ private:
 	const TCHAR *GetServiceName (const TCHAR *pszDefault) const { return Get (SETTINGS_SERVICE_NAME, pszDefault); }
 #ifdef _WIN32
 	const TCHAR *GetServiceSDDL (const TCHAR *pszDefault) const { return Get (SETTINGS_SERVICE_SDDL, pszDefault); }
+	BOOL GetServiceSoftStop (const BOOL bDefault) const { return Get (SETTINGS_SOFT_STOP, bDefault ? 1 : 0); }
 #endif
 public:
 	const TCHAR *GetAnnotationCache () const;
@@ -76,6 +78,7 @@ public:
 	const TCHAR *GetServiceName () const;
 #ifdef _WIN32
 	const TCHAR *GetServiceSDDL () const;
+	BOOL GetServiceSoftStop () const;
 #endif /* ifdef _WIN32 */
 };
 

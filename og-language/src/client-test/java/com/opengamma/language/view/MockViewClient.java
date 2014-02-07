@@ -17,6 +17,7 @@ import com.opengamma.engine.value.ValueSpecification;
 import com.opengamma.engine.view.ExecutionLogMode;
 import com.opengamma.engine.view.ViewComputationResultModel;
 import com.opengamma.engine.view.ViewDefinition;
+import com.opengamma.engine.view.ViewProcess;
 import com.opengamma.engine.view.ViewProcessor;
 import com.opengamma.engine.view.client.ViewClient;
 import com.opengamma.engine.view.client.ViewClientState;
@@ -227,6 +228,11 @@ import com.opengamma.util.tuple.Pair;
 
   @Override
   public void setViewProcessContextMap(Map<String, String> context) {
+  }
+
+  @Override
+  public ViewProcess getViewProcess() {
+    throw new UnsupportedOperationException();
   }
 
 }

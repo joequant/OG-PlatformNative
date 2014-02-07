@@ -196,6 +196,30 @@ static void Stash () {
 	FudgeMsg_release (msg);
 }
 
+static void Poison () {
+	FudgeMsg msgUser;
+	FudgeMsg msgTest;
+	ASSERT (FudgeMsg_create (&msgTest) == FUDGE_OK);
+	ASSERT (Test_addClass (msgTest) == FUDGE_OK);
+	ASSERT (Test_setOperation (msgTest, POISON_REQUEST_A) == FUDGE_OK);
+	ASSERT (Test_setNonce (msgTest, GetTickCount ()) == FUDGE_OK);
+	ASSERT (FudgeMsg_create (&msgUser) == FUDGE_OK);
+	ASSERT (UserMessage_setFudgeMsgPayload (msgUser, msgTest) == FUDGE_OK);
+	FudgeMsg_release (msgTest);
+	CMessageCallback message;
+	g_poService->SetMessageReceivedCallback (&message);
+	LOGDEBUG (TEXT ("Sending POISON_REQUEST_A message"));
+	ASSERT (g_poService->Send (msgUser));
+	FudgeMsg_release (msgUser);
+	LOGDEBUG (TEXT ("Waiting for service to stop"));
+	int n;
+	for (n = 0; !g_poCallback->Stopped () && (n < TIMEOUT_START / 100); n++) {
+		CThread::Sleep (100);
+	}
+	ASSERT (g_poCallback->Stopped ());
+	g_poService->SetMessageReceivedCallback (NULL);
+}
+
 // The messaging is tested by the tests for Connector
 
 BEGIN_TESTS (ClientTest)
@@ -203,6 +227,7 @@ BEGIN_TESTS (ClientTest)
 	INTEGRATION_TEST (Heartbeat)
 	INTEGRATION_TEST (Message)
 	INTEGRATION_TEST (Stash)
+	INTEGRATION_TEST (Poison)
 	BEFORE_TEST (Start)
 	AFTER_TEST (Stop)
 END_TESTS

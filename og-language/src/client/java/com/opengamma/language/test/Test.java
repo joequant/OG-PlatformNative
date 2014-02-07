@@ -16,7 +16,8 @@ public class Test extends com.opengamma.language.connector.UserMessagePayload im
     PAUSE_REQUEST,
     STASH_REQUEST,
     STASH_RESPONSE,
-    NON_DELIVERY_REQUEST;
+    NON_DELIVERY_REQUEST,
+    POISON_REQUEST_A;
   }
   private com.opengamma.language.test.Test.Operation _operation;
   public static final int OPERATION_ORDINAL = 1;
