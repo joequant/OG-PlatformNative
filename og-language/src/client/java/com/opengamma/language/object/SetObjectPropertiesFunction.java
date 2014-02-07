@@ -9,7 +9,10 @@ package com.opengamma.language.object;
 import java.util.List;
 import java.util.Map;
 
+import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
+import org.fudgemsg.MutableFudgeMsg;
+import org.fudgemsg.mapping.FudgeDeserializer;
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.ImmutableBean;
@@ -19,6 +22,7 @@ import org.joda.beans.MetaProperty;
 import com.google.common.collect.ImmutableList;
 import com.opengamma.language.Data;
 import com.opengamma.language.context.SessionContext;
+import com.opengamma.language.convert.FudgeTypeConverter;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
 import com.opengamma.language.definition.JavaTypeInfo;
@@ -114,27 +118,45 @@ public class SetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
     }
   }
 
-  protected static Object setObjectProperties(final SessionContext sessionContext, final Object object, final Map<String, Data> properties) {
+  protected static void setObjectProperties(final SessionContext sessionContext, final Object object, final Map<String, Data> properties) {
     if (properties == null) {
-      return object;
+      return;
     }
     for (Map.Entry<String, Data> property : properties.entrySet()) {
       checkSetObjectProperty(SetObjectPropertyFunction.setObjectProperty(sessionContext, object, property.getKey(), property.getValue()), property);
     }
-    return object;
   }
 
-  protected static FudgeMsg setFudgeMsgProperties(final SessionContext sessionContext, final FudgeMsg object, final Map<String, Data> properties) {
-    if (properties == null) {
-      return object;
+  private static FudgeMsg setFudgeMsgProperties(final SessionContext sessionContext, final FudgeMsg object, final Map<String, Data> properties) {
+    final MutableFudgeMsg msg = SetObjectPropertyFunction.mutableMessage(sessionContext, object);
+    for (Map.Entry<String, Data> property : properties.entrySet()) {
+      SetObjectPropertyFunction.setFudgeMsgProperty(sessionContext, msg, property.getKey(), property.getValue());
     }
-    // TODO: Test if the FudgeMsg can be decoded to a known object, otherwise just modify the raw message
-    throw new UnsupportedOperationException();
+    return msg;
   }
 
   public static Object invoke(final SessionContext sessionContext, final FudgeMsg object, final Map<String, Data> properties) {
-    // TODO: Test if the object is a Bean or not
-    throw new UnsupportedOperationException();
+    if (properties == null) {
+      return object;
+    }
+    if (object.hasField(0)) {
+      final FudgeContext fudgeContext = FudgeTypeConverter.getFudgeContext(sessionContext.getGlobalContext());
+      final FudgeDeserializer deserializer = new FudgeDeserializer(fudgeContext);
+      final Object encodedObject;
+      try {
+        encodedObject = deserializer.fudgeMsgToObject(object);
+      } catch (RuntimeException e) {
+        return setFudgeMsgProperties(sessionContext, object, properties);
+      }
+      if (encodedObject instanceof Bean) {
+        return setBeanProperties(sessionContext, (Bean) encodedObject, properties);
+      } else {
+        setObjectProperties(sessionContext, encodedObject, properties);
+        return encodedObject;
+      }
+    } else {
+      return setFudgeMsgProperties(sessionContext, object, properties);
+    }
   }
 
   // AbstractFunctionInvoker

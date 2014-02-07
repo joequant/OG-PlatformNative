@@ -57,12 +57,15 @@ public class ObjectFunction extends AbstractFunctionInvoker implements Published
     this(new DefinitionAnnotater(ObjectFunction.class));
   }
 
-  private static Object createObject(final SessionContext sessionContext, final Class<?> clazz) {
+  private static Object createObject(final SessionContext sessionContext, final Class<?> clazz, final Map<String, Data> properties) {
+    final Object object;
     try {
-      return clazz.newInstance();
+      object = clazz.newInstance();
     } catch (Throwable e) {
       throw new InvokeInvalidArgumentException(CLASS, "can't create object", e);
     }
+    SetObjectPropertiesFunction.setObjectProperties(sessionContext, object, properties);
+    return object;
   }
 
   public static Object invoke(final SessionContext sessionContext, final String className, final Map<String, Data> properties) {
@@ -80,11 +83,11 @@ public class ObjectFunction extends AbstractFunctionInvoker implements Published
         try {
           meta = JodaBeanUtils.metaBean(clazz);
         } catch (IllegalArgumentException e) {
-          return SetObjectPropertiesFunction.setObjectProperties(sessionContext, createObject(sessionContext, clazz), properties);
+          return createObject(sessionContext, clazz, properties);
         }
         return SetObjectPropertiesFunction.setBeanProperties(sessionContext, meta, meta.builder(), properties);
       } else {
-        return SetObjectPropertiesFunction.setObjectProperties(sessionContext, createObject(sessionContext, clazz), properties);
+        return createObject(sessionContext, clazz, properties);
       }
     }
   }

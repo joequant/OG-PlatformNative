@@ -285,10 +285,19 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     }
   }
 
+  protected static void setFudgeMsgProperty(final SessionContext sessionContext, final MutableFudgeMsg object, final String property, final Data value) {
+    // FudgeMsg doesn't have a replace/set so we must remove any existing property
+    object.remove(property);
+    object.add(property, propertyValue(sessionContext, value));
+  }
+
+  protected static MutableFudgeMsg mutableMessage(final SessionContext sessionContext, final FudgeMsg object) {
+    return object instanceof MutableFudgeMsg ? (MutableFudgeMsg) object : FudgeTypeConverter.getFudgeContext(sessionContext.getGlobalContext()).newMessage(object);
+  }
+
   private static Object setFudgeMsgProperty(final SessionContext sessionContext, final FudgeMsg object, final String property, final Data value) {
-    final MutableFudgeMsg msg = object instanceof MutableFudgeMsg ? (MutableFudgeMsg) object : FudgeTypeConverter.getFudgeContext(sessionContext.getGlobalContext()).newMessage(object);
-    msg.remove(property);
-    msg.add(property, propertyValue(sessionContext, value));
+    final MutableFudgeMsg msg = mutableMessage(sessionContext, object);
+    setFudgeMsgProperty(sessionContext, msg, property, value);
     return msg;
   }
 
