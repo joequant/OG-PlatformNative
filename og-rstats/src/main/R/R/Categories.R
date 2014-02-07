@@ -6,6 +6,7 @@
 
 # The categories as published by the Java stack.
 
+Category.CONFIG <- "Configuration"
 Category.CURRENCY <- "Currency"
 Category.CURVE <- "Curve"
 Category.DEBUG <- "Debug"

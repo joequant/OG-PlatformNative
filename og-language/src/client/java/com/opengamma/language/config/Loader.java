@@ -19,6 +19,8 @@ import com.opengamma.core.config.impl.EHCachingConfigSource;
 import com.opengamma.core.config.impl.RemoteConfigSource;
 import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
+import com.opengamma.language.function.FunctionProviderBean;
+import com.opengamma.language.procedure.ProcedureProviderBean;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -70,16 +72,22 @@ public class Loader extends ContextInitializationBean {
 
   @Override
   protected void initContext(final MutableGlobalContext globalContext) {
+    final FunctionProviderBean functions = new FunctionProviderBean();
     // These functions are for "configuration", but don't use a config-source
-    globalContext.getFunctionProvider().addProvider(new ConfigurationFunctionProvider());
+    functions.addFunction(MarketDataOverrideFunction.INSTANCE);
+    functions.addFunction(ValuePropertyFunction.INSTANCE);
+    functions.addFunction(ViewCalculationRateFunction.INSTANCE);
     // The remainder requires a config-source
     final URI uri = _uri.get();
     if (uri == null) {
       s_logger.warn("Config database support not available");
-      return;
+    } else {
+      s_logger.info("Configuring config support");
+      globalContext.setConfigSource(new EHCachingConfigSource(new RemoteConfigSource(uri), getCacheManager()));
+      functions.addFunction(FetchConfigItemFunction.INSTANCE);
+      globalContext.getProcedureProvider().addProvider(new ProcedureProviderBean(StoreConfigItemProcedure.INSTANCE));
     }
-    s_logger.info("Configuring config support");
-    globalContext.setConfigSource(new EHCachingConfigSource(new RemoteConfigSource(uri), getCacheManager()));
+    globalContext.getFunctionProvider().addProvider(functions);
   }
 
 }

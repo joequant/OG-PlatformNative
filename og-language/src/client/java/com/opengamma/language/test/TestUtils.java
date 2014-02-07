@@ -7,6 +7,7 @@ package com.opengamma.language.test;
 
 import org.fudgemsg.FudgeContext;
 
+import com.opengamma.core.config.ConfigSource;
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.position.PositionSource;
 import com.opengamma.core.security.SecuritySource;
@@ -86,6 +87,7 @@ public class TestUtils {
   private ViewProcessor _viewProcessor;
   private SecuritySource _securitySource;
   private PositionSource _positionSource;
+  private ConfigSource _configSource;
   private RemoteClient _globalClient;
   private RemoteClient _userClient;
   private RemoteClient _sessionClient;
@@ -141,6 +143,14 @@ public class TestUtils {
     return _positionSource;
   }
 
+  public void setConfigSource(final ConfigSource configSource) {
+    _configSource = configSource;
+  }
+
+  public ConfigSource getConfigSource() {
+    return _configSource;
+  }
+
   public void setGlobalClient(final RemoteClient client) {
     _globalClient = client;
   }
@@ -186,6 +196,9 @@ public class TestUtils {
         }
         if (getPositionSource() != null) {
           globalContext.setPositionSource(getPositionSource());
+        }
+        if (getConfigSource() != null) {
+          globalContext.setConfigSource(getConfigSource());
         }
         if (getGlobalClient() != null) {
           globalContext.setClient(getGlobalClient());

@@ -16,6 +16,11 @@ public final class Categories {
   // (e.g. to group by function, such as database access, rather than by object type)
 
   /**
+   * Anything concerned with system configuration.
+   */
+  public static final String CONFIG = "Configuration";
+
+  /**
    * Anything concerned with trading conventions.
    */
   public static final String CONVENTION = "Convention";
