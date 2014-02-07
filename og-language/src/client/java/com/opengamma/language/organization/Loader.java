@@ -13,11 +13,11 @@ import net.sf.ehcache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opengamma.core.organization.impl.RemoteOrganizationSource;
+import com.opengamma.core.legalentity.impl.EHCachingLegalEntitySource;
+import com.opengamma.core.legalentity.impl.RemoteLegalEntitySource;
 import com.opengamma.language.config.Configuration;
 import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
-import com.opengamma.master.organization.impl.EHCachingOrganizationSource;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -73,8 +73,8 @@ public class Loader extends ContextInitializationBean {
       return;
     }
     s_logger.info("Configuring organization support");
-    globalContext.setOrganizationSource(new EHCachingOrganizationSource(new RemoteOrganizationSource(uri), getCacheManager()));
-    //globalContext.setOrganizationSource(new RemoteOrganizationSource(uri));
+    globalContext.setOrganizationSource(new EHCachingLegalEntitySource(new RemoteLegalEntitySource(uri), getCacheManager()));
+    //globalContext.setOrganizationSource(new RemoteLegalEntitySource(uri));
     // TODO:
   }
 
