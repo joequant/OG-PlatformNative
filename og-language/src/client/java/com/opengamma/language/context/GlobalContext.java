@@ -15,10 +15,10 @@ import com.opengamma.core.exchange.ExchangeSource;
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.holiday.HolidaySource;
 import com.opengamma.core.marketdatasnapshot.MarketDataSnapshotSource;
-import com.opengamma.core.organization.OrganizationSource;
 import com.opengamma.core.position.PositionSource;
 import com.opengamma.core.region.RegionSource;
 import com.opengamma.core.security.SecuritySource;
+import com.opengamma.core.legalentity.LegalEntitySource;
 import com.opengamma.engine.ComputationTargetResolver;
 import com.opengamma.engine.view.ViewProcessor;
 import com.opengamma.engine.view.helper.AvailableOutputsProvider;
@@ -435,7 +435,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
     return getValue(VOLATILITY_CUBE_DEFINITION_SOURCE);
   }
 
-  public OrganizationSource getOrganizationSource() {
+  public LegalEntitySource getOrganizationSource() {
     return getValue(ORGANIZATION_SOURCE);
   }
 
