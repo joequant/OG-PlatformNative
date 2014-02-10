@@ -215,15 +215,15 @@ public class DefaultBeans implements InitializingBean {
     return loader;
   }
 
-  protected InitializingBean createMarketDataSnapshotLoader() {
-    final com.opengamma.language.snapshot.Loader loader = new com.opengamma.language.snapshot.Loader();
+  protected InitializingBean createLegalEntityLoader() {
+    final com.opengamma.language.legalentity.Loader loader = new com.opengamma.language.legalentity.Loader();
     loader.setConfiguration(getConfiguration());
     loader.setGlobalContextFactory(getGlobalContextFactory());
     return loader;
   }
 
-  protected InitializingBean createOrganizationLoader() {
-    final com.opengamma.language.organization.Loader loader = new com.opengamma.language.organization.Loader();
+  protected InitializingBean createMarketDataSnapshotLoader() {
+    final com.opengamma.language.snapshot.Loader loader = new com.opengamma.language.snapshot.Loader();
     loader.setConfiguration(getConfiguration());
     loader.setGlobalContextFactory(getGlobalContextFactory());
     return loader;
@@ -305,8 +305,8 @@ public class DefaultBeans implements InitializingBean {
     createExchangeLoader().afterPropertiesSet();
     createHolidayLoader().afterPropertiesSet();
     createIdentifierLoader().afterPropertiesSet();
+    createLegalEntityLoader().afterPropertiesSet();
     createMarketDataSnapshotLoader().afterPropertiesSet();
-    createOrganizationLoader().afterPropertiesSet();
     createPositionLoader().afterPropertiesSet();
     createRegionLoader().afterPropertiesSet();
     createSecurityLoader().afterPropertiesSet();
