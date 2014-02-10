@@ -4,7 +4,7 @@
  * Please see distribution for license.
  */
 
-package com.opengamma.language.organization;
+package com.opengamma.language.legalentity;
 
 import java.net.URI;
 
@@ -21,13 +21,13 @@ import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.util.ArgumentChecker;
 
 /**
- * Extends the contexts with region support (if available).
+ * Extends the contexts with legal entity support (if available).
  */
 public class Loader extends ContextInitializationBean {
 
   private static final Logger s_logger = LoggerFactory.getLogger(Loader.class);
 
-  private String _configurationEntry = "organizationSource";
+  private String _configurationEntry = "legalEntitySource";
   private Configuration _configuration;
   private CacheManager _cacheManager = CacheManager.getInstance();
 
@@ -69,12 +69,11 @@ public class Loader extends ContextInitializationBean {
   protected void initContext(final MutableGlobalContext globalContext) {
     final URI uri = getConfiguration().getURIConfiguration(getConfigurationEntry());
     if (uri == null) {
-      s_logger.warn("Organization support not available");
+      s_logger.warn("Legal entity support not available");
       return;
     }
-    s_logger.info("Configuring organization support");
-    globalContext.setOrganizationSource(new EHCachingLegalEntitySource(new RemoteLegalEntitySource(uri), getCacheManager()));
-    //globalContext.setOrganizationSource(new RemoteLegalEntitySource(uri));
+    s_logger.info("Configuring legal entity support");
+    globalContext.setLegalEntitySource(new EHCachingLegalEntitySource(new RemoteLegalEntitySource(uri), getCacheManager()));
     // TODO:
   }
 

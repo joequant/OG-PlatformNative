@@ -14,11 +14,11 @@ import com.opengamma.core.convention.ConventionSource;
 import com.opengamma.core.exchange.ExchangeSource;
 import com.opengamma.core.historicaltimeseries.HistoricalTimeSeriesSource;
 import com.opengamma.core.holiday.HolidaySource;
+import com.opengamma.core.legalentity.LegalEntitySource;
 import com.opengamma.core.marketdatasnapshot.MarketDataSnapshotSource;
 import com.opengamma.core.position.PositionSource;
 import com.opengamma.core.region.RegionSource;
 import com.opengamma.core.security.SecuritySource;
-import com.opengamma.core.legalentity.LegalEntitySource;
 import com.opengamma.engine.ComputationTargetResolver;
 import com.opengamma.engine.view.ViewProcessor;
 import com.opengamma.engine.view.helper.AvailableOutputsProvider;
@@ -105,6 +105,11 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which a holiday source is bound.
    */
   protected static final String HOLIDAY_SOURCE = "holidaySource";
+
+  /**
+   * Name under which a legal entity source is bound.
+   */
+  protected static final String LEGAL_ENTITY_SOURCE = "legalEntitySource";
 
   /**
    * Name under which the live data definition filter is bound.
@@ -205,11 +210,6 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the volatility cube definition source is bound.
    */
   protected static final String VOLATILITY_CUBE_DEFINITION_SOURCE = "volatilityCubeDefinitionSource";
-
-  /**
-   * Name under which the organization source is bound.
-   */
-  protected static final String ORGANIZATION_SOURCE = "organizationSource";
 
   private final Map<String, UserContext> _userContexts = new HashMap<String, UserContext>();
 
@@ -345,6 +345,10 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
     return getValue(HOLIDAY_SOURCE);
   }
 
+  public LegalEntitySource getLegalEntitySource() {
+    return getValue(LEGAL_ENTITY_SOURCE);
+  }
+
   public LiveDataDefinitionFilter getLiveDataDefinitionFilter() {
     return getValue(LIVEDATA_DEFINITION_FILTER);
   }
@@ -433,10 +437,6 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
 
   public VolatilityCubeDefinitionSource getVolatilityCubeDefinitionSource() {
     return getValue(VOLATILITY_CUBE_DEFINITION_SOURCE);
-  }
-
-  public LegalEntitySource getOrganizationSource() {
-    return getValue(ORGANIZATION_SOURCE);
   }
 
 }

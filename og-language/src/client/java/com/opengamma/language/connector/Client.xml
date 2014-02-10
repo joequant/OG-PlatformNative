@@ -250,14 +250,14 @@
     <property name="configuration" ref="defaultConfiguration" />
   </bean>
   
-  <!-- Market data values -->
-  <bean id="snapshotLoader" class="com.opengamma.language.snapshot.Loader">
+  <!-- Legal Entity -->
+  <bean id="organizationLoader" class="com.opengamma.language.legalentity.Loader">
     <property name="globalContextFactory" ref="globalContextFactory" />
     <property name="configuration" ref="defaultConfiguration" />
   </bean>
   
-  <!-- Organization -->
-  <bean id="organizationLoader" class="com.opengamma.language.organization.Loader">
+  <!-- Market data values -->
+  <bean id="snapshotLoader" class="com.opengamma.language.snapshot.Loader">
     <property name="globalContextFactory" ref="globalContextFactory" />
     <property name="configuration" ref="defaultConfiguration" />
   </bean>

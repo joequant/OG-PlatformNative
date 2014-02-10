@@ -109,6 +109,10 @@ public class MutableGlobalContext extends GlobalContext {
     removeOrReplaceValue(HOLIDAY_SOURCE, holidaySource);
   }
 
+  public void setLegalEntitySource(final LegalEntitySource organizationSource) {
+    removeOrReplaceValue(LEGAL_ENTITY_SOURCE, organizationSource);
+  }
+
   public void setLiveDataDefinitionFilter(final LiveDataDefinitionFilter liveDataDefinitionFilter) {
     ArgumentChecker.notNull(liveDataDefinitionFilter, "liveDataDefinitionFilter");
     replaceValue(LIVEDATA_DEFINITION_FILTER, liveDataDefinitionFilter);
@@ -192,10 +196,6 @@ public class MutableGlobalContext extends GlobalContext {
 
   public void setVolatilityCubeDefinitionSource(final VolatilityCubeDefinitionSource volatilityCubeDefinitionSource) {
     removeOrReplaceValue(VOLATILITY_CUBE_DEFINITION_SOURCE, volatilityCubeDefinitionSource);
-  }
-
-  public void setOrganizationSource(final LegalEntitySource organizationSource) {
-    removeOrReplaceValue(ORGANIZATION_SOURCE, organizationSource);
   }
 
   // Arbitrary values
