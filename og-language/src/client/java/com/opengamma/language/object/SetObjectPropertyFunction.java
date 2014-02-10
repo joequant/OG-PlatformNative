@@ -7,6 +7,7 @@
 package com.opengamma.language.object;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -161,7 +162,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     }
   }
 
-  private static <T> T propertyValue(final SessionContext sessionContext, final Class<T> type, final Data value) {
+  private static Object propertyValue(final SessionContext sessionContext, final Type type, final Data value) {
     if (value == null) {
       return null;
     } else {
@@ -266,7 +267,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       return PROPERTY;
     }
     try {
-      final Object valueToSet = propertyValue(sessionContext, descriptor.getPropertyType(), value);
+      final Object valueToSet = propertyValue(sessionContext, descriptor.getWriteMethod().getGenericParameterTypes()[0], value);
       PropertyUtils.setProperty(object, descriptor.getName(), valueToSet);
     } catch (Exception e) {
       return VALUE;
@@ -291,8 +292,9 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     if (descriptor.getWriteMethod() == null) {
       throw new InvokeInvalidArgumentException(PROPERTY, "property can't be updated");
     }
+    final JavaTypeInfo<?> type = parse(typeCast);
     try {
-      final Object valueToSet = propertyValue(sessionContext, descriptor.getPropertyType(), value);
+      final Object valueToSet = propertyValue(sessionContext, type, value);
       PropertyUtils.setProperty(object, descriptor.getName(), valueToSet);
     } catch (Exception e) {
       throw new InvokeInvalidArgumentException(VALUE, "can't set value");

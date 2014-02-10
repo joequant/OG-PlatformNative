@@ -6,6 +6,7 @@
 
 package com.opengamma.language.object;
 
+import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,20 +118,24 @@ public class GetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
     return result;
   }
 
-  @SuppressWarnings("unchecked")
   protected static Map<String, Data> getObjectProperties(final SessionContext sessionContext, final Object object) {
-    final Map<String, Object> properties;
+    final PropertyDescriptor[] properties;
     try {
-      properties = PropertyUtils.describe(object);
+      properties = PropertyUtils.getPropertyDescriptors(object);
     } catch (Exception e) {
-      throw new InvokeInvalidArgumentException(OBJECT, "Can't read properties");
+      throw new InvokeInvalidArgumentException(OBJECT, "Can't read properties", e);
     }
     final ValueConverter converter = sessionContext.getGlobalContext().getValueConverter();
-    final Map<String, Data> result = Maps.newHashMapWithExpectedSize(properties.size());
-    for (Map.Entry<String, Object> property : properties.entrySet()) {
-      final String name = property.getKey();
+    final Map<String, Data> result = Maps.newHashMapWithExpectedSize(properties.length);
+    for (PropertyDescriptor property : properties) {
+      final String name = property.getName();
       if (!"class".equals(name)) {
-        result.put(name, convertValue(converter, sessionContext, property.getValue()));
+        try {
+          result.put(name, convertValue(converter, sessionContext, PropertyUtils.getProperty(object, name)));
+        } catch (Exception e) {
+          // Ignore - might be a "get" that just isn't supported
+          s_logger.debug("Ignoring exception", e);
+        }
       }
     }
     return result;
