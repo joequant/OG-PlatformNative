@@ -32,10 +32,8 @@ import com.opengamma.language.security.CreateSecurityFunction;
 import com.opengamma.master.security.ManageableSecurity;
 
 /**
- * A {@link FunctionProvider} that builds functions based on object constructors and their accessor/mutator
- * methods. The object information is read in from a resource file. The basic OG-Language functionality
- * can be extended for a custom language binding by inheriting from this class and re-implementing the
- * {@link #loadDefinitions} method.
+ * A {@link FunctionProvider} that builds functions based on object constructors and their accessor/mutator methods. The object information is read in from a resource file. The basic OG-Language
+ * functionality can be extended for a custom language binding by inheriting from this class and re-implementing the {@link #loadDefinitions} method.
  */
 public class ObjectFunctionProvider extends AbstractFunctionProvider {
 
@@ -54,7 +52,7 @@ public class ObjectFunctionProvider extends AbstractFunctionProvider {
   protected final class AttributeInfo {
 
     /**
-     * The name of the attribute to use when constructing parameter names. 
+     * The name of the attribute to use when constructing parameter names.
      */
     private final String _name;
     /**
@@ -375,11 +373,10 @@ public class ObjectFunctionProvider extends AbstractFunctionProvider {
   protected MetaFunction getSetAttributeInstance(final ObjectInfo object, final AttributeInfo attribute, final Method write, final String category) {
     // TODO: the string constants here should be at the top of the file
     final String name = "Set" + object.getName() + capitalize(attribute.getAlias());
-    final String description = "Updates the " + attribute.getLabel() + " of " + object.getLabel() +
-        ". The original object is unchanged - a new object is returned with the updated value";
+    final String description = "Updates the " + attribute.getLabel() + " of " + object.getLabel() + ". The original object is unchanged - a new object is returned with the updated value";
     final MetaParameter target = new MetaParameter(uncapitalize(object.getName()), JavaTypeInfo.builder(object.getObjectClass()).get());
     target.setDescription(capitalize(object.getLabel()) + " to update");
-    final MetaParameter value = new MetaParameter(attribute.getName(), JavaTypeInfo.builder(write.getParameterTypes()[0]).allowNull().get());
+    final MetaParameter value = new MetaParameter(attribute.getName(), JavaTypeInfo.builder(write.getGenericParameterTypes()[0]).allowNull().get());
     value.setDescription(attribute.getDescription());
     return new SetAttributeFunction(category, name, description, write, target, value).getMetaFunction();
   }
