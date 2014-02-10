@@ -107,7 +107,7 @@ public final class ValueConverter extends AbstractTypeConverter {
       }
     } else {
       final Value value = (Value) valueObject;
-      if (ValueUtils.isNull(value)) {
+      if (ValueUtils.isNull(value) || (value.getErrorValue() != null)) {
         if (type.isAllowNull()) {
           conversionContext.setResult(null);
         } else if (type.isDefaultValue()) {
