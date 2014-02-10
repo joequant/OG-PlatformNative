@@ -10,8 +10,12 @@ import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 
 import java.util.Map;
 
+import org.fudgemsg.FudgeContext;
+
 import com.google.common.collect.Maps;
+import com.opengamma.language.Data;
 import com.opengamma.language.Value;
+import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.types.CollectionTypes;
 import com.opengamma.language.definition.types.TransportTypes;
@@ -76,6 +80,7 @@ public class MapConverter extends AbstractTypeConverter {
       conversionContext.setResult(result);
     } else {
       // Converting from Map to Values[][]
+      final FudgeContext fudgeContext = FudgeTypeConverter.getFudgeContext(conversionContext.getGlobalContext());
       final Map<?, ?> map = (Map<?, ?>) value;
       final Value[][] result = new Value[map.size()][2];
       int i = 0;
@@ -83,25 +88,24 @@ public class MapConverter extends AbstractTypeConverter {
         if (entry.getKey() == null) {
           result[i][0] = new Value();
         } else {
-          conversionContext.convertValue(entry.getKey(), TransportTypes.VALUE);
+          conversionContext.convertValue(entry.getKey(), TransportTypes.DATA);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;
           }
-          result[i][0] = conversionContext.getResult();
+          result[i][0] = ValueUtils.of(fudgeContext, conversionContext.<Data>getResult());
         }
         if (entry.getValue() == null) {
           result[i++][1] = new Value();
         } else {
-          conversionContext.convertValue(entry.getValue(), TransportTypes.VALUE);
+          conversionContext.convertValue(entry.getValue(), TransportTypes.DATA);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;
           }
-          result[i++][1] = conversionContext.getResult();
+          result[i++][1] = ValueUtils.of(fudgeContext, conversionContext.<Data>getResult());
         }
       }
-      // Don't be tempted to sort the results; the map instance may already have done that
       conversionContext.setResult(result);
     }
   }

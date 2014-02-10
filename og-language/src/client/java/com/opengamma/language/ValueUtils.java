@@ -7,7 +7,9 @@
 package com.opengamma.language;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
+import org.fudgemsg.mapping.FudgeSerializer;
 
 import com.opengamma.util.ArgumentChecker;
 
@@ -26,12 +28,8 @@ public final class ValueUtils {
     if (value == null) {
       return true;
     }
-    return (value.getBoolValue() == null)
-        && (value.getDoubleValue() == null)
-        && (value.getErrorValue() == null)
-        && (value.getIntValue() == null)
-        && (value.getMessageValue() == null)
-        && (value.getStringValue() == null);
+    return (value.getBoolValue() == null) && (value.getDoubleValue() == null) && (value.getErrorValue() == null) && (value.getIntValue() == null) && (value.getMessageValue() == null) &&
+        (value.getStringValue() == null);
   }
 
   public static Value of(final Boolean boolValue) {
@@ -73,6 +71,58 @@ public final class ValueUtils {
     final Value value = new Value();
     value.setStringValue(stringValue);
     return value;
+  }
+
+  private static Value encodeData(final FudgeContext context, final Data data) {
+    if (context == null) {
+      throw new IllegalArgumentException();
+    }
+    final FudgeSerializer ser = new FudgeSerializer(context);
+    return of(FudgeSerializer.addClassHeader(ser.objectToFudgeMsg(data), Data.class));
+  }
+
+  /**
+   * Converts a {@link Data} object to {@link Value} instance. If the data contains a single value then that is used directly. If it is null of any form then a {@code Value} that is null gets
+   * returned. For any other cases, the Fudge message representation of the {@code Data} will be used.
+   * 
+   * @param context the Fudge context to use (only used when encoding {@code Data} to a message)
+   * @param data the data to convert
+   */
+  public static Value of(final FudgeContext context, final Data data) {
+    if (data == null) {
+      return new Value();
+    } else if (data.getSingle() != null) {
+      return data.getSingle();
+    } else if (data.getLinear() != null) {
+      final Value[] linear = data.getLinear();
+      if (linear.length == 0) {
+        // Not really a legal state
+        return new Value();
+      } else if (linear.length == 1) {
+        return linear[0];
+      } else {
+        return encodeData(context, data);
+      }
+    } else if (data.getMatrix() != null) {
+      final Value[][] matrix = data.getMatrix();
+      if (matrix.length == 0) {
+        // Not really a legal state
+        return new Value();
+      } else if (matrix.length == 1) {
+        if (matrix[0].length == 0) {
+          // Not really a legal state
+          return new Value();
+        } else if (matrix[0].length == 1) {
+          return matrix[0][0];
+        } else {
+          return encodeData(context, data);
+        }
+      } else {
+        return encodeData(context, data);
+      }
+    } else {
+      return new Value();
+    }
   }
 
   public static Boolean toBool(final Value data) {
@@ -151,8 +201,8 @@ public final class ValueUtils {
   /**
    * Displayable form of the Value object.
    * 
-   * @param value  the value to convert to a string
-   * @param quoted  true to surround strings in quote marks and escape them
+   * @param value the value to convert to a string
+   * @param quoted true to surround strings in quote marks and escape them
    * @return a displayable string representation
    */
   public static String toString(final Value value, final boolean quoted) {

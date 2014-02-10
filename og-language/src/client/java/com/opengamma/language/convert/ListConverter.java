@@ -12,7 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.fudgemsg.FudgeContext;
+
+import com.google.common.collect.ImmutableList;
+import com.opengamma.language.Data;
 import com.opengamma.language.Value;
+import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.types.CollectionTypes;
 import com.opengamma.language.definition.types.TransportTypes;
@@ -39,9 +44,11 @@ public class ListConverter extends AbstractTypeConverter {
   protected ListConverter() {
   }
 
+  // Note the use of ImmutableList to support Joda beans which define a property as an immutable list
+
   @Override
   public boolean canConvertTo(final JavaTypeInfo<?> targetType) {
-    return (targetType.getRawClass() == List.class) || (targetType.getRawClass() == Value[].class);
+    return (targetType.getRawClass() == ImmutableList.class) || (targetType.getRawClass() == List.class) || (targetType.getRawClass() == Value[].class);
   }
 
   @Override
@@ -50,11 +57,11 @@ public class ListConverter extends AbstractTypeConverter {
       conversionContext.setResult(null);
       return;
     }
-    if (type.getRawClass() == List.class) {
+    if (List.class.isAssignableFrom(type.getRawClass())) {
       // Converting from Values[] to List
       final Value[] values = (Value[]) value;
       final JavaTypeInfo<?> listType = type.getParameterizedType(0);
-      final List<Object> result = new ArrayList<Object>(values.length);
+      List<Object> result = new ArrayList<Object>(values.length);
       for (Value entry : values) {
         conversionContext.convertValue(entry, listType);
         if (conversionContext.isFailed()) {
@@ -63,9 +70,13 @@ public class ListConverter extends AbstractTypeConverter {
         }
         result.add(conversionContext.getResult());
       }
+      if (type.getRawClass() == ImmutableList.class) {
+        result = ImmutableList.copyOf(result);
+      }
       conversionContext.setResult(result);
     } else {
       // Converting from List to Values[]
+      final FudgeContext fudgeContext = FudgeTypeConverter.getFudgeContext(conversionContext.getGlobalContext());
       final List<?> list = (List<?>) value;
       final Value[] result = new Value[list.size()];
       int i = 0;
@@ -73,12 +84,12 @@ public class ListConverter extends AbstractTypeConverter {
         if (entry == null) {
           result[i++] = new Value();
         } else {
-          conversionContext.convertValue(entry, TransportTypes.VALUE);
+          conversionContext.convertValue(entry, TransportTypes.DATA);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;
           }
-          result[i++] = conversionContext.getResult();
+          result[i++] = ValueUtils.of(fudgeContext, conversionContext.<Data>getResult());
         }
       }
       conversionContext.setResult(result);
@@ -87,7 +98,7 @@ public class ListConverter extends AbstractTypeConverter {
 
   @Override
   public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
-    if (targetType.getRawClass() == List.class) {
+    if (List.class.isAssignableFrom(targetType.getRawClass())) {
       return targetType.isAllowNull() ? TO_LIST_ALLOW_NULL : TO_LIST;
     } else {
       return targetType.isAllowNull() ? FROM_LIST_ALLOW_NULL : FROM_LIST;

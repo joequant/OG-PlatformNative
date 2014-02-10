@@ -11,8 +11,12 @@ import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 import java.util.Map;
 import java.util.Set;
 
+import org.fudgemsg.FudgeContext;
+
 import com.google.common.collect.Sets;
+import com.opengamma.language.Data;
 import com.opengamma.language.Value;
+import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.types.CollectionTypes;
 import com.opengamma.language.definition.types.TransportTypes;
@@ -66,6 +70,7 @@ public class SetConverter extends AbstractTypeConverter {
       conversionContext.setResult(result);
     } else {
       // Converting from Set to Values[]
+      final FudgeContext fudgeContext = FudgeTypeConverter.getFudgeContext(conversionContext.getGlobalContext());
       final Set<?> set = (Set<?>) value;
       final Value[] result = new Value[set.size()];
       int i = 0;
@@ -73,15 +78,14 @@ public class SetConverter extends AbstractTypeConverter {
         if (entry == null) {
           result[i++] = new Value();
         } else {
-          conversionContext.convertValue(entry, TransportTypes.VALUE);
+          conversionContext.convertValue(entry, TransportTypes.DATA);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;
           }
-          result[i++] = conversionContext.getResult();
+          result[i++] = ValueUtils.of(fudgeContext, conversionContext.<Data>getResult());
         }
       }
-      // TODO: be nice to sort the result
       conversionContext.setResult(result);
     }
   }

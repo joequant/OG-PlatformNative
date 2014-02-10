@@ -10,6 +10,9 @@ import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 
 import java.util.Map;
 
+import org.fudgemsg.FudgeMsg;
+import org.fudgemsg.mapping.FudgeDeserializer;
+
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
@@ -73,7 +76,17 @@ public final class DataConverter extends AbstractTypeConverter {
     final Class<?> clazz = type.getRawClass();
     if (clazz == Data.class) {
       if (value instanceof Value) {
-        conversionContext.setResult(DataUtils.of((Value) value));
+        final Value valueValue = (Value) value;
+        if (valueValue.getMessageValue() != null) {
+          final FudgeMsg msg = valueValue.getMessageValue();
+          final String typeHint = msg.getString(0);
+          if (Data.class.getName().equals(typeHint)) {
+            final Data dataValue = Data.fromFudgeMsg(new FudgeDeserializer(FudgeTypeConverter.getFudgeContext(conversionContext.getGlobalContext())), msg);
+            conversionContext.setResult(dataValue);
+            return;
+          }
+        }
+        conversionContext.setResult(DataUtils.of(valueValue));
       } else if (value instanceof Value[]) {
         conversionContext.setResult(DataUtils.of((Value[]) value));
       } else if (value instanceof Value[][]) {

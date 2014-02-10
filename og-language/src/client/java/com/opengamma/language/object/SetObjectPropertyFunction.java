@@ -126,7 +126,9 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
   }
 
   private static Object propertyValue(final SessionContext sessionContext, final Data value) {
-    if (value.getSingle() != null) {
+    if (value == null) {
+      return null;
+    } else if (value.getSingle() != null) {
       return convertValue(sessionContext, value.getSingle());
     } else if (value.getLinear() != null) {
       return convertValues(sessionContext, value.getLinear());
@@ -140,19 +142,31 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
 
   @SuppressWarnings("unchecked")
   private static <T> T propertyValue(final SessionContext sessionContext, final MetaProperty<T> property, final Data value) {
-    if (property.propertyType() == Object.class) {
-      return (T) propertyValue(sessionContext, value);
+    if (value == null) {
+      return null;
     } else {
-      return (T) propertyValue(sessionContext, JavaTypeInfo.builder(property.propertyGenericType()).get(), value);
+      if (property.propertyType() == Object.class) {
+        return (T) propertyValue(sessionContext, value);
+      } else {
+        return (T) propertyValue(sessionContext, JavaTypeInfo.builder(property.propertyGenericType()).get(), value);
+      }
     }
   }
 
   private static <T> T propertyValue(final SessionContext sessionContext, final JavaTypeInfo<T> type, final Data value) {
-    return sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, value, type);
+    if (value == null) {
+      return null;
+    } else {
+      return sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, value, type);
+    }
   }
 
   private static <T> T propertyValue(final SessionContext sessionContext, final Class<T> type, final Data value) {
-    return propertyValue(sessionContext, JavaTypeInfo.builder(type).get(), value);
+    if (value == null) {
+      return null;
+    } else {
+      return propertyValue(sessionContext, JavaTypeInfo.builder(type).get(), value);
+    }
   }
 
   protected static int setBeanProperty(final SessionContext sessionContext, final MetaBean meta, final BeanBuilder<?> bean, final String property, final Data value) {
@@ -312,6 +326,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       try {
         return builder.build();
       } catch (Exception e) {
+        e.printStackTrace();
         throw new InvokeInvalidArgumentException(VALUE, e);
       }
     } else {
