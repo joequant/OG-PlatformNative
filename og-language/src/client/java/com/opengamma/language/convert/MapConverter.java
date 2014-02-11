@@ -18,7 +18,6 @@ import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.types.CollectionTypes;
-import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
@@ -88,7 +87,7 @@ public class MapConverter extends AbstractTypeConverter {
         if (entry.getKey() == null) {
           result[i][0] = new Value();
         } else {
-          conversionContext.convertValue(entry.getKey(), TransportTypes.DATA);
+          conversionContext.convertToData(entry.getKey());
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;
@@ -98,7 +97,7 @@ public class MapConverter extends AbstractTypeConverter {
         if (entry.getValue() == null) {
           result[i++][1] = new Value();
         } else {
-          conversionContext.convertValue(entry.getValue(), TransportTypes.DATA);
+          conversionContext.convertToData(entry.getValue());
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;

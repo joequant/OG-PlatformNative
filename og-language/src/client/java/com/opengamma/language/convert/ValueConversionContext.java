@@ -11,10 +11,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.fudgemsg.FudgeMsg;
+import org.fudgemsg.mapping.FudgeDeserializer;
+
+import com.opengamma.language.Data;
+import com.opengamma.language.Value;
 import com.opengamma.language.context.GlobalContext;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.context.UserContext;
 import com.opengamma.language.definition.JavaTypeInfo;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -54,15 +60,35 @@ public final class ValueConversionContext {
     return _reentrance;
   }
 
-  public void convertValue(final Object value, final JavaTypeInfo<?> type) {
+  public void convertToData(final Object value) {
+    _reentrance++;
+    _converter.convertValue(this, value, TransportTypes.DATA);
+    _reentrance--;
+  }
+
+  public void convertValue(Object value, final JavaTypeInfo<?> type) {
+    if (value instanceof Value) {
+      final Value valueValue = (Value) value;
+      if (valueValue.getMessageValue() != null) {
+        final FudgeMsg msg = valueValue.getMessageValue();
+        final String typeHint = msg.getString(0);
+        if (Data.class.getName().equals(typeHint)) {
+          value = Data.fromFudgeMsg(new FudgeDeserializer(FudgeTypeConverter.getFudgeContext(getGlobalContext())), msg);
+        }
+      }
+    }
+    if (type.getRawClass() == Data.class) {
+      convertToData(value);
+      return;
+    }
     if (_visited.add(type)) {
       _reentrance++;
       _converter.convertValue(this, value, type);
       _reentrance--;
       _visited.remove(type);
-    } else {
-      setFail();
+      return;
     }
+    setFail();
   }
 
   public void recordFailedConversion(final Object value, final JavaTypeInfo<?> type) {

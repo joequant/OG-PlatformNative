@@ -20,7 +20,6 @@ import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.definition.types.CollectionTypes;
-import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
 /**
@@ -84,7 +83,7 @@ public class ListConverter extends AbstractTypeConverter {
         if (entry == null) {
           result[i++] = new Value();
         } else {
-          conversionContext.convertValue(entry, TransportTypes.DATA);
+          conversionContext.convertToData(entry);
           if (conversionContext.isFailed()) {
             conversionContext.setFail();
             return;

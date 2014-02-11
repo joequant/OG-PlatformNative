@@ -11,6 +11,7 @@ import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 import java.lang.reflect.Array;
 import java.util.Map;
 
+import com.opengamma.language.Data;
 import com.opengamma.language.definition.JavaTypeInfo;
 import com.opengamma.language.invoke.AbstractTypeConverter;
 
@@ -29,7 +30,7 @@ public class ArrayDepthConverter extends AbstractTypeConverter {
 
   @Override
   public boolean canConvertTo(final JavaTypeInfo<?> targetType) {
-    return true;
+    return targetType.getRawClass() != Data.class;
   }
 
   private static int getArrayDimension(Class<?> clazz) {
