@@ -11,11 +11,11 @@ import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.fudgemsg.FudgeContext;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import com.opengamma.language.Data;
 import com.opengamma.language.Value;
@@ -78,7 +78,7 @@ public class SetConverter extends AbstractTypeConverter {
         result = ImmutableSet.copyOf(result);
       } else if (type.getRawClass() == SortedSet.class) {
         // Note: This won't handle the case where member elements aren't comparable
-        result = new TreeSet<Object>(result);
+        result = ImmutableSortedSet.copyOf(result);
       }
       conversionContext.setResult(result);
     } else {

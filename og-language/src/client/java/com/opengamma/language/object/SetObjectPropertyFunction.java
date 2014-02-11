@@ -7,9 +7,15 @@
 package com.opengamma.language.object;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.fudgemsg.FudgeContext;
@@ -24,6 +30,10 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableSortedSet;
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
@@ -73,6 +83,69 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
 
   protected SetObjectPropertyFunction() {
     this(new DefinitionAnnotater(SetObjectPropertyFunction.class));
+  }
+
+  private static final Map<Class<?>, Object> s_defaultValues = new HashMap<Class<?>, Object>();
+
+  static {
+    // Lists
+    s_defaultValues.put(List.class, ImmutableList.of());
+    s_defaultValues.put(ImmutableList.class, ImmutableList.of());
+    // Sets
+    s_defaultValues.put(Set.class, ImmutableSet.of());
+    s_defaultValues.put(ImmutableSet.class, ImmutableSet.of());
+    s_defaultValues.put(SortedSet.class, ImmutableSortedSet.of());
+    // Maps
+    s_defaultValues.put(Map.class, ImmutableMap.of());
+    s_defaultValues.put(ImmutableMap.class, ImmutableMap.of());
+    s_defaultValues.put(SortedMap.class, ImmutableSortedMap.of());
+  }
+
+  /**
+   * Creates a default value for when the user has supplied null but the bean has rejected it. Possibilities include:
+   * <ul>
+   * <li>An empty list
+   * <li>An empty set
+   * <li>An empty map
+   * <li>A zero-length array
+   * </ul>
+   * 
+   * @param beanProperty the property, not null
+   * @return the default value
+   */
+  private static Object defaultValue(final MetaProperty<?> beanProperty) {
+    final Class<?> type = beanProperty.propertyType();
+    if (type.isArray()) {
+      return Array.newInstance(type.getComponentType(), 0);
+    } else {
+      return s_defaultValues.get(type);
+    }
+  }
+
+  private static void setBeanProperty(final MetaProperty<?> beanProperty, final BeanBuilder<?> bean, final Object valueToSet) {
+    if (valueToSet == null) {
+      try {
+        bean.set(beanProperty, valueToSet);
+      } catch (RuntimeException e) {
+        // Try and do something with a default form
+        bean.set(beanProperty, defaultValue(beanProperty));
+      }
+    } else {
+      bean.set(beanProperty, valueToSet);
+    }
+  }
+
+  private static void setBeanProperty(final MetaProperty<?> beanProperty, final Bean bean, final Object valueToSet) {
+    if (valueToSet == null) {
+      try {
+        beanProperty.set(bean, valueToSet);
+      } catch (RuntimeException e) {
+        // Try and do something with a default form
+        beanProperty.set(bean, defaultValue(beanProperty));
+      }
+    } else {
+      beanProperty.set(bean, valueToSet);
+    }
   }
 
   private static Object convertValue(final SessionContext sessionContext, final Value value) {
@@ -179,7 +252,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     }
     try {
       final Object valueToSet = propertyValue(sessionContext, beanProperty, value);
-      bean.set(beanProperty, valueToSet);
+      setBeanProperty(beanProperty, bean, valueToSet);
     } catch (RuntimeException e) {
       return VALUE;
     }
@@ -214,7 +287,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     final JavaTypeInfo<?> type = parse(typeCast);
     try {
       final Object valueToSet = propertyValue(sessionContext, type, value);
-      bean.set(beanProperty, valueToSet);
+      setBeanProperty(beanProperty, bean, valueToSet);
     } catch (RuntimeException e) {
       throw new InvokeInvalidArgumentException(VALUE, e);
     }
@@ -227,9 +300,9 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     } catch (NoSuchElementException e) {
       return PROPERTY;
     }
-    final Object valueToSet = propertyValue(sessionContext, beanProperty, value);
     try {
-      beanProperty.set(bean, valueToSet);
+      final Object valueToSet = propertyValue(sessionContext, beanProperty, value);
+      setBeanProperty(beanProperty, bean, valueToSet);
     } catch (RuntimeException e) {
       return VALUE;
     }
@@ -250,7 +323,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     final JavaTypeInfo<?> type = parse(typeCast);
     try {
       final Object valueToSet = propertyValue(sessionContext, type, value);
-      beanProperty.set(bean, valueToSet);
+      setBeanProperty(beanProperty, bean, valueToSet);
     } catch (RuntimeException e) {
       throw new InvokeInvalidArgumentException(VALUE, e);
     }
@@ -297,7 +370,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       final Object valueToSet = propertyValue(sessionContext, type, value);
       PropertyUtils.setProperty(object, descriptor.getName(), valueToSet);
     } catch (Exception e) {
-      throw new InvokeInvalidArgumentException(VALUE, "can't set value");
+      throw new InvokeInvalidArgumentException(VALUE, "can't set value", e);
     }
   }
 
@@ -328,7 +401,6 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       try {
         return builder.build();
       } catch (Exception e) {
-        e.printStackTrace();
         throw new InvokeInvalidArgumentException(VALUE, e);
       }
     } else {

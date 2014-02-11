@@ -17,9 +17,14 @@ import org.joda.beans.ImmutableBean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.opengamma.core.exchange.impl.SimpleExchange;
+import com.opengamma.financial.analytics.curve.CurveConstructionConfiguration;
+import com.opengamma.financial.analytics.curve.CurveGroupConfiguration;
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
+import com.opengamma.language.Value;
+import com.opengamma.language.ValueUtils;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.Converters;
 import com.opengamma.language.convert.FudgeTypeConverter;
@@ -87,7 +92,7 @@ public class SetObjectPropertyFunctionTest {
     final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
     Object result = SetObjectPropertyFunction.invoke(context, beanMsg, "x", DataUtils.of(42), null);
     assertEquals(((ObjectFunctionTest.NonJodaBean) result).getX(), 42);
-    result = SetObjectPropertyFunction.invoke(context, beanMsg, "x", DataUtils.of(42), "double");
+    result = SetObjectPropertyFunction.invoke(context, beanMsg, "x", DataUtils.of(42d), "int");
     assertEquals(((ObjectFunctionTest.NonJodaBean) result).getX(), 42);
   }
 
@@ -130,6 +135,22 @@ public class SetObjectPropertyFunctionTest {
     Object result = SetObjectPropertyFunction.invoke(context, beanMsg, "y", DataUtils.of("ABC"), null);
     assertEquals(((FudgeMsg) result).getInt("x"), (Integer) 42);
     assertEquals(((FudgeMsg) result).getString("y"), "ABC");
+  }
+
+  public void testList() {
+    final SessionContext context = createSessionContext();
+    final CurveConstructionConfiguration bean = new CurveConstructionConfiguration("Test", ImmutableList.<CurveGroupConfiguration>of(), ImmutableList.of("Foo", "Bar"));
+    final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
+    // Standard list
+    Object result = SetObjectPropertyFunction.invoke(context, beanMsg, "exogenousConfigurations", DataUtils.of(new Value[] {ValueUtils.of("A"), ValueUtils.of("B"), ValueUtils.of("C") }),
+        null);
+    assertEquals(((CurveConstructionConfiguration) result).getExogenousConfigurations(), ImmutableList.of("A", "B", "C"));
+    // Singleton list (inferred from a range)
+    result = SetObjectPropertyFunction.invoke(context, beanMsg, "exogenousConfigurations", DataUtils.of(ValueUtils.of("X")), null);
+    assertEquals(((CurveConstructionConfiguration) result).getExogenousConfigurations(), ImmutableList.of("X"));
+    // Empty list (inferred from null) - which doesn't change the original object
+    result = SetObjectPropertyFunction.invoke(context, beanMsg, "exogenousConfigurations", new Data(), null);
+    assertEquals(((CurveConstructionConfiguration) result).getExogenousConfigurations(), ImmutableList.of("Foo", "Bar"));
   }
 
 }
