@@ -119,7 +119,7 @@ public class SetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
   }
 
   protected static void setObjectProperties(final SessionContext sessionContext, final Object object, final Map<String, Data> properties) {
-    if (properties == null) {
+    if ((properties == null) || properties.isEmpty()) {
       return;
     }
     for (Map.Entry<String, Data> property : properties.entrySet()) {

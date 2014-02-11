@@ -8,6 +8,7 @@ package com.opengamma.language.object;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.util.Collections;
 import java.util.Set;
@@ -151,14 +152,60 @@ public class ObjectFunctionTest {
 
   public static class NonBean {
 
+    private final int _x;
+    private int _y;
+    private int _z;
+
     public NonBean(int x) {
+      _x = x;
+    }
+
+    public NonBean(int x, int z) {
+      _x = x;
+      _z = z;
+    }
+
+    public int getX() {
+      return _x;
+    }
+
+    public void setY(final int y) {
+      _y = y;
+    }
+
+    public int getY() {
+      return _y;
+    }
+
+    public void setZ(final int z) {
+      fail();
+    }
+
+    public int getZ() {
+      return _z;
     }
 
   }
 
   @Test(expectedExceptions = InvokeInvalidArgumentException.class)
-  public void testNonBean() {
+  public void testNonBean_fail() {
     ObjectFunction.invoke(createSessionContext(), NonBean.class.getName(), null);
+  }
+
+  public void testNonBean_ok() {
+    final SessionContext context = createSessionContext();
+    NonBean result = (NonBean) ObjectFunction.invoke(context, NonBean.class.getName(), ImmutableMap.of("x", DataUtils.of(42)));
+    assertEquals(result.getX(), 42);
+    assertEquals(result.getY(), 0);
+    assertEquals(result.getZ(), 0);
+    result = (NonBean) ObjectFunction.invoke(context, NonBean.class.getName(), ImmutableMap.of("x", DataUtils.of(4), "y", DataUtils.of(2)));
+    assertEquals(result.getX(), 4);
+    assertEquals(result.getY(), 2);
+    assertEquals(result.getZ(), 0);
+    result = (NonBean) ObjectFunction.invoke(context, NonBean.class.getName(), ImmutableMap.of("x", DataUtils.of(4), "z", DataUtils.of(2)));
+    assertEquals(result.getX(), 4);
+    assertEquals(result.getY(), 0);
+    assertEquals(result.getZ(), 2);
   }
 
 }

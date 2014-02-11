@@ -149,7 +149,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       if (property.propertyType() == Object.class) {
         return (T) propertyValue(sessionContext, value);
       } else {
-        return (T) propertyValue(sessionContext, JavaTypeInfo.builder(property.propertyGenericType()).get(), value);
+        return (T) propertyValue(sessionContext, JavaTypeInfo.ofType(property.propertyGenericType()), value);
       }
     }
   }
@@ -162,11 +162,11 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     }
   }
 
-  private static Object propertyValue(final SessionContext sessionContext, final Type type, final Data value) {
+  protected static Object propertyValue(final SessionContext sessionContext, final Type type, final Data value) {
     if (value == null) {
       return null;
     } else {
-      return propertyValue(sessionContext, JavaTypeInfo.builder(type).get(), value);
+      return propertyValue(sessionContext, JavaTypeInfo.ofType(type), value);
     }
   }
 

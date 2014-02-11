@@ -7,8 +7,11 @@
 package com.opengamma.language.definition;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -451,20 +454,42 @@ public final class JavaTypeInfo<T> {
   }
 
   @SuppressWarnings({"rawtypes", "unchecked" })
-  public static Builder<?> builder(final Type type) {
+  private static Builder<?> ofTypeImpl(final Type type) {
     if (type instanceof Class<?>) {
-      return new Builder((Class<?>) type);
+      return new Builder((Class<?>) type).allowNull();
     }
     if (type instanceof ParameterizedType) {
       final ParameterizedType ptype = (ParameterizedType) type;
-      final Builder<?> builder = builder(ptype.getRawType());
+      final Builder<?> builder = ofTypeImpl(ptype.getRawType());
       for (Type typeArg : ptype.getActualTypeArguments()) {
-        builder.parameter(builder(typeArg).get());
+        builder.parameter(ofType(typeArg));
       }
       return builder;
-    } else {
-      throw new IllegalArgumentException("Can't handle " + type);
     }
+    if (type instanceof GenericArrayType) {
+      return ofTypeImpl(((GenericArrayType) type).getGenericComponentType()).arrayOf();
+    }
+    if (type instanceof TypeVariable) {
+      final TypeVariable vtype = (TypeVariable) type;
+      final Type[] bounds = vtype.getBounds();
+      if (bounds.length != 1) {
+        throw new IllegalArgumentException("Can't handle " + type);
+      }
+      return ofTypeImpl(bounds[0]);
+    }
+    if (type instanceof WildcardType) {
+      final WildcardType wtype = (WildcardType) type;
+      final Type[] bounds = wtype.getUpperBounds();
+      if (bounds.length != 1) {
+        throw new IllegalArgumentException("Can't handle " + type);
+      }
+      return ofTypeImpl(bounds[0]);
+    }
+    throw new IllegalArgumentException("Can't handle " + type);
+  }
+
+  public static JavaTypeInfo<?> ofType(final Type type) {
+    return ofTypeImpl(type).get();
   }
 
 }

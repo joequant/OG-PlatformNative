@@ -9,9 +9,11 @@ package com.opengamma.language.definition;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +116,19 @@ public class JavaTypeInfoTest {
   @Test(expectedExceptions = IllegalArgumentException.class)
   public void testInvalidShorthandString() {
     JavaTypeInfo.parseString("Map");
+  }
+
+  @SuppressWarnings("unused")
+  private static <T extends Number> void testExtendedTypes_method(List<Integer> p1, Set<T> p2, Set<? extends T> p3, List<?> p4, List<String>[] p5) {
+  }
+
+  public void testExtendedTypes() throws Exception {
+    final Type[] types = getClass().getDeclaredMethod("testExtendedTypes_method", List.class, Set.class, Set.class, List.class, List[].class).getGenericParameterTypes();
+    assertEquals(JavaTypeInfo.ofType(types[0]).toString(), "java.util.List<java.lang.Integer{allow null}>{allow null}");
+    assertEquals(JavaTypeInfo.ofType(types[1]).toString(), "java.util.Set<java.lang.Number{allow null}>{allow null}");
+    assertEquals(JavaTypeInfo.ofType(types[2]).toString(), "java.util.Set<java.lang.Number{allow null}>{allow null}");
+    assertEquals(JavaTypeInfo.ofType(types[3]).toString(), "java.util.List<java.lang.Object{allow null}>{allow null}");
+    assertEquals(JavaTypeInfo.ofType(types[4]).toString(), "java.util.List<java.lang.String{allow null}>{allow null}[]{allow null}");
   }
 
 }
