@@ -10,9 +10,12 @@ import static com.opengamma.language.convert.TypeMap.ZERO_LOSS;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.fudgemsg.FudgeContext;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.opengamma.language.Data;
 import com.opengamma.language.Value;
@@ -40,12 +43,16 @@ public class SetConverter extends AbstractTypeConverter {
   private static final TypeMap TO_SET_ALLOW_NULL = TypeMap.of(ZERO_LOSS, VALUES_ALLOW_NULL);
   private static final TypeMap FROM_SET_ALLOW_NULL = TypeMap.of(ZERO_LOSS, CollectionTypes.SET_ALLOW_NULL);
 
+  private static final Set<Class<?>> SUPPORTED = ImmutableSet.of(ImmutableSet.class, SortedSet.class, Set.class, Value[].class);
+
   protected SetConverter() {
   }
 
+  // Note the use of ImmutableSet and SortedSet to support Joda beans which define properties as such
+
   @Override
   public boolean canConvertTo(final JavaTypeInfo<?> targetType) {
-    return (targetType.getRawClass() == Set.class) || (targetType.getRawClass() == Value[].class);
+    return SUPPORTED.contains(targetType.getRawClass());
   }
 
   @Override
@@ -54,11 +61,11 @@ public class SetConverter extends AbstractTypeConverter {
       conversionContext.setResult(null);
       return;
     }
-    if (type.getRawClass() == Set.class) {
+    if (Set.class.isAssignableFrom(type.getRawClass())) {
       // Converting from Values[] to Set
       final Value[] values = (Value[]) value;
       final JavaTypeInfo<?> setType = type.getParameterizedType(0);
-      final Set<Object> result = Sets.newHashSetWithExpectedSize(values.length);
+      Set<Object> result = Sets.newHashSetWithExpectedSize(values.length);
       for (Value entry : values) {
         conversionContext.convertValue(entry, setType);
         if (conversionContext.isFailed()) {
@@ -66,6 +73,12 @@ public class SetConverter extends AbstractTypeConverter {
           return;
         }
         result.add(conversionContext.getResult());
+      }
+      if (type.getRawClass() == ImmutableSet.class) {
+        result = ImmutableSet.copyOf(result);
+      } else if (type.getRawClass() == SortedSet.class) {
+        // Note: This won't handle the case where member elements aren't comparable
+        result = new TreeSet<Object>(result);
       }
       conversionContext.setResult(result);
     } else {
@@ -92,7 +105,7 @@ public class SetConverter extends AbstractTypeConverter {
 
   @Override
   public Map<JavaTypeInfo<?>, Integer> getConversionsTo(final ValueConversionContext conversionContext, final JavaTypeInfo<?> targetType) {
-    if (targetType.getRawClass() == Set.class) {
+    if (Set.class.isAssignableFrom(targetType.getRawClass())) {
       return targetType.isAllowNull() ? TO_SET_ALLOW_NULL : TO_SET;
     } else {
       return targetType.isAllowNull() ? FROM_SET_ALLOW_NULL : FROM_SET;
