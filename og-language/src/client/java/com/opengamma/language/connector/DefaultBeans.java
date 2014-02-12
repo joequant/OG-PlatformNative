@@ -25,8 +25,6 @@ import com.opengamma.language.function.FunctionProvider;
 import com.opengamma.language.function.FunctionProviderBean;
 import com.opengamma.language.invoke.TypeConverterProvider;
 import com.opengamma.language.livedata.LiveDataProviderBean;
-import com.opengamma.language.object.BeanFunctionProvider;
-import com.opengamma.language.object.ObjectFunctionProvider;
 import com.opengamma.language.procedure.ProcedureProviderBean;
 import com.opengamma.util.jms.JmsConnector;
 
@@ -128,8 +126,6 @@ public class DefaultBeans implements InitializingBean {
     final Collection<FunctionProvider> providers = new ArrayList<FunctionProvider>(3);
     // For odd functions, use the provider bean. If a package exports more than a couple, create a provider. If a package provides other services, create a loader -->
     providers.add(new ExternalFunctionProvider());
-    providers.add(new ObjectFunctionProvider());
-    providers.add(new BeanFunctionProvider());
     final FunctionProviderBean bean = new FunctionProviderBean();
     bean.addFunction(new GetCurveYValuesFunction());
     providers.add(bean);
@@ -229,6 +225,12 @@ public class DefaultBeans implements InitializingBean {
     return loader;
   }
 
+  protected InitializingBean createObjectSupportLoader() {
+    final com.opengamma.language.object.Loader loader = new com.opengamma.language.object.Loader();
+    loader.setGlobalContextFactory(getGlobalContextFactory());
+    return loader;
+  }
+
   protected InitializingBean createPositionLoader() {
     final com.opengamma.language.position.Loader loader = new com.opengamma.language.position.Loader();
     loader.setConfiguration(getConfiguration());
@@ -307,6 +309,7 @@ public class DefaultBeans implements InitializingBean {
     createIdentifierLoader().afterPropertiesSet();
     createLegalEntityLoader().afterPropertiesSet();
     createMarketDataSnapshotLoader().afterPropertiesSet();
+    createObjectSupportLoader().afterPropertiesSet();
     createPositionLoader().afterPropertiesSet();
     createRegionLoader().afterPropertiesSet();
     createSecurityLoader().afterPropertiesSet();

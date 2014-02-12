@@ -21,14 +21,27 @@ import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.opengamma.analytics.financial.legalentity.LegalEntity;
+import com.opengamma.analytics.financial.legalentity.LegalEntityCombiningFilter;
+import com.opengamma.analytics.financial.legalentity.LegalEntityFilter;
+import com.opengamma.analytics.financial.legalentity.LegalEntityRegion;
+import com.opengamma.analytics.financial.legalentity.LegalEntitySector;
 import com.opengamma.core.exchange.impl.SimpleExchange;
+import com.opengamma.financial.analytics.curve.IssuerCurveTypeConfiguration;
 import com.opengamma.financial.security.swap.SwapSecurity;
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
+import com.opengamma.language.ValueUtils;
+import com.opengamma.language.context.AbstractGlobalContextEventHandler;
+import com.opengamma.language.context.GlobalContextEventHandler;
+import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.Converters;
+import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.test.TestUtils;
+import com.opengamma.util.i18n.Country;
 import com.opengamma.util.money.Currency;
 import com.opengamma.util.money.CurrencyAmount;
 import com.opengamma.util.test.TestGroup;
@@ -39,8 +52,18 @@ import com.opengamma.util.test.TestGroup;
 @Test(groups = TestGroup.UNIT)
 public class ObjectFunctionTest {
 
-  private SessionContext createSessionContext() {
-    final TestUtils testUtils = new TestUtils();
+  /* package */static SessionContext createSessionContext() {
+    final TestUtils testUtils = new TestUtils() {
+      @Override
+      protected GlobalContextEventHandler createGlobalContextEventHandler() {
+        return new AbstractGlobalContextEventHandler(super.createGlobalContextEventHandler()) {
+          @Override
+          protected void initContextImpl(final MutableGlobalContext context) {
+            SetObjectPropertyFunction.setPropertyTypeInferer(context, new DefaultPropertyTypeInferer(new NullPropertyTypeInferer()));
+          }
+        };
+      }
+    };
     testUtils.setTypeConverters(new Converters());
     return testUtils.createSessionContext();
   }
@@ -206,6 +229,25 @@ public class ObjectFunctionTest {
     assertEquals(result.getX(), 4);
     assertEquals(result.getY(), 0);
     assertEquals(result.getZ(), 2);
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked" })
+  public void testIssuerCurveTypeConfiguration() {
+    final SessionContext context = createSessionContext();
+    // Enough state in the filter for the keys to be correctly typed
+    LegalEntityCombiningFilter filters = new LegalEntityCombiningFilter();
+    filters.setFiltersToUse(ImmutableSet.<LegalEntityFilter<LegalEntity>>of((LegalEntityFilter) new LegalEntityRegion(false, false, Collections.<Country>emptySet(), true, Collections
+        .singleton(Currency.GBP))));
+    Data filtersData = context.getGlobalContext().getValueConverter().convertValue(context, filters, TransportTypes.DATA);
+    IssuerCurveTypeConfiguration result = (IssuerCurveTypeConfiguration) ObjectFunction.invoke(context, "IssuerCurveTypeConfiguration",
+        ImmutableMap.of("keys", DataUtils.of("GBP"), "filters", filtersData));
+    assertEquals(result.getKeys(), ImmutableSet.of(Currency.GBP));
+    // Not enough state in the filter, so currency ends up as arbitrary value
+    filters = new LegalEntityCombiningFilter();
+    filters.setFiltersToUse(ImmutableSet.<LegalEntityFilter<LegalEntity>>of((LegalEntityFilter) new LegalEntitySector(false, false, ImmutableSet.of("Foo"))));
+    filtersData = context.getGlobalContext().getValueConverter().convertValue(context, filters, TransportTypes.DATA);
+    result = (IssuerCurveTypeConfiguration) ObjectFunction.invoke(context, "IssuerCurveTypeConfiguration", ImmutableMap.of("keys", DataUtils.of("GBP"), "filters", filtersData));
+    assertEquals(result.getKeys(), ImmutableSet.of(ValueUtils.of("GBP")));
   }
 
 }

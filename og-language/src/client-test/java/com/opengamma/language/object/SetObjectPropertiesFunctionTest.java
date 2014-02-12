@@ -20,11 +20,9 @@ import com.opengamma.core.exchange.impl.SimpleExchange;
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.context.SessionContext;
-import com.opengamma.language.convert.Converters;
 import com.opengamma.language.convert.FudgeTypeConverter;
 import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
-import com.opengamma.language.test.TestUtils;
 import com.opengamma.util.money.Currency;
 import com.opengamma.util.money.CurrencyAmount;
 import com.opengamma.util.test.TestGroup;
@@ -35,14 +33,8 @@ import com.opengamma.util.test.TestGroup;
 @Test(groups = TestGroup.UNIT)
 public class SetObjectPropertiesFunctionTest {
 
-  private SessionContext createSessionContext() {
-    final TestUtils testUtils = new TestUtils();
-    testUtils.setTypeConverters(new Converters());
-    return testUtils.createSessionContext();
-  }
-
   public void testFlexiBean() {
-    final SessionContext context = createSessionContext();
+    final SessionContext context = ObjectFunctionTest.createSessionContext();
     final FlexiBean bean = new FlexiBean();
     final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
     Object result = SetObjectPropertiesFunction.invoke(context, beanMsg, ImmutableMap.of("foo", DataUtils.of("XYZ"), "bar", DataUtils.of(42), "cow", new Data()));
@@ -52,7 +44,7 @@ public class SetObjectPropertiesFunctionTest {
   }
 
   public void testImmutableBean() {
-    final SessionContext context = createSessionContext();
+    final SessionContext context = ObjectFunctionTest.createSessionContext();
     final CurrencyAmount bean = CurrencyAmount.of(Currency.GBP, 42d);
     assertTrue(bean instanceof ImmutableBean);
     final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
@@ -62,14 +54,14 @@ public class SetObjectPropertiesFunctionTest {
 
   @Test(expectedExceptions = InvokeInvalidArgumentException.class)
   public void testInvalidBeanField() {
-    final SessionContext context = createSessionContext();
+    final SessionContext context = ObjectFunctionTest.createSessionContext();
     final SimpleExchange bean = new SimpleExchange();
     final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
     SetObjectPropertiesFunction.invoke(context, beanMsg, ImmutableMap.of("nonExistentField", DataUtils.of("Test")));
   }
 
   public void testMutableBean() {
-    final SessionContext context = createSessionContext();
+    final SessionContext context = ObjectFunctionTest.createSessionContext();
     final SimpleExchange bean = new SimpleExchange();
     final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
     Object result = SetObjectPropertiesFunction.invoke(context, beanMsg, ImmutableMap.of("name", DataUtils.of("Test")));
@@ -77,7 +69,7 @@ public class SetObjectPropertiesFunctionTest {
   }
 
   public void testNonBean() {
-    final SessionContext context = createSessionContext();
+    final SessionContext context = ObjectFunctionTest.createSessionContext();
     final ObjectFunctionTest.NonJodaBean bean = new ObjectFunctionTest.NonJodaBean();
     final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
     Object result = SetObjectPropertiesFunction.invoke(context, beanMsg, ImmutableMap.of("x", DataUtils.of(42)));
@@ -86,7 +78,7 @@ public class SetObjectPropertiesFunctionTest {
 
   @Test(expectedExceptions = InvokeInvalidArgumentException.class)
   public void testInvalidNonBeanField1() {
-    final SessionContext context = createSessionContext();
+    final SessionContext context = ObjectFunctionTest.createSessionContext();
     final ObjectFunctionTest.NonJodaBean bean = new ObjectFunctionTest.NonJodaBean();
     final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
     SetObjectPropertiesFunction.invoke(context, beanMsg, ImmutableMap.of("y", DataUtils.of(42)));
@@ -94,14 +86,14 @@ public class SetObjectPropertiesFunctionTest {
 
   @Test(expectedExceptions = InvokeInvalidArgumentException.class)
   public void testInvalidNonBeanField2() {
-    final SessionContext context = createSessionContext();
+    final SessionContext context = ObjectFunctionTest.createSessionContext();
     final ObjectFunctionTest.NonJodaBean bean = new ObjectFunctionTest.NonJodaBean();
     final FudgeMsg beanMsg = context.getGlobalContext().getValueConverter().convertValue(context, bean, TransportTypes.FUDGE_MSG);
     SetObjectPropertiesFunction.invoke(context, beanMsg, ImmutableMap.of("class", DataUtils.of(SimpleExchange.class.getName())));
   }
 
   public void testNonObject() {
-    final SessionContext context = createSessionContext();
+    final SessionContext context = ObjectFunctionTest.createSessionContext();
     final ObjectFunctionTest.NonJodaBean bean = new ObjectFunctionTest.NonJodaBean();
     bean.setX(42);
     final FudgeMsg beanMsg = (new FudgeSerializer(FudgeTypeConverter.getFudgeContext(context.getGlobalContext()))).objectToFudgeMsg(bean);

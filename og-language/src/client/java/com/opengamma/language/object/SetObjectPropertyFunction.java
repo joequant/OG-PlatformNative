@@ -9,6 +9,7 @@ package com.opengamma.language.object;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Maps;
 import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
+import com.opengamma.language.context.GlobalContext;
+import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.FudgeTypeConverter;
 import com.opengamma.language.definition.Categories;
@@ -83,6 +87,16 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
 
   protected SetObjectPropertyFunction() {
     this(new DefinitionAnnotater(SetObjectPropertyFunction.class));
+  }
+
+  private static final String TYPE_INFERER = "PropertyTypeInferer";
+
+  protected static PropertyTypeInferer getPropertyTypeInferer(final GlobalContext context) {
+    return context.getValue(TYPE_INFERER);
+  }
+
+  protected static void setPropertyTypeInferer(final MutableGlobalContext context, final PropertyTypeInferer inferer) {
+    context.replaceValue(TYPE_INFERER, inferer);
   }
 
   private static final Map<Class<?>, Object> s_defaultValues = new HashMap<Class<?>, Object>();
@@ -214,16 +228,98 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private static <T> T propertyValue(final SessionContext sessionContext, final MetaProperty<T> property, final Data value) {
+  /**
+   * Temporary hack until the BeanBuilder from Joda beans allows us to query out things that have already been set.
+   */
+  /* package */static class BeanBuilderHack<T extends Bean> implements BeanBuilder<T> {
+
+    private final BeanBuilder<T> _builder;
+    private final Map<String, Object> _values = new HashMap<String, Object>();
+
+    public BeanBuilderHack(final BeanBuilder<T> builder) {
+      _builder = builder;
+    }
+
+    @Override
+    public BeanBuilder<T> set(final String propertyName, final Object value) {
+      _values.put(propertyName, value);
+      return _builder.set(propertyName, value);
+    }
+
+    @Override
+    public BeanBuilder<T> set(final MetaProperty<?> metaProperty, final Object value) {
+      _values.put(metaProperty.name(), value);
+      return _builder.set(metaProperty, value);
+    }
+
+    @Override
+    public BeanBuilder<T> setString(final String propertyName, final String value) {
+      _values.put(propertyName, value);
+      return _builder.setString(propertyName, value);
+    }
+
+    @Override
+    public BeanBuilder<T> setString(final MetaProperty<?> metaProperty, final String value) {
+      _values.put(metaProperty.name(), value);
+      return _builder.setString(metaProperty, value);
+    }
+
+    @Override
+    public BeanBuilder<T> setAll(final Map<String, ? extends Object> propertyValueMap) {
+      _values.putAll(propertyValueMap);
+      return _builder.setAll(propertyValueMap);
+    }
+
+    @Override
+    public T build() {
+      return _builder.build();
+    }
+
+    public Object get(final String propertyName) {
+      return _values.get(propertyName);
+    }
+
+    public Object get(final MetaProperty<?> metaProperty) {
+      return get(metaProperty.name());
+    }
+
+  }
+
+  private static Object propertyValue(final SessionContext sessionContext, final PropertyTypeInferer inferer, final MetaProperty<?> property, final BeanBuilderHack<?> bean, final Data value) {
     if (value == null) {
       return null;
     } else {
-      if (property.propertyType() == Object.class) {
-        return (T) propertyValue(sessionContext, value);
-      } else {
-        return (T) propertyValue(sessionContext, JavaTypeInfo.ofType(property.propertyGenericType()), value);
+      final Collection<MetaProperty<?>> precedents = inferer.getPrecedentProperties(property);
+      if (precedents != null) {
+        final Map<MetaProperty<?>, Object> precedentValues = Maps.newHashMapWithExpectedSize(precedents.size());
+        for (MetaProperty<?> precedent : precedents) {
+          precedentValues.put(precedent, bean.get(precedent));
+        }
+        final JavaTypeInfo<?> type = inferer.inferPropertyType(property, precedentValues);
+        if (type != null) {
+          return propertyValue(sessionContext, type, value);
+        }
       }
+      return propertyValue(sessionContext, property.propertyGenericType(), value);
+    }
+  }
+
+  private static Object propertyValue(final SessionContext sessionContext, final PropertyTypeInferer inferer, final MetaProperty<?> property, final Bean bean, final Data value) {
+    if (value == null) {
+      return null;
+    } else {
+      final Collection<MetaProperty<?>> precedents = inferer.getPrecedentProperties(property);
+      if (precedents != null) {
+        final Map<MetaProperty<?>, Object> precedentValues = Maps.newHashMapWithExpectedSize(precedents.size());
+        for (MetaProperty<?> precedent : precedents) {
+          precedentValues.put(precedent, precedent.get(bean));
+        }
+        final JavaTypeInfo<?> type = inferer.inferPropertyType(property, precedentValues);
+        if (type != null) {
+          return propertyValue(sessionContext, type, value);
+        }
+      }
+      return propertyValue(sessionContext, property.propertyGenericType(), value);
     }
   }
 
@@ -239,11 +335,36 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     if (value == null) {
       return null;
     } else {
-      return propertyValue(sessionContext, JavaTypeInfo.ofType(type), value);
+      if (type == Object.class) {
+        return propertyValue(sessionContext, value);
+      } else {
+        return propertyValue(sessionContext, JavaTypeInfo.ofType(type), value);
+      }
     }
   }
 
-  protected static int setBeanProperty(final SessionContext sessionContext, final MetaBean meta, final BeanBuilder<?> bean, final String property, final Data value) {
+  protected static int setBeanProperty(final SessionContext sessionContext, final PropertyTypeInferer inferer, final BeanBuilderHack<?> bean, final MetaProperty<?> property, final Data value) {
+    try {
+      final Object valueToSet = propertyValue(sessionContext, inferer, property, bean, value);
+      setBeanProperty(property, bean, valueToSet);
+    } catch (RuntimeException e) {
+      return VALUE;
+    }
+    return 0;
+  }
+
+  private static int setBeanProperty(final SessionContext sessionContext, final PropertyTypeInferer inferer, final MetaBean meta, final BeanBuilderHack<?> bean, final String property,
+      final Data value) {
+    final MetaProperty<?> beanProperty;
+    try {
+      beanProperty = meta.metaProperty(property);
+    } catch (NoSuchElementException e) {
+      return PROPERTY;
+    }
+    return setBeanProperty(sessionContext, inferer, bean, beanProperty, value);
+  }
+
+  protected static int setBeanPropertyNoInfer(final SessionContext sessionContext, final MetaBean meta, final BeanBuilderHack<?> bean, final String property, final Data value) {
     final MetaProperty<?> beanProperty;
     try {
       beanProperty = meta.metaProperty(property);
@@ -251,7 +372,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       return PROPERTY;
     }
     try {
-      final Object valueToSet = propertyValue(sessionContext, beanProperty, value);
+      final Object valueToSet = propertyValue(sessionContext, beanProperty.propertyGenericType(), value);
       setBeanProperty(beanProperty, bean, valueToSet);
     } catch (RuntimeException e) {
       return VALUE;
@@ -273,9 +394,10 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     }
   }
 
-  private static void setBeanProperty(final SessionContext sessionContext, final MetaBean meta, final BeanBuilder<?> bean, final String property, final Data value, final String typeCast) {
+  private static void setBeanProperty(final SessionContext sessionContext, final PropertyTypeInferer inferer, final MetaBean meta, final BeanBuilderHack<?> bean, final String property,
+      final Data value, final String typeCast) {
     if (typeCast == null) {
-      checkSetProperty(setBeanProperty(sessionContext, meta, bean, property, value));
+      checkSetProperty(setBeanProperty(sessionContext, inferer, meta, bean, property, value));
       return;
     }
     final MetaProperty<?> beanProperty;
@@ -284,16 +406,36 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     } catch (NoSuchElementException e) {
       throw new InvokeInvalidArgumentException(PROPERTY, "property not found");
     }
-    final JavaTypeInfo<?> type = parse(typeCast);
     try {
-      final Object valueToSet = propertyValue(sessionContext, type, value);
+      final Object valueToSet = propertyValue(sessionContext, inferer, beanProperty, bean, value);
       setBeanProperty(beanProperty, bean, valueToSet);
     } catch (RuntimeException e) {
       throw new InvokeInvalidArgumentException(VALUE, e);
     }
   }
 
-  protected static int setBeanProperty(final SessionContext sessionContext, final MetaBean meta, final Bean bean, final String property, final Data value) {
+  protected static int setBeanProperty(final SessionContext sessionContext, final PropertyTypeInferer inferer, final MetaBean meta, final Bean bean, final MetaProperty<?> property,
+      final Data value) {
+    try {
+      final Object valueToSet = propertyValue(sessionContext, inferer, property, bean, value);
+      setBeanProperty(property, bean, valueToSet);
+    } catch (RuntimeException e) {
+      return VALUE;
+    }
+    return 0;
+  }
+
+  private static int setBeanProperty(final SessionContext sessionContext, final PropertyTypeInferer inferer, final MetaBean meta, final Bean bean, final String property, final Data value) {
+    final MetaProperty<?> beanProperty;
+    try {
+      beanProperty = meta.metaProperty(property);
+    } catch (NoSuchElementException e) {
+      return PROPERTY;
+    }
+    return setBeanProperty(sessionContext, inferer, meta, bean, beanProperty, value);
+  }
+
+  protected static int setBeanPropertyNoInfer(final SessionContext sessionContext, final MetaBean meta, final Bean bean, final String property, final Data value) {
     final MetaProperty<?> beanProperty;
     try {
       beanProperty = meta.metaProperty(property);
@@ -301,7 +443,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       return PROPERTY;
     }
     try {
-      final Object valueToSet = propertyValue(sessionContext, beanProperty, value);
+      final Object valueToSet = propertyValue(sessionContext, beanProperty.propertyGenericType(), value);
       setBeanProperty(beanProperty, bean, valueToSet);
     } catch (RuntimeException e) {
       return VALUE;
@@ -309,9 +451,10 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
     return 0;
   }
 
-  private static void setBeanProperty(final SessionContext sessionContext, final MetaBean meta, final Bean bean, final String property, final Data value, final String typeCast) {
+  private static void setBeanProperty(final SessionContext sessionContext, final PropertyTypeInferer inferer, final MetaBean meta, final Bean bean, final String property, final Data value,
+      final String typeCast) {
     if (typeCast == null) {
-      checkSetProperty(setBeanProperty(sessionContext, meta, bean, property, value));
+      checkSetProperty(setBeanProperty(sessionContext, inferer, meta, bean, property, value));
       return;
     }
     final MetaProperty<?> beanProperty;
@@ -397,7 +540,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       for (MetaProperty<?> copyProperty : object.metaBean().metaPropertyIterable()) {
         builder.set(copyProperty, copyProperty.get(object));
       }
-      setBeanProperty(sessionContext, metaBean, builder, property, value, typeCast);
+      setBeanProperty(sessionContext, getPropertyTypeInferer(sessionContext.getGlobalContext()), metaBean, new BeanBuilderHack<>(builder), property, value, typeCast);
       try {
         return builder.build();
       } catch (Exception e) {
@@ -405,7 +548,7 @@ public class SetObjectPropertyFunction extends AbstractFunctionInvoker implement
       }
     } else {
       final MetaBean metaBean = object.metaBean();
-      setBeanProperty(sessionContext, metaBean, object, property, value, typeCast);
+      setBeanProperty(sessionContext, getPropertyTypeInferer(sessionContext.getGlobalContext()), metaBean, object, property, value, typeCast);
       return object;
     }
   }

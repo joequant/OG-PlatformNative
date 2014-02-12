@@ -477,6 +477,10 @@ public final class JavaTypeInfo<T> {
       }
       return ofTypeImpl(bounds[0]);
     }
+    /*if (type instanceof VariantType) {
+      // [PLAT-5880] Implement this; otherwise the WildcardType handling below will be used
+      throw new UnsupportedOperationException("Can't support " + type + " yet");
+    }*/
     if (type instanceof WildcardType) {
       final WildcardType wtype = (WildcardType) type;
       final Type[] bounds = wtype.getUpperBounds();

@@ -6,8 +6,11 @@
 
 package com.opengamma.language.object;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
@@ -33,6 +36,7 @@ import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
+import com.opengamma.language.object.SetObjectPropertyFunction.BeanBuilderHack;
 
 /**
  * Updates properties in an object, using a {@link Bean} template if one is available.
@@ -68,7 +72,7 @@ public class SetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
     this(new DefinitionAnnotater(SetObjectPropertiesFunction.class));
   }
 
-  private static void checkSetObjectProperty(final int error, final Map.Entry<String, Data> property) {
+  private static void checkSetObjectProperty(final int error, final Map.Entry<?, Data> property) {
     switch (error) {
       case SetObjectPropertyFunction.PROPERTY:
         throw new InvokeInvalidArgumentException(PROPERTIES, property.getKey() + " not found");
@@ -81,10 +85,54 @@ public class SetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
     }
   }
 
-  protected static Bean setBeanProperties(final SessionContext sessionContext, final MetaBean meta, final BeanBuilder<?> bean, final Map<String, Data> properties) {
+  private static boolean getSortedPropertiesForUpdate(final PropertyTypeInferer inferer, final Map<String, Data> properties, final MetaProperty<?> property,
+      final Map<MetaProperty<?>, Data> propertiesToSet) {
+    final Collection<MetaProperty<?>> precedents = inferer.getPrecedentProperties(property);
+    if (precedents == null) {
+      return !propertiesToSet.containsKey(property);
+    } else {
+      // Set NULL first to avoid infinite loop
+      propertiesToSet.put(property, null);
+      for (MetaProperty<?> precedent : precedents) {
+        if (!propertiesToSet.containsKey(precedent)) {
+          if (getSortedPropertiesForUpdate(inferer, properties, precedent, propertiesToSet)) {
+            propertiesToSet.put(precedent, properties.get(precedent.name()));
+          }
+        }
+      }
+      propertiesToSet.remove(property);
+      return true;
+    }
+  }
+
+  private static Map<MetaProperty<?>, Data> sortPropertiesForUpdate(final PropertyTypeInferer inferer, final MetaBean meta, final Map<String, Data> properties) {
+    try {
+      final Map<MetaProperty<?>, Data> propertiesToSet = new LinkedHashMap<MetaProperty<?>, Data>();
+      for (Map.Entry<String, Data> propertyEntry : properties.entrySet()) {
+        final MetaProperty<?> property = meta.metaProperty(propertyEntry.getKey());
+        if (!propertiesToSet.containsKey(property)) {
+          if (getSortedPropertiesForUpdate(inferer, properties, property, propertiesToSet)) {
+            propertiesToSet.put(property, propertyEntry.getValue());
+          }
+        }
+      }
+      return propertiesToSet;
+    } catch (NoSuchElementException e) {
+      throw new InvokeInvalidArgumentException(PROPERTIES, e.getMessage(), e);
+    }
+  }
+
+  protected static Bean setBeanProperties(final SessionContext sessionContext, final MetaBean meta, final BeanBuilderHack<?> bean, final Map<String, Data> properties) {
     if (properties != null) {
-      for (Map.Entry<String, Data> property : properties.entrySet()) {
-        checkSetObjectProperty(SetObjectPropertyFunction.setBeanProperty(sessionContext, meta, bean, property.getKey(), property.getValue()), property);
+      final PropertyTypeInferer inferer = SetObjectPropertyFunction.getPropertyTypeInferer(sessionContext.getGlobalContext());
+      if (inferer.hasPrecedentProperties(meta)) {
+        for (Map.Entry<MetaProperty<?>, Data> property : sortPropertiesForUpdate(inferer, meta, properties).entrySet()) {
+          checkSetObjectProperty(SetObjectPropertyFunction.setBeanProperty(sessionContext, inferer, bean, property.getKey(), property.getValue()), property);
+        }
+      } else {
+        for (Map.Entry<String, Data> property : properties.entrySet()) {
+          checkSetObjectProperty(SetObjectPropertyFunction.setBeanPropertyNoInfer(sessionContext, meta, bean, property.getKey(), property.getValue()), property);
+        }
       }
     }
     try {
@@ -108,11 +156,18 @@ public class SetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
       for (MetaProperty<?> property : bean.metaBean().metaPropertyIterable()) {
         builder.set(property, property.get(bean));
       }
-      return setBeanProperties(sessionContext, metaBean, builder, properties);
+      return setBeanProperties(sessionContext, metaBean, new BeanBuilderHack<>(builder), properties);
     } else {
       final MetaBean metaBean = bean.metaBean();
-      for (Map.Entry<String, Data> property : properties.entrySet()) {
-        checkSetObjectProperty(SetObjectPropertyFunction.setBeanProperty(sessionContext, metaBean, bean, property.getKey(), property.getValue()), property);
+      final PropertyTypeInferer inferer = SetObjectPropertyFunction.getPropertyTypeInferer(sessionContext.getGlobalContext());
+      if (inferer.hasPrecedentProperties(metaBean)) {
+        for (Map.Entry<MetaProperty<?>, Data> property : sortPropertiesForUpdate(inferer, metaBean, properties).entrySet()) {
+          checkSetObjectProperty(SetObjectPropertyFunction.setBeanProperty(sessionContext, inferer, metaBean, bean, property.getKey(), property.getValue()), property);
+        }
+      } else {
+        for (Map.Entry<String, Data> property : properties.entrySet()) {
+          checkSetObjectProperty(SetObjectPropertyFunction.setBeanPropertyNoInfer(sessionContext, metaBean, bean, property.getKey(), property.getValue()), property);
+        }
       }
       return bean;
     }
