@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import com.opengamma.core.config.impl.EHCachingConfigSource;
 import com.opengamma.core.config.impl.RemoteConfigSource;
+import com.opengamma.core.holiday.impl.CachedHolidaySource;
+import com.opengamma.core.holiday.impl.RemoteHolidaySource;
+import com.opengamma.core.region.impl.RemoteRegionSource;
 import com.opengamma.financial.security.EHCachingFinancialSecuritySource;
 import com.opengamma.financial.security.RemoteFinancialSecuritySource;
 import com.opengamma.language.config.Configuration;
@@ -22,6 +25,8 @@ import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.language.function.FunctionProviderBean;
 import com.opengamma.language.procedure.ProcedureProviderBean;
+import com.opengamma.language.security.fra.FRASecurityFromIndexFunction;
+import com.opengamma.master.region.impl.EHCachingRegionSource;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -33,6 +38,8 @@ public class Loader extends ContextInitializationBean {
 
   private String _configurationEntry = "securitySource";
   private String _configConfigurationEntry = "configSource";
+  private String _holidayConfigurationEntry = "holidaySource";
+  private String _regionConfigurationEntry = "regionSource";
   private Configuration _configuration;
   private CacheManager _cacheManager = CacheManager.getInstance();
 
@@ -61,6 +68,24 @@ public class Loader extends ContextInitializationBean {
   public void setConfigConfigurationEntry(String configConfigurationEntry) {
     ArgumentChecker.notNull(configConfigurationEntry, "configConfigurationEntry");
     _configConfigurationEntry = configConfigurationEntry;
+  }
+  
+  public String getHolidayConfigurationEntry() {
+    return _holidayConfigurationEntry;
+  }
+  
+  public void setHolidayConfigurationEntry(String holidayConfigurationEntry) {
+    ArgumentChecker.notNull(holidayConfigurationEntry, "holidayConfigurationEntry");
+    _holidayConfigurationEntry = holidayConfigurationEntry;
+  }
+  
+  public String getRegionConfigurationEntry() {
+    return _regionConfigurationEntry;
+  }
+  
+  public void setRegionConfigurationEntry(String regionConfigurationEntry) {
+    ArgumentChecker.notNull(regionConfigurationEntry, "regionConfigurationEntry");
+    _regionConfigurationEntry = regionConfigurationEntry;
   }
 
   public void setCacheManager(final CacheManager cacheManager) {
@@ -95,8 +120,24 @@ public class Loader extends ContextInitializationBean {
     }
     s_logger.info("Configuring config support");
     globalContext.setConfigSource(new EHCachingConfigSource(new RemoteConfigSource(configUri), getCacheManager()));
-    globalContext.getFunctionProvider().addProvider(
-        new FunctionProviderBean(FetchSecurityFunction.INSTANCE));
+    final URI holidayUri = getConfiguration().getURIConfiguration(getHolidayConfigurationEntry());
+    if (holidayUri == null) {
+      s_logger.warn("Holiday support not available");
+      return;
+    }
+    s_logger.info("Configuring holiday support");
+    globalContext.setHolidaySource(new CachedHolidaySource(new RemoteHolidaySource(holidayUri)));
+    final URI regionUri = getConfiguration().getURIConfiguration(getRegionConfigurationEntry());
+    if (regionUri == null) {
+      s_logger.warn("Region support not available");
+      return;
+    }
+    s_logger.info("Configuring region support");
+    globalContext.setRegionSource(new EHCachingRegionSource(new RemoteRegionSource(regionUri), getCacheManager()));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(
+        FetchSecurityFunction.INSTANCE,
+        FRASecurityFromIndexFunction.INSTANCE,
+        GetDateUsingIndexFunction.INSTANCE));
     globalContext.getProcedureProvider().addProvider(
         new ProcedureProviderBean(StoreSecurityProcedure.INSTANCE));
   }
