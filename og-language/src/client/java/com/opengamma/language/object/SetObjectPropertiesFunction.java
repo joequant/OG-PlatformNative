@@ -36,7 +36,6 @@ import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
-import com.opengamma.language.object.SetObjectPropertyFunction.BeanBuilderHack;
 
 /**
  * Updates properties in an object, using a {@link Bean} template if one is available.
@@ -122,7 +121,7 @@ public class SetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
     }
   }
 
-  protected static Bean setBeanProperties(final SessionContext sessionContext, final MetaBean meta, final BeanBuilderHack<?> bean, final Map<String, Data> properties) {
+  protected static Bean setBeanProperties(final SessionContext sessionContext, final MetaBean meta, final BeanBuilder<?> bean, final Map<String, Data> properties) {
     if (properties != null) {
       final PropertyTypeInferer inferer = SetObjectPropertyFunction.getPropertyTypeInferer(sessionContext.getGlobalContext());
       if (inferer.hasPrecedentProperties(meta)) {
@@ -156,7 +155,7 @@ public class SetObjectPropertiesFunction extends AbstractFunctionInvoker impleme
       for (MetaProperty<?> property : bean.metaBean().metaPropertyIterable()) {
         builder.set(property, property.get(bean));
       }
-      return setBeanProperties(sessionContext, metaBean, new BeanBuilderHack<>(builder), properties);
+      return setBeanProperties(sessionContext, metaBean, builder, properties);
     } else {
       final MetaBean metaBean = bean.metaBean();
       final PropertyTypeInferer inferer = SetObjectPropertyFunction.getPropertyTypeInferer(sessionContext.getGlobalContext());

@@ -30,7 +30,6 @@ import com.opengamma.language.error.InvokeInvalidArgumentException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
-import com.opengamma.language.object.SetObjectPropertyFunction.BeanBuilderHack;
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -150,7 +149,7 @@ public class ObjectFunction extends AbstractFunctionInvoker implements Published
         } catch (IllegalArgumentException e) {
           return createObject(sessionContext, clazz, properties);
         }
-        return SetObjectPropertiesFunction.setBeanProperties(sessionContext, meta, new BeanBuilderHack<>(meta.builder()), properties);
+        return SetObjectPropertiesFunction.setBeanProperties(sessionContext, meta, meta.builder(), properties);
       } else {
         return createObject(sessionContext, clazz, properties);
       }
