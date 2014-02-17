@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
 import org.threeten.bp.ZoneOffset;
@@ -80,16 +81,23 @@ public class GetDateUsingIndexFunction extends AbstractFunctionInvoker implement
   }
 
   private static LocalDate getAdjustedDate(IborIndexConvention indexConvention, Calendar regionCalendar, LocalDate spotDate, String relativeEndDate) {
+    if (StringUtils.isBlank(relativeEndDate)) {
+      return null;
+    }
+    Matcher immMatcher = s_immFormat.matcher(relativeEndDate.toLowerCase());
+    if (immMatcher.matches()) {
+      int rollCount = Integer.parseInt(immMatcher.group(1));
+      String rollType = immMatcher.group(2);
+      return getAdjustedDateByIMMRoll(spotDate, rollCount, rollType, regionCalendar);
+    }
+    if (Character.toLowerCase(relativeEndDate.charAt(0)) != 'p') {
+      relativeEndDate = "P" + relativeEndDate;
+    }
     try {
       Period period = Period.parse(relativeEndDate);
       return getAdjustedDateByPeriod(indexConvention, regionCalendar, spotDate, period);
     } catch (DateTimeParseException e) {
-      Matcher immMatcher = s_immFormat.matcher(relativeEndDate.toLowerCase());
-      if (immMatcher.matches()) {
-        int rollCount = Integer.parseInt(immMatcher.group(1));
-        String rollType = immMatcher.group(2);
-        return getAdjustedDateByIMMRoll(spotDate, rollCount, rollType, regionCalendar);
-      }
+      // Skip
     }
     throw new OpenGammaRuntimeException("Unknown relative end date format '" + relativeEndDate + "'. See documentation for supported formats.");
   }
