@@ -34,7 +34,7 @@ public final class CoreModelTypes {
   private CoreModelTypes() {
   }
 
-  public static final JavaTypeInfo<Counterparty> COUNTERPARTY_ALLOW_NULL = JavaTypeInfo.builder(Counterparty.class).get();
+  public static final JavaTypeInfo<Counterparty> COUNTERPARTY_ALLOW_NULL = JavaTypeInfo.builder(Counterparty.class).allowNull().get();
 
   public static final JavaTypeInfo<Deal> DEAL = JavaTypeInfo.builder(Deal.class).get();
 
