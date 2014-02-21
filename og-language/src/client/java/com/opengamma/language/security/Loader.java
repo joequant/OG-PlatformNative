@@ -15,9 +15,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.opengamma.core.config.impl.EHCachingConfigSource;
+import com.opengamma.core.config.impl.RemoteConfigSource;
 import com.opengamma.financial.security.EHCachingFinancialSecuritySource;
 import com.opengamma.financial.security.RemoteFinancialSecuritySource;
 import com.opengamma.language.config.Configuration;
+import com.opengamma.language.connector.AsyncSupplier;
 import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.language.function.FunctionProviderBean;
@@ -81,9 +84,29 @@ public class Loader extends ContextInitializationBean {
     }
     s_logger.info("Configuring security support");
     globalContext.setSecuritySource(new EHCachingFinancialSecuritySource(new RemoteFinancialSecuritySource(uri), getCacheManager()));
+
     // TODO: Change to a function provider for this package
     globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FetchSecurityFunction.INSTANCE, FRASecurityFromIndexFunction.INSTANCE, GetDateUsingIndexFunction.INSTANCE));
     globalContext.getProcedureProvider().addProvider(new ProcedureProviderBean(StoreSecurityProcedure.INSTANCE));
+    
+    final AsyncSupplier<URI> configUri = getConfiguration().getURIConfiguration(getConfigurationEntry());
+    if (configUri == null) {
+      s_logger.warn("Config support not available");
+      return;
+    }    
+    s_logger.info("Configuring config support");
+    globalContext.setConfigSource(new EHCachingConfigSource(new RemoteConfigSource(configUri.get()), getCacheManager()));
+    globalContext.getFunctionProvider().addProvider(
+        new FunctionProviderBean(FetchSecurityFunction.INSTANCE));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FixedInterestRateSwapLegFunction.INSTANCE));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FloatingInterestRateSwapLegFunction.INSTANCE));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FloatingInterestRateSwapLegScheduleFunction.INSTANCE));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(InterestRateSwapNotionalFunction.INSTANCE));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(InterestRateSwapSecurityFunction.INSTANCE));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(ComplexRateFunction.INSTANCE));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(StubCalculationMethodFunction.INSTANCE));
+    globalContext.getProcedureProvider().addProvider(
+        new ProcedureProviderBean(StoreSecurityProcedure.INSTANCE));
   }
 
 }

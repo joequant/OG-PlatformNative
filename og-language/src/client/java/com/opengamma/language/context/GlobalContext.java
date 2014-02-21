@@ -345,10 +345,6 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
     return getValue(HOLIDAY_SOURCE);
   }
 
-  public LegalEntitySource getLegalEntitySource() {
-    return getValue(LEGAL_ENTITY_SOURCE);
-  }
-
   public LiveDataDefinitionFilter getLiveDataDefinitionFilter() {
     return getValue(LIVEDATA_DEFINITION_FILTER);
   }
@@ -437,6 +433,10 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
 
   public VolatilityCubeDefinitionSource getVolatilityCubeDefinitionSource() {
     return getValue(VOLATILITY_CUBE_DEFINITION_SOURCE);
+  }
+
+  public LegalEntitySource getLegalEntitySource() {
+    return getValue(LEGAL_ENTITY_SOURCE);
   }
 
 }
