@@ -156,7 +156,7 @@ private:
 	CClientService (const TCHAR *pszLanguageID);
 	~CClientService ();
 	void ClosePipes ();
-	bool ConnectPipes ();
+	bool ConnectPipes (bool bStartToken);
 	bool CreatePipes ();
 	bool DispatchAndRelease (FudgeMsgEnvelope env);
 	FudgeMsgEnvelope Recv (unsigned long lTimeout);
@@ -164,7 +164,7 @@ private:
 	bool SendPoison ();
 	bool SetState (ClientServiceState eNewState);
 	void SetErrorState (const TCHAR *pszMessage);
-	bool StartJVM ();
+	bool StartJVM (bool *pbStartToken);
 	bool StopJVM ();
 public:
 

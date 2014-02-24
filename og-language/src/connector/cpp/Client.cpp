@@ -176,7 +176,8 @@ public:
 				bStatus = false;
 				break;
 			}
-			if (!m_poService->StartJVM ()) {
+			bool bStartToken;
+			if (!m_poService->StartJVM (&bStartToken)) {
 				if (bRetry) {
 					LOGWARN (TEXT ("Unable to initiate Java framework"));
 					m_poService->ClosePipes ();
@@ -189,7 +190,13 @@ public:
 				bStatus = false;
 				break;
 			}
-			if (!m_poService->ConnectPipes ()) {
+			if (bStartToken) {
+				LOGINFO (TEXT ("First connection to a fresh JVM"));
+				// Don't retry under these circumstances - if it didn't start the first time, it's
+				// unlikely to do so on the retry.
+				bRetry = false;
+			}
+			if (!m_poService->ConnectPipes (bStartToken)) {
 				if (bRetry) {
 					LOGWARN (TEXT ("Unable to connect to Java framework"));
 					m_poService->ClosePipes ();
@@ -493,8 +500,9 @@ void CClientService::ClosePipes () {
 /// Connects the pipes to the JVM instance, blocking until connected, the timeout
 /// from CSettings has elapsed, or the JVM abends.
 ///
+/// @param[in] bStartToken TRUE if this is the first connection to the JVM, FALSE if the JVM was already running
 /// @return TRUE if connected, FALSE if there was a problem
-bool CClientService::ConnectPipes () {
+bool CClientService::ConnectPipes (bool bStartToken) {
 	LOGINFO (TEXT ("Connecting pipes to JVM"));
 	m_oPipesSemaphore.Wait ();
 	if (!m_poPipes) {
@@ -512,7 +520,7 @@ bool CClientService::ConnectPipes () {
 	CSettings oSettings;
 	const TCHAR *pszPipeName = oSettings.GetConnectionPipe ();
 	LOGDEBUG (TEXT ("Connecting to ") << pszPipeName);
-	unsigned long lTimeout = m_poJVM->FirstConnection () ? oSettings.GetStartTimeout () : oSettings.GetConnectTimeout ();
+	unsigned long lTimeout = bStartToken ? oSettings.GetStartTimeout () : oSettings.GetConnectTimeout ();
 	m_lSendTimeout = lTimeout;
 	m_lShortTimeout = oSettings.GetSendTimeout ();
 	unsigned long lTime = GetTickCount ();
@@ -858,12 +866,14 @@ void CClientService::SetErrorState (const TCHAR *pszMessage) {
 
 /// Attempts to start the JVM host service. See CClientJVM for more information.
 ///
+/// @param[out] pbStartToken receives TRUE if the JVM was started, FALSE if an existing one was found
 /// @return TRUE if the startup was attempted or the service is already running, FALSE if there was an error
-bool CClientService::StartJVM () {
+bool CClientService::StartJVM (bool *pbStartToken) {
 	LOGINFO (TEXT ("Starting JVM"));
 	if (m_poJVM) {
 		if (m_poJVM->IsAlive ()) {
 			LOGDEBUG (TEXT ("JVM already started"));
+			*pbStartToken = false;
 			return true;
 		} else {
 			LOGDEBUG (TEXT ("Closing defunct JVM handle"));
@@ -872,6 +882,7 @@ bool CClientService::StartJVM () {
 	}
 	m_poJVM = CClientJVM::Start ();
 	if (m_poJVM) {
+		*pbStartToken = m_poJVM->FirstConnection ();
 		return true;
 	} else {
 		LOGWARN (TEXT ("Couldn't start JVM, error ") << GetLastError ());
