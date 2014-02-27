@@ -15,12 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.opengamma.core.config.impl.EHCachingConfigSource;
-import com.opengamma.core.config.impl.RemoteConfigSource;
 import com.opengamma.financial.security.EHCachingFinancialSecuritySource;
 import com.opengamma.financial.security.RemoteFinancialSecuritySource;
 import com.opengamma.language.config.Configuration;
-import com.opengamma.language.connector.AsyncSupplier;
 import com.opengamma.language.context.ContextInitializationBean;
 import com.opengamma.language.context.MutableGlobalContext;
 import com.opengamma.language.function.FunctionProviderBean;
@@ -35,7 +32,7 @@ public class Loader extends ContextInitializationBean {
 
   private static final Logger s_logger = LoggerFactory.getLogger(Loader.class);
 
-  private String _configurationEntry = "securitySource";
+  private String _securityEntry = "securitySource";
   private Configuration _configuration;
   private Supplier<URI> _uri;
   private Supplier<CacheManager> _cacheManager = DEFAULT_CACHE_MANAGER;
@@ -51,11 +48,11 @@ public class Loader extends ContextInitializationBean {
 
   public void setConfigurationEntry(final String configurationEntry) {
     ArgumentChecker.notNull(configurationEntry, "configurationEntry");
-    _configurationEntry = configurationEntry;
+    _securityEntry = configurationEntry;
   }
 
   public String getConfigurationEntry() {
-    return _configurationEntry;
+    return _securityEntry;
   }
 
   public void setCacheManager(final CacheManager cacheManager) {
@@ -86,27 +83,18 @@ public class Loader extends ContextInitializationBean {
     globalContext.setSecuritySource(new EHCachingFinancialSecuritySource(new RemoteFinancialSecuritySource(uri), getCacheManager()));
 
     // TODO: Change to a function provider for this package
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FetchSecurityFunction.INSTANCE, FRASecurityFromIndexFunction.INSTANCE, GetDateUsingIndexFunction.INSTANCE));
+    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(
+        FetchSecurityFunction.INSTANCE,
+        FRASecurityFromIndexFunction.INSTANCE,
+        GetDateUsingIndexFunction.INSTANCE,
+        FixedInterestRateSwapLegFunction.INSTANCE,
+        FloatingInterestRateSwapLegFunction.INSTANCE,
+        FloatingInterestRateSwapLegScheduleFunction.INSTANCE,
+        InterestRateSwapNotionalFunction.INSTANCE,
+        InterestRateSwapSecurityFunction.INSTANCE,
+        ComplexRateFunction.INSTANCE,
+        StubCalculationMethodFunction.INSTANCE));
     globalContext.getProcedureProvider().addProvider(new ProcedureProviderBean(StoreSecurityProcedure.INSTANCE));
-    
-    final AsyncSupplier<URI> configUri = getConfiguration().getURIConfiguration(getConfigurationEntry());
-    if (configUri == null) {
-      s_logger.warn("Config support not available");
-      return;
-    }    
-    s_logger.info("Configuring config support");
-    globalContext.setConfigSource(new EHCachingConfigSource(new RemoteConfigSource(configUri.get()), getCacheManager()));
-    globalContext.getFunctionProvider().addProvider(
-        new FunctionProviderBean(FetchSecurityFunction.INSTANCE));
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FixedInterestRateSwapLegFunction.INSTANCE));
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FloatingInterestRateSwapLegFunction.INSTANCE));
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(FloatingInterestRateSwapLegScheduleFunction.INSTANCE));
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(InterestRateSwapNotionalFunction.INSTANCE));
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(InterestRateSwapSecurityFunction.INSTANCE));
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(ComplexRateFunction.INSTANCE));
-    globalContext.getFunctionProvider().addProvider(new FunctionProviderBean(StubCalculationMethodFunction.INSTANCE));
-    globalContext.getProcedureProvider().addProvider(
-        new ProcedureProviderBean(StoreSecurityProcedure.INSTANCE));
   }
 
 }
