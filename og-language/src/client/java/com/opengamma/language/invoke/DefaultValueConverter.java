@@ -7,9 +7,9 @@
 package com.opengamma.language.invoke;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.Logger;
@@ -28,6 +27,7 @@ import com.opengamma.language.Data;
 import com.opengamma.language.DataUtils;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
+import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.ValueConversionContext;
 import com.opengamma.language.definition.JavaTypeInfo;
 
@@ -135,8 +135,38 @@ public class DefaultValueConverter extends ValueConverter {
 
   }
 
+  private static final class States {
+
+    private volatile State[] _states;
+
+    public State[] getStates() {
+      return _states;
+    }
+
+    public boolean isEmpty() {
+      return _states == null;
+    }
+
+    public synchronized void add(final State state) {
+      State[] states = _states;
+      if (states == null) {
+        states = new State[] {state };
+      } else {
+        for (int i = 0; i < states.length; i++) {
+          if (state.equals(states[i])) {
+            return;
+          }
+        }
+        states = Arrays.copyOf(states, states.length + 1);
+        states[states.length - 1] = state;
+      }
+      _states = states;
+    }
+
+  }
+
   private final ConcurrentMap<JavaTypeInfo<?>, List<TypeConverter>> _convertersByTarget = new ConcurrentHashMap<JavaTypeInfo<?>, List<TypeConverter>>();
-  private final ConcurrentMap<Class<?>, ConcurrentMap<JavaTypeInfo<?>, Queue<State>>> _validChains = new ConcurrentHashMap<Class<?>, ConcurrentMap<JavaTypeInfo<?>, Queue<State>>>();
+  private final ConcurrentMap<Class<?>, ConcurrentMap<JavaTypeInfo<?>, States>> _validChains = new ConcurrentHashMap<Class<?>, ConcurrentMap<JavaTypeInfo<?>, States>>();
 
   public DefaultValueConverter() {
   }
@@ -166,19 +196,19 @@ public class DefaultValueConverter extends ValueConverter {
     return converters;
   }
 
-  protected Queue<State> getConversionChains(final Class<?> sourceType, final JavaTypeInfo<?> targetType) {
-    ConcurrentMap<JavaTypeInfo<?>, Queue<State>> conversions = _validChains.get(sourceType);
+  protected States getConversionChains(final Class<?> sourceType, final JavaTypeInfo<?> targetType) {
+    ConcurrentMap<JavaTypeInfo<?>, States> conversions = _validChains.get(sourceType);
     if (conversions == null) {
-      conversions = new ConcurrentHashMap<JavaTypeInfo<?>, Queue<State>>();
-      final ConcurrentMap<JavaTypeInfo<?>, Queue<State>> previous = _validChains.putIfAbsent(sourceType, conversions);
+      conversions = new ConcurrentHashMap<JavaTypeInfo<?>, States>();
+      final ConcurrentMap<JavaTypeInfo<?>, States> previous = _validChains.putIfAbsent(sourceType, conversions);
       if (previous != null) {
         conversions = previous;
       }
     }
-    Queue<State> chains = conversions.get(targetType);
+    States chains = conversions.get(targetType);
     if (chains == null) {
-      chains = new ConcurrentLinkedQueue<State>();
-      final Queue<State> previous = conversions.putIfAbsent(targetType, chains);
+      chains = new States();
+      final States previous = conversions.putIfAbsent(targetType, chains);
       if (previous != null) {
         chains = previous;
       }
@@ -211,6 +241,41 @@ public class DefaultValueConverter extends ValueConverter {
       return conversionContext.setResult(value);
     }
     return false;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T convertValue(final SessionContext sessionContext, Object value, final JavaTypeInfo<T> type) {
+    if (type.isAllowNull() || type.isDefaultValue()) {
+      if (value instanceof Data) {
+        if (DataUtils.isNull((Data) value)) {
+          if (type.isDefaultValue()) {
+            return type.getDefaultValue();
+          } else {
+            return null;
+          }
+        }
+      } else if (value instanceof Value) {
+        if (ValueUtils.isNull((Value) value)) {
+          if (type.isDefaultValue()) {
+            return type.getDefaultValue();
+          } else {
+            return null;
+          }
+        }
+      } else if (value == null) {
+        if (type.isDefaultValue()) {
+          return type.getDefaultValue();
+        } else {
+          return null;
+        }
+      }
+    }
+    if (type.getRawClass().isAssignableFrom(value.getClass())) {
+      // TODO: if there are deep cast generic issues, the conversion will need to go deeper (e.g. Foo<X> to Foo<Y> where (? extends X)->Y is a well defined conversion for all values) 
+      return (T) value;
+    }
+    return super.convertValue(sessionContext, value, type);
   }
 
   private boolean stateConversion(final ValueConversionContext conversionContext, State state) {
@@ -260,11 +325,9 @@ public class DefaultValueConverter extends ValueConverter {
       s_logger.debug("Direct conversion complete");
       return;
     }
-    final Queue<State> conversionChains = getConversionChains(value.getClass(), type);
+    final States conversionChains = getConversionChains(value.getClass(), type);
     if (!conversionChains.isEmpty()) {
-      final Iterator<State> conversions = conversionChains.iterator();
-      while (conversions.hasNext()) {
-        final State state = conversions.next();
+      for (State state : conversionChains.getStates()) {
         s_logger.debug("Found cached state-chain {}", state);
         if (type.equals(state.getRootType())) {
           s_logger.debug("Applying conversions");
@@ -344,11 +407,7 @@ public class DefaultValueConverter extends ValueConverter {
         if (directConversion(conversionContext, value, explore.getTargetType()) && !conversionContext.isFailed()) {
           s_logger.debug("Direct conversion possible");
           if (stateConversion(conversionContext, explore)) {
-            synchronized (conversionChains) {
-              if (!conversionChains.contains(explore)) {
-                conversionChains.add(explore);
-              }
-            }
+            conversionChains.add(explore);
             return;
           } else {
             continue nextState;
