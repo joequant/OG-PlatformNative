@@ -24,11 +24,12 @@ import com.opengamma.language.test.TestUtils;
 import com.opengamma.master.config.ConfigDocument;
 import com.opengamma.master.config.impl.InMemoryConfigMaster;
 import com.opengamma.master.config.impl.MasterConfigSource;
+import com.opengamma.util.test.TestGroup;
 
 /**
  * Tests the {@link GetViewPortfolioRequirementsFunction} class.
  */
-@Test
+@Test(groups = TestGroup.UNIT)
 public class GetViewPortfolioRequirementsFunctionTest {
 
   private ViewDefinition createViewDefinition() {
