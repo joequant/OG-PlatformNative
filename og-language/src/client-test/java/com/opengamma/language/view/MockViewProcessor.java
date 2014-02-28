@@ -61,9 +61,4 @@ import com.opengamma.livedata.UserPrincipal;
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public void clearViewExecutionCache() {
-    throw new UnsupportedOperationException();
-  }
-
 }
