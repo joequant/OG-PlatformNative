@@ -27,7 +27,11 @@ import com.opengamma.util.tuple.Triple;
 public final class ValueRequirementUtils {
 
   private static final Pattern REQUIREMENT_EXPRESSION = Pattern.compile("^(?:([^/]+)/)?(.+?)([\\[\\{](.+)[\\]\\}])?$");
-  private static final String DEFAULT_CONFIG_NAME = "Default";
+
+  /**
+   * The default calculation configuration name. This will be omitted from any strings produced.
+   */
+  public static final String DEFAULT_CONFIG_NAME = "Default";
 
   /**
    * Hidden constructor

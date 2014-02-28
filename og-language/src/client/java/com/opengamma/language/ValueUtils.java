@@ -301,4 +301,141 @@ public final class ValueUtils {
     return transposedRange;
   }
 
+  private static int compareBool(final Value a, final Value b) {
+    final Boolean v1 = a.getBoolValue();
+    final Boolean v2 = b.getBoolValue();
+    if (v1 == null) {
+      if (v2 == null) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      if (v2 == null) {
+        return -1;
+      } else {
+        return v1.compareTo(v2);
+      }
+    }
+  }
+
+  private static int compareInt(final Value a, final Value b) {
+    final Integer v1 = a.getIntValue();
+    final Integer v2 = b.getIntValue();
+    if (v1 == null) {
+      if (v2 == null) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      if (v2 == null) {
+        return -1;
+      } else {
+        return v1.compareTo(v2);
+      }
+    }
+  }
+
+  private static int compareDouble(final Value a, final Value b) {
+    final Double v1 = a.getDoubleValue();
+    final Double v2 = b.getDoubleValue();
+    if (v1 == null) {
+      if (v2 == null) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      if (v2 == null) {
+        return -1;
+      } else {
+        return v1.compareTo(v2);
+      }
+    }
+  }
+
+  private static int compareString(final Value a, final Value b) {
+    final String v1 = a.getStringValue();
+    final String v2 = b.getStringValue();
+    if (v1 == null) {
+      if (v2 == null) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      if (v2 == null) {
+        return -1;
+      } else {
+        return v1.compareTo(v2);
+      }
+    }
+  }
+
+  private static int compareMessage(final Value a, final Value b) {
+    final FudgeMsg v1 = a.getMessageValue();
+    final FudgeMsg v2 = b.getMessageValue();
+    if (v1 == null) {
+      if (v2 == null) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      if (v2 == null) {
+        return -1;
+      } else {
+        // Any messages are equal enough (for now) - doesn't really make sense to order them
+        return 0;
+      }
+    }
+  }
+
+  private static int compareError(final Value a, final Value b) {
+    final Integer v1 = a.getErrorValue();
+    final Integer v2 = b.getErrorValue();
+    if (v1 == null) {
+      if (v2 == null) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } else {
+      if (v2 == null) {
+        return -1;
+      } else {
+        return v1.compareTo(v2);
+      }
+    }
+  }
+
+  public static int compare(final Value a, final Value b) {
+    int c = compareError(a, b);
+    if (c != 0) {
+      return c;
+    }
+    c = compareBool(a, b);
+    if (c != 0) {
+      return c;
+    }
+    c = compareInt(a, b);
+    if (c != 0) {
+      return c;
+    }
+    c = compareDouble(a, b);
+    if (c != 0) {
+      return c;
+    }
+    c = compareString(a, b);
+    if (c != 0) {
+      return c;
+    }
+    c = compareMessage(a, b);
+    if (c != 0) {
+      return c;
+    }
+    return 0;
+  }
+
 }

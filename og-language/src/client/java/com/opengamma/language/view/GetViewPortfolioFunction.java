@@ -35,6 +35,7 @@ public class GetViewPortfolioFunction extends AbstractFunctionInvoker implements
   private final MetaFunction _meta;
 
   // TODO: this should take a ViewDefinition object and we use type conversion to go from a unique id to the object
+  // TODO: that approach would then cope if we also had a type conversion to get from a view-client-handle to the view-definition
 
   private static List<MetaParameter> parameters() {
     final MetaParameter viewDefinitionId = new MetaParameter("id", OpenGammaTypes.UNIQUE_ID);
@@ -56,10 +57,14 @@ public class GetViewPortfolioFunction extends AbstractFunctionInvoker implements
   }
 
   public UniqueId invoke(ConfigSource configSource, UniqueId viewDefinitionId) {
-
-    ViewDefinition viewDefinition = configSource.getConfig(ViewDefinition.class, viewDefinitionId);
+    ViewDefinition viewDefinition = null;
+    try {
+      viewDefinition = configSource.getConfig(ViewDefinition.class, viewDefinitionId);
+    } catch (RuntimeException e) {
+      viewDefinition = null;
+    }
     if (viewDefinition == null) {
-      throw new InvokeInvalidArgumentException("View definition not found");
+      throw new InvokeInvalidArgumentException(0, "View definition not found");
     }
     return viewDefinition.getPortfolioId();
   }

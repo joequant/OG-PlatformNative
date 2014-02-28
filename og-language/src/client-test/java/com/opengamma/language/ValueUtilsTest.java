@@ -8,9 +8,11 @@ package com.opengamma.language;
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
-import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.assertTrue;
+
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
+import org.testng.annotations.Test;
 
 import com.opengamma.util.test.TestGroup;
 
@@ -61,7 +63,7 @@ public class ValueUtilsTest {
     assertNotNull(value);
     assertEquals("Foo", value.getStringValue());
   }
-  
+
   @Test(expectedExceptions = IllegalArgumentException.class)
   public void testNullString() {
     ValueUtils.of((String) null);
@@ -89,13 +91,26 @@ public class ValueUtilsTest {
       }
     }
   }
-  
+
   @Test(expectedExceptions = IllegalArgumentException.class)
   public void testTransposeJagged() {
     Value[][] orig = new Value[2][];
     orig[0] = new Value[3];
     orig[1] = new Value[2];
     ValueUtils.transpose(orig);
+  }
+
+  @Test
+  public void testCompare() {
+    final Value[] vs = new Value[] {ValueUtils.ofError(0), ValueUtils.ofError(1), ValueUtils.of(false), ValueUtils.of(true), ValueUtils.of(0), ValueUtils.of(1), ValueUtils.of(0d),
+        ValueUtils.of(1d), ValueUtils.of("A"), ValueUtils.of("B"), ValueUtils.of(FudgeContext.EMPTY_MESSAGE), new Value() };
+    for (int i = 0; i < vs.length; i++) {
+      assertEquals(0, ValueUtils.compare(vs[i], vs[i]));
+      for (int j = i + 1; j < vs.length; j++) {
+        assertTrue(ValueUtils.compare(vs[i], vs[j]) < 0);
+        assertTrue(ValueUtils.compare(vs[j], vs[i]) > 0);
+      }
+    }
   }
 
 }

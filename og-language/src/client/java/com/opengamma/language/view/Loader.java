@@ -111,11 +111,12 @@ public class Loader extends ContextInitializationBean {
     s_logger.info("Configuring view processor support");
     globalContext.setViewProcessor(new RemoteViewProcessor(uri, getJmsConnector().get(), getHousekeepingScheduler()));
     globalContext.getFunctionProvider().addProvider(
-        new FunctionProviderBean(FetchViewDefinitionFunction.INSTANCE, GetViewPortfolioFunction.INSTANCE, GetViewProcessIdFunction.INSTANCE, GetViewResultFunction.INSTANCE,
-            HistoricalExecutionSequenceFunction.INSTANCE, SetViewClientExecutionFlagFunction.INSTANCE, ViewClientDescriptorFunction.HISTORICAL_MARKET_DATA,
-            ViewClientDescriptorFunction.STATIC_MARKET_DATA, ViewClientDescriptorFunction.STATIC_MARKET_DATA_SPECIFICATIONS, ViewClientDescriptorFunction.STATIC_SNAPSHOT,
-            ViewClientDescriptorFunction.TICKING_MARKET_DATA, ViewClientDescriptorFunction.TICKING_MARKET_DATA_SPECIFICATIONS, ViewClientDescriptorFunction.TICKING_SNAPSHOT,
-            ViewClientFunction.INSTANCE, ViewDefinitionFunction.INSTANCE, ViewsFunction.INSTANCE, ViewIdFunction.INSTANCE, ViewPrimitiveCycleValueFunction.INSTANCE));
+        new FunctionProviderBean(FetchViewDefinitionFunction.INSTANCE, GetViewPortfolioFunction.INSTANCE, GetViewPortfolioRequirementsFunction.INSTANCE,
+            GetViewPrimitiveRequirementsFunction.INSTANCE, GetViewProcessIdFunction.INSTANCE, GetViewResultFunction.INSTANCE, HistoricalExecutionSequenceFunction.INSTANCE,
+            SetViewClientExecutionFlagFunction.INSTANCE, ViewClientDescriptorFunction.HISTORICAL_MARKET_DATA, ViewClientDescriptorFunction.STATIC_MARKET_DATA,
+            ViewClientDescriptorFunction.STATIC_MARKET_DATA_SPECIFICATIONS, ViewClientDescriptorFunction.STATIC_SNAPSHOT, ViewClientDescriptorFunction.TICKING_MARKET_DATA,
+            ViewClientDescriptorFunction.TICKING_MARKET_DATA_SPECIFICATIONS, ViewClientDescriptorFunction.TICKING_SNAPSHOT, ViewClientFunction.INSTANCE, ViewDefinitionFunction.INSTANCE,
+            ViewsFunction.INSTANCE, ViewIdFunction.INSTANCE, ViewPrimitiveCycleValueFunction.INSTANCE));
     globalContext.getProcedureProvider().addProvider(
         new ProcedureProviderBean(ConfigureViewClientProcedure.INSTANCE, StoreViewDefinitionProcedure.INSTANCE, TriggerViewCycleProcedure.INSTANCE));
     globalContext.getTypeConverterProvider().addTypeConverterProvider(new TypeConverterProviderBean(UserViewClientConverter.INSTANCE, ViewClientDescriptorConverter.INSTANCE));
