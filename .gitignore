@@ -9,3 +9,4 @@
 *.vcxproj.user
 *~
 .settings
+*.iml
