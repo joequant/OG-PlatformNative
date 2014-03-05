@@ -10,9 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.testng.internal.annotations.Sets;
 import org.threeten.bp.LocalDate;
 
+import com.google.common.collect.Sets;
 import com.opengamma.analytics.financial.instrument.annuity.CompoundingMethod;
 import com.opengamma.analytics.financial.instrument.annuity.DateRelativeTo;
 import com.opengamma.analytics.financial.instrument.annuity.OffsetType;
@@ -100,7 +100,8 @@ public class FloatingInterestRateSwapLegFunction extends AbstractFunctionInvoker
     final MetaParameter schedule = new MetaParameter("schedule",JavaTypeInfo.builder(FloatingInterestRateSwapLegSchedule.class).allowNull().get());
     final MetaParameter floatingReferenceRateId = new MetaParameter("floatingReferenceRateId",JavaTypeInfo.builder(ExternalId.class).get());
     final MetaParameter floatingRateType = new MetaParameter("floatingRateType",JavaTypeInfo.builder(FloatingRateType.class).get());
-    final MetaParameter resetPeriodCalendars = new MetaParameter("resetPeriodCalendars",JavaTypeInfo.builder(Set.class).allowNull().parameter(JavaTypeInfo.builder(ExternalId.class).get()).defaultValue(Sets.newHashSet()).get()); // allow null even though not null because initialised with default
+    final MetaParameter resetPeriodCalendars = new MetaParameter("resetPeriodCalendars",JavaTypeInfo.builder(Set.class).allowNull().parameter(JavaTypeInfo.builder(ExternalId.class).get()).defaultValue(
+        Sets.newHashSet()).get()); // allow null even though not null because initialised with default
     final MetaParameter resetPeriodBusinessDayConvention = new MetaParameter("resetPeriodBusinessDayConvention",JavaTypeInfo.builder(BusinessDayConvention.class).get());
     final MetaParameter resetPeriodFrequency = new MetaParameter("resetPeriodFrequency",JavaTypeInfo.builder(Frequency.class).get());
     final MetaParameter resetDateRelativeTo = new MetaParameter("resetDateRelativeTo",JavaTypeInfo.builder(DateRelativeTo.class).defaultValue(DateRelativeTo.START).get()); // allow null even though NotNull because initialised with default
