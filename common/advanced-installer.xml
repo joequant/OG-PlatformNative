@@ -53,4 +53,22 @@
     </sequential>
   </macrodef>
 
+  <!--
+    ai-fix-permissions:
+        Removes the LockPermissions table from the MSI. Our version of the installer
+        writes LockPermissions to the MSI even if it is empty and the MSMs contain
+        MsiLockPermissionsEx
+
+        file  the path to the project file
+  -->
+  <macrodef name="ai-fix-permissions">
+    <attribute name="file" />
+    <sequential>
+      <exec executable="${cmd.wscript}">
+        <arg value="${common.dir}/remove-lock-permissions.vbs" />
+        <arg value="@{file}" />
+      </exec>
+    </sequential>
+  </macrodef>
+
 </project>

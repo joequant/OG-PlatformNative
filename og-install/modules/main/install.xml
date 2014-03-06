@@ -1,0 +1,33 @@
+<project name="install">
+
+  <import file="${common.dir}/version.xml" />
+  <import file="${common.dir}/advanced-installer.xml" />
+
+  <property name="src.path" value="${localSource}${file.separator}main${file.separator}ai" />
+  <property name="msi.path" value="${localTarget}${file.separator}installer" />
+  
+  <target name="compile" depends="msi-version-number">
+    <!-- Note: USERS.AIP has manually curated version numbers. Increment the revision for trivial fixes;
+         increment the minor for backwardly compatible additions; Increment the major for non-backwardly
+         compatible changes. Update the "minimum version" in the end-package pre-requisites if that
+         package needs to consume the updated form. -->
+    <ai-set-version file="${src.path}${file.separator}Folders.aip" version="${msi.version.number}" />
+    <ai-set-version file="${src.path}${file.separator}TestA.aip" version="${msi.version.number}" />
+    <ai-set-version file="${src.path}${file.separator}TestB.aip" version="${msi.version.number}" />
+    <ai-build dir="${src.path}" file="Folders.aip" />
+    <ai-build dir="${src.path}" file="Users.aip" />
+    <copy file="${src.path}${file.separator}TestA.aip" tofile="${src.path}${file.separator}TestA-Temp.aip" />
+    <copy file="${src.path}${file.separator}TestB.aip" tofile="${src.path}${file.separator}TestB-Temp.aip" />
+    <java classname="com.opengamma.install.msi.PatchMsiPermissionsExTable" classpath="${maven.classpath}" dir="${src.path}" fork="true">
+      <arg value="TestA-Temp.aip" />
+      <arg value="TestB-Temp.aip" />
+    </java>
+    <ai-build dir="${src.path}" file="TestA-Temp.aip" build-id="Default32;Default64" />
+    <ai-fix-permissions file="${msi.path}${file.separator}TestA-i386.msi" />
+    <ai-fix-permissions file="${msi.path}${file.separator}TestA-x64.msi" />
+    <ai-build dir="${src.path}" file="TestB-Temp.aip" build-id="Default32;Default64" />
+    <ai-fix-permissions file="${msi.path}${file.separator}TestB-i386.msi" />
+    <ai-fix-permissions file="${msi.path}${file.separator}TestB-x64.msi" />
+  </target>
+
+</project>

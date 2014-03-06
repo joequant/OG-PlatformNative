@@ -30,6 +30,69 @@
     <testSourceDirectory>${localSource}/main-test/java</testSourceDirectory>
   </build>
 
+  <profiles>
+    <profile>
+      <id>windows-ai</id>
+      <activation>
+        <file>
+          <exists>${root.dir}/local/profile/windows-ai</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${version.maven-antrun-plugin}</version>
+            <executions>
+              <execution>
+                <id>msm-compile</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <property name="maven.classpath" refid="maven.compile.classpath" />
+                    <ant antfile="install.xml" target="compile" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${version.build-helper-maven-plugin}</version>
+            <executions>
+              <execution>
+                <id>msm-attach</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${localTarget}/installer/Folders.msm</file>
+                      <type>msm</type>
+                      <classifier>windows</classifier>
+                    </artifact>
+                    <artifact>
+                      <file>${localTarget}/installer/Users.msi</file>
+                      <type>msi</type>
+                      <classifier>windows</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <dependencies>
     <dependency>
       <groupId>com.opengamma.platform</groupId>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="9.4" version="9.4" Modules="msm" RootPath="." Language="en" Id="{CC5333DB-182A-4976-B568-2308D529057C}">
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
+    <ROW Table="MsiLockPermissionsEx" Column="Condition" Category="Condition" Description="This column contains a conditional expression used to determine whether to apply the specified permission." Options="1" ColumnType="1" ColumnIndex="5" ColumnSize="255" MsiKey="MsiLockPermissionsEx#Condition"/>
+    <ROW Table="MsiLockPermissionsEx" Column="LockObject" Category="Identifier" Description="This column and the Table column together specify the file, directory, registry key, or service that is to be secured." Options="0" ColumnType="1" ColumnIndex="2" ColumnSize="72" MsiKey="MsiLockPermissionsEx#LockObject"/>
+    <ROW Table="MsiLockPermissionsEx" Column="MsiLockPermissionsEx" Category="Text" Description="This is the primary key of this table." Options="2" ColumnType="1" ColumnIndex="1" ColumnSize="255" MsiKey="MsiLockPermissionsEx#MsiLockPermissionsEx"/>
+    <ROW Table="MsiLockPermissionsEx" Column="SDDLText" Category="FormattedSDDLText" Description="Enter the SDDL string to indicate permissions to apply to selected object." Options="0" ColumnType="1" ColumnIndex="4" ColumnSize="255" MsiKey="MsiLockPermissionsEx#SDDLText"/>
+    <ROW Table="MsiLockPermissionsEx" Column="Table" Category="Text" Description="This column and the LockObject column specify the file, directory, registry key, or service that is to be secured." Options="0" ColumnType="1" ColumnIndex="3" ColumnSize="32" MsiKey="MsiLockPermissionsEx#Table"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_ModuleId" Value="171E6DFA_15A0_44FB_98AE_E609C66989DB"/>
+    <ROW Property="Backup_Dir" Value="BACKUP"/>
+    <ROW Property="DEPLOYMENT_NAME" Value="DEPLOYMENT_NAME"/>
+    <ROW Property="DataPlatform32_Dir" Value="PLATFORM_32"/>
+    <ROW Property="DataPlatform64_Dir" Value="PLATFORM_64"/>
+    <ROW Property="DataPlatformSite_Dir" Value="PLATFORM_SITE"/>
+    <ROW Property="INSTALL_32_BIT" Value="INSTALL_32_BIT"/>
+    <ROW Property="INSTALL_64_BIT" Value="INSTALL_64_BIT"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="." IsPseudoRoot="1"/>
+    <ROW Directory="BackupFiles_Dir" Directory_Parent="PlatformSite_Dir" DefaultDir="Backup~1|Backup Files"/>
+    <ROW Directory="Backup_Dir" Directory_Parent="TARGETDIR" DefaultDir="Backup~1|Backup_Dir" IsPseudoRoot="1"/>
+    <ROW Directory="CommonAppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="Common~1|CommonAppDataFolder" IsPseudoRoot="1"/>
+    <ROW Directory="DataPlatform32_Dir" Directory_Parent="TARGETDIR" DefaultDir="DataPl~1|DataPlatform32_Dir" IsPseudoRoot="1"/>
+    <ROW Directory="DataPlatform64_Dir" Directory_Parent="TARGETDIR" DefaultDir="DataPl~2|DataPlatform64_Dir" IsPseudoRoot="1"/>
+    <ROW Directory="DataPlatformSite_Dir" Directory_Parent="TARGETDIR" DefaultDir="DataPl~3|DataPlatformSite_Dir" IsPseudoRoot="1"/>
+    <ROW Directory="Platform32_Dir" Directory_Parent="ProgramFilesFolder" DefaultDir="OpenGa~1|OpenGamma Ltd"/>
+    <ROW Directory="Platform64_Dir" Directory_Parent="ProgramFiles64Folder" DefaultDir="OpenGa~1|OpenGamma Ltd"/>
+    <ROW Directory="PlatformSite_Dir" Directory_Parent="CommonAppDataFolder" DefaultDir="OpenGa~1|OpenGamma Ltd"/>
+    <ROW Directory="ProgramFiles64Folder" Directory_Parent="TARGETDIR" DefaultDir="Progra~2|ProgramFiles64Folder" IsPseudoRoot="1"/>
+    <ROW Directory="ProgramFilesFolder" Directory_Parent="TARGETDIR" DefaultDir="Progra~1|ProgramFilesFolder" IsPseudoRoot="1"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="bin32_Dir" Directory_Parent="DataPlatform32_Dir" DefaultDir="bin" DirectoryOptions="12"/>
+    <ROW Directory="bin32_custom_Dir" Directory_Parent="custom32_Dir" DefaultDir="bin" DirectoryOptions="12"/>
+    <ROW Directory="bin64_Dir" Directory_Parent="DataPlatform64_Dir" DefaultDir="bin"/>
+    <ROW Directory="bin64_custom_Dir" Directory_Parent="custom64_Dir" DefaultDir="bin"/>
+    <ROW Directory="config_custom32_Dir" Directory_Parent="custom32_Dir" DefaultDir="config" DirectoryOptions="12"/>
+    <ROW Directory="config_custom64_Dir" Directory_Parent="custom64_Dir" DefaultDir="config"/>
+    <ROW Directory="config_platform32_Dir" Directory_Parent="DataPlatform32_Dir" DefaultDir="config" DirectoryOptions="12"/>
+    <ROW Directory="config_platform64_Dir" Directory_Parent="DataPlatform64_Dir" DefaultDir="config"/>
+    <ROW Directory="config_site_Dir" Directory_Parent="DataPlatformSite_Dir" DefaultDir="config"/>
+    <ROW Directory="custom32_Dir" Directory_Parent="DataPlatform32_Dir" DefaultDir="custom" DirectoryOptions="12"/>
+    <ROW Directory="custom64_Dir" Directory_Parent="DataPlatform64_Dir" DefaultDir="custom"/>
+    <ROW Directory="custom_Dir" Directory_Parent="DataPlatformSite_Dir" DefaultDir="custom"/>
+    <ROW Directory="jar32_Dir" Directory_Parent="DataPlatform32_Dir" DefaultDir="jar" DirectoryOptions="12"/>
+    <ROW Directory="jar32_custom_Dir" Directory_Parent="custom64_Dir" DefaultDir="jar"/>
+    <ROW Directory="jar64_Dir" Directory_Parent="DataPlatform64_Dir" DefaultDir="jar"/>
+    <ROW Directory="jar64_custom_Dir" Directory_Parent="custom32_Dir" DefaultDir="jar" DirectoryOptions="12"/>
+    <ROW Directory="log_Dir" Directory_Parent="DataPlatformSite_Dir" DefaultDir="log"/>
+    <ROW Directory="tool_Dir" Directory_Parent="DataPlatformSite_Dir" DefaultDir="tool"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="Backup_Dir" Directory_="Backup_Dir" Attributes="0"/>
+    <ROW Component="DataPlatform32_Dir" Directory_="DataPlatform32_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
+    <ROW Component="DataPlatform64_Dir" Directory_="DataPlatform64_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
+    <ROW Component="DataPlatformSite_Dir" Directory_="DataPlatformSite_Dir" Attributes="0"/>
+    <ROW Component="backup" Directory_="BackupFiles_Dir" Attributes="0"/>
+    <ROW Component="bin32" Directory_="bin32_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
+    <ROW Component="bin32_custom" Directory_="bin32_custom_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
+    <ROW Component="bin64" Directory_="bin64_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
+    <ROW Component="bin64_custom" Directory_="bin64_custom_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
+    <ROW Component="config_custom32" Directory_="config_custom32_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
+    <ROW Component="config_custom64" Directory_="config_custom64_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
+    <ROW Component="config_platform32" Directory_="config_platform32_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
+    <ROW Component="config_platform64" Directory_="config_platform64_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
+    <ROW Component="config_site" Directory_="config_site_Dir" Attributes="0"/>
+    <ROW Component="data_custom" Directory_="custom_Dir" Attributes="0"/>
+    <ROW Component="jar_custom32" Directory_="jar64_custom_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
+    <ROW Component="jar_custom64" Directory_="jar32_custom_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
+    <ROW Component="jar_platform32" Directory_="jar32_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
+    <ROW Component="jar_platform64" Directory_="jar64_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
+    <ROW Component="log" Directory_="log_Dir" Attributes="0"/>
+    <ROW Component="platform" Directory_="PlatformSite_Dir" Attributes="0"/>
+    <ROW Component="platform32" Directory_="Platform32_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
+    <ROW Component="platform64" Directory_="Platform64_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
+    <ROW Component="tool" Directory_="tool_Dir" Attributes="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="TargetFeature" Title="TargetFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Backup_Dir DataPlatform32_Dir DataPlatform64_Dir DataPlatformSite_Dir backup bin32 bin32_custom bin64 bin64_custom config_custom32 config_custom64 config_platform32 config_platform64 config_site data_custom jar_custom32 jar_custom64 jar_platform32 jar_platform64 log platform platform32 platform64 tool"/>
+    <ATTRIBUTE name="CurrentFeature" value="TargetFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="..\..\..\target\installer" PackageFileName="Folders" Languages="en" InstallationType="4"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.CacheComponent">
+    <ATTRIBUTE name="CacheIndex" value="Folders.txt"/>
+    <ATTRIBUTE name="Folder" value="..\..\..\target\installer"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="MSMSequences.aip" Path="&lt;AI_FRAGS&gt;MSMSequences.aip"/>
+    <ROW Fragment="MsmValidation.aip" Path="&lt;AI_FRAGS&gt;MsmValidation.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.ModuleConfigurationComponent">
+    <ROW Name="DEPLOYMENT_NAME" Format="0" Type="Formatted" Attributes="0" DisplayName="Deployment Name" Description="Name of the deployment"/>
+    <ROW Name="INSTALL_32_BIT" Format="0" Type="Formatted" Attributes="0" DisplayName="32-bit install" Description="Whether to install 32-bit folders"/>
+    <ROW Name="INSTALL_64_BIT" Format="0" Type="Formatted" Attributes="0" DisplayName="64-bit install" Description="Whether to set up 64-bit folders"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.ModuleSubstitutionComponent">
+    <ROW Table="CustomAction" Row="set_INSTALL_64_BIT" Column="Target" Value="[=INSTALL_64_BIT]"/>
+    <ROW Table="CustomAction" Row="set_INSTALL_32_BIT" Column="Target" Value="[=INSTALL_32_BIT]"/>
+    <ROW Table="CustomAction" Row="set_DEPLOYMENT_NAME" Column="Target" Value="[=DEPLOYMENT_NAME]"/>
+    <ROW Table="CustomAction" Row="set_DEPLOYMENT_NAME_1" Column="Target" Value="[=DEPLOYMENT_NAME]"/>
+    <ROW Table="CustomAction" Row="set_INSTALL_32_BIT_1" Column="Target" Value="[=INSTALL_32_BIT]"/>
+    <ROW Table="CustomAction" Row="set_INSTALL_64_BIT_1" Column="Target" Value="[=INSTALL_64_BIT]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="config_site_Dir" Component_="config_site"/>
+    <ROW Directory_="custom_Dir" Component_="data_custom"/>
+    <ROW Directory_="log_Dir" Component_="log"/>
+    <ROW Directory_="tool_Dir" Component_="tool"/>
+    <ROW Directory_="bin32_Dir" Component_="bin32"/>
+    <ROW Directory_="config_platform32_Dir" Component_="config_platform32"/>
+    <ROW Directory_="bin32_custom_Dir" Component_="bin32_custom"/>
+    <ROW Directory_="config_custom32_Dir" Component_="config_custom32"/>
+    <ROW Directory_="jar64_custom_Dir" Component_="jar_custom32"/>
+    <ROW Directory_="jar32_Dir" Component_="jar_platform32"/>
+    <ROW Directory_="bin64_Dir" Component_="bin64"/>
+    <ROW Directory_="config_platform64_Dir" Component_="config_platform64"/>
+    <ROW Directory_="bin64_custom_Dir" Component_="bin64_custom"/>
+    <ROW Directory_="config_custom64_Dir" Component_="config_custom64"/>
+    <ROW Directory_="jar32_custom_Dir" Component_="jar_custom64"/>
+    <ROW Directory_="jar64_Dir" Component_="jar_platform64"/>
+    <ROW Directory_="Backup_Dir" Component_="Backup_Dir"/>
+    <ROW Directory_="DataPlatformSite_Dir" Component_="DataPlatformSite_Dir"/>
+    <ROW Directory_="DataPlatform32_Dir" Component_="DataPlatform32_Dir"/>
+    <ROW Directory_="DataPlatform64_Dir" Component_="DataPlatform64_Dir"/>
+    <ROW Directory_="Platform64_Dir" Component_="platform64"/>
+    <ROW Directory_="Platform32_Dir" Component_="platform32"/>
+    <ROW Directory_="BackupFiles_Dir" Component_="backup"/>
+    <ROW Directory_="PlatformSite_Dir" Component_="platform"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="set_BACKUP" Type="51" Source="Backup_Dir" Target="[CommonAppDataFolder]OpenGamma Ltd\Backup Files\[DEPLOYMENT_NAME]\"/>
+    <ROW Action="set_BACKUP_1" Type="51" Source="Backup_Dir" Target="[CommonAppDataFolder]OpenGamma Ltd\Backup Files\[DEPLOYMENT_NAME]\"/>
+    <ROW Action="set_DATA_PLATFORM_32" Type="51" Source="DataPlatform32_Dir" Target="[ProgramFilesFolder]OpenGamma Ltd\[DEPLOYMENT_NAME]\"/>
+    <ROW Action="set_DATA_PLATFORM_32_1" Type="51" Source="DataPlatform32_Dir" Target="[ProgramFilesFolder]OpenGamma Ltd\[DEPLOYMENT_NAME]\"/>
+    <ROW Action="set_DATA_PLATFORM_64" Type="51" Source="DataPlatform64_Dir" Target="[ProgramFiles64Folder]OpenGamma Ltd\[DEPLOYMENT_NAME]\"/>
+    <ROW Action="set_DATA_PLATFORM_64_1" Type="51" Source="DataPlatform64_Dir" Target="[ProgramFiles64Folder]OpenGamma Ltd\[DEPLOYMENT_NAME]\"/>
+    <ROW Action="set_DATA_PLATFORM_SITE" Type="51" Source="DataPlatformSite_Dir" Target="[CommonAppDataFolder]OpenGamma Ltd\[DEPLOYMENT_NAME]\"/>
+    <ROW Action="set_DATA_PLATFORM_SITE_1" Type="51" Source="DataPlatformSite_Dir" Target="[CommonAppDataFolder]OpenGamma Ltd\[DEPLOYMENT_NAME]\"/>
+    <ROW Action="set_DEPLOYMENT_NAME" Type="51" Source="DEPLOYMENT_NAME" Target="[DEPLOYMENT_NAME]"/>
+    <ROW Action="set_DEPLOYMENT_NAME_1" Type="51" Source="DEPLOYMENT_NAME" Target="[DEPLOYMENT_NAME]"/>
+    <ROW Action="set_INSTALL_32_BIT" Type="51" Source="INSTALL_32_BIT" Target="[INSTALL_32_BIT]"/>
+    <ROW Action="set_INSTALL_32_BIT_1" Type="51" Source="INSTALL_32_BIT" Target="[INSTALL_32_BIT]"/>
+    <ROW Action="set_INSTALL_64_BIT" Type="51" Source="INSTALL_64_BIT" Target="[INSTALL_64_BIT]"/>
+    <ROW Action="set_INSTALL_64_BIT_1" Type="51" Source="INSTALL_64_BIT" Target="[INSTALL_64_BIT]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLockPermissionsExComponent">
+    <ROW MsiLockPermissionsEx="OpenGammaLtd_32_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="Platform32_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICIIO;GA;;;CO)(A;CIOI;0x1200a9;;;BU)(A;OICI;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)"/>
+    <ROW MsiLockPermissionsEx="OpenGammaLtd_64_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="Platform64_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICIIO;GA;;;CO)(A;CIOI;0x1200a9;;;BU)(A;OICI;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)"/>
+    <ROW MsiLockPermissionsEx="OpenGammaLtd_site_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="PlatformSite_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICIIO;GA;;;CO)(A;CI;0x1200a9;;;BU)(A;OICI;0x1200a9;;;&lt;[%COMPUTERNAME]\OpenGammaSystem&gt;)(A;OICI;0x1200a9;;;&lt;[%COMPUTERNAME]\OpenGammaTrusted&gt;)(A;OICI;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)"/>
+    <ROW MsiLockPermissionsEx="log_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="log_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIIOID;GA;;;CO)(A;CIID;0x1200a9;;;BU)(A;OICIID;0x1200a9;;;&lt;[%COMPUTERNAME]\OpenGammaTrusted&gt;)(A;OICIID;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)(A;OICI;0x13001bf;;;&lt;[%COMPUTERNAME]\OpenGammaSystem&gt;)"/>
+    <ROW MsiLockPermissionsEx="tool_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="tool_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIIOID;GA;;;CO)(A;OICIID;0x1200a9;;;&lt;[%COMPUTERNAME]\OpenGammaSystem&gt;)(A;OICIID;0x1200a9;;;&lt;[%COMPUTERNAME]\OpenGammaTrusted&gt;)(A;OICIID;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)(A;OICI;0x1200a9;;;BU)"/>
+    <ROW MsiLockPermissionsEx="BackupFiles_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="BackupFiles_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIIOID;GA;;;CO)(A;CIID;0x1200a9;;;BU)(A;OICIID;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)(A;OICI;0x13001bf;;;&lt;[%COMPUTERNAME]\OpenGammaSystem&gt;)(A;OICI;0x13001bf;;;&lt;[%COMPUTERNAME]\OpenGammaTrusted&gt;)"/>
+    <ROW MsiLockPermissionsEx="Backup_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="Backup_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIIOID;GA;;;CO)(A;CIID;0x1200a9;;;BU)(A;OICIID;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)(A;OICIID;0x13001bf;;;&lt;[%COMPUTERNAME]\OpenGammaSystem&gt;)(A;OICIID;0x13001bf;;;&lt;[%COMPUTERNAME]\OpenGammaTrusted&gt;)"/>
+    <ROW MsiLockPermissionsEx="DataPlatform32_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="DataPlatform32_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIIOID;GA;;;CO)(A;CIOIID;0x1200a9;;;BU)(A;OICIID;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)"/>
+    <ROW MsiLockPermissionsEx="DataPlatform64_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="DataPlatform64_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIIOID;GA;;;CO)(A;CIOIID;0x1200a9;;;BU)(A;OICIID;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)"/>
+    <ROW MsiLockPermissionsEx="DataPlatformSite_Perm.171E6DFA_15A0_44FB_98AE_E609C66989DB" LockObject="DataPlatformSite_Dir.171E6DFA_15A0_44FB_98AE_E609C66989DB" Table="CreateFolder" SDDLText="D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIIOID;GA;;;CO)(A;CIID;0x1200a9;;;BU)(A;OICIID;0x1200a9;;;&lt;[%COMPUTERNAME]\OpenGammaSystem&gt;)(A;OICIID;0x1200a9;;;&lt;[%COMPUTERNAME]\OpenGammaTrusted&gt;)(A;OICIID;FA;;;&lt;[%COMPUTERNAME]\OpenGammaAdmins&gt;)"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
+    <ROW Shortcut="backup_32" Directory_="DataPlatform32_Dir" Name="backup" Component_="DataPlatform32_Dir" Target="[Backup_Dir]" Description="Deployment backup dumps" Hotkey="0" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="backup_64" Directory_="DataPlatform64_Dir" Name="backup" Component_="DataPlatform64_Dir" Target="[Backup_Dir]" Description="Deployment backup dumps" Hotkey="0" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="backup_site" Directory_="DataPlatformSite_Dir" Name="backup" Component_="DataPlatformSite_Dir" Target="[Backup_Dir]" Description="Deployment backup dumps" Hotkey="0" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="data_32" Directory_="DataPlatform32_Dir" Name="data" Component_="DataPlatform32_Dir" Target="[DataPlatformSite_Dir]" Description="Deployment runtime-data area" Hotkey="0" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="data_64" Directory_="DataPlatform64_Dir" Name="data" Component_="DataPlatform64_Dir" Target="[DataPlatformSite_Dir]" Description="Deployment run-time data" Hotkey="0" IconIndex="0" ShowCmd="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleInstExSeqComponent">
+    <ROW Action="set_BACKUP" BaseAction="set_DEPLOYMENT_NAME" After="1"/>
+    <ROW Action="set_DATA_PLATFORM_64" BaseAction="set_DATA_PLATFORM_32" After="1"/>
+    <ROW Action="set_DATA_PLATFORM_32" BaseAction="set_DATA_PLATFORM_SITE" After="1"/>
+    <ROW Action="set_DATA_PLATFORM_SITE" BaseAction="set_BACKUP" After="1"/>
+    <ROW Action="set_DEPLOYMENT_NAME" BaseAction="set_INSTALL_32_BIT" After="1"/>
+    <ROW Action="set_INSTALL_32_BIT" BaseAction="set_INSTALL_64_BIT" After="1"/>
+    <ROW Action="set_INSTALL_64_BIT" BaseAction="FindRelatedProducts" After="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
+    <ROW ModuleID="FolderStructure" Version="2.2.1" GUID="171E6DFA_15A0_44FB_98AE_E609C66989DB" Name="OpenGamma folder template" Manufacturer="OpenGamma Ltd" Comments="An OpenGamma deployment&apos;s base folders and security model"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleUISeqComponent">
+    <ROW Action="set_BACKUP_1" BaseAction="set_DATA_PLATFORM_SITE_1" After="1"/>
+    <ROW Action="set_DATA_PLATFORM_SITE_1" BaseAction="set_DATA_PLATFORM_32_1" After="1"/>
+    <ROW Action="set_DATA_PLATFORM_32_1" BaseAction="set_DATA_PLATFORM_64_1" After="1"/>
+    <ROW Action="set_DATA_PLATFORM_64_1" BaseAction="set_INSTALL_64_BIT_1" After="1"/>
+    <ROW Action="set_INSTALL_64_BIT_1" BaseAction="set_INSTALL_32_BIT_1" After="1"/>
+    <ROW Action="set_INSTALL_32_BIT_1" BaseAction="set_DEPLOYMENT_NAME_1" After="1"/>
+    <ROW Action="set_DEPLOYMENT_NAME_1" BaseAction="FindRelatedProducts" After="1"/>
+  </COMPONENT>
+</DOCUMENT>
