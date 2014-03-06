@@ -61,6 +61,10 @@
     <ROW File="OpenGamma.ico_2" Component_="config_platform64" FileName="A-x64.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false" NextFile="OpenGamma.ico_3"/>
     <ROW File="OpenGamma.ico_3" Component_="config_site" FileName="A-site.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.AiPropertyAliasComponent">
+    <ROW AliasRowId="BannerBitmap" AliasRowOperation="2" Value="opengammabanner"/>
+    <ROW AliasRowId="DialogBitmap" AliasRowOperation="2" Value="opengammadialog"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiRemoveFileComponent">
     <ROW RemoveFile="_" Options="3"/>
     <ROW RemoveFile="__2" Options="3"/>

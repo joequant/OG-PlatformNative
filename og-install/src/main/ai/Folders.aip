@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DOCUMENT Type="Advanced Installer" CreateVersion="9.4" version="9.4" Modules="msm" RootPath="." Language="en" Id="{CC5333DB-182A-4976-B568-2308D529057C}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
+    <ROW Table="Binary" Column="Data" Category="Binary" Description="The unformatted binary data." Options="16" ColumnType="5" ColumnIndex="1" ColumnSize="0" MsiKey="Binary#Data"/>
+    <ROW Table="Binary" Column="Name" Category="Identifier" Description="Unique key identifying the binary data." Options="18" ColumnType="1" ColumnIndex="0" ColumnSize="72" MsiKey="Binary#Name"/>
     <ROW Table="MsiLockPermissionsEx" Column="Condition" Category="Condition" Description="This column contains a conditional expression used to determine whether to apply the specified permission." Options="1" ColumnType="1" ColumnIndex="5" ColumnSize="255" MsiKey="MsiLockPermissionsEx#Condition"/>
     <ROW Table="MsiLockPermissionsEx" Column="LockObject" Category="Identifier" Description="This column and the Table column together specify the file, directory, registry key, or service that is to be secured." Options="0" ColumnType="1" ColumnIndex="2" ColumnSize="72" MsiKey="MsiLockPermissionsEx#LockObject"/>
     <ROW Table="MsiLockPermissionsEx" Column="MsiLockPermissionsEx" Category="Text" Description="This is the primary key of this table." Options="2" ColumnType="1" ColumnIndex="1" ColumnSize="255" MsiKey="MsiLockPermissionsEx#MsiLockPermissionsEx"/>
@@ -79,6 +81,10 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="TargetFeature" Title="TargetFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Backup_Dir DataPlatform32_Dir DataPlatform64_Dir DataPlatformSite_Dir backup bin32 bin32_custom bin64 bin64_custom config_custom32 config_custom64 config_platform32 config_platform64 config_site data_custom jar_custom32 jar_custom64 jar_platform32 jar_platform64 log platform platform32 platform64 tool"/>
     <ATTRIBUTE name="CurrentFeature" value="TargetFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.AiBinaryAliasComponent">
+    <ROW AliasRowOperation="0" Name="opengammabanner" Data="Z:\OpenGamma\OG-PlatformNative\og-install\src\main\resources\opengamma-banner.bmp"/>
+    <ROW AliasRowOperation="0" Name="opengammadialog" Data="Z:\OpenGamma\OG-PlatformNative\og-install\src\main\resources\opengamma-dialog.bmp"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="..\..\..\target\installer" PackageFileName="Folders" Languages="en" InstallationType="4"/>

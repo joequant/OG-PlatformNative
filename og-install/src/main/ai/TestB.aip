@@ -16,10 +16,10 @@
     <ROW Property="INSTALL_32_BIT" Value="0" MultiBuildValue="Build32:1"/>
     <ROW Property="INSTALL_64_BIT" Value="0" MultiBuildValue="Build64:1"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{7B30B49F-C317-4FC7-857E-F179025C8299} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{678F36D3-3BFF-4CA9-890C-B27B0164A521} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Deployment B" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="2.2.5" Type="32"/>
+    <ROW Property="ProductVersion" Value="2.2.10" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{392E3698-F300-42B4-A8A9-05AC98315472}"/>
     <ROW Property="WIMinVersion" MultiBuildValue="Build64:5.0" ValueLocId="-"/>
@@ -61,6 +61,10 @@
     <ROW File="OpenGamma.ico_2" Component_="config_platform64" FileName="B-x64.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false" NextFile="OpenGamma.ico_3"/>
     <ROW File="OpenGamma.ico_3" Component_="config_site" FileName="B-site.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.AiPropertyAliasComponent">
+    <ROW AliasRowId="BannerBitmap" AliasRowOperation="2" Value="opengammabanner"/>
+    <ROW AliasRowId="DialogBitmap" AliasRowOperation="2" Value="opengammadialog"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiRemoveFileComponent">
     <ROW RemoveFile="_" Options="3"/>
     <ROW RemoveFile="__3" Options="3"/>
@@ -71,7 +75,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="Build32" BuildName="Default32" BuildOrder="1" BuildType="1" PackageFolder="..\..\..\target\installer" PackageFileName="TestB-i386" Languages="en" InstallationType="4" UseLargeSchema="true"/>
     <ROW BuildKey="Build64" BuildName="Default64" BuildOrder="2" BuildType="1" PackageFolder="..\..\..\target\installer" PackageFileName="TestB-x64" Languages="en" InstallationType="4" UseLargeSchema="true" MsiPackageType="x64"/>
-    <ATTRIBUTE name="CurrentBuild" value="Build32"/>
+    <ATTRIBUTE name="CurrentBuild" value="Build64"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.CacheComponent">
     <ATTRIBUTE name="CacheIndex" value="TestA.txt"/>
