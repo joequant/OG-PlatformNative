@@ -16,10 +16,10 @@
     <ROW Property="INSTALL_32_BIT" Value="0" MultiBuildValue="Build32:1"/>
     <ROW Property="INSTALL_64_BIT" Value="0" MultiBuildValue="Build64:1"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{E77A6539-8D06-4531-8F7D-0D2AF67D9BA3} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{4E2AA0D9-0269-4652-8583-9472E2B3C06E} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Deployment A" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="2.2.4" Type="32"/>
+    <ROW Property="ProductVersion" Value="2.2.34" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{4C3A7514-96FE-42ED-9542-CBD6F5F3485C}"/>
     <ROW Property="WIMinVersion" MultiBuildValue="Build64:5.0" ValueLocId="-"/>
@@ -41,9 +41,12 @@
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="config_1_Dir" Directory_Parent="DEPLOYMENT_NAME_1_Dir" DefaultDir="config"/>
     <ROW Directory="config_2_Dir" Directory_Parent="DEPLOYMENT_NAME_2_Dir" DefaultDir="config"/>
+    <ROW Directory="config_3_Dir" Directory_Parent="datatemplate_Dir" DefaultDir="config"/>
     <ROW Directory="config_Dir" Directory_Parent="APPDIR" DefaultDir="config"/>
+    <ROW Directory="datatemplate_Dir" Directory_Parent="APPDIR" DefaultDir="data-t~1|data-template"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="OpenGamma.ico" ComponentId="{5710DF0B-71DF-45CA-9A69-222184D7A7D3}" Directory_="config_3_Dir" Attributes="0" KeyPath="OpenGamma.ico_4" Type="0"/>
     <ROW Component="OpenGammausermodel" ComponentId="{18E18A75-D4E5-4CEA-A1E7-7EEB39157828}" Directory_="APPDIR" Attributes="4" KeyPath="OpenGammausermodel" Options="2"/>
     <ROW Component="config_platform" ComponentId="{501F06E1-BB72-4996-ADC9-2CBBB1B49673}" Directory_="config_Dir" Attributes="0" KeyPath="OpenGamma.ico" Type="0"/>
     <ROW Component="config_platform32" ComponentId="{DB6868F8-5D1D-4690-AE1E-C9D91B950FFD}" Directory_="NewFolder_Dir" Attributes="0" Condition="INSTALL_32_BIT=1" KeyPath="OpenGamma.ico_1" Type="0"/>
@@ -51,7 +54,7 @@
     <ROW Component="config_site" ComponentId="{ECF7A553-9C48-497E-8FFA-904F5800BC85}" Directory_="config_2_Dir" Attributes="0" KeyPath="OpenGamma.ico_3" Type="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="3" Level="1" Directory_="APPDIR" Attributes="0" Components="config_platform config_platform32 config_platform64 config_site"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="3" Level="1" Directory_="APPDIR" Attributes="0" Components="OpenGamma.ico config_platform config_platform32 config_platform64 config_site"/>
     <ROW Feature="OpenGammausermodel" Title="OpenGamma user model" Description="OpenGamma user model" Display="0" Level="1" Attributes="16" Components="OpenGammausermodel"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
@@ -59,7 +62,8 @@
     <ROW File="OpenGamma.ico" Component_="config_platform" FileName="A.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false" NextFile="OpenGamma.ico_1"/>
     <ROW File="OpenGamma.ico_1" Component_="config_platform32" FileName="A-i386.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false" NextFile="OpenGamma.ico_2"/>
     <ROW File="OpenGamma.ico_2" Component_="config_platform64" FileName="A-x64.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false" NextFile="OpenGamma.ico_3"/>
-    <ROW File="OpenGamma.ico_3" Component_="config_site" FileName="A-site.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false"/>
+    <ROW File="OpenGamma.ico_3" Component_="config_site" FileName="A-site~1.ico|A-site-forced.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false" NextFile="OpenGamma.ico_4"/>
+    <ROW File="OpenGamma.ico_4" Component_="OpenGamma.ico" FileName="A-site~1.ico|A-site-template.ico" Attributes="0" SourcePath="..\resources\OpenGamma.ico" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiPropertyAliasComponent">
     <ROW AliasRowId="BannerBitmap" AliasRowOperation="2" Value="opengammabanner"/>

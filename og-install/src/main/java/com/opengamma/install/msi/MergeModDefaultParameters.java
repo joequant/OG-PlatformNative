@@ -19,6 +19,10 @@ public class MergeModDefaultParameters extends AbstractAipProcessor {
 
   private String mergeModuleParams(final String msmPath) {
     final MSMTable table = MSMTable.load(msmPath, MSMTable.MODULE_CONFIGURATION_TABLE);
+    if (table == null) {
+      System.out.println("No configuration parameters for " + msmPath);
+      return null;
+    }
     final StringBuilder sb = new StringBuilder();
     for (MSMTable.Row parameter : table.rows()) {
       final String name = parameter.get(MSMTable.MODULE_CONFIGURATION_NAME_FIELD);

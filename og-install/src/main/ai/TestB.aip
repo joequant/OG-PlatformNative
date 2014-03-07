@@ -16,10 +16,10 @@
     <ROW Property="INSTALL_32_BIT" Value="0" MultiBuildValue="Build32:1"/>
     <ROW Property="INSTALL_64_BIT" Value="0" MultiBuildValue="Build64:1"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{678F36D3-3BFF-4CA9-890C-B27B0164A521} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{1B5C91AF-899E-4E07-AB8D-68C5CD9D697A} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Deployment B" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="2.2.10" Type="32"/>
+    <ROW Property="ProductVersion" Value="2.2.41" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{392E3698-F300-42B4-A8A9-05AC98315472}"/>
     <ROW Property="WIMinVersion" MultiBuildValue="Build64:5.0" ValueLocId="-"/>

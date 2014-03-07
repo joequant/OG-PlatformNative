@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import com.opengamma.OpenGammaRuntimeException;
 import com.opengamma.util.tuple.Pair;
 import com.opengamma.util.tuple.Pairs;
 
@@ -333,7 +334,10 @@ public class PatchMsiPermissionsExTable extends AbstractAipProcessor {
       }
     }
 
-    private Lock getInheritedLock(final Set<String> folderIds) {
+    private Lock getInheritedLock(final Set<String> folderIds, final int depth) {
+      if (depth > 10) {
+        throw new OpenGammaRuntimeException("Possible loop in folder tree (or folders probably just too deep - " + depth + ")");
+      }
       final Set<String> parents = new HashSet<String>();
       for (String folderId : folderIds) {
         Lock lock = _permissions.getFolderLock(folderId);
@@ -355,10 +359,24 @@ public class PatchMsiPermissionsExTable extends AbstractAipProcessor {
           parents.add(folder.getParent());
         }
       }
-      if (parents.isEmpty()) {
+      if (parents.isEmpty() || parents.contains("TARGETDIR")) {
         return null;
       }
-      return getInheritedLock(parents);
+      try {
+        return getInheritedLock(parents, depth + 1);
+      } catch (RuntimeException e) {
+        System.err.println(depth + " = " + folderIds);
+        throw e;
+      }
+    }
+
+    private Lock getInheritedLock(final Set<String> folderIds) {
+      try {
+        return getInheritedLock(folderIds, 1);
+      } catch (RuntimeException e) {
+        System.err.println(0 + " = " + folderIds);
+        throw e;
+      }
     }
 
     /**
