@@ -6,11 +6,15 @@
 
 package com.opengamma.language.jms;
 
+import java.net.URI;
+
 import javax.jms.ConnectionFactory;
 
 import com.google.common.base.Supplier;
 import com.opengamma.lambdava.functions.Function1;
+import com.opengamma.language.config.Configuration;
 import com.opengamma.language.connector.AsyncSupplier;
+import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.SingletonFactoryBean;
 import com.opengamma.util.jms.JmsConnector;
 import com.opengamma.util.jms.JmsConnectorFactoryBean;
@@ -24,6 +28,14 @@ public class AsyncJmsConnectorFactoryBean extends SingletonFactoryBean<AsyncSupp
    * The configuration name.
    */
   private String _name;
+  /**
+   * The configuration.
+   */
+  private Configuration _configuration;
+  /**
+   * The broker url.
+   */
+  private String _clientBrokerUriEntry = "activeMQ";
 
   /**
    * The connection factory.
@@ -56,9 +68,28 @@ public class AsyncJmsConnectorFactoryBean extends SingletonFactoryBean<AsyncSupp
         final JmsConnectorFactoryBean bean = new JmsConnectorFactoryBean();
         bean.setName(getName());
         bean.setConnectionFactory(connectionFactory);
+        String clientBrokerUri = getConfiguration().getStringConfiguration(getClientBrokerUriEntry()).get();
+        bean.setClientBrokerUri(URI.create(clientBrokerUri));
         return bean.getObjectCreating();
       }
     });
   }
 
+  public void setConfiguration(final Configuration configuration) {
+    ArgumentChecker.notNull(configuration, "configuration");
+    _configuration = configuration;
+  }
+
+  public Configuration getConfiguration() {
+    return _configuration;
+  }
+
+  public void setClientBrokerUriEntry(final String clientBrokerUriEntry) {
+    ArgumentChecker.notNull(clientBrokerUriEntry, "clientBrokerUriEntry");
+    _clientBrokerUriEntry = clientBrokerUriEntry;
+  }
+
+  public String getClientBrokerUriEntry() {
+    return _clientBrokerUriEntry;
+  }
 }

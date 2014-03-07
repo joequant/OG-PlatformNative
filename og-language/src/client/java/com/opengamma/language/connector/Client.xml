@@ -71,6 +71,7 @@
   <bean id="defaultJmsConnector" class="com.opengamma.language.jms.AsyncJmsConnectorFactoryBean">
     <property name="name" value="Language" />
     <property name="connectionFactory" ref="defaultJmsConnectionFactory" />
+    <property name="configuration" ref="defaultConfiguration" />
   </bean>
   
   <!-- Standard conditionals -->
