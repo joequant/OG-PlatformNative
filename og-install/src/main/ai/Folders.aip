@@ -37,6 +37,7 @@
     <ROW Directory="bin32_custom_Dir" Directory_Parent="custom32_Dir" DefaultDir="bin" DirectoryOptions="12"/>
     <ROW Directory="bin64_Dir" Directory_Parent="DataPlatform64_Dir" DefaultDir="bin"/>
     <ROW Directory="bin64_custom_Dir" Directory_Parent="custom64_Dir" DefaultDir="bin"/>
+    <ROW Directory="bin_Dir" Directory_Parent="APPDIR" DefaultDir="bin"/>
     <ROW Directory="config_custom32_Dir" Directory_Parent="custom32_Dir" DefaultDir="config" DirectoryOptions="12"/>
     <ROW Directory="config_custom64_Dir" Directory_Parent="custom64_Dir" DefaultDir="config"/>
     <ROW Directory="config_platform32_Dir" Directory_Parent="DataPlatform32_Dir" DefaultDir="config" DirectoryOptions="12"/>
@@ -57,6 +58,7 @@
     <ROW Component="DataPlatform32_Dir" Directory_="DataPlatform32_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
     <ROW Component="DataPlatform64_Dir" Directory_="DataPlatform64_Dir" Attributes="256" Condition="INSTALL_64_BIT=1"/>
     <ROW Component="DataPlatformSite_Dir" Directory_="DataPlatformSite_Dir" Attributes="0"/>
+    <ROW Component="UpdateSiteConfigurationTemplate.vbs" ComponentId="{013DBC99-2F73-46F1-B6B4-A6A62160B829}" Directory_="bin_Dir" Attributes="0" KeyPath="UpdateSiteConfigurationTemplate." Type="0"/>
     <ROW Component="backup" Directory_="BackupFiles_Dir" Attributes="0"/>
     <ROW Component="bin32" Directory_="bin32_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
     <ROW Component="bin32_custom" Directory_="bin32_custom_Dir" Attributes="0" Condition="INSTALL_32_BIT=1"/>
@@ -79,8 +81,11 @@
     <ROW Component="tool" Directory_="tool_Dir" Attributes="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="TargetFeature" Title="TargetFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Backup_Dir DataPlatform32_Dir DataPlatform64_Dir DataPlatformSite_Dir backup bin32 bin32_custom bin64 bin64_custom config_custom32 config_custom64 config_platform32 config_platform64 config_site data_custom jar_custom32 jar_custom64 jar_platform32 jar_platform64 log platform platform32 platform64 tool"/>
+    <ROW Feature="TargetFeature" Title="TargetFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Backup_Dir DataPlatform32_Dir DataPlatform64_Dir DataPlatformSite_Dir UpdateSiteConfigurationTemplate.vbs backup bin32 bin32_custom bin64 bin64_custom config_custom32 config_custom64 config_platform32 config_platform64 config_site data_custom jar_custom32 jar_custom64 jar_platform32 jar_platform64 log platform platform32 platform64 tool"/>
     <ATTRIBUTE name="CurrentFeature" value="TargetFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="UpdateSiteConfigurationTemplate." Component_="UpdateSiteConfigurationTemplate.vbs" FileName="Update~1.vbs|UpdateSiteConfigurationTemplate.vbs" Attributes="0" SourcePath="..\resources\UpdateSiteConfigurationTemplate.vbs" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiBinaryAliasComponent">
     <ROW AliasRowOperation="0" Name="opengammabanner" Data="Z:\OpenGamma\OG-PlatformNative\og-install\src\main\resources\opengamma-banner.bmp"/>
@@ -142,6 +147,8 @@
     <ROW Directory_="PlatformSite_Dir" Component_="platform"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="UpdateSiteConfigurationTemplate.vbs" Target="[APPDIR];[DataPlatformSite_Dir]"/>
+    <ROW Action="UpdateSiteConfigurationTemplate.vbs" Type="3094" Source="UpdateSiteConfigurationTemplate." Target="UpdateSiteConfigurationAI" AdditionalSeq="AI_DATA_SETTER"/>
     <ROW Action="set_BACKUP" Type="51" Source="Backup_Dir" Target="[CommonAppDataFolder]OpenGamma Ltd\Backup Files\[DEPLOYMENT_NAME]\"/>
     <ROW Action="set_BACKUP_1" Type="51" Source="Backup_Dir" Target="[CommonAppDataFolder]OpenGamma Ltd\Backup Files\[DEPLOYMENT_NAME]\"/>
     <ROW Action="set_DATA_PLATFORM_32" Type="51" Source="DataPlatform32_Dir" Target="[ProgramFilesFolder]OpenGamma Ltd\[DEPLOYMENT_NAME]\"/>
@@ -184,9 +191,11 @@
     <ROW Action="set_DEPLOYMENT_NAME" BaseAction="set_INSTALL_32_BIT" After="1"/>
     <ROW Action="set_INSTALL_32_BIT" BaseAction="set_INSTALL_64_BIT" After="1"/>
     <ROW Action="set_INSTALL_64_BIT" BaseAction="FindRelatedProducts" After="1"/>
+    <ROW Action="UpdateSiteConfigurationTemplate.vbs" BaseAction="DuplicateFiles" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
+    <ROW Action="AI_DATA_SETTER" BaseAction="UpdateSiteConfigurationTemplate.vbs" After="0" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
-    <ROW ModuleID="FolderStructure" Version="2.2.1" GUID="171E6DFA_15A0_44FB_98AE_E609C66989DB" Name="OpenGamma folder template" Manufacturer="OpenGamma Ltd" Comments="An OpenGamma deployment&apos;s base folders and security model"/>
+    <ROW ModuleID="FolderStructure" Version="2.2.14" GUID="171E6DFA_15A0_44FB_98AE_E609C66989DB" Name="OpenGamma folder template" Manufacturer="OpenGamma Ltd" Comments="An OpenGamma deployment&apos;s base folders and security model"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleUISeqComponent">
     <ROW Action="set_BACKUP_1" BaseAction="set_DATA_PLATFORM_SITE_1" After="1"/>
