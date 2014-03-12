@@ -27,6 +27,7 @@ import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
 import com.opengamma.util.time.Tenor;
+import com.opengamma.util.tuple.Triple;
 
 /**
  * Fetches the data from a volatility surface as a 3D matrix tensor.
@@ -58,7 +59,8 @@ public class GetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
     final Set<Tenor> keyXSet = new HashSet<Tenor>();
     final Set<Tenor> keyYSet = new HashSet<Tenor>();
     final Set<Double> keyZSet = new HashSet<Double>();
-    for (VolatilityPoint key : snapshot.getValues().keySet()) {
+    for (Triple<Object, Object, Object> keyTriple : snapshot.getValues().keySet()) {
+      final VolatilityPoint key = StructuredMarketDataSnapshotUtil.volatilityCubeValueKeyToVolatilityPoint(keyTriple);
       keyXSet.add(key.getSwapTenor());
       keyYSet.add(key.getOptionExpiry());
       keyZSet.add(key.getRelativeStrike());
@@ -75,7 +77,7 @@ public class GetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
       for (int j = 0; j < keyY.size(); j++) {
         final Tenor y = keyY.get(j);
         for (int k = 0; k < keyX.size(); k++) {
-          final ValueSnapshot value = snapshot.getValues().get(new VolatilityPoint(keyX.get(k), y, z));
+          final ValueSnapshot value = snapshot.getValues().get(Triple.of(keyX.get(k), y, z));
           if (value == null) {
             values[i][j][k] = new Value();
           } else if (Boolean.TRUE.equals(overrideValue) && (value.getOverrideValue() != null)) {

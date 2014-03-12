@@ -7,6 +7,7 @@
 package com.opengamma.language.snapshot;
 
 import com.opengamma.core.marketdatasnapshot.VolatilityCubeKey;
+import com.opengamma.core.marketdatasnapshot.VolatilityPoint;
 import com.opengamma.core.marketdatasnapshot.VolatilitySurfaceKey;
 import com.opengamma.core.marketdatasnapshot.YieldCurveKey;
 import com.opengamma.id.UniqueId;
@@ -14,10 +15,11 @@ import com.opengamma.language.text.CompositeStringUtil;
 import com.opengamma.util.money.Currency;
 import com.opengamma.util.time.Tenor;
 import com.opengamma.util.tuple.Pair;
+import com.opengamma.util.tuple.Triple;
 
 /* package */final class StructuredMarketDataSnapshotUtil {
 
-  private static final CompositeStringUtil s_cubeName = new CompositeStringUtil(2, false);
+  private static final CompositeStringUtil s_cubeName = new CompositeStringUtil(4, false);
   private static final CompositeStringUtil s_curveName = new CompositeStringUtil(2, false);
   private static final CompositeStringUtil s_surfaceName = new CompositeStringUtil(5, false);
 
@@ -67,11 +69,19 @@ import com.opengamma.util.tuple.Pair;
     if (!s_cubeName.validate(parsed)) {
       return null;
     }
-    return VolatilityCubeKey.of(Currency.of(parsed[0]), parsed[1]);
+    return VolatilityCubeKey.of(parsed[0], parsed[1], parsed[2], parsed[3]);
   }
 
   public static String fromVolatilityCubeKey(final VolatilityCubeKey key) {
-    return s_cubeName.create(key.getCurrency().getCode(), key.getName());
+    return s_cubeName.create(key.getDefinitionName(), key.getSpecificationName(), key.getQuoteType(), key.getQuoteUnits());
+  }
+
+  public static Triple<Object, Object, Object> volatilityPointToVolatilityCubeValueKey(final VolatilityPoint point) {
+    return Triple.<Object, Object, Object>of(point.getSwapTenor(), point.getOptionExpiry(), point.getRelativeStrike());
+  }
+
+  public static VolatilityPoint volatilityCubeValueKeyToVolatilityPoint(final Triple<Object, Object, Object> key) {
+    return new VolatilityPoint((Tenor) key.getFirst(), (Tenor) key.getSecond(), ((Number) key.getThird()).doubleValue());
   }
 
 }

@@ -24,6 +24,7 @@ import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
 import com.opengamma.util.time.Tenor;
+import com.opengamma.util.tuple.Triple;
 
 /**
  * Updates a point within a "volatility cube"
@@ -56,8 +57,8 @@ public class SetVolatilityCubePointFunction extends AbstractFunctionInvoker impl
 
   public static ManageableVolatilityCubeSnapshot invoke(final ManageableVolatilityCubeSnapshot snapshot, final Tenor swapTenor, final Tenor optionExpiry, final double relativeStrike,
       final Double overrideValue, final Double marketValue) {
-    final Map<VolatilityPoint, ValueSnapshot> points = snapshot.getValues();
-    final VolatilityPoint key = new VolatilityPoint(swapTenor, optionExpiry, relativeStrike);
+    final Map<Triple<Object, Object, Object>, ValueSnapshot> points = snapshot.getValues();
+    final Triple<Object, Object, Object> key = StructuredMarketDataSnapshotUtil.volatilityPointToVolatilityCubeValueKey(new VolatilityPoint(swapTenor, optionExpiry, relativeStrike));
     if ((overrideValue != null) || (marketValue != null)) {
       final ValueSnapshot value = points.get(key);
       if (value != null) {

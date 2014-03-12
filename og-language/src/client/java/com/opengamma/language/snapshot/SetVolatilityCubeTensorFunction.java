@@ -29,6 +29,7 @@ import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
 import com.opengamma.util.time.Tenor;
+import com.opengamma.util.tuple.Triple;
 
 /**
  * Modifies a volatility cube to take values from the updated 2D matrix tensor.
@@ -60,7 +61,8 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
     final Set<Tenor> keyXSet = new HashSet<>();
     final Set<Tenor> keyYSet = new HashSet<>();
     final Set<Double> keyZSet = new HashSet<>();
-    for (VolatilityPoint key : snapshot.getValues().keySet()) {
+    for (Triple<Object, Object, Object> keyTriple : snapshot.getValues().keySet()) {
+      final VolatilityPoint key = StructuredMarketDataSnapshotUtil.volatilityCubeValueKeyToVolatilityPoint(keyTriple);
       keyXSet.add(key.getSwapTenor());
       keyYSet.add(key.getOptionExpiry());
       keyZSet.add(key.getRelativeStrike());
@@ -94,8 +96,8 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
           throw new InvokeInvalidArgumentException(2, "Not enough columns in cube");
         }
         for (int k = 0; k < keyX.size(); k++) {
-          final VolatilityPoint key = new VolatilityPoint(keyX.get(k), y, z);
-          Map<VolatilityPoint, ValueSnapshot> snapshotValues = snapshot.getValues();
+          final Triple<Object, Object, Object> key = StructuredMarketDataSnapshotUtil.volatilityPointToVolatilityCubeValueKey(new VolatilityPoint(keyX.get(k), y, z));
+          Map<Triple<Object, Object, Object>, ValueSnapshot> snapshotValues = snapshot.getValues();
           final ValueSnapshot value = snapshotValues.get(key);
           if (marketValue != null) {
             final Double override;

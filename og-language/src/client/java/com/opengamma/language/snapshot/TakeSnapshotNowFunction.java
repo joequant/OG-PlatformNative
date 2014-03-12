@@ -48,8 +48,10 @@ import com.opengamma.util.async.AsynchronousExecution;
 @Deprecated
 public class TakeSnapshotNowFunction extends AbstractFunctionInvoker implements PublishedFunction {
 
-  // REVIEW 2011-12-01 andrew -- This is not a good function. It partially duplicates the SnapshotViewResultFunction
-  // but more importantly should be a procedure as it has a side-effect (triggering a cycle on the view client).
+  // REVIEW 2011-12-01 andrew -- This is not a good function. It partially
+  // duplicates the SnapshotViewResultFunction
+  // but more importantly should be a procedure as it has a side-effect
+  // (triggering a cycle on the view client).
 
   private static final int DEFAULT_TIMEOUT_MILLIS = 30000;
 
@@ -82,8 +84,7 @@ public class TakeSnapshotNowFunction extends AbstractFunctionInvoker implements 
       resultListener.awaitResult();
 
       if (resultListener.getCycleReference() != null) {
-        final MarketDataSnapshotter snapshotter = new MarketDataSnapshotterImpl(globalContext.getComputationTargetResolver(), globalContext.getVolatilityCubeDefinitionSource(),
-            globalContext.getHistoricalTimeSeriesSource());
+        final MarketDataSnapshotter snapshotter = new MarketDataSnapshotterImpl(globalContext.getComputationTargetResolver(), globalContext.getHistoricalTimeSeriesSource());
         return snapshotter.createSnapshot(viewClient.getViewClient(), resultListener.getCycleReference());
       } else {
         throw new OpenGammaRuntimeException("Unable to obtain cycle from view client " + viewClient.getViewClient().getUniqueId(), resultListener.getException());
@@ -117,7 +118,7 @@ public class TakeSnapshotNowFunction extends AbstractFunctionInvoker implements 
     return _meta;
   }
 
-  //-------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
   private class NextCycleReferenceListener extends AbstractViewResultListener {
 
     private final ViewClient _viewClient;

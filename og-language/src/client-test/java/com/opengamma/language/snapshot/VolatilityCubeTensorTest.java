@@ -19,6 +19,7 @@ import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.util.test.TestGroup;
 import com.opengamma.util.time.Tenor;
+import com.opengamma.util.tuple.Triple;
 
 /**
  * Tests the volatility cube tensor functions.
@@ -28,10 +29,10 @@ public class VolatilityCubeTensorTest {
 
   private ManageableVolatilityCubeSnapshot createSnapshot() {
     final ManageableVolatilityCubeSnapshot snapshot = new ManageableVolatilityCubeSnapshot();
-    final Map<VolatilityPoint, ValueSnapshot> values = new HashMap<>();
-    values.put(new VolatilityPoint(Tenor.DAY, Tenor.DAY, 0), ValueSnapshot.of(0.1, null));
-    values.put(new VolatilityPoint(Tenor.DAY, Tenor.YEAR, 0), ValueSnapshot.of(0.2, 0.25));
-    values.put(new VolatilityPoint(Tenor.YEAR, Tenor.YEAR, 4.2), ValueSnapshot.of(null, 0.35));
+    final Map<Triple<Object, Object, Object>, ValueSnapshot> values = new HashMap<>();
+    values.put(StructuredMarketDataSnapshotUtil.volatilityPointToVolatilityCubeValueKey(new VolatilityPoint(Tenor.DAY, Tenor.DAY, 0)), ValueSnapshot.of(0.1, null));
+    values.put(StructuredMarketDataSnapshotUtil.volatilityPointToVolatilityCubeValueKey(new VolatilityPoint(Tenor.DAY, Tenor.YEAR, 0)), ValueSnapshot.of(0.2, 0.25));
+    values.put(StructuredMarketDataSnapshotUtil.volatilityPointToVolatilityCubeValueKey(new VolatilityPoint(Tenor.YEAR, Tenor.YEAR, 4.2)), ValueSnapshot.of(null, 0.35));
     snapshot.setValues(values);
     return snapshot;
   }
@@ -76,7 +77,7 @@ public class VolatilityCubeTensorTest {
   }
 
   private void assertValue(final ManageableVolatilityCubeSnapshot snapshot, final Tenor x, final Tenor y, double z, final Double expectedMarket, final Double expectedOverride) {
-    final ValueSnapshot value = snapshot.getValues().get(new VolatilityPoint(x, y, z));
+    final ValueSnapshot value = snapshot.getValues().get(StructuredMarketDataSnapshotUtil.volatilityPointToVolatilityCubeValueKey(new VolatilityPoint(x, y, z)));
     assertEquals(value.getOverrideValue(), expectedOverride);
     assertEquals(value.getMarketValue(), expectedMarket);
   }
@@ -97,8 +98,9 @@ public class VolatilityCubeTensorTest {
 
   public void testUpdateOverrideValue() {
     ManageableVolatilityCubeSnapshot snapshot = createSnapshot();
-    snapshot = SetVolatilityCubeTensorFunction.invoke(snapshot, new Value[][][] { { {ValueUtils.of(0.5), ValueUtils.of(0.6) }, {ValueUtils.of(0.7), ValueUtils.of(0.8) } },
-        { {ValueUtils.of(0.9), ValueUtils.of(1.0) }, {ValueUtils.of(1.1), ValueUtils.of(1.2) } } }, null);
+    snapshot = SetVolatilityCubeTensorFunction.invoke(snapshot,
+        new Value[][][] { { {ValueUtils.of(0.5), ValueUtils.of(0.6) }, {ValueUtils.of(0.7), ValueUtils.of(0.8) } },
+            { {ValueUtils.of(0.9), ValueUtils.of(1.0) }, {ValueUtils.of(1.1), ValueUtils.of(1.2) } } }, null);
     assertValue(snapshot, Tenor.DAY, Tenor.DAY, 0, 0.1, 0.5);
     assertValue(snapshot, Tenor.YEAR, Tenor.DAY, 0, null, 0.6);
     assertValue(snapshot, Tenor.DAY, Tenor.YEAR, 0, 0.2, 0.7);
@@ -111,11 +113,11 @@ public class VolatilityCubeTensorTest {
 
   public void testUpdateMixedValue() {
     ManageableVolatilityCubeSnapshot snapshot = createSnapshot();
-    snapshot = SetVolatilityCubeTensorFunction
-        .invoke(snapshot, new Value[][][] { { {ValueUtils.of(0.5), ValueUtils.of(0.6) }, {ValueUtils.of(0.7), ValueUtils.of(0.8) } },
-            { {ValueUtils.of(0.9), ValueUtils.of(1.0) }, {ValueUtils.of(1.1), ValueUtils.of(1.2) } } },
-            new Value[][][] { { {ValueUtils.of(1.3), ValueUtils.of(1.4) }, {ValueUtils.of(1.5), ValueUtils.of(1.6) } }, { {ValueUtils.of(1.7), ValueUtils.of(1.8) },
-                {ValueUtils.of(1.9), ValueUtils.of(2.0) } } });
+    snapshot = SetVolatilityCubeTensorFunction.invoke(snapshot,
+        new Value[][][] { { {ValueUtils.of(0.5), ValueUtils.of(0.6) }, {ValueUtils.of(0.7), ValueUtils.of(0.8) } },
+            { {ValueUtils.of(0.9), ValueUtils.of(1.0) }, {ValueUtils.of(1.1), ValueUtils.of(1.2) } } }, new Value[][][] {
+            { {ValueUtils.of(1.3), ValueUtils.of(1.4) }, {ValueUtils.of(1.5), ValueUtils.of(1.6) } },
+            { {ValueUtils.of(1.7), ValueUtils.of(1.8) }, {ValueUtils.of(1.9), ValueUtils.of(2.0) } } });
     assertValue(snapshot, Tenor.DAY, Tenor.DAY, 0, 1.3, 0.5);
     assertValue(snapshot, Tenor.YEAR, Tenor.DAY, 0, 1.4, 0.6);
     assertValue(snapshot, Tenor.DAY, Tenor.YEAR, 0, 1.5, 0.7);
