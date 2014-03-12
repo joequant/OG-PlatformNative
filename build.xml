@@ -10,6 +10,9 @@
 
   <target name="eclipse" depends="OG-PlatformNative-bootstrap.eclipse">
     <replaceregexp file="${local.dir}/eclipse/og-rstats/.classpath" match="kind=&quot;lib&quot; path=&quot;${root.dir}/og-language/target/og-language-client[^&quot;]*&quot;" replace="kind=&quot;src&quot; path=&quot;/og-language-client&quot;" />
+    <copy file="${root.dir}/og-install/modules/main/pom.xml" todir="${local.dir}/eclipse/og-install-main" />
+    <copy file="${root.dir}/og-language/modules/client/pom.xml" todir="${local.dir}/eclipse/og-language-client" />
+    <copy file="${root.dir}/og-rstats/pom.xml" todir="${local.dir}/eclipse/og-rstats" />
   </target>
 
 </project>

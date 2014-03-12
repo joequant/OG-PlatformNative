@@ -1200,8 +1200,14 @@
           <artifactId>maven-eclipse-plugin</artifactId>
           <version>${version.maven-eclipse-plugin}</version>
           <configuration>
-            <buildOutputDirectory>classes</buildOutputDirectory>
+            <buildOutputDirectory>target/classes</buildOutputDirectory>
             <eclipseProjectDir>${root.dir}/local/eclipse</eclipseProjectDir>
+            <additionalProjectnatures>
+              <projectnature>net.sf.eclipsecs.core.CheckstyleNature</projectnature>
+            </additionalProjectnatures>
+            <additionalBuildcommands>
+              <buildcommand>net.sf.eclipsecs.core.CheckstyleBuilder</buildcommand>
+            </additionalBuildcommands>
           </configuration>
         </plugin>
       </plugins>
