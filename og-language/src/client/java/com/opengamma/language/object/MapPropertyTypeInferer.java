@@ -23,7 +23,10 @@ import com.opengamma.language.definition.JavaTypeInfo;
  */
 public class MapPropertyTypeInferer extends AbstractPropertyTypeInferer {
 
-  public static abstract class InferenceEntry {
+  /**
+   * Instructions for inferring an element within the property map.
+   */
+  public abstract static class InferenceEntry {
 
     private final MetaProperty<?> _property;
     private final Collection<MetaProperty<?>> _precedents;

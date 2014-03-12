@@ -5,9 +5,11 @@
  */
 package com.opengamma.language.context;
 
-import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNull;
+
 import org.testng.annotations.Test;
+
 import com.opengamma.language.connector.Conditional;
 import com.opengamma.util.test.TestGroup;
 
@@ -39,6 +41,7 @@ public class ContextInitializationBeanTest {
      * 
      * @param context the context
      */
+    @Override
     protected void initContext(final MutableSessionContext context) {
       context.setValue(CONTEXT_VALUE, "woot");
     }
@@ -48,6 +51,7 @@ public class ContextInitializationBeanTest {
      * 
      * @param context the context
      */
+    @Override
     protected void initContext(final MutableUserContext context) {
       context.setValue(CONTEXT_VALUE, "woot");
     }
@@ -57,6 +61,7 @@ public class ContextInitializationBeanTest {
      * 
      * @param context the context
      */
+    @Override
     protected void initContext(final MutableGlobalContext context) {
       context.setValue(CONTEXT_VALUE, "woot");
     }
@@ -67,7 +72,7 @@ public class ContextInitializationBeanTest {
     final Bean bean = new Bean();
     bean.setSessionContextFactory(new SessionContextFactoryBean());
     bean.setPropertyAssertion(false);
-    bean.afterPropertiesSet ();
+    bean.afterPropertiesSet();
   }
 
   //-------------------------------------------------------------------------

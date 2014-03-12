@@ -66,8 +66,7 @@ public class ContextTest {
     final AtomicReference<GlobalContext> context2 = new AtomicReference<GlobalContext>();
     final AtomicInteger handler2 = new AtomicInteger();
     // This handler should be run first
-    globalContextFactory.setGlobalContextEventHandler(new AbstractGlobalContextEventHandler(globalContextFactory
-        .getGlobalContextEventHandler()) {
+    globalContextFactory.setGlobalContextEventHandler(new AbstractGlobalContextEventHandler(globalContextFactory.getGlobalContextEventHandler()) {
       @Override
       protected void initContextImpl(MutableGlobalContext context) {
         assertEquals(handler2.get(), handler1.get());
@@ -76,8 +75,7 @@ public class ContextTest {
       }
     });
     // This handler should be run second
-    globalContextFactory.setGlobalContextEventHandler(new AbstractGlobalContextEventHandler(globalContextFactory
-        .getGlobalContextEventHandler()) {
+    globalContextFactory.setGlobalContextEventHandler(new AbstractGlobalContextEventHandler(globalContextFactory.getGlobalContextEventHandler()) {
       @Override
       protected void initContextImpl(MutableGlobalContext context) {
         assertEquals(handler1.get() - 1, handler2.get());
@@ -86,8 +84,7 @@ public class ContextTest {
         handler2.incrementAndGet();
       }
     });
-    final SessionContextFactoryBean sessionContextFactory = new SessionContextFactoryBean(new UserContextFactoryBean(
-        globalContextFactory));
+    final SessionContextFactoryBean sessionContextFactory = new SessionContextFactoryBean(new UserContextFactoryBean(globalContextFactory));
     SessionContext sessionContext = sessionContextFactory.createSessionContext("user1", false);
     // Both handlers to have been run
     assertEquals(1, handler1.get());
@@ -108,8 +105,7 @@ public class ContextTest {
     final AtomicInteger handler1 = new AtomicInteger();
     final AtomicReference<UserContext> context2 = new AtomicReference<UserContext>();
     final AtomicInteger handler2 = new AtomicInteger();
-    userContextFactory.setUserContextEventHandler(new AbstractUserContextEventHandler(userContextFactory
-        .getUserContextEventHandler()) {
+    userContextFactory.setUserContextEventHandler(new AbstractUserContextEventHandler(userContextFactory.getUserContextEventHandler()) {
 
       // This handler should be run first
       @Override
@@ -130,8 +126,7 @@ public class ContextTest {
       }
 
     });
-    userContextFactory.setUserContextEventHandler(new AbstractUserContextEventHandler(userContextFactory
-        .getUserContextEventHandler()) {
+    userContextFactory.setUserContextEventHandler(new AbstractUserContextEventHandler(userContextFactory.getUserContextEventHandler()) {
 
       // This handler should be run second
       @Override
@@ -187,8 +182,7 @@ public class ContextTest {
     final AtomicInteger handler1 = new AtomicInteger();
     final AtomicReference<SessionContext> context2 = new AtomicReference<SessionContext>();
     final AtomicInteger handler2 = new AtomicInteger();
-    contextFactory.setSessionContextEventHandler(new AbstractSessionContextEventHandler(contextFactory
-        .getSessionContextEventHandler()) {
+    contextFactory.setSessionContextEventHandler(new AbstractSessionContextEventHandler(contextFactory.getSessionContextEventHandler()) {
 
       // Should be called first
       @Override
@@ -208,8 +202,7 @@ public class ContextTest {
       }
 
     });
-    contextFactory.setSessionContextEventHandler(new AbstractSessionContextEventHandler(contextFactory
-        .getSessionContextEventHandler()) {
+    contextFactory.setSessionContextEventHandler(new AbstractSessionContextEventHandler(contextFactory.getSessionContextEventHandler()) {
 
       // Should be called second
       @Override
@@ -223,7 +216,7 @@ public class ContextTest {
       // Should be called first
       @Override
       protected void doneContextImpl(MutableSessionContext context) {
-        assertEquals (handler1.get (), handler2.get ());
+        assertEquals(handler1.get(), handler2.get());
         assertSame(context2.get(), context);
         context2.set(null);
         handler2.incrementAndGet();

@@ -269,7 +269,7 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
   /**
    * Implementation which creates the instance in another thread.
    */
-  public static abstract class Spawned<T> extends AsyncSupplier<T> {
+  public abstract static class Spawned<T> extends AsyncSupplier<T> {
 
     public void start() {
       getExecutor().execute(new Runnable() {

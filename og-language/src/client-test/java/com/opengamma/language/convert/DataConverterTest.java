@@ -28,18 +28,18 @@ public class DataConverterTest extends AbstractConverterTest {
 
   private final DataConverter _dataConverter = new DataConverter();
 
-  private int _count = 0;
+  private int _count;
 
   private Value createValue() {
     return ValueUtils.of(++_count);
   }
 
-  private Value[] createValue_1() {
+  private Value[] createValue1() {
     return new Value[] {createValue(), createValue() };
   }
 
-  private Value[][] createValue_2() {
-    return new Value[][] {createValue_1(), createValue_1() };
+  private Value[][] createValue2() {
+    return new Value[][] {createValue1(), createValue1() };
   }
 
   @Test
@@ -48,9 +48,9 @@ public class DataConverterTest extends AbstractConverterTest {
     assertEquals(true, _dataConverter.canConvertTo(target));
     Data data = DataUtils.of(createValue());
     assertValidConversion(_dataConverter, data.getSingle(), target, data);
-    data = DataUtils.of(createValue_1());
+    data = DataUtils.of(createValue1());
     assertValidConversion(_dataConverter, data.getLinear(), target, data);
-    data = DataUtils.of(createValue_2());
+    data = DataUtils.of(createValue2());
     assertValidConversion(_dataConverter, data.getMatrix(), target, data);
     assertInvalidConversion(_dataConverter, "foo", target);
     assertConversionCount(3, _dataConverter, target);
@@ -68,29 +68,29 @@ public class DataConverterTest extends AbstractConverterTest {
     assertEquals(true, _dataConverter.canConvertTo(target));
     final Data data = DataUtils.of(createValue());
     assertValidConversion(_dataConverter, data, target, data.getSingle());
-    assertInvalidConversion(_dataConverter, DataUtils.of(createValue_1()), target);
-    assertInvalidConversion(_dataConverter, DataUtils.of(createValue_2()), target);
+    assertInvalidConversion(_dataConverter, DataUtils.of(createValue1()), target);
+    assertInvalidConversion(_dataConverter, DataUtils.of(createValue2()), target);
     assertConversionCount(1, _dataConverter, target);
   }
 
   @Test
-  public void testToValue_1() {
+  public void testToValue1() {
     final JavaTypeInfo<Value[]> target = JavaTypeInfo.builder(Value[].class).get();
     assertEquals(true, _dataConverter.canConvertTo(target));
     assertInvalidConversion(_dataConverter, DataUtils.of(createValue()), target);
-    final Data data = DataUtils.of(createValue_1());
+    final Data data = DataUtils.of(createValue1());
     assertValidConversion(_dataConverter, data, target, data.getLinear());
-    assertInvalidConversion(_dataConverter, DataUtils.of(createValue_2()), target);
+    assertInvalidConversion(_dataConverter, DataUtils.of(createValue2()), target);
     assertConversionCount(1, _dataConverter, target);
   }
 
   @Test
-  public void testToValue_2() {
+  public void testToValue2() {
     final JavaTypeInfo<Value[][]> target = JavaTypeInfo.builder(Value[][].class).get();
     assertEquals(true, _dataConverter.canConvertTo(target));
     assertInvalidConversion(_dataConverter, DataUtils.of(createValue()), target);
-    assertInvalidConversion(_dataConverter, DataUtils.of(createValue_1()), target);
-    final Data data = DataUtils.of(createValue_2());
+    assertInvalidConversion(_dataConverter, DataUtils.of(createValue1()), target);
+    final Data data = DataUtils.of(createValue2());
     assertValidConversion(_dataConverter, data, target, data.getMatrix());
     assertConversionCount(1, _dataConverter, target);
   }

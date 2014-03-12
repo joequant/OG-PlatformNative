@@ -24,12 +24,13 @@ import com.opengamma.util.tuple.Pair;
 public class MainRunner implements Runnable {
 
   private static final Logger s_logger = LoggerFactory.getLogger(MainRunner.class);
-  
+
   private final List<Pair<String, String>> _tasks;
-  
+
   public MainRunner(final String[] args) {
-    if ((args.length % 2) != 0)
+    if ((args.length % 2) != 0) {
       throw new IllegalArgumentException();
+    }
     _tasks = new ArrayList<Pair<String, String>>(args.length);
     for (int i = 0; i < args.length; i += 2) {
       _tasks.add(Pair.of(args[i], args[i + 1]));
@@ -110,7 +111,7 @@ public class MainRunner implements Runnable {
 
   /**
    * @param args
-   * @throws Exception 
+   * @throws Exception
    */
   public static void main(String[] args) { //CSIGNORE
     final MainRunner main = new MainRunner(args);

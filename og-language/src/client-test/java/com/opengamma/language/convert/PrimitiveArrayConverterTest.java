@@ -19,15 +19,15 @@ import com.opengamma.util.test.TestGroup;
 public class PrimitiveArrayConverterTest extends AbstractConverterTest {
 
   private final PrimitiveArrayConverter _converter = new PrimitiveArrayConverter();
-  
+
   @Test
-  public void testBoolean () {
-    final boolean[] a = new boolean[] { true, false };
-    final Boolean[] b = new Boolean[] { true, false };
-    assertValidConversion (_converter, a, JavaTypeInfo.builder(Boolean[].class).get (), b);
-    assertValidConversion (_converter, b, JavaTypeInfo.builder(boolean[].class).get (), a);
+  public void testBoolean() {
+    final boolean[] a = new boolean[] {true, false };
+    final Boolean[] b = new Boolean[] {true, false };
+    assertValidConversion(_converter, a, JavaTypeInfo.builder(Boolean[].class).get(), b);
+    assertValidConversion(_converter, b, JavaTypeInfo.builder(boolean[].class).get(), a);
   }
-  
+
   @Test
   public void testByte() {
     final byte[] a = new byte[] {Byte.MIN_VALUE, 0, Byte.MAX_VALUE };
@@ -43,7 +43,7 @@ public class PrimitiveArrayConverterTest extends AbstractConverterTest {
     assertValidConversion(_converter, a, JavaTypeInfo.builder(Character[].class).get(), b);
     assertValidConversion(_converter, b, JavaTypeInfo.builder(char[].class).get(), a);
   }
-  
+
   @Test
   public void testDouble() {
     final double[] a = new double[] {Double.MIN_VALUE, 0, Double.MAX_VALUE };

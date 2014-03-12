@@ -23,7 +23,7 @@ public class SystemInfoMessageHandler {
 
   private static final Logger s_logger = LoggerFactory.getLogger(SystemInfoMessageHandler.class);
 
-  private static abstract class SystemInfoField<T> {
+  private abstract static class SystemInfoField<T> {
 
     private final Integer _ordinal;
 
@@ -45,7 +45,7 @@ public class SystemInfoMessageHandler {
 
   }
 
-  private static abstract class ServerMetadataField<T> extends SystemInfoField<T> {
+  private abstract static class ServerMetadataField<T> extends SystemInfoField<T> {
 
     public ServerMetadataField(final int ordinal) {
       super(ordinal);

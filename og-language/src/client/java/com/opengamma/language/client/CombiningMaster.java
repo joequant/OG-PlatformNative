@@ -29,9 +29,8 @@ import com.opengamma.master.security.SecurityMaster;
 import com.opengamma.master.security.impl.CombinedSecurityMaster;
 
 /**
- * Combines the masters from session, user and global contexts into a single
- * entity for searching and querying. A map of schemes to actual masters is
- * built on the fly based on error returns from the underlying masters. 
+ * Combines the masters from session, user and global contexts into a single entity for searching and querying. A map of schemes to actual masters is built on the fly based on error returns from the
+ * underlying masters.
  * 
  * @param <D> the document type of the underlying master(s)
  * @param <M> the type of the master(s)
@@ -40,41 +39,37 @@ import com.opengamma.master.security.impl.CombinedSecurityMaster;
 public abstract class CombiningMaster<D extends AbstractDocument, M extends AbstractMaster<D>, Master extends CombinedMaster<D, M>> {
 
   /**
-   * Misleading name constant for the "session" store. Should be called "session" but that might confuse people until
-   * we have the per-user store implemented correctly.
+   * Misleading name constant for the "session" store. Should be called "session" but that might confuse people until we have the per-user store implemented correctly.
    */
   public static final String SESSION_MASTER_DISPLAY_NAME = "user";
 
   /**
-   * Misleading name constant for the "user" store. Should be called "user" but that might confuse people given that
-   * we currently use it for the per-session store.
+   * Misleading name constant for the "user" store. Should be called "user" but that might confuse people given that we currently use it for the per-session store.
    */
   public static final String USER_MASTER_DISPLAY_NAME = "local";
 
   /**
-   * Name constant for the "global" store shared with all other users and anything else using the view processor
-   * configuration the stack was initialized from.
+   * Name constant for the "global" store shared with all other users and anything else using the view processor configuration the stack was initialized from.
    */
   public static final String GLOBAL_MASTER_DISPLAY_NAME = "shared";
 
   /**
    * Singleton instance for MarketDataSnapshotMaster.
    */
-  public static final CombiningMaster<MarketDataSnapshotDocument, MarketDataSnapshotMaster, CombinedMarketDataSnapshotMaster> MARKET_DATA_SNAPSHOT =
-      new CombiningMaster<MarketDataSnapshotDocument, MarketDataSnapshotMaster, CombinedMarketDataSnapshotMaster>() {
+  public static final CombiningMaster<MarketDataSnapshotDocument, MarketDataSnapshotMaster, CombinedMarketDataSnapshotMaster> MARKET_DATA_SNAPSHOT = new CombiningMaster<MarketDataSnapshotDocument, MarketDataSnapshotMaster, CombinedMarketDataSnapshotMaster>() {
 
-        @Override
-        protected MarketDataSnapshotMaster getMasterImpl(final RemoteClient client) {
-          return client.getMarketDataSnapshotMaster();
-        }
+    @Override
+    protected MarketDataSnapshotMaster getMasterImpl(final RemoteClient client) {
+      return client.getMarketDataSnapshotMaster();
+    }
 
-        @Override
-        protected CombinedMarketDataSnapshotMaster createCombinedMaster(final MarketDataSnapshotMaster sessionMaster, final MarketDataSnapshotMaster userMaster,
-            final MarketDataSnapshotMaster globalMaster) {
-          return new CombinedMarketDataSnapshotMaster(filterNulls(sessionMaster, userMaster, globalMaster));
-        }
+    @Override
+    protected CombinedMarketDataSnapshotMaster createCombinedMaster(final MarketDataSnapshotMaster sessionMaster, final MarketDataSnapshotMaster userMaster,
+        final MarketDataSnapshotMaster globalMaster) {
+      return new CombinedMarketDataSnapshotMaster(filterNulls(sessionMaster, userMaster, globalMaster));
+    }
 
-      };
+  };
 
   /**
    * Singleton instance for PortfolioMaster.
@@ -128,12 +123,12 @@ public abstract class CombiningMaster<D extends AbstractDocument, M extends Abst
   };
 
   @SafeVarargs
-  private static <T> List<T> filterNulls(T... arr){
+  private static <T> List<T> filterNulls(T... arr) {
     List<T> list = Lists.newArrayList(arr);
     Iterables.removeIf(list, Predicates.isNull());
     return list;
   }
-  
+
   private CombiningMaster() {
   }
 

@@ -10,7 +10,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
@@ -33,10 +32,10 @@ import com.opengamma.language.function.PublishedFunction;
  */
 public class CreateObjectFunction<T> implements PublishedFunction {
 
-  private Constructor<T> _constructor = null;
-  private int _constructorParameterCount = 0;
+  private Constructor<T> _constructor;
+  private int _constructorParameterCount;
 
-  private MetaBean _metaBean = null;
+  private MetaBean _metaBean;
   private final int _prependedParameterCount;
   private final int _appendedParameterCount;
   private final MetaFunction _definition;
@@ -61,7 +60,7 @@ public class CreateObjectFunction<T> implements PublishedFunction {
     if (_prependedParameterCount > 0) {
       parameters.addAll(prependedParameters);
     }
-    if(ImmutableBean.class.isAssignableFrom(clazz)){
+    if (ImmutableBean.class.isAssignableFrom(clazz)) {
       _metaBean = JodaBeanUtils.metaBean(clazz);
       for (int i = 0; i < parameterNames.length; i++) {
         MetaProperty<Object> metaProperty = _metaBean.metaProperty(parameterNames[i]);
@@ -69,7 +68,7 @@ public class CreateObjectFunction<T> implements PublishedFunction {
         parameter.setDescription(parameterDescriptions[i]);
         parameters.add(parameter);
       }
-    }else{
+    } else {
       _constructor = findPublicConstructor(clazz, parameterNames.length);
       final Class<?>[] constructorParameters = _constructor.getParameterTypes();
       _constructorParameterCount = constructorParameters.length;
@@ -94,8 +93,8 @@ public class CreateObjectFunction<T> implements PublishedFunction {
     _definition.setDescription(description);
   }
 
-  public CreateObjectFunction(final String category, final String name, final Constructor<T> constructor, final String description,
-      final String[] parameterNames, final String[] parameterDescriptions) {
+  public CreateObjectFunction(final String category, final String name, final Constructor<T> constructor, final String description, final String[] parameterNames,
+      final String[] parameterDescriptions) {
     _constructor = constructor;
     final Class<?>[] constructorParameters = constructor.getParameterTypes();
     _constructorParameterCount = constructorParameters.length;
@@ -145,8 +144,7 @@ public class CreateObjectFunction<T> implements PublishedFunction {
   }
 
   /**
-   * Registers additional arguments which are to be expected before those required for construction of the object.
-   * These may be used during post-construction operations.
+   * Registers additional arguments which are to be expected before those required for construction of the object. These may be used during post-construction operations.
    * 
    * @return the additional parameters, null if none
    */
@@ -155,8 +153,7 @@ public class CreateObjectFunction<T> implements PublishedFunction {
   }
 
   /**
-   * Registers additional parameters which are to be expected after those required for constructor of the object.
-   * These may be used during post-construction operations.
+   * Registers additional parameters which are to be expected after those required for constructor of the object. These may be used during post-construction operations.
    * 
    * @return the additional parameters, null if none
    */
@@ -175,9 +172,9 @@ public class CreateObjectFunction<T> implements PublishedFunction {
       args = parameters;
     }
     try {
-      if(_constructor != null){
+      if (_constructor != null) {
         return _constructor.newInstance(args);
-      } else if (_metaBean != null){
+      } else if (_metaBean != null) {
         BeanBuilder builder = _metaBean.builder();
         int i = 0;
         for (Parameter parameter : _definition.getParameter()) {
@@ -185,7 +182,7 @@ public class CreateObjectFunction<T> implements PublishedFunction {
           i++;
         }
         return (T) builder.build();
-      }else{
+      } else {
         throw new OpenGammaRuntimeException("Create object function couldn't find object constructor nor the object is of org.joda.beans.Bean type");
       }
     } catch (Exception e) {
@@ -194,8 +191,7 @@ public class CreateObjectFunction<T> implements PublishedFunction {
   }
 
   /**
-   * Processes the newly-constructed object. This provides the opportunity to set properties which are not part of
-   * the constructor, or to substitute the object with a different one.
+   * Processes the newly-constructed object. This provides the opportunity to set properties which are not part of the constructor, or to substitute the object with a different one.
    * 
    * @param context the current session context
    * @param newInstance the newly create object
