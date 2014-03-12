@@ -22,6 +22,7 @@
     <skip.unit-tests-java>false</skip.unit-tests-java>
     <skip.integration-tests-java>false</skip.integration-tests-java>
     <skip.attach-native>false</skip.attach-native>
+    <eclipse.skip>false</eclipse.skip>
   </properties>
 
   <build>

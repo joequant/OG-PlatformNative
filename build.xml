@@ -8,4 +8,8 @@
     <touch file="${local.dir}/profile/${profile}-r" />
   </target>
 
+  <target name="eclipse" depends="OG-PlatformNative-bootstrap.eclipse">
+    <replaceregexp file="${local.dir}/eclipse/og-rstats/.classpath" match="kind=&quot;lib&quot; path=&quot;${root.dir}/og-language/target/og-language-client[^&quot;]*&quot;" replace="kind=&quot;src&quot; path=&quot;/og-language-client&quot;" />
+  </target>
+
 </project>

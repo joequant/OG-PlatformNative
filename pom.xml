@@ -42,6 +42,7 @@
     <version.activemq>5.3.0</version.activemq>
     <version.ant-contrib>1.0b3</version.ant-contrib>
     <version.jacoco-maven-plugin>0.6.3.201306030806</version.jacoco-maven-plugin>
+    <version.maven-eclipse-plugin>2.9</version.maven-eclipse-plugin>
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.cpptasks-build-tests>true</skip.cpptasks-build-tests>
@@ -53,6 +54,7 @@
     <skip.generate-version-header>true</skip.generate-version-header>
     <surefire.argline>-Dlogback.configurationFile=com/opengamma/util/warn-logback.xml</surefire.argline>
     <checkstyle.skip>true</checkstyle.skip>
+    <eclipse.skip>true</eclipse.skip>
   </properties>
 
   <distributionManagement>
@@ -1191,6 +1193,19 @@
         </dependencies>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-eclipse-plugin</artifactId>
+          <version>${version.maven-eclipse-plugin}</version>
+          <configuration>
+            <buildOutputDirectory>classes</buildOutputDirectory>
+            <eclipseProjectDir>${root.dir}/local/eclipse</eclipseProjectDir>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
 </project>
