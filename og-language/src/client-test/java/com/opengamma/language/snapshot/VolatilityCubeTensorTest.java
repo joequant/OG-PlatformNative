@@ -13,12 +13,13 @@ import java.util.Map;
 import org.testng.annotations.Test;
 
 import com.opengamma.core.marketdatasnapshot.ValueSnapshot;
-import com.opengamma.core.marketdatasnapshot.VolatilityPoint;
 import com.opengamma.core.marketdatasnapshot.impl.ManageableVolatilityCubeSnapshot;
 import com.opengamma.language.Value;
 import com.opengamma.language.ValueUtils;
 import com.opengamma.util.test.TestGroup;
 import com.opengamma.util.time.Tenor;
+import com.opengamma.util.tuple.Triple;
+
 
 /**
  * Tests the volatility cube tensor functions.
@@ -28,10 +29,10 @@ public class VolatilityCubeTensorTest {
 
   private ManageableVolatilityCubeSnapshot createSnapshot() {
     final ManageableVolatilityCubeSnapshot snapshot = new ManageableVolatilityCubeSnapshot();
-    final Map<VolatilityPoint, ValueSnapshot> values = new HashMap<>();
-    values.put(new VolatilityPoint(Tenor.DAY, Tenor.DAY, 0), ValueSnapshot.of(0.1, null));
-    values.put(new VolatilityPoint(Tenor.DAY, Tenor.YEAR, 0), ValueSnapshot.of(0.2, 0.25));
-    values.put(new VolatilityPoint(Tenor.YEAR, Tenor.YEAR, 4.2), ValueSnapshot.of(null, 0.35));
+    final Map<Triple<Object, Object, Object>, ValueSnapshot> values = new HashMap<>();
+    values.put(new Triple<Object, Object, Object>(Tenor.DAY, Tenor.DAY, 0), ValueSnapshot.of(0.1, null));
+    values.put(new Triple<Object, Object, Object>(Tenor.DAY, Tenor.YEAR, 0), ValueSnapshot.of(0.2, 0.25));
+    values.put(new Triple<Object, Object, Object>(Tenor.YEAR, Tenor.YEAR, 4.2), ValueSnapshot.of(null, 0.35));
     snapshot.setValues(values);
     return snapshot;
   }
@@ -76,7 +77,7 @@ public class VolatilityCubeTensorTest {
   }
 
   private void assertValue(final ManageableVolatilityCubeSnapshot snapshot, final Tenor x, final Tenor y, double z, final Double expectedMarket, final Double expectedOverride) {
-    final ValueSnapshot value = snapshot.getValues().get(new VolatilityPoint(x, y, z));
+      final ValueSnapshot value = snapshot.getValues().get(new Triple<Object, Object, Object>(x, y, z));
     assertEquals(value.getOverrideValue(), expectedOverride);
     assertEquals(value.getMarketValue(), expectedMarket);
   }

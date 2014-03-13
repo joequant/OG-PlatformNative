@@ -27,6 +27,8 @@ import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
 import com.opengamma.util.time.Tenor;
+import com.opengamma.util.tuple.Triple;
+
 
 /**
  * Fetches the data from a volatility surface as a 3D matrix tensor.
@@ -55,27 +57,25 @@ public class GetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
   }
 
   public static Value[][][] invoke(final ManageableVolatilityCubeSnapshot snapshot, final Boolean marketValue, final Boolean overrideValue) {
-    final Set<Tenor> keyXSet = new HashSet<Tenor>();
-    final Set<Tenor> keyYSet = new HashSet<Tenor>();
-    final Set<Double> keyZSet = new HashSet<Double>();
-    for (VolatilityPoint key : snapshot.getValues().keySet()) {
-      keyXSet.add(key.getSwapTenor());
-      keyYSet.add(key.getOptionExpiry());
-      keyZSet.add(key.getRelativeStrike());
+    final Set<Object> keyXSet = new HashSet<Object>();
+    final Set<Object> keyYSet = new HashSet<Object>();
+    final Set<Object> keyZSet = new HashSet<Object>();
+    for (Triple<Object,Object,Object> key : snapshot.getValues().keySet()) {
+	keyXSet.add((Object) key.getFirst());
+	keyYSet.add((Object) key.getSecond());
+	keyZSet.add((Object) key.getThird());
     }
-    final List<Tenor> keyX = new ArrayList<Tenor>(keyXSet);
-    final List<Tenor> keyY = new ArrayList<Tenor>(keyYSet);
-    final List<Double> keyZ = new ArrayList<Double>(keyZSet);
-    Collections.sort(keyX);
-    Collections.sort(keyY);
-    Collections.sort(keyZ);
+    final List<Object> keyX = new ArrayList<Object>(keyXSet);
+    final List<Object> keyY = new ArrayList<Object>(keyYSet);
+    final List<Object> keyZ = new ArrayList<Object>(keyZSet);
+
     final Value[][][] values = new Value[keyZ.size()][keyY.size()][keyX.size()];
     for (int i = 0; i < keyZ.size(); i++) {
-      final Double z = keyZ.get(i);
+      final Object z = keyZ.get(i);
       for (int j = 0; j < keyY.size(); j++) {
-        final Tenor y = keyY.get(j);
+        final Object y = keyY.get(j);
         for (int k = 0; k < keyX.size(); k++) {
-          final ValueSnapshot value = snapshot.getValues().get(new VolatilityPoint(keyX.get(k), y, z));
+	    final ValueSnapshot value = snapshot.getValues().get(new Triple<Object,Object,Object>(keyX.get(k), y, z));
           if (value == null) {
             values[i][j][k] = new Value();
           } else if (Boolean.TRUE.equals(overrideValue) && (value.getOverrideValue() != null)) {

@@ -29,6 +29,7 @@ import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
 import com.opengamma.util.time.Tenor;
+import com.opengamma.util.tuple.Triple;
 
 /**
  * Modifies a volatility cube to take values from the updated 2D matrix tensor.
@@ -57,20 +58,18 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
   }
 
   public static ManageableVolatilityCubeSnapshot invoke(final ManageableVolatilityCubeSnapshot snapshot, final Value[][][] overrideValue, final Value[][][] marketValue) {
-    final Set<Tenor> keyXSet = new HashSet<>();
-    final Set<Tenor> keyYSet = new HashSet<>();
-    final Set<Double> keyZSet = new HashSet<>();
-    for (VolatilityPoint key : snapshot.getValues().keySet()) {
-      keyXSet.add(key.getSwapTenor());
-      keyYSet.add(key.getOptionExpiry());
-      keyZSet.add(key.getRelativeStrike());
+    final Set<Object> keyXSet = new HashSet<>();
+    final Set<Object> keyYSet = new HashSet<>();
+    final Set<Object> keyZSet = new HashSet<>();
+    for (Triple<Object, Object, Object> key : snapshot.getValues().keySet()) {
+	keyXSet.add((Object) key.getFirst());
+	keyYSet.add((Object) key.getSecond());
+	keyZSet.add((Object) key.getThird());
     }
-    final List<Tenor> keyX = new ArrayList<>(keyXSet);
-    final List<Tenor> keyY = new ArrayList<>(keyYSet);
-    final List<Double> keyZ = new ArrayList<>(keyZSet);
-    Collections.sort(keyX);
-    Collections.sort(keyY);
-    Collections.sort(keyZ);
+    final List<Object> keyX = new ArrayList<>(keyXSet);
+    final List<Object> keyY = new ArrayList<>(keyYSet);
+    final List<Object> keyZ = new ArrayList<>(keyZSet);
+
     if ((overrideValue != null) && (overrideValue.length < keyZ.size())) {
       throw new InvokeInvalidArgumentException(1, "Not enough planes in cube");
     }
@@ -78,7 +77,7 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
       throw new InvokeInvalidArgumentException(2, "Not enough planes in cube");
     }
     for (int i = 0; i < keyZ.size(); i++) {
-      final Double z = keyZ.get(i);
+      final Object z = keyZ.get(i);
       if ((overrideValue != null) && (overrideValue[i].length < keyY.size())) {
         throw new InvokeInvalidArgumentException(1, "Not enough rows in cube");
       }
@@ -86,7 +85,7 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
         throw new InvokeInvalidArgumentException(2, "Not enough rows in cube");
       }
       for (int j = 0; j < keyY.size(); j++) {
-        final Tenor y = keyY.get(j);
+        final Object y = keyY.get(j);
         if ((overrideValue != null) && (overrideValue[i][j].length < keyX.size())) {
           throw new InvokeInvalidArgumentException(1, "Not enough columns in cube");
         }
@@ -94,8 +93,8 @@ public class SetVolatilityCubeTensorFunction extends AbstractFunctionInvoker imp
           throw new InvokeInvalidArgumentException(2, "Not enough columns in cube");
         }
         for (int k = 0; k < keyX.size(); k++) {
-          final VolatilityPoint key = new VolatilityPoint(keyX.get(k), y, z);
-          Map<VolatilityPoint, ValueSnapshot> snapshotValues = snapshot.getValues();
+	    final Triple<Object, Object, Object> key = new  Triple<Object, Object, Object>(keyX.get(k), y, z);
+	    Map<Triple<Object, Object, Object>, ValueSnapshot> snapshotValues = snapshot.getValues();
           final ValueSnapshot value = snapshotValues.get(key);
           if (marketValue != null) {
             final Double override;
