@@ -119,16 +119,17 @@ public class JavaTypeInfoTest {
   }
 
   @SuppressWarnings("unused")
-  private static <T extends Number> void testExtendedTypes_method(List<Integer> p1, Set<T> p2, Set<? extends T> p3, List<?> p4, List<String>[] p5) {
+  private static <S extends Comparable<S>, T extends Number> void testExtendedTypes_method(List<Integer> p1, Set<T> p2, Set<? extends T> p3, List<?> p4, List<String>[] p5, S[] p6) {
   }
 
   public void testExtendedTypes() throws Exception {
-    final Type[] types = getClass().getDeclaredMethod("testExtendedTypes_method", List.class, Set.class, Set.class, List.class, List[].class).getGenericParameterTypes();
+    final Type[] types = getClass().getDeclaredMethod("testExtendedTypes_method", List.class, Set.class, Set.class, List.class, List[].class, Comparable[].class).getGenericParameterTypes();
     assertEquals(JavaTypeInfo.ofType(types[0]).toString(), "java.util.List<java.lang.Integer{allow null}>{allow null}");
     assertEquals(JavaTypeInfo.ofType(types[1]).toString(), "java.util.Set<java.lang.Number{allow null}>{allow null}");
     assertEquals(JavaTypeInfo.ofType(types[2]).toString(), "java.util.Set<java.lang.Number{allow null}>{allow null}");
     assertEquals(JavaTypeInfo.ofType(types[3]).toString(), "java.util.List<java.lang.Object{allow null}>{allow null}");
     assertEquals(JavaTypeInfo.ofType(types[4]).toString(), "java.util.List<java.lang.String{allow null}>{allow null}[]{allow null}");
+    assertEquals(JavaTypeInfo.ofType(types[5]).toString(), "java.lang.Comparable<java.lang.Object{allow null}>{allow null}[]{allow null}");
   }
 
 }

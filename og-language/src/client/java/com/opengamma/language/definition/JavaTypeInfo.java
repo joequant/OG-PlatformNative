@@ -13,8 +13,10 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.util.ObjectUtils;
 
@@ -454,20 +456,20 @@ public final class JavaTypeInfo<T> {
   }
 
   @SuppressWarnings({"rawtypes", "unchecked" })
-  private static Builder<?> ofTypeImpl(final Type type) {
+  private static Builder<?> ofTypeImpl(final Type type, final Set<String> visitedTypeVar) {
     if (type instanceof Class<?>) {
       return new Builder((Class<?>) type).allowNull();
     }
     if (type instanceof ParameterizedType) {
       final ParameterizedType ptype = (ParameterizedType) type;
-      final Builder<?> builder = ofTypeImpl(ptype.getRawType());
+      final Builder<?> builder = ofTypeImpl(ptype.getRawType(), visitedTypeVar);
       for (Type typeArg : ptype.getActualTypeArguments()) {
-        builder.parameter(ofType(typeArg));
+        builder.parameter(ofTypeImpl(typeArg, visitedTypeVar).get());
       }
       return builder;
     }
     if (type instanceof GenericArrayType) {
-      return ofTypeImpl(((GenericArrayType) type).getGenericComponentType()).arrayOf();
+      return ofTypeImpl(((GenericArrayType) type).getGenericComponentType(), visitedTypeVar).arrayOf();
     }
     if (type instanceof TypeVariable) {
       final TypeVariable vtype = (TypeVariable) type;
@@ -475,7 +477,20 @@ public final class JavaTypeInfo<T> {
       if (bounds.length != 1) {
         throw new IllegalArgumentException("Can't handle " + type);
       }
-      return ofTypeImpl(bounds[0]);
+      if (visitedTypeVar == null) {
+        final Set<String> typeVars = new HashSet<String>();
+        typeVars.add(vtype.getName());
+        return ofTypeImpl(bounds[0], typeVars);
+      } else {
+        final Builder<?> result;
+        if (visitedTypeVar.add(vtype.getName())) {
+          result = ofTypeImpl(bounds[0], visitedTypeVar);
+          visitedTypeVar.remove(vtype.getName());
+        } else {
+          result = ofTypeImpl(Object.class, null);
+        }
+        return result;
+      }
     }
     /*if (type instanceof VariantType) {
       // [PLAT-5880] Implement this; otherwise the WildcardType handling below will be used
@@ -487,13 +502,13 @@ public final class JavaTypeInfo<T> {
       if (bounds.length != 1) {
         throw new IllegalArgumentException("Can't handle " + type);
       }
-      return ofTypeImpl(bounds[0]);
+      return ofTypeImpl(bounds[0], visitedTypeVar);
     }
     throw new IllegalArgumentException("Can't handle " + type);
   }
 
   public static JavaTypeInfo<?> ofType(final Type type) {
-    return ofTypeImpl(type).get();
+    return ofTypeImpl(type, null).get();
   }
 
 }
