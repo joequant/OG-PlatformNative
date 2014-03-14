@@ -196,11 +196,11 @@
     <ROW Action="set_DEPLOYMENT_NAME" BaseAction="set_INSTALL_32_BIT" After="1"/>
     <ROW Action="set_INSTALL_32_BIT" BaseAction="set_INSTALL_64_BIT" After="1"/>
     <ROW Action="set_INSTALL_64_BIT" BaseAction="FindRelatedProducts" After="1"/>
-    <ROW Action="UpdateSiteConfigurationTemplate.vbs" BaseAction="DuplicateFiles" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
-    <ROW Action="AI_DATA_SETTER" BaseAction="UpdateSiteConfigurationTemplate.vbs" After="0" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
+    <ROW Action="AI_DATA_SETTER" BaseAction="CreateShortcuts" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
+    <ROW Action="UpdateSiteConfigurationTemplate.vbs" BaseAction="AI_DATA_SETTER" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
-    <ROW ModuleID="FolderStructure" Version="2.2.26" GUID="171E6DFA_15A0_44FB_98AE_E609C66989DB" Name="OpenGamma folder template" Manufacturer="OpenGamma Ltd" Comments="An OpenGamma deployment&apos;s base folders and security model"/>
+    <ROW ModuleID="FolderStructure" Version="2.2.27" GUID="171E6DFA_15A0_44FB_98AE_E609C66989DB" Name="OpenGamma folder template" Manufacturer="OpenGamma Ltd" Comments="An OpenGamma deployment&apos;s base folders and security model"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleUISeqComponent">
     <ROW Action="set_BACKUP_1" BaseAction="set_DATA_PLATFORM_SITE_1" After="1"/>
