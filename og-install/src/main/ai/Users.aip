@@ -11,10 +11,10 @@
     <ROW Property="LIMITUI" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
     <ROW Property="OPENGAMMA_PASSWORD" Value="opengamma"/>
-    <ROW Property="ProductCode" Value="1033:{A9A23BF2-D86F-4A95-917F-2F77E701A590} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{234BD169-58D4-468F-A408-A9E109BA4340} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="OpenGamma users and groups" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="1.0.1" Type="32"/>
+    <ROW Property="ProductVersion" Value="2.0.0" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{290E7D41-601B-4F34-8BDB-52EA9C7B3242}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -73,6 +73,9 @@
     <ROW Action="AI_RollbackGroup" Description="Rolling back the creation of user groups on the local computer" Template="Account: [1]" DescriptionLocId="ActionText.Description.AI_RollbackGroup" TemplateLocId="ActionText.Template.AI_RollbackGroup"/>
     <ROW Action="AI_UninstallAccounts" Description="Generating actions to create user accounts on the local computer" Template="Account: [1], Attributes: [2]" DescriptionLocId="ActionText.Description.AI_ProcessAccounts" TemplateLocId="ActionText.Template.AI_ProcessAccounts"/>
     <ROW Action="AI_UninstallGroups" Description="Generating actions to remove user groups on the local computer" Template="Account: [1]" DescriptionLocId="ActionText.Description.AI_UninstallGroups" TemplateLocId="ActionText.Template.AI_UninstallGroups"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="OPENGAMMA_PASSWORD" Signature_="AppSearchSign"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
@@ -149,12 +152,15 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]" DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AppSearchSign" Root="2" Key="SOFTWARE\OpenGamma Ltd\User\Password" Type="2"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
-    <ROW Registry="PLAT6043" Root="2" Key="Software\OpenGamma Ltd\User\Password" Name="PLAT-6043" Component_="PLAT6043"/>
-    <ROW Registry="_" Root="2" Key="Software\OpenGamma Ltd\User" Value="OpenGamma" Component_="_"/>
-    <ROW Registry="admins" Root="2" Key="Software\OpenGamma Ltd\User" Name="admins" Value="OpenGammaAdmins" Component_="_"/>
-    <ROW Registry="system" Root="2" Key="Software\OpenGamma Ltd\User" Name="system" Value="OpenGammaSystem" Component_="_"/>
-    <ROW Registry="trusted" Root="2" Key="Software\OpenGamma Ltd\User" Name="trusted" Value="OpenGammaTrusted" Component_="_"/>
+    <ROW Registry="PLAT6043" Root="2" Key="Software\OpenGammaLtd\User\Password" Value="opengamma" Component_="PLAT6043"/>
+    <ROW Registry="_" Root="2" Key="Software\OpenGammaLtd\User" Value="OpenGamma" Component_="_"/>
+    <ROW Registry="admins" Root="2" Key="Software\OpenGammaLtd\User" Name="admins" Value="OpenGammaAdmins" Component_="_"/>
+    <ROW Registry="system" Root="2" Key="Software\OpenGammaLtd\User" Name="system" Value="OpenGammaSystem" Component_="_"/>
+    <ROW Registry="trusted" Root="2" Key="Software\OpenGammaLtd\User" Name="trusted" Value="OpenGammaTrusted" Component_="_"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>

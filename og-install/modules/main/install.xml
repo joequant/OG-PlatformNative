@@ -14,7 +14,9 @@
     <ai-set-version file="${src.path}${file.separator}Folders.aip" version="${msi.version.number}" />
     <ai-set-version file="${src.path}${file.separator}TestA.aip" version="${msi.version.number}" />
     <ai-set-version file="${src.path}${file.separator}TestB.aip" version="${msi.version.number}" />
-    <ai-build dir="${src.path}" file="Folders.aip" />
+    <copy file="${src.path}${file.separator}Folders.aip" tofile="${src.path}${file.separator}Folders-Temp.aip" />
+    <replace file="${src.path}${file.separator}Folders-Temp.aip" token="Data=&quot;SRCDIR" value="Data=&quot;${src.path}" />
+    <ai-build dir="${src.path}" file="Folders-Temp.aip" />
     <ai-build dir="${src.path}" file="Users.aip" />
     <copy file="${src.path}${file.separator}TestA.aip" tofile="${src.path}${file.separator}TestA-Temp.aip" />
     <copy file="${src.path}${file.separator}TestB.aip" tofile="${src.path}${file.separator}TestB-Temp.aip" />
