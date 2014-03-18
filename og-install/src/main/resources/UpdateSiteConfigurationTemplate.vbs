@@ -86,8 +86,6 @@ Public Function UpdateSiteConfigurationAI ()
   Dim astrParams
   Dim strPlatformDir
   Dim strSiteDir
-  Dim strProp
-  strProp = Session.Property (strActionData)
   astrParams = Split (Session.Property (strActionData), ";")
   strPlatformDir = astrParams (0)
   strSiteDir = astrParams (1)

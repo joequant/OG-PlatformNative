@@ -11,10 +11,10 @@
     <ROW Property="LIMITUI" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
     <ROW Property="OPENGAMMA_PASSWORD" Value="opengamma"/>
-    <ROW Property="ProductCode" Value="1033:{234BD169-58D4-468F-A408-A9E109BA4340} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{6FCE50D7-BFDB-4758-A80C-814FD1229F9E} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="OpenGamma users and groups" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="2.0.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="2.0.1" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{290E7D41-601B-4F34-8BDB-52EA9C7B3242}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -25,12 +25,17 @@
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="CredentialsCA" ComponentId="{05C71C2B-04BA-44C4-A4B0-A1B3E861512C}" Directory_="APPDIR" Attributes="4" KeyPath="CredentialsCA"/>
+    <ROW Component="CredentialsCA.vbs" ComponentId="{7BCCA5E7-FB8E-43C0-A723-0F0E988C7236}" Directory_="APPDIR" Attributes="0" KeyPath="CredentialsCA.vbs" Type="0"/>
     <ROW Component="PLAT6043" ComponentId="{67206D7A-74DF-43CC-902F-BC2B5C9A19DF}" Directory_="APPDIR" Attributes="4" KeyPath="PLAT6043"/>
     <ROW Component="_" ComponentId="{30262F12-E3F7-4F55-83C2-B962D771F465}" Directory_="APPDIR" Attributes="4" KeyPath="_"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="PLAT6043 _"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CredentialsCA CredentialsCA.vbs PLAT6043 _"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="CredentialsCA.vbs" Component_="CredentialsCA.vbs" FileName="Creden~1.vbs|CredentialsCA.vbs" Attributes="0" SourcePath="..\resources\CredentialsCA.vbs" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="..\..\..\target\installer" PackageFileName="Users" Languages="en" InstallationType="4" UseLargeSchema="true"/>
@@ -156,6 +161,7 @@
     <ROW Signature_="AppSearchSign" Root="2" Key="SOFTWARE\OpenGamma Ltd\User\Password" Type="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="CredentialsCA" Root="2" Key="Software\OpenGammaLtd\User" Name="CredentialsCA" Value="[#CredentialsCA.vbs]" Component_="CredentialsCA"/>
     <ROW Registry="PLAT6043" Root="2" Key="Software\OpenGammaLtd\User\Password" Value="opengamma" Component_="PLAT6043"/>
     <ROW Registry="_" Root="2" Key="Software\OpenGammaLtd\User" Value="OpenGamma" Component_="_"/>
     <ROW Registry="admins" Root="2" Key="Software\OpenGammaLtd\User" Name="admins" Value="OpenGammaAdmins" Component_="_"/>
