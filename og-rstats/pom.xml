@@ -38,7 +38,6 @@
     <cpp.source.dir>${localSource}/main/cpp</cpp.source.dir>
     <cpp.lib.internal>Client,Connector,Service,Util</cpp.lib.internal>
     <cpp.test-source.dir>${localSource}/test/cpp</cpp.test-source.dir>
-    <eclipse.skip>false</eclipse.skip>
   </properties>
 
   <profiles>

@@ -63,17 +63,6 @@
     </antcall>
   </target>
 
-  <target name="eclipse" description="Calls `mvn eclipse:eclipse` to generate Eclipse project files">
-    <property file="${local.dir}/eclipse.properties" />
-    <property name="eclipse.workspace" value="." />
-    <available file="pom-eclipse.xml" property="mvn.file" value="pom-eclipse.xml" />
-    <delete dir="${local.dir}/eclipse" failonerror="false" />
-    <antcall target="mvn-call">
-      <param name="phase" value="-Dmaven.compiler.failOnError=false &quot;-Declipse.workspace=${eclipse.workspace}&quot; package eclipse:eclipse" />
-      <param name="skip.tests" value="true" />
-    </antcall>
-  </target>
-
   <target name="mvn-init" depends="mvn3-check,mvn-check,mvn.bat-check,init"> 
     <property name="mvn.args" value="" />
     <condition property="env.MVN_ARGS" value="">

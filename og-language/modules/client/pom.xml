@@ -20,7 +20,6 @@
   <properties>
     <skip.unit-tests-java>false</skip.unit-tests-java>
     <skip.integration-tests-java>false</skip.integration-tests-java>
-    <eclipse.skip>false</eclipse.skip>
   </properties>
 
   <build>
