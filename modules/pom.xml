@@ -18,9 +18,9 @@
   <description>OpenGamma platform native aggregator project</description>
 
   <modules>
-    <module>og-install</module>
-    <module>og-language</module>
-    <module>og-rstats</module>
+    <module>../og-install/modules</module>
+    <module>../og-language/modules</module>
+    <module>../og-rstats/modules</module>
   </modules>
 
   <properties>
@@ -1120,6 +1120,7 @@
   </profiles>
 
   <build>
+    <directory>${root.dir}/target</directory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -9,7 +9,7 @@
     <groupId>com.opengamma.platform</groupId>
     <artifactId>og-platform-native</artifactId>
     <version>2.2.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <relativePath>../../modules</relativePath>
   </parent>
 
   <artifactId>og-language</artifactId>
@@ -26,14 +26,18 @@
     <cpp.lib.platform>log4cxx,apr-1,fudgec,pthread,stdc++,rt</cpp.lib.platform>
   </properties>
 
+  <build>
+    <directory>${localTarget}</directory>
+  </build>
+
   <modules>
-    <module>modules/base</module>
-    <module>modules/client</module>
-    <module>modules/connector</module>
-    <module>modules/package</module>
-    <module>modules/service</module>
-    <module>modules/service-runner</module>
-    <module>modules/util</module>
+    <module>base</module>
+    <module>client</module>
+    <module>connector</module>
+    <module>package</module>
+    <module>service</module>
+    <module>service-runner</module>
+    <module>util</module>
   </modules>
 
   <profiles>

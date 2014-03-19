@@ -10,9 +10,9 @@
 
   <target name="configure" depends="create-profile-dir,all-profiles" description="Sets up the build environment, identifying which components are to be built" />
   <target name="clean" depends="mvn-init" description="Calls `mvn clean` to delete any temporary/intermediate build files">
-    <exec executable="${mvn}" searchpath="true">
-      <arg value="clean" />
-    </exec>
+    <antcall target="mvn-call">
+      <param name="phase" value="clean" />
+    </antcall>
   </target>
 
   <target name="compile" description="Calls `mvn compile` to build all components">
@@ -103,7 +103,7 @@
     </condition>
   </target>
   <target name="mvn-call" depends="mvn-init,os-family">
-    <property name="mvn.file" value="pom.xml" />
+    <property name="mvn.file" value="modules/pom.xml" />
     <exec executable="${mvn}" searchpath="true" failonerror="true">
       <arg value="-f" />
       <arg value="${mvn.file}" />

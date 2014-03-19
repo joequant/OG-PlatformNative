@@ -9,7 +9,7 @@
     <groupId>com.opengamma.platform</groupId>
     <artifactId>og-platform-native</artifactId>
     <version>2.2.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <relativePath>../../modules</relativePath>
   </parent>  
 
   <artifactId>og-install</artifactId>
@@ -24,9 +24,13 @@
     <solutionFile>og-install.sln</solutionFile>
   </properties>
 
+  <build>
+    <directory>${localTarget}</directory>
+  </build>
+
   <modules>
-    <module>modules/jre</module>
-    <module>modules/main</module>
+    <module>jre</module>
+    <module>main</module>
   </modules>
 
 </project>

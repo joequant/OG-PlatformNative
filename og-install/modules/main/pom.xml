@@ -9,7 +9,7 @@
     <groupId>com.opengamma.platform</groupId>
     <artifactId>og-install</artifactId>
     <version>2.2.0-SNAPSHOT</version>
-    <relativePath>../../</relativePath>
+    <relativePath>..</relativePath>
   </parent>
 
   <artifactId>og-install-main</artifactId>
@@ -25,7 +25,6 @@
   </properties>
 
   <build>
-    <directory>${localTarget}</directory>
     <sourceDirectory>${localSource}/main/java</sourceDirectory>
     <testSourceDirectory>${localSource}/main-test/java</testSourceDirectory>
   </build>
