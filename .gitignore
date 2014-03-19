@@ -1,3 +1,7 @@
+.project
+.classpath
+.checkstyle
+.settings
 /target/
 /local/
 /og-*/target/
@@ -8,5 +12,4 @@
 *.suo
 *.vcxproj.user
 *~
-.settings
 *.iml

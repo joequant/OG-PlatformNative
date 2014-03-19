@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.opengamma.platform</groupId>
+    <artifactId>og-platform-native-ide</artifactId>
+    <version>2.2.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>  
+  <artifactId>og-platform-native-install-ide</artifactId>
+  <name>OG-Platform-Native-Install-IDE</name>
+  <description>OpenGamma platform native install project for IDEs</description>
+
+  <!-- ==================================================================== -->
+  <build>
+    <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+    <testSourceDirectory>${project.basedir}/src/main-test/java</testSourceDirectory>
+  </build>
+
+  <!-- ==================================================================== -->
+  <dependencies>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>

@@ -41,4 +41,14 @@ with Visual Studio and R available, use:
 
     ant -Dprofile.debug.windows.win32=true -Dtool.msvc=true -Dtool.r=true
 
+
+### pom.xml files and Use in a Java IDE
+
+This repository contains two sets of pom.xml files.
+
+The ones in the `modules` folder are used by ant to perform the full native build described above.
+The ones in the root folders, `./pom.xml`, `og-install/pom.xml`, `og-language/pom.xml`
+and `og-rstats/pom.xml`, are for Java IDE use only.
+For example, in Eclipse the files are pulled in using "Import / Existing Maven Projects" pointing at this folder.
+
 [![OpenGamma](http://developers.opengamma.com/res/display/default/chrome/masthead_logo.png "OpenGamma")](http://developers.opengamma.com)

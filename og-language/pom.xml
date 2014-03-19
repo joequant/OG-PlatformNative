@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.opengamma.platform</groupId>
+    <artifactId>og-platform-native-ide</artifactId>
+    <version>2.2.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>  
+  <artifactId>og-platform-native-language-ide</artifactId>
+  <name>OG-Platform-Native-Language-IDE</name>
+  <description>OpenGamma platform native language project for IDEs</description>
+
+  <!-- ==================================================================== -->
+  <build>
+    <sourceDirectory>${project.basedir}/src/client/java</sourceDirectory>
+    <testSourceDirectory>${project.basedir}/src/client-test/java</testSourceDirectory>
+  </build>
+
+  <!-- ==================================================================== -->
+  <dependencies>
+    <dependency>
+      <groupId>com.opengamma.platform</groupId>
+      <artifactId>og-financial</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.paranamer</groupId>
+      <artifactId>paranamer</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
