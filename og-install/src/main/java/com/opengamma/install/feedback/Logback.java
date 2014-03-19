@@ -11,6 +11,8 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 
 /**
  * Logback appender that will route messages back to the installation scripts.
+ * 
+ * @param <E>  the event type
  */
 public class Logback<E> extends UnsynchronizedAppenderBase<E> {
 

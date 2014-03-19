@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.opengamma.util.tuple.Pair;
+import com.opengamma.util.tuple.Pairs;
 
 /**
  * Utility Main method invoker
@@ -33,7 +34,7 @@ public class MainRunner implements Runnable {
     }
     _tasks = new ArrayList<Pair<String, String>>(args.length);
     for (int i = 0; i < args.length; i += 2) {
-      _tasks.add(Pair.of(args[i], args[i + 1]));
+      _tasks.add(Pairs.of(args[i], args[i + 1]));
     }
   }
 

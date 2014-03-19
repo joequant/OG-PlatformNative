@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Helper class for loading information from an MSM table.
  */
-/* package */class MSMTable {
+/* package */ final class MSMTable {
 
   public static final String CREATE_FOLDER_TABLE = "CreateFolder";
   public static final String CREATE_FOLDER_DIRECTORY_FIELD = "Directory_";
@@ -42,7 +42,7 @@ import java.util.Map;
   public static final String PROPERTY_KEY_FIELD = PROPERTY_TABLE;
   public static final String PROPERTY_VALUE_FIELD = "Value";
 
-  public class Row {
+  public final class Row {
 
     private final String[] _values;
 

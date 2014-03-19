@@ -282,6 +282,7 @@ public class WikiDocumentation extends WikiExporter {
   }
 
   @Override
+  @SuppressWarnings({"unchecked", "rawtypes" })
   protected WikiDocumentationExporter getDocumentationExporter(final CategorizingDefinitionExporter underlying) {
     return new WikiDocumentationExporter(underlying) {
 
@@ -291,19 +292,16 @@ public class WikiDocumentation extends WikiExporter {
         return getFunctionTerminology();
       }
 
-      @SuppressWarnings("unchecked")
       @Override
       protected WikiDocumenter createBaseDocumenter() {
         return new RDocumenter(this);
       }
 
-      @SuppressWarnings("unchecked")
       @Override
       protected WikiFunctionDocumenter createFunctionDocumenter(final WikiDocumenter base) {
         return new RFunction(this, base);
       }
 
-      @SuppressWarnings("unchecked")
       @Override
       protected WikiProcedureDocumenter createProcedureDocumenter(final WikiDocumenter base) {
         return new RProcedure(this, base);
