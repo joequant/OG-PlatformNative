@@ -3,6 +3,11 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
     <ROW Table="File" Column="Sequence" MinValue="1" MaxValue="32767" Description="Sequence with respect to the media images; order must track cabinet order." Options="0" ColumnType="2" ColumnIndex="7" ColumnSize="2" MsiKey="File#Sequence"/>
     <ROW Table="Media" Column="LastSequence" MinValue="0" MaxValue="32767" Description="File sequence number for the last file for this media." Options="0" ColumnType="2" ColumnIndex="1" ColumnSize="2" MsiKey="Media#LastSequence"/>
+    <ROW Table="MsiLockPermissionsEx" Column="Condition" Category="Condition" Description="This column contains a conditional expression used to determine whether to apply the specified permission." Options="17" ColumnType="1" ColumnIndex="5" ColumnSize="255" MsiKey="MsiLockPermissionsEx#Condition"/>
+    <ROW Table="MsiLockPermissionsEx" Column="LockObject" Category="Identifier" Description="This column and the Table column together specify the file, directory, registry key, or service that is to be secured." Options="16" ColumnType="1" ColumnIndex="2" ColumnSize="72" MsiKey="MsiLockPermissionsEx#LockObject"/>
+    <ROW Table="MsiLockPermissionsEx" Column="MsiLockPermissionsEx" Category="Text" Description="This is the primary key of this table." Options="18" ColumnType="1" ColumnIndex="1" ColumnSize="255" MsiKey="MsiLockPermissionsEx#MsiLockPermissionsEx"/>
+    <ROW Table="MsiLockPermissionsEx" Column="SDDLText" Category="FormattedSDDLText" Description="Enter the SDDL string to indicate permissions to apply to selected object." Options="16" ColumnType="1" ColumnIndex="4" ColumnSize="255" MsiKey="MsiLockPermissionsEx#SDDLText"/>
+    <ROW Table="MsiLockPermissionsEx" Column="Table" Category="Text" Description="This column and the LockObject column specify the file, directory, registry key, or service that is to be secured." Options="16" ColumnType="1" ColumnIndex="3" ColumnSize="32" MsiKey="MsiLockPermissionsEx#Table"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="ALLUSERS" Value="1"/>
@@ -11,10 +16,10 @@
     <ROW Property="LIMITUI" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
     <ROW Property="OPENGAMMA_PASSWORD" Value="opengamma"/>
-    <ROW Property="ProductCode" Value="1033:{6FCE50D7-BFDB-4758-A80C-814FD1229F9E} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{2D1D5FB9-36D3-4448-B771-E8BADBA93DE9} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
-    <ROW Property="ProductName" Value="OpenGamma users and groups" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="2.0.1" Type="32"/>
+    <ROW Property="ProductName" Value="OpenGamma Users and Groups" ValueLocId="*"/>
+    <ROW Property="ProductVersion" Value="2.1.1" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{290E7D41-601B-4F34-8BDB-52EA9C7B3242}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -25,17 +30,16 @@
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
-    <ROW Component="CredentialsCA" ComponentId="{05C71C2B-04BA-44C4-A4B0-A1B3E861512C}" Directory_="APPDIR" Attributes="4" KeyPath="CredentialsCA"/>
-    <ROW Component="CredentialsCA.vbs" ComponentId="{7BCCA5E7-FB8E-43C0-A723-0F0E988C7236}" Directory_="APPDIR" Attributes="0" KeyPath="CredentialsCA.vbs" Type="0"/>
-    <ROW Component="PLAT6043" ComponentId="{67206D7A-74DF-43CC-902F-BC2B5C9A19DF}" Directory_="APPDIR" Attributes="4" KeyPath="PLAT6043"/>
+    <ROW Component="CredentialsCA" ComponentId="{05C71C2B-04BA-44C4-A4B0-A1B3E861512C}" Directory_="APPDIR" Attributes="0" KeyPath="CredentialsCA.vbs"/>
     <ROW Component="_" ComponentId="{30262F12-E3F7-4F55-83C2-B962D771F465}" Directory_="APPDIR" Attributes="4" KeyPath="_"/>
+    <ROW Component="password" ComponentId="{67206D7A-74DF-43CC-902F-BC2B5C9A19DF}" Directory_="APPDIR" Attributes="4" KeyPath="PLAT6043"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CredentialsCA CredentialsCA.vbs PLAT6043 _"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CredentialsCA _ password"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="CredentialsCA.vbs" Component_="CredentialsCA.vbs" FileName="Creden~1.vbs|CredentialsCA.vbs" Attributes="0" SourcePath="..\resources\CredentialsCA.vbs" SelfReg="false"/>
+    <ROW File="CredentialsCA.vbs" Component_="CredentialsCA" FileName="Creden~1.vbs|CredentialsCA.vbs" Attributes="0" SourcePath="..\resources\CredentialsCA.vbs" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="..\..\..\target\installer" PackageFileName="Users" Languages="en" InstallationType="4" UseLargeSchema="true"/>
@@ -83,6 +87,7 @@
     <ROW Property="OPENGAMMA_PASSWORD" Signature_="AppSearchSign"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="CustomActions.dll" SourcePath="..\..\..\target\ReleaseWin32\CustomActions.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="userAccounts.dll" SourcePath="&lt;AI_CUSTACTS&gt;userAccounts.dll"/>
   </COMPONENT>
@@ -117,6 +122,7 @@
     <ROW Action="AI_CommitAccounts" Type="11777" Source="userAccounts.dll" Target="CommitAccounts" WithoutSeq="true"/>
     <ROW Action="AI_CreateAccount" Type="11265" Source="userAccounts.dll" Target="CreateAccount" WithoutSeq="true"/>
     <ROW Action="AI_CreateGroup" Type="11265" Source="userAccounts.dll" Target="CreateGroup" WithoutSeq="true"/>
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActions.dll" Target="OpenGammaSystem"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
@@ -133,6 +139,7 @@
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_UninstallAccounts" Type="1" Source="userAccounts.dll" Target="UninstallAccounts"/>
     <ROW Action="AI_UninstallGroups" Type="1" Source="userAccounts.dll" Target="UninstallGroups"/>
+    <ROW Action="CustomActions.dll" Type="3073" Source="CustomActions.dll" Target="GrantServicePrivileges" AdditionalSeq="AI_DATA_SETTER"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -148,6 +155,8 @@
     <ROW Action="AI_UninstallAccounts" Condition="(VersionNT &gt;= 500) AND (REMOVE = &quot;ALL&quot;)" Sequence="1649"/>
     <ROW Action="AI_ProcessGroups" Condition="(VersionNT &gt;= 500) AND (REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="1549"/>
     <ROW Action="AI_UninstallGroups" Condition="(VersionNT &gt;= 500) AND (REMOVE = &quot;ALL&quot;)" Sequence="1651"/>
+    <ROW Action="CustomActions.dll" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="6402"/>
+    <ROW Action="AI_DATA_SETTER" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="6401"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
@@ -157,12 +166,15 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]" DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLockPermissionsExComponent">
+    <ROW MsiLockPermissionsEx="PLAT6043_Perm" LockObject="PLAT6043" Table="Registry" SDDLText="D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICIIO;GA;;;CO)"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AppSearchSign" Root="2" Key="SOFTWARE\OpenGamma Ltd\User\Password" Type="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="CredentialsCA" Root="2" Key="Software\OpenGammaLtd\User" Name="CredentialsCA" Value="[#CredentialsCA.vbs]" Component_="CredentialsCA"/>
-    <ROW Registry="PLAT6043" Root="2" Key="Software\OpenGammaLtd\User\Password" Value="opengamma" Component_="PLAT6043"/>
+    <ROW Registry="PLAT6043" Root="2" Key="Software\OpenGammaLtd\User\Password" Value="opengamma" Component_="password"/>
     <ROW Registry="_" Root="2" Key="Software\OpenGammaLtd\User" Value="OpenGamma" Component_="_"/>
     <ROW Registry="admins" Root="2" Key="Software\OpenGammaLtd\User" Name="admins" Value="OpenGammaAdmins" Component_="_"/>
     <ROW Registry="system" Root="2" Key="Software\OpenGammaLtd\User" Name="system" Value="OpenGammaSystem" Component_="_"/>
