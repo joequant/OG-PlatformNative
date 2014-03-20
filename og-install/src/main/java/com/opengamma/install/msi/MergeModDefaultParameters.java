@@ -41,12 +41,7 @@ public class MergeModDefaultParameters extends AbstractAipProcessor {
       if (path == null) {
         continue;
       }
-      final String expectedParams = mergeModuleParams(path);
-      final String params = mergeMod.get(MERGE_MODULE_PARAMS_FIELD);
-      if ((params != null) && !params.equals(expectedParams)) {
-        throw new IllegalStateException("Assumed parameters - " + expectedParams + " different to " + params);
-      }
-      mergeMod.put(MERGE_MODULE_PARAMS_FIELD, expectedParams);
+      mergeMod.put(MERGE_MODULE_PARAMS_FIELD, mergeModuleParams(path));
     }
   }
 
