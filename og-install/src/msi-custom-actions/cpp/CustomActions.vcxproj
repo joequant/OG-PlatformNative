@@ -24,12 +24,12 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
@@ -59,6 +59,7 @@
     <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)target\msi-custom-action-objects\$(Configuration)$(Platform)\</IntDir>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
@@ -70,11 +71,13 @@
     <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)target\msi-custom-action-objects\$(Configuration)$(Platform)\</IntDir>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)target\$(Configuration)$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)target\msi-custom-action-objects\$(Configuration)$(Platform)\</IntDir>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -86,7 +89,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;advapi32.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>CustomAction.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>CustomActions.def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -111,7 +114,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;advapi32.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>CustomAction.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>CustomActions.def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -140,7 +143,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;advapi32.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>CustomAction.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>CustomActions.def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -169,7 +172,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;advapi32.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>CustomAction.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>CustomActions.def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -188,13 +191,18 @@
     <ResourceCompile Include="resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="filesddl.cpp" />
     <ClCompile Include="grant.cpp" />
+    <ClCompile Include="msisupport.cpp" />
+    <ClCompile Include="sidsupport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="msisupport.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="sidsupport.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CustomAction.def" />
+    <None Include="CustomActions.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

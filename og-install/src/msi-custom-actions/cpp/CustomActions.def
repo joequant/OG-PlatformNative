@@ -4,7 +4,8 @@
 ; Please see distribution for license.
 ;
 
-LIBRARY "CustomAction.dll"
+LIBRARY "CustomActions.dll"
 
 EXPORTS
+	FixInheritence			PRIVATE
 	GrantServicePrivileges	PRIVATE

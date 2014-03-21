@@ -23,14 +23,29 @@
     <ClCompile Include="grant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="filesddl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="msisupport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sidsupport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="msisupport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sidsupport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CustomAction.def">
+    <None Include="CustomActions.def">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
