@@ -7,21 +7,13 @@
 package com.opengamma.language.security;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.threeten.bp.LocalDate;
 
-import com.opengamma.OpenGammaRuntimeException;
-import com.opengamma.core.position.PortfolioNode;
-import com.opengamma.core.position.Position;
-import com.opengamma.financial.security.irs.FloatingInterestRateSwapLegSchedule;
-import com.opengamma.financial.security.irs.FloatingInterestRateSwapLegSchedule.Builder;
 import com.opengamma.financial.security.irs.InterestRateSwapLeg;
-import com.opengamma.financial.security.irs.InterestRateSwapNotional;
 import com.opengamma.financial.security.irs.InterestRateSwapSecurity;
 import com.opengamma.financial.security.irs.NotionalExchange;
-import com.opengamma.financial.security.irs.Rate;
 import com.opengamma.id.ExternalIdBundle;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
@@ -31,7 +23,6 @@ import com.opengamma.language.definition.MetaParameter;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
-import com.opengamma.util.money.Currency;
 
 /**
  * Creates a portfolio node from one or more positions or other nodes
@@ -51,6 +42,7 @@ public class InterestRateSwapSecurityFunction extends AbstractFunctionInvoker im
   private static final int UNADJUSTED_MATURITY_DATE = 3;
   private static final int LEGS = 4;
 
+  //TODO does NotionalExchange need exposing as a published function
   private static List<MetaParameter> parameters() {
     final MetaParameter name = new MetaParameter("name", JavaTypeInfo.builder(String.class).get());
     final MetaParameter dates = new MetaParameter("notionalExchange", JavaTypeInfo.builder(NotionalExchange.class).defaultValue(NotionalExchange.NO_EXCHANGE).get());
@@ -70,7 +62,11 @@ public class InterestRateSwapSecurityFunction extends AbstractFunctionInvoker im
   }
 
   public static InterestRateSwapSecurity invoke(final String name, final NotionalExchange notionalExchange, final LocalDate effectiveDate, final LocalDate unadjustedMaturityDate, final List<InterestRateSwapLeg> legs) {
-    InterestRateSwapSecurity swap = new InterestRateSwapSecurity(ExternalIdBundle.EMPTY, name, effectiveDate, unadjustedMaturityDate, legs);
+    InterestRateSwapSecurity swap = new InterestRateSwapSecurity(ExternalIdBundle.EMPTY,
+                                                                 name,
+                                                                 effectiveDate,
+                                                                 unadjustedMaturityDate,
+                                                                 legs);
     swap.setNotionalExchange(notionalExchange);
     return swap;
   }
@@ -80,7 +76,11 @@ public class InterestRateSwapSecurityFunction extends AbstractFunctionInvoker im
   @SuppressWarnings("unchecked")
   @Override
   protected Object invokeImpl(final SessionContext sessionContext, final Object[] parameters) {
-    return invoke((String) parameters[NAME], (NotionalExchange) parameters[NOTIONAL_EXCHANGE], (LocalDate) parameters[EFFECTIVE_DATE], (LocalDate) parameters[UNADJUSTED_MATURITY_DATE], (List<InterestRateSwapLeg>) parameters[LEGS]);
+    return invoke((String) parameters[NAME],
+                  (NotionalExchange) parameters[NOTIONAL_EXCHANGE],
+                  (LocalDate) parameters[EFFECTIVE_DATE],
+                  (LocalDate) parameters[UNADJUSTED_MATURITY_DATE],
+                  (List<InterestRateSwapLeg>) parameters[LEGS]);
   }
 
   // PublishedFunction

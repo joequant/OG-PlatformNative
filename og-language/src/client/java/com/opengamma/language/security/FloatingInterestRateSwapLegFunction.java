@@ -118,16 +118,16 @@ public class FloatingInterestRateSwapLegFunction extends AbstractFunctionInvoker
     final MetaParameter paymentDateBusinessDayConvention = new MetaParameter("paymentDateBusinessDayConvention", JavaTypeInfo.builder(BusinessDayConvention.class).get());
     final MetaParameter paymentDateFrequency = new MetaParameter("paymentDateFrequency", JavaTypeInfo.builder(Frequency.class).get());
     final MetaParameter paymentDateRelativeTo = new MetaParameter("paymentDateRelativeTo", JavaTypeInfo.builder(DateRelativeTo.class).allowNull().get()); // allow null even though NotNull field because initialised
-    final MetaParameter paymentOffset = new MetaParameter("paymentOffset", JavaTypeInfo.builder(Integer.class).allowNull().get()); // allow null even though NotNull field because initialised    
+    final MetaParameter paymentOffset = new MetaParameter("paymentOffset", JavaTypeInfo.builder(Integer.class).allowNull().get()); // allow null even though NotNull field because initialised
     final MetaParameter accrualDateCalendars = new MetaParameter("accrualPeriodCalendars", JavaTypeInfo.builder(Set.class).allowNull()
         .parameter(JavaTypeInfo.builder(ExternalId.class).get()).get());
     final MetaParameter accrualDateBusinessDayConvention = new MetaParameter("accrualPeriodBusinessDayConvention", JavaTypeInfo.builder(BusinessDayConvention.class).get());
     final MetaParameter accrualDateFrequency = new MetaParameter("accrualPeriodFrequency", JavaTypeInfo.builder(Frequency.class).get());
     return Arrays.asList(customRates, rateAveragingMethod, rateCutoffDaysOffset, capRate, floorRate, gearing, spreadSchedule, schedule, floatingReferenceRateId, floatingRateType,
-        resetPeriodCalendars, resetPeriodBusinessDayConvention, resetPeriodFrequency, resetDateRelativeTo, compoundingMethod, fixingDateCalendars, fixingDateBusinessDayConvention,
-        fixingDateOffset, fixingDateOffsetType, notional, payReceiveType, stubCalculationMethod, dayCountConvention, rollConvention, maturityDateCalendars,
-        maturityDateBusinessDayConvention, paymentDateCalendars, paymentDateBusinessDayConvention, paymentDateFrequency, paymentDateRelativeTo, paymentOffset, accrualDateCalendars,
-        accrualDateBusinessDayConvention, accrualDateFrequency);
+                         resetPeriodCalendars, resetPeriodBusinessDayConvention, resetPeriodFrequency, resetDateRelativeTo, compoundingMethod, fixingDateCalendars, fixingDateBusinessDayConvention,
+                         fixingDateOffset, fixingDateOffsetType, notional, payReceiveType, stubCalculationMethod, dayCountConvention, rollConvention, maturityDateCalendars,
+                         maturityDateBusinessDayConvention, paymentDateCalendars, paymentDateBusinessDayConvention, paymentDateFrequency, paymentDateRelativeTo, paymentOffset, accrualDateCalendars,
+                         accrualDateBusinessDayConvention, accrualDateFrequency);
   }
 
   private FloatingInterestRateSwapLegFunction(final DefinitionAnnotater info) {
@@ -140,14 +140,14 @@ public class FloatingInterestRateSwapLegFunction extends AbstractFunctionInvoker
   }
 
   public static FloatingInterestRateSwapLeg invoke(final Rate customRates, final RateAveragingMethod rateAveragingMethod, final Integer rateCutoffDaysOffset, final Double capRate,
-      final Double floorRate, final Double gearing, final Rate spreadSchedule, final FloatingInterestRateSwapLegSchedule schedule, final ExternalId floatingReferenceRateId,
-      final FloatingRateType floatingRateType, Set<ExternalId> resetPeriodCalendars, final BusinessDayConvention resetPeriodBusinessDayConvention, final Frequency resetPeriodFrequency,
-      final DateRelativeTo resetDateRelativeTo, final CompoundingMethod compoundingMethod, final Set<ExternalId> fixingDateCalendars,
-      final BusinessDayConvention fixedDateBusinessDayConvention, final Integer fixingDateOffset, final OffsetType fixingDateOffsetType, final InterestRateSwapNotional notional,
-      final PayReceiveType payReceiveType, final StubCalculationMethod stubCalculationMethod, final DayCount dayCountConvention, final RollConvention rollConvention,
-      final Set<ExternalId> maturityDateCalendars, final BusinessDayConvention maturityDateBusinessDayConvention, final Set<ExternalId> paymentDateCalendars,
-      final BusinessDayConvention paymentDateBusienssDayConvention, final Frequency paymentDateFrequency, final DateRelativeTo paymentDateRelativeTo, final Integer paymentOffset,
-      final Set<ExternalId> accrualPeriodCalendars, final BusinessDayConvention accrualPeriodBusinessDayConvention, final Frequency accrualPeriodFrequency) {
+                                                   final Double floorRate, final Double gearing, final Rate spreadSchedule, final FloatingInterestRateSwapLegSchedule schedule, final ExternalId floatingReferenceRateId,
+                                                   final FloatingRateType floatingRateType, Set<ExternalId> resetPeriodCalendars, final BusinessDayConvention resetPeriodBusinessDayConvention, final Frequency resetPeriodFrequency,
+                                                   final DateRelativeTo resetDateRelativeTo, final CompoundingMethod compoundingMethod, final Set<ExternalId> fixingDateCalendars,
+                                                   final BusinessDayConvention fixingDateBusinessDayConvention, final Integer fixingDateOffset, final OffsetType fixingDateOffsetType, final InterestRateSwapNotional notional,
+                                                   final PayReceiveType payReceiveType, final StubCalculationMethod stubCalculationMethod, final DayCount dayCountConvention, final RollConvention rollConvention,
+                                                   final Set<ExternalId> maturityDateCalendars, final BusinessDayConvention maturityDateBusinessDayConvention, final Set<ExternalId> paymentDateCalendars,
+                                                   final BusinessDayConvention paymentDateBusinessDayConvention, final Frequency paymentDateFrequency, final DateRelativeTo paymentDateRelativeTo, final Integer paymentOffset,
+                                                   final Set<ExternalId> accrualPeriodCalendars, final BusinessDayConvention accrualPeriodBusinessDayConvention, final Frequency accrualPeriodFrequency) {
     FloatingInterestRateSwapLeg leg = new FloatingInterestRateSwapLeg();
     leg.setCustomRates(customRates);
     leg.setRateAveragingMethod(rateAveragingMethod);
@@ -163,13 +163,15 @@ public class FloatingInterestRateSwapLegFunction extends AbstractFunctionInvoker
     leg.setResetPeriodBusinessDayConvention(resetPeriodBusinessDayConvention);
     leg.setResetPeriodFrequency(resetPeriodFrequency);
     leg.setResetDateRelativeTo(resetDateRelativeTo);
+    leg.setFixingDateBusinessDayConvention(fixingDateBusinessDayConvention);
+    leg.setMaturityDateBusinessDayConvention(maturityDateBusinessDayConvention);
     if (compoundingMethod != null) {
       leg.setCompoundingMethod(compoundingMethod);
     }
     if (fixingDateCalendars != null) {
       leg.setFixingDateCalendars(fixingDateCalendars);
     }
-    leg.setFixingDateBusinessDayConvention(maturityDateBusinessDayConvention);
+
     if (fixingDateOffset != null) { // keep default zero value if null
       leg.setFixingDateOffset(fixingDateOffset);
     }
@@ -184,11 +186,11 @@ public class FloatingInterestRateSwapLegFunction extends AbstractFunctionInvoker
     if (maturityDateCalendars != null) {
       leg.setMaturityDateCalendars(maturityDateCalendars);
     }
-    leg.setPaymentDateBusinessDayConvention(paymentDateBusienssDayConvention);
+    leg.setPaymentDateBusinessDayConvention(paymentDateBusinessDayConvention);
     if (paymentDateCalendars != null) {
       leg.setPaymentDateCalendars(paymentDateCalendars);
     }
-    leg.setPaymentDateBusinessDayConvention(paymentDateBusienssDayConvention);
+    leg.setPaymentDateBusinessDayConvention(paymentDateBusinessDayConvention);
     leg.setPaymentDateFrequency(paymentDateFrequency);
     if (paymentDateRelativeTo != null) {
       leg.setPaymentDateRelativeTo(paymentDateRelativeTo);
@@ -210,16 +212,16 @@ public class FloatingInterestRateSwapLegFunction extends AbstractFunctionInvoker
   @Override
   protected Object invokeImpl(final SessionContext sessionContext, final Object[] parameters) {
     return invoke((Rate) parameters[CUSTOM_RATES], (RateAveragingMethod) parameters[RATE_AVERAGING_METHOD], (Integer) parameters[RATE_CUTOFF_DAYS_OFFSET], (Double) parameters[CAP_RATE],
-        (Double) parameters[FLOOR_RATE], (Double) parameters[GEARING], (Rate) parameters[SPREAD_SCHEDULE], (FloatingInterestRateSwapLegSchedule) parameters[SCHEDULE],
-        (ExternalId) parameters[FLOATING_REFERENCE_RATE_ID], (FloatingRateType) parameters[FLOATING_RATE_TYPE], (Set<ExternalId>) parameters[RESET_PERIOD_CALENDARS],
-        (BusinessDayConvention) parameters[RESET_PERIOD_BUSINESS_DAY_CONVENTION], (Frequency) parameters[RESET_PERIOD_FREQUENCY], (DateRelativeTo) parameters[RESET_DATE_RELATIVE_TO],
-        (CompoundingMethod) parameters[COMPOUNDING_METHOD], (Set<ExternalId>) parameters[FIXING_DATE_CALENDARS], (BusinessDayConvention) parameters[FIXING_DATE_BUSINESS_DAY_CONVENTION],
-        (Integer) parameters[FIXING_DATE_OFFSET], (OffsetType) parameters[FIXING_DATE_OFFSET_TYPE], (InterestRateSwapNotional) parameters[NOTIONAL],
-        (PayReceiveType) parameters[PAY_RECEIVE_TYPE], (StubCalculationMethod) parameters[STUB_CALCULATION_METHOD], (DayCount) parameters[DAY_COUNT_CONVENTION],
-        (RollConvention) parameters[ROLL_CONVENTION], (Set<ExternalId>) parameters[MATURITY_DATE_CALENDARS], (BusinessDayConvention) parameters[MATURITY_DATE_BUSINESS_DAY_CONVENTION],
-        (Set<ExternalId>) parameters[PAYMENT_DATE_CALENDARS], (BusinessDayConvention) parameters[PAYMENT_DATE_BUSINESS_DAY_CONVENTION], (Frequency) parameters[PAYMENT_DATE_FREQUENCY],
-        (DateRelativeTo) parameters[PAYMENT_DATE_RELATIVE_TO], (Integer) parameters[PAYMENT_OFFSET], (Set<ExternalId>) parameters[ACCRUAL_PERIOD_CALENDARS],
-        (BusinessDayConvention) parameters[ACCRUAL_PERIOD_BUSINESS_DAY_CONVENTION], (Frequency) parameters[ACCRUAL_PERIOD_FREQUENCY]);
+                  (Double) parameters[FLOOR_RATE], (Double) parameters[GEARING], (Rate) parameters[SPREAD_SCHEDULE], (FloatingInterestRateSwapLegSchedule) parameters[SCHEDULE],
+                  (ExternalId) parameters[FLOATING_REFERENCE_RATE_ID], (FloatingRateType) parameters[FLOATING_RATE_TYPE], (Set<ExternalId>) parameters[RESET_PERIOD_CALENDARS],
+                  (BusinessDayConvention) parameters[RESET_PERIOD_BUSINESS_DAY_CONVENTION], (Frequency) parameters[RESET_PERIOD_FREQUENCY], (DateRelativeTo) parameters[RESET_DATE_RELATIVE_TO],
+                  (CompoundingMethod) parameters[COMPOUNDING_METHOD], (Set<ExternalId>) parameters[FIXING_DATE_CALENDARS], (BusinessDayConvention) parameters[FIXING_DATE_BUSINESS_DAY_CONVENTION],
+                  (Integer) parameters[FIXING_DATE_OFFSET], (OffsetType) parameters[FIXING_DATE_OFFSET_TYPE], (InterestRateSwapNotional) parameters[NOTIONAL],
+                  (PayReceiveType) parameters[PAY_RECEIVE_TYPE], (StubCalculationMethod) parameters[STUB_CALCULATION_METHOD], (DayCount) parameters[DAY_COUNT_CONVENTION],
+                  (RollConvention) parameters[ROLL_CONVENTION], (Set<ExternalId>) parameters[MATURITY_DATE_CALENDARS], (BusinessDayConvention) parameters[MATURITY_DATE_BUSINESS_DAY_CONVENTION],
+                  (Set<ExternalId>) parameters[PAYMENT_DATE_CALENDARS], (BusinessDayConvention) parameters[PAYMENT_DATE_BUSINESS_DAY_CONVENTION], (Frequency) parameters[PAYMENT_DATE_FREQUENCY],
+                  (DateRelativeTo) parameters[PAYMENT_DATE_RELATIVE_TO], (Integer) parameters[PAYMENT_OFFSET], (Set<ExternalId>) parameters[ACCRUAL_PERIOD_CALENDARS],
+                  (BusinessDayConvention) parameters[ACCRUAL_PERIOD_BUSINESS_DAY_CONVENTION], (Frequency) parameters[ACCRUAL_PERIOD_FREQUENCY]);
   }
 
   // PublishedFunction

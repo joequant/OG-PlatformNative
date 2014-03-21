@@ -10,18 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.threeten.bp.LocalDate;
-
 import com.opengamma.analytics.financial.instrument.annuity.DateRelativeTo;
-import com.opengamma.core.position.PortfolioNode;
-import com.opengamma.core.position.Position;
 import com.opengamma.financial.convention.businessday.BusinessDayConvention;
 import com.opengamma.financial.convention.daycount.DayCount;
 import com.opengamma.financial.convention.frequency.Frequency;
 import com.opengamma.financial.convention.rolldate.RollConvention;
 import com.opengamma.financial.security.irs.FixedInterestRateSwapLeg;
 import com.opengamma.financial.security.irs.FloatingInterestRateSwapLegSchedule;
-import com.opengamma.financial.security.irs.InterestRateSwapLeg;
 import com.opengamma.financial.security.irs.InterestRateSwapNotional;
 import com.opengamma.financial.security.irs.PayReceiveType;
 import com.opengamma.financial.security.irs.Rate;
@@ -35,7 +30,6 @@ import com.opengamma.language.definition.MetaParameter;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
-import com.opengamma.util.money.Currency;
 
 /**
  * Creates a portfolio node from one or more positions or other nodes
@@ -77,32 +71,32 @@ public class FixedInterestRateSwapLegFunction extends AbstractFunctionInvoker im
     final MetaParameter maturityDateCalendars = new MetaParameter("maturityDateCalendars", JavaTypeInfo.builder(Set.class).allowNull().parameter(JavaTypeInfo.builder(ExternalId.class).get()).get());
     final MetaParameter maturityDateBusinessDayConvention = new MetaParameter("maturityDateBusinessDayConvention", JavaTypeInfo.builder(BusinessDayConvention.class).get());
     final MetaParameter paymentDateCalendars = new MetaParameter("paymentDateCalendars", JavaTypeInfo.builder(Set.class).allowNull().parameter(JavaTypeInfo.builder(ExternalId.class).get()).get());
-    final MetaParameter paymentDateBusinessDayConvention = new MetaParameter("paymentDateBusinessDayConvention", JavaTypeInfo.builder(BusinessDayConvention.class).get());    
-    final MetaParameter paymentDateFrequency = new MetaParameter("paymentDateFrequency", JavaTypeInfo.builder(Frequency.class).get());    
+    final MetaParameter paymentDateBusinessDayConvention = new MetaParameter("paymentDateBusinessDayConvention", JavaTypeInfo.builder(BusinessDayConvention.class).get());
+    final MetaParameter paymentDateFrequency = new MetaParameter("paymentDateFrequency", JavaTypeInfo.builder(Frequency.class).get());
     final MetaParameter paymentDateRelativeTo = new MetaParameter("paymentDateRelativeTo", JavaTypeInfo.builder(DateRelativeTo.class).allowNull().get());    // allow null even though NotNull field because initialised
-    final MetaParameter paymentOffset = new MetaParameter("paymentOffset", JavaTypeInfo.builder(Integer.class).allowNull().get());    // allow null even though NotNull field because initialised    
+    final MetaParameter paymentOffset = new MetaParameter("paymentOffset", JavaTypeInfo.builder(Integer.class).allowNull().get());    // allow null even though NotNull field because initialised
     final MetaParameter accrualDateCalendars = new MetaParameter("accrualPeriodCalendars", JavaTypeInfo.builder(Set.class).allowNull().parameter(JavaTypeInfo.builder(ExternalId.class).get()).get());
-    final MetaParameter accrualDateBusinessDayConvention = new MetaParameter("accrualPeriodBusinessDayConvention", JavaTypeInfo.builder(BusinessDayConvention.class).get());    
-    final MetaParameter accrualDateFrequency = new MetaParameter("accrualPeriodFrequency", JavaTypeInfo.builder(Frequency.class).get());    
-    return Arrays.asList(rate, schedule, notional, payReceiveType, stubCalculationMethod, dayCountConvention, rollConvention, 
-                         maturityDateCalendars, maturityDateBusinessDayConvention, 
+    final MetaParameter accrualDateBusinessDayConvention = new MetaParameter("accrualPeriodBusinessDayConvention", JavaTypeInfo.builder(BusinessDayConvention.class).get());
+    final MetaParameter accrualDateFrequency = new MetaParameter("accrualPeriodFrequency", JavaTypeInfo.builder(Frequency.class).get());
+    return Arrays.asList(rate, schedule, notional, payReceiveType, stubCalculationMethod, dayCountConvention, rollConvention,
+                         maturityDateCalendars, maturityDateBusinessDayConvention,
                          paymentDateCalendars, paymentDateBusinessDayConvention, paymentDateFrequency, paymentDateRelativeTo, paymentOffset,
                          accrualDateCalendars, accrualDateBusinessDayConvention, accrualDateFrequency);
   }
 
   private FixedInterestRateSwapLegFunction(final DefinitionAnnotater info) {
     super(info.annotate(parameters()));
-    _meta = info.annotate(new MetaFunction(Categories.SECURITY, "InterestRateSwapLeg", getParameters(), this));
+    _meta = info.annotate(new MetaFunction(Categories.SECURITY, "FixedInterestRateSwapLeg", getParameters(), this));
   }
 
   protected FixedInterestRateSwapLegFunction() {
     this(new DefinitionAnnotater(FixedInterestRateSwapLegFunction.class));
   }
 
-  public static FixedInterestRateSwapLeg invoke(final Rate rate, final FloatingInterestRateSwapLegSchedule schedule, final InterestRateSwapNotional notional, final PayReceiveType payReceiveType, 
+  public static FixedInterestRateSwapLeg invoke(final Rate rate, final FloatingInterestRateSwapLegSchedule schedule, final InterestRateSwapNotional notional, final PayReceiveType payReceiveType,
                                                 final StubCalculationMethod stubCalculationMethod, final DayCount dayCountConvention,
                                                 final RollConvention rollConvention, final Set<ExternalId> maturityDateCalendars, final BusinessDayConvention maturityDateBusinessDayConvention,
-                                                final Set<ExternalId> paymentDateCalendars, final BusinessDayConvention paymentDateBusienssDayConvention, final Frequency paymentDateFrequency, final DateRelativeTo paymentDateRelativeTo,
+                                                final Set<ExternalId> paymentDateCalendars, final BusinessDayConvention paymentDateBusinessDayConvention, final Frequency paymentDateFrequency, final DateRelativeTo paymentDateRelativeTo,
                                                 final Integer paymentOffset, final Set<ExternalId> accrualPeriodCalendars, final BusinessDayConvention accrualPeriodBusinessDayConvention,
                                                 final Frequency accrualPeriodFrequency) {
     FixedInterestRateSwapLeg leg = new FixedInterestRateSwapLeg();
@@ -112,17 +106,18 @@ public class FixedInterestRateSwapLegFunction extends AbstractFunctionInvoker im
     leg.setPayReceiveType(payReceiveType);
     leg.setStubCalculationMethod(stubCalculationMethod);
     leg.setDayCountConvention(dayCountConvention);
+    leg.setMaturityDateBusinessDayConvention(maturityDateBusinessDayConvention);
     if (rollConvention != null) {
       leg.setRollConvention(rollConvention);
     }
     if (maturityDateCalendars != null) {
       leg.setMaturityDateCalendars(maturityDateCalendars);
     }
-    leg.setPaymentDateBusinessDayConvention(paymentDateBusienssDayConvention);
+    leg.setPaymentDateBusinessDayConvention(paymentDateBusinessDayConvention);
     if (paymentDateCalendars != null) {
       leg.setPaymentDateCalendars(paymentDateCalendars);
     }
-    leg.setPaymentDateBusinessDayConvention(paymentDateBusienssDayConvention);
+    leg.setPaymentDateBusinessDayConvention(paymentDateBusinessDayConvention);
     leg.setPaymentDateFrequency(paymentDateFrequency);
     if (paymentDateRelativeTo != null) {
       leg.setPaymentDateRelativeTo(paymentDateRelativeTo);
@@ -143,7 +138,8 @@ public class FixedInterestRateSwapLegFunction extends AbstractFunctionInvoker im
   @SuppressWarnings("unchecked")
   @Override
   protected Object invokeImpl(final SessionContext sessionContext, final Object[] parameters) {
-    return invoke((Rate) parameters[RATE], (FloatingInterestRateSwapLegSchedule) parameters[SCHEDULE], (InterestRateSwapNotional) parameters[NOTIONAL], (PayReceiveType) parameters[PAY_RECEIVE_TYPE], (StubCalculationMethod) parameters[STUB_CALCULATION_METHOD], (DayCount) parameters[DAY_COUNT_CONVENTION],
+    return invoke((Rate) parameters[RATE], (FloatingInterestRateSwapLegSchedule) parameters[SCHEDULE], (InterestRateSwapNotional) parameters[NOTIONAL], (PayReceiveType) parameters[PAY_RECEIVE_TYPE],
+                  (StubCalculationMethod) parameters[STUB_CALCULATION_METHOD], (DayCount) parameters[DAY_COUNT_CONVENTION],
                   (RollConvention) parameters[ROLL_CONVENTION], (Set<ExternalId>) parameters[MATURITY_DATE_CALENDARS], (BusinessDayConvention) parameters[MATURITY_DATE_BUSINESS_DAY_CONVENTION],
                   (Set<ExternalId>) parameters[PAYMENT_DATE_CALENDARS], (BusinessDayConvention) parameters[PAYMENT_DATE_BUSINESS_DAY_CONVENTION], (Frequency) parameters[PAYMENT_DATE_FREQUENCY],
                   (DateRelativeTo) parameters[PAYMENT_DATE_RELATIVE_TO], (Integer) parameters[PAYMENT_OFFSET], (Set<ExternalId>) parameters[ACCRUAL_PERIOD_CALENDARS],
