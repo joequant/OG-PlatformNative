@@ -129,8 +129,8 @@ opengamma.configuration.failOnMissing=false
     <antcall target="windows-installer" />
   </target>
   <target name="windows-installer" if="profile.windows.ai" depends="msi-version-number">
-    <ai-set-version file="src${file.separator}main${file.separator}ai${file.separator}R.aip" version="${msi.version.number}" />
-    <ai-build dir="src${file.separator}main${file.separator}ai${file.separator}" file="R.aip" />
+    <ai-set-version file="${localSource}${file.separator}main${file.separator}ai${file.separator}R.aip" version="${msi.version.number}" />
+    <ai-build dir="${localSource}${file.separator}main${file.separator}ai${file.separator}" file="R.aip" />
   </target>
 
   <target name="integration-test" if="profile.r" depends="r-configuration">
