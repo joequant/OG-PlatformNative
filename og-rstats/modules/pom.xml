@@ -454,7 +454,6 @@
   </profiles>
 
   <build>
-    <directory>${localTarget}</directory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

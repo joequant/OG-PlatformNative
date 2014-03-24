@@ -26,10 +26,6 @@
     <cpp.lib.platform>log4cxx,apr-1,fudgec,pthread,stdc++,rt</cpp.lib.platform>
   </properties>
 
-  <build>
-    <directory>${localTarget}</directory>
-  </build>
-
   <modules>
     <module>base</module>
     <module>client</module>

@@ -24,10 +24,6 @@
     <solutionFile>og-install.sln</solutionFile>
   </properties>
 
-  <build>
-    <directory>${localTarget}</directory>
-  </build>
-
   <modules>
     <module>jre</module>
     <module>main</module>
