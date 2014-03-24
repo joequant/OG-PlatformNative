@@ -16,10 +16,10 @@
     <ROW Property="LIMITUI" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
     <ROW Property="OPENGAMMA_PASSWORD" Value="opengamma"/>
-    <ROW Property="ProductCode" Value="1033:{2D1D5FB9-36D3-4448-B771-E8BADBA93DE9} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{CE8C3432-94B4-43BE-912A-E8734D473360} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="OpenGamma Users and Groups" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="2.1.1" Type="32"/>
+    <ROW Property="ProductVersion" Value="2.1.2" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{290E7D41-601B-4F34-8BDB-52EA9C7B3242}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -122,7 +122,9 @@
     <ROW Action="AI_CommitAccounts" Type="11777" Source="userAccounts.dll" Target="CommitAccounts" WithoutSeq="true"/>
     <ROW Action="AI_CreateAccount" Type="11265" Source="userAccounts.dll" Target="CreateAccount" WithoutSeq="true"/>
     <ROW Action="AI_CreateGroup" Type="11265" Source="userAccounts.dll" Target="CreateGroup" WithoutSeq="true"/>
-    <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActions.dll" Target="OpenGammaSystem"/>
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="GrantServicePrivileges" Target="OpenGammaSystem"/>
+    <ROW Action="AI_DATA_SETTER_1" Type="51" Source="GrantServicePrivileges_rollback" Target="OpenGammaSystem"/>
+    <ROW Action="AI_DATA_SETTER_2" Type="51" Source="GrantServicePrivileges_uninst" Target="OpenGammaSystem"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
@@ -139,7 +141,9 @@
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_UninstallAccounts" Type="1" Source="userAccounts.dll" Target="UninstallAccounts"/>
     <ROW Action="AI_UninstallGroups" Type="1" Source="userAccounts.dll" Target="UninstallGroups"/>
-    <ROW Action="CustomActions.dll" Type="3073" Source="CustomActions.dll" Target="GrantServicePrivileges" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="GrantServicePrivileges" Type="3073" Source="CustomActions.dll" Target="GrantServicePrivileges" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="GrantServicePrivileges_rollback" Type="3393" Source="CustomActions.dll" Target="RevokeServicePrivileges" AdditionalSeq="AI_DATA_SETTER_1"/>
+    <ROW Action="GrantServicePrivileges_uninst" Type="3137" Source="CustomActions.dll" Target="RevokeServicePrivileges" AdditionalSeq="AI_DATA_SETTER_2"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -153,10 +157,14 @@
     <ROW Action="AI_ResolveLocalizedCredentials" Sequence="51"/>
     <ROW Action="AI_ProcessAccounts" Condition="(VersionNT &gt;= 500) AND (REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="1551"/>
     <ROW Action="AI_UninstallAccounts" Condition="(VersionNT &gt;= 500) AND (REMOVE = &quot;ALL&quot;)" Sequence="1649"/>
-    <ROW Action="AI_ProcessGroups" Condition="(VersionNT &gt;= 500) AND (REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="1549"/>
+    <ROW Action="AI_ProcessGroups" Condition="(VersionNT &gt;= 500) AND (REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="1547"/>
     <ROW Action="AI_UninstallGroups" Condition="(VersionNT &gt;= 500) AND (REMOVE = &quot;ALL&quot;)" Sequence="1651"/>
-    <ROW Action="CustomActions.dll" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="6402"/>
-    <ROW Action="AI_DATA_SETTER" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="6401"/>
+    <ROW Action="GrantServicePrivileges" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="6404"/>
+    <ROW Action="AI_DATA_SETTER" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="6403"/>
+    <ROW Action="GrantServicePrivileges_rollback" Condition="( NOT Installed )" Sequence="6402"/>
+    <ROW Action="AI_DATA_SETTER_1" Condition="( NOT Installed )" Sequence="6401"/>
+    <ROW Action="GrantServicePrivileges_uninst" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1602"/>
+    <ROW Action="AI_DATA_SETTER_2" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1601"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>

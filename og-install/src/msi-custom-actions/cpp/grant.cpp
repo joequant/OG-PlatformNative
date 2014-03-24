@@ -26,12 +26,13 @@ static LSA_HANDLE _OpenPolicy () {
 	return handle;
 }
 
-/// Grants the "Log on as a service" right to the account.
+/// Grants or removes the "Log on as a service" right to the account.
 ///
 /// @param[in] hPolicy the Local Security Policy object
 /// @param[in] psid the account to update
+/// @param[in] bGrant TRUE to grant the right, FALSE to revoke it
 /// @return TRUE if the right was granted, FALSE otherwise (call GetLastError)
-static BOOL _Grant (LSA_HANDLE hPolicy, PSID psid) {
+static BOOL _GrantOrRevoke (LSA_HANDLE hPolicy, PSID psid, BOOL bGrant) {
 	BOOL bResult = FALSE;
 	LSA_UNICODE_STRING rights;
 	NTSTATUS sta;
@@ -39,7 +40,7 @@ static BOOL _Grant (LSA_HANDLE hPolicy, PSID psid) {
 	rights.Buffer = L"SeServiceLogonRight";
 	rights.Length = 19 * sizeof (WCHAR); // not including the null
 	rights.MaximumLength = 20 * sizeof (WCHAR); // including the null
-	sta = LsaAddAccountRights (hPolicy, psid, &rights, 1);
+	sta = bGrant ? LsaAddAccountRights (hPolicy, psid, &rights, 1) : LsaRemoveAccountRights (hPolicy, psid, FALSE, &rights, 1);
 	if (sta == 0) {
 		return TRUE;
 	} else {
@@ -48,13 +49,13 @@ static BOOL _Grant (LSA_HANDLE hPolicy, PSID psid) {
 	}
 }
 
-/// Fetch the account (or group) name and grant it the privileges needed to run as
-/// a service. The account is passed as the "Action Data" part of a custom action
-/// from the MSI.
+/// Implements the grant/revoke - the behaviour controlled by a boolean flag. This is
+/// the main implementation of both GrantServicePrivileges and RevokeServicePrivileges.
 ///
 /// @param[in] hInstall the installation context
+/// @param[in] bGrant TRUE to grant the right, FALSE to revoke
 /// @return 0 if successful, otherwise a Win32 error code
-DWORD __declspec(dllexport) __stdcall GrantServicePrivileges (MSIHANDLE hInstall) {
+static DWORD _SetServicePrivileges (MSIHANDLE hInstall, BOOL bGrant) {
 	DWORD dwResult;
 	LSA_HANDLE hPolicy = NULL;
 	PSID psid = NULL;
@@ -66,7 +67,7 @@ DWORD __declspec(dllexport) __stdcall GrantServicePrivileges (MSIHANDLE hInstall
 			CSecurityAccount oSecurityAccount (pszAccountName);
 			PSID psid = oSecurityAccount.GetSID ();
 			if (psid) {
-				if (_Grant (hPolicy, psid)) {
+				if (_GrantOrRevoke (hPolicy, psid, bGrant)) {
 					dwResult = ERROR_SUCCESS;
 					goto cleanup;
 				}
@@ -77,4 +78,27 @@ DWORD __declspec(dllexport) __stdcall GrantServicePrivileges (MSIHANDLE hInstall
 cleanup:
 	if (hPolicy) LsaClose (hPolicy);
 	return dwResult;
+}
+
+/// Fetch the account (or group) name and grant it the privileges needed to run as
+/// a service. The account is passed as the "Action Data" part of a custom action
+/// from the MSI.
+///
+/// @param[in] hInstall the installation context
+/// @return 0 if successful, otherwise a Win32 error code
+DWORD __declspec(dllexport) __stdcall GrantServicePrivileges (MSIHANDLE hInstall) {
+	// Note that we can't check for "REMOVE=ALL" to automatically revoke the privilege
+	// during uninstall because Advanced Installer has already deleted the account at
+	// this point on the uninstall. An explicit REVOKE must be specified.
+	return _SetServicePrivileges (hInstall, TRUE);
+}
+
+/// Fetch the account (or group) name and remove the privileges needed to run as
+/// a service. The account is passed as the "Action Data" part of a custom action
+/// from the MSI.
+///
+/// @param[in] hInstall the installation context
+/// @return 0 if successful, otherwise a Win32 error code
+DWORD __declspec(dllexport) __stdcall RevokeServicePrivileges (MSIHANDLE hInstall) {
+	return _SetServicePrivileges (hInstall, FALSE);
 }

@@ -9,3 +9,4 @@ LIBRARY "CustomActions.dll"
 EXPORTS
 	FixInheritence			PRIVATE
 	GrantServicePrivileges	PRIVATE
+	RevokeServicePrivileges	PRIVATE
