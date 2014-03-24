@@ -123,6 +123,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
     <ROW Name="CustomActions.dll" SourcePath="..\..\..\target\ReleaseWin32\CustomActions.dll"/>
+    <ROW Name="UpdateSiteConfigur" SourcePath="..\resources\UpdateSiteConfigurationTemplate.vbs"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
     <ROW Directory_="config_site_Dir" Component_="config_site"/>
@@ -151,12 +152,12 @@
     <ROW Directory_="PlatformSite_Dir" Component_="platform"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
-    <ROW Action="AI_DATA_SETTER" Type="51" Source="UpdateSiteConfigurationTemplate.vbs" Target="[APPDIR];[DataPlatformSite_Dir]"/>
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="UpdateSiteConfigurationTemplate" Target="[APPDIR];[DataPlatformSite_Dir]"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="FixInheritence32" Target="[ProgramFilesFolder]OpenGamma Ltd\;[PlatformSite_Dir]"/>
     <ROW Action="AI_DATA_SETTER_2" Type="51" Source="FixInheritence64" Target="[ProgramFiles64Folder]OpenGamma Ltd\;[PlatformSite_Dir]"/>
     <ROW Action="FixInheritence32" Type="3073" Source="CustomActions.dll" Target="FixInheritence" AdditionalSeq="AI_DATA_SETTER_1"/>
     <ROW Action="FixInheritence64" Type="3073" Source="CustomActions.dll" Target="FixInheritence" AdditionalSeq="AI_DATA_SETTER_2"/>
-    <ROW Action="UpdateSiteConfigurationTemplate.vbs" Type="3094" Source="UpdateSiteConfigurationTemplate." Target="UpdateSiteConfigurationAI" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="UpdateSiteConfigurationTemplate" Type="3078" Source="UpdateSiteConfigur" Target="UpdateSiteConfigurationAI" AdditionalSeq="AI_DATA_SETTER"/>
     <ROW Action="set_BACKUP" Type="51" Source="Backup_Dir" Target="[CommonAppDataFolder]OpenGamma Ltd\Backup Files\[DEPLOYMENT_NAME]\"/>
     <ROW Action="set_BACKUP_1" Type="51" Source="Backup_Dir" Target="[CommonAppDataFolder]OpenGamma Ltd\Backup Files\[DEPLOYMENT_NAME]\"/>
     <ROW Action="set_DATA_PLATFORM_32" Type="51" Source="DataPlatform32_Dir" Target="[ProgramFilesFolder]OpenGamma Ltd\[DEPLOYMENT_NAME]\"/>
@@ -203,15 +204,15 @@
     <ROW Action="set_DEPLOYMENT_NAME" BaseAction="set_INSTALL_32_BIT" After="1"/>
     <ROW Action="set_INSTALL_32_BIT" BaseAction="set_INSTALL_64_BIT" After="1"/>
     <ROW Action="set_INSTALL_64_BIT" BaseAction="FindRelatedProducts" After="1"/>
-    <ROW Action="AI_DATA_SETTER" BaseAction="CreateShortcuts" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
-    <ROW Action="UpdateSiteConfigurationTemplate.vbs" BaseAction="AI_DATA_SETTER" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
     <ROW Action="FixInheritence32" BaseAction="InstallServices" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( INSTALL_32_BIT=1 )"/>
     <ROW Action="AI_DATA_SETTER_1" BaseAction="FixInheritence32" After="0" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( INSTALL_32_BIT=1 )"/>
     <ROW Action="AI_DATA_SETTER_2" BaseAction="FixInheritence32" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( INSTALL_64_BIT=1 )"/>
     <ROW Action="FixInheritence64" BaseAction="AI_DATA_SETTER_2" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( INSTALL_64_BIT=1 )"/>
+    <ROW Action="UpdateSiteConfigurationTemplate" BaseAction="CreateShortcuts" After="1" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
+    <ROW Action="AI_DATA_SETTER" BaseAction="UpdateSiteConfigurationTemplate" After="0" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleSignatureComponent">
-    <ROW ModuleID="FolderStructure" Version="2.2.30" GUID="171E6DFA_15A0_44FB_98AE_E609C66989DB" Name="OpenGamma folder template" Manufacturer="OpenGamma Ltd" Comments="An OpenGamma deployment&apos;s base folders and security model"/>
+    <ROW ModuleID="FolderStructure" Version="2.2.44" GUID="171E6DFA_15A0_44FB_98AE_E609C66989DB" Name="OpenGamma folder template" Manufacturer="OpenGamma Ltd" Comments="An OpenGamma deployment&apos;s base folders and security model"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsmModuleUISeqComponent">
     <ROW Action="set_BACKUP_1" BaseAction="set_DATA_PLATFORM_SITE_1" After="1"/>
