@@ -8,6 +8,7 @@ Const strActionData = "CustomActionData"
 Const errMask = 65535
 Const errServiceNotFound = 1243
 Const errAccessDenied = 5
+Const strSpecial = "!$%^&*()_+-=[]{};#:@~\|,./<>?"
 
 Dim strUsername
 Dim strPassword
@@ -104,4 +105,38 @@ Public Function SetServiceUserAI ()
     Exit Function
   End If
   SetServiceUserAI = SetServiceUser (strService)
+End Function
+
+Public Function GeneratePassword ()
+  On Error Resume Next
+  Dim strPassword
+  Dim n
+  Dim c
+  Randomize
+  strPassword = ""
+  For n = 1 To 3
+    strPassword = strPassword & Chr (CInt (Rnd () * 26) + Asc ("A"))
+    strPassword = strPassword & Chr (CInt (Rnd () * 10) + Asc ("0"))
+    strPassword = strPassword & Chr (CInt (Rnd () * 26) + Asc ("a"))
+    strPassword = strPassword & Mid (strSpecial, CInt (Rnd () * Len (strSpecial)) + 1, 1)
+  Next
+  If Err.Number <> 0 Then
+    GeneratePassword = "Error " & Err.Number
+    Err.Clear
+  Else
+    GeneratePassword = strPassword
+  End If
+End Function
+
+Public Function GeneratePasswordAI ()
+  On Error Resume Next
+  Dim strProperty
+  strProperty = Session.Property (strActionData)
+  If Err.Number <> 0 Then
+    GeneratePasswordAI = Err.Number
+    Err.Clear
+    Exit Function
+  End If
+  Session.Property (strProperty) = GeneratePassword ()
+  GeneratePasswordAI = 0
 End Function

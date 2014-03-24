@@ -15,7 +15,7 @@
     <ROW Property="ARPNOMODIFY" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="LIMITUI" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="Manufacturer" Value="OpenGamma Ltd" ValueLocId="*"/>
-    <ROW Property="OPENGAMMA_PASSWORD" Value="opengamma"/>
+    <ROW Property="OPENGAMMA_PASSWORD" Value="auto"/>
     <ROW Property="ProductCode" Value="1033:{CE8C3432-94B4-43BE-912A-E8734D473360} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="OpenGamma Users and Groups" ValueLocId="*"/>
@@ -87,6 +87,7 @@
     <ROW Property="OPENGAMMA_PASSWORD" Signature_="AppSearchSign"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="CredentialsCA.vbs" SourcePath="..\resources\CredentialsCA.vbs"/>
     <ROW Name="CustomActions.dll" SourcePath="..\..\..\target\ReleaseWin32\CustomActions.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="userAccounts.dll" SourcePath="&lt;AI_CUSTACTS&gt;userAccounts.dll"/>
@@ -125,6 +126,7 @@
     <ROW Action="AI_DATA_SETTER" Type="51" Source="GrantServicePrivileges" Target="OpenGammaSystem"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="GrantServicePrivileges_rollback" Target="OpenGammaSystem"/>
     <ROW Action="AI_DATA_SETTER_2" Type="51" Source="GrantServicePrivileges_uninst" Target="OpenGammaSystem"/>
+    <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="OPENGAMMA_PASSWORD"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
@@ -141,6 +143,7 @@
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_UninstallAccounts" Type="1" Source="userAccounts.dll" Target="UninstallAccounts"/>
     <ROW Action="AI_UninstallGroups" Type="1" Source="userAccounts.dll" Target="UninstallGroups"/>
+    <ROW Action="GeneratePassword" Type="6" Source="CredentialsCA.vbs" Target="GeneratePasswordAI" AdditionalSeq="AI_DATA_SETTER_3"/>
     <ROW Action="GrantServicePrivileges" Type="3073" Source="CustomActions.dll" Target="GrantServicePrivileges" AdditionalSeq="AI_DATA_SETTER"/>
     <ROW Action="GrantServicePrivileges_rollback" Type="3393" Source="CustomActions.dll" Target="RevokeServicePrivileges" AdditionalSeq="AI_DATA_SETTER_1"/>
     <ROW Action="GrantServicePrivileges_uninst" Type="3137" Source="CustomActions.dll" Target="RevokeServicePrivileges" AdditionalSeq="AI_DATA_SETTER_2"/>
@@ -165,6 +168,8 @@
     <ROW Action="AI_DATA_SETTER_1" Condition="( NOT Installed )" Sequence="6401"/>
     <ROW Action="GrantServicePrivileges_uninst" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1602"/>
     <ROW Action="AI_DATA_SETTER_2" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1601"/>
+    <ROW Action="GeneratePassword" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( OPENGAMMA_PASSWORD=&quot;auto&quot; )" Sequence="1452"/>
+    <ROW Action="AI_DATA_SETTER_3" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( OPENGAMMA_PASSWORD=&quot;auto&quot; )" Sequence="1451"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
@@ -182,7 +187,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="CredentialsCA" Root="2" Key="Software\OpenGammaLtd\User" Name="CredentialsCA" Value="[#CredentialsCA.vbs]" Component_="CredentialsCA"/>
-    <ROW Registry="PLAT6043" Root="2" Key="Software\OpenGammaLtd\User\Password" Value="opengamma" Component_="password"/>
+    <ROW Registry="PLAT6043" Root="2" Key="Software\OpenGammaLtd\User\Password" Value="[OPENGAMMA_PASSWORD]" Component_="password"/>
     <ROW Registry="_" Root="2" Key="Software\OpenGammaLtd\User" Value="OpenGamma" Component_="_"/>
     <ROW Registry="admins" Root="2" Key="Software\OpenGammaLtd\User" Name="admins" Value="OpenGammaAdmins" Component_="_"/>
     <ROW Registry="system" Root="2" Key="Software\OpenGammaLtd\User" Name="system" Value="OpenGammaSystem" Component_="_"/>
