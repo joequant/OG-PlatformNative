@@ -24,5 +24,6 @@ public class BeanFunctionProvider extends AbstractFunctionProvider {
     definitions.add(GetObjectPropertyFunction.INSTANCE.getMetaFunction());
     definitions.add(SetObjectPropertiesFunction.INSTANCE.getMetaFunction());
     definitions.add(SetObjectPropertyFunction.INSTANCE.getMetaFunction());
+    definitions.add(InvokeObjectMethodFunction.INSTANCE.getMetaFunction());
   }
 }
