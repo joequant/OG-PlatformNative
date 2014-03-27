@@ -27,13 +27,13 @@
   </properties>
 
   <modules>
-    <module>base</module>
-    <module>client</module>
-    <module>connector</module>
-    <module>package</module>
-    <module>service</module>
-    <module>service-runner</module>
-    <module>util</module>
+    <module>../modules/base</module>
+    <module>../modules/client</module>
+    <module>../modules/connector</module>
+    <module>../modules/package</module>
+    <module>../modules/service</module>
+    <module>../modules/service-runner</module>
+    <module>../modules/util</module>
   </modules>
 
   <profiles>

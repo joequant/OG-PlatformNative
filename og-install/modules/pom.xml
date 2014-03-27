@@ -25,8 +25,8 @@
   </properties>
 
   <modules>
-    <module>jre</module>
-    <module>main</module>
+    <module>../modules/jre</module>
+    <module>../modules/main</module>
   </modules>
 
 </project>
