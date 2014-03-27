@@ -40,14 +40,16 @@ import com.opengamma.language.invoke.InvalidConversionException;
  */
 public class InvokeObjectMethodFunction extends AbstractFunctionInvoker implements PublishedFunction {
 
+
+  @SuppressWarnings({"unchecked", "rawtypes" })
+  protected static final JavaTypeInfo<List<Data>> ARGUMENTS_TYPE = (JavaTypeInfo) JavaTypeInfo.builder(List.class).parameter(
+      TransportTypes.DATA_ALLOW_NULL).allowNull().get();
+
   /**
    * Default instance.
    */
   public static final InvokeObjectMethodFunction INSTANCE = new InvokeObjectMethodFunction();
 
-  @SuppressWarnings({"unchecked", "rawtypes" })
-  protected static final JavaTypeInfo<List<Data>> ARGUMENTS_TYPE = (JavaTypeInfo) JavaTypeInfo.builder(List.class).parameter(
-      TransportTypes.DATA_ALLOW_NULL).allowNull().get();
 
   private final MetaFunction _meta;
 
