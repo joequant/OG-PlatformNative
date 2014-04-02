@@ -89,8 +89,8 @@ public class InvokeObjectMethodFunction extends AbstractFunctionInvoker implemen
       }
     }).asList();
 
-    if(methods.isEmpty()){
-      throw new InvokeInvalidArgumentException("No method named: "+methodName+" having "+data.size()+" numbers of arguments");
+    if (methods.isEmpty()) {
+      throw new InvokeInvalidArgumentException("No method named: " + methodName + " having " + data.size() + " numbers of arguments");
     }
 
     InvocationTargetException invocationTargetException = null;
@@ -115,12 +115,11 @@ public class InvokeObjectMethodFunction extends AbstractFunctionInvoker implemen
         // we have method access problem, let's move on
       }
     }
-    if(invocationTargetException != null){
-      throw new InvokeInvalidArgumentException("The method named: "+methodName+" has thrown "+invocationTargetException.getTargetException()+" during its invokation");
+    if (invocationTargetException != null) {
+      throw new InvokeInvalidArgumentException("The method named: " + methodName + " has thrown " + invocationTargetException.getTargetException() + " during its invokation");
     } else {
-      throw new InvokeInvalidArgumentException("No method named: "+methodName+" and matching provided arguments could be found.");
+      throw new InvokeInvalidArgumentException("No method named: " + methodName + " and matching provided arguments could be found.");
     }
-
   }
 
   // AbstractFunctionInvoker
