@@ -6,22 +6,16 @@
 
 #include <Windows.h>
 #include "service.h"
+#include "environment.h"
 #include <param.h>
 #include <errorref.h>
 
 #define DEFAULT_WAIT_HINT		30000
 
-#define PARENT_OF_CONFIG_FILE_DIR	"dir(%config%)\\.."
-
 static CParamString g_oConfigFile ("config", NULL, TRUE);
 static CParamString g_oServiceName ("service", NULL, TRUE);
 static CParam *g_apoParams[2] = { &g_oConfigFile, &g_oServiceName };
 static CParams g_oParams (sizeof (g_apoParams) / sizeof (*g_apoParams), g_apoParams);
-static CConfigString g_oWorkingFolder ("cwd", PARENT_OF_CONFIG_FILE_DIR);
-static CConfigEntry *g_apoEnvironmentSection[1] = { &g_oWorkingFolder };
-static CConfigSection g_oEnvironmentSection ("Environment", sizeof (g_apoEnvironmentSection) / sizeof (*g_apoEnvironmentSection), g_apoEnvironmentSection);
-static CConfigSection *g_apoConfig[1] = { &g_oEnvironmentSection };
-static CConfig g_oConfigContent (sizeof (g_apoConfig) / sizeof (*g_apoConfig), g_apoConfig);
 
 static CRITICAL_SECTION g_cs;
 static SERVICE_STATUS_HANDLE g_hStatus;
@@ -146,34 +140,6 @@ static void WINAPI _ServiceMain (DWORD dwArgs, char **pspzArgs) {
 	}
 }
 
-static void _setWorkingFolder () {
-	const char *pszPath = g_oWorkingFolder.GetValue ();
-	if (strcmp (pszPath, PARENT_OF_CONFIG_FILE_DIR)) {
-		SetCurrentDirectory (pszPath);
-	} else {
-		pszPath = g_oConfigFile.GetString ();
-		size_t i;
-		int n;
-		if (*pszPath == '\"') pszPath++;
-		i = strlen (pszPath);
-		n = 2;
-		while (--i > 0) {
-			if (pszPath[i] == '\\') {
-				if (!--n) {
-					char *pszWorkingFolder = (char*)malloc (i + 1);
-					if (pszWorkingFolder) {
-						memcpy (pszWorkingFolder, pszPath, i);
-						pszWorkingFolder[i] = 0;
-						SetCurrentDirectory (pszWorkingFolder);
-						free (pszWorkingFolder);
-					}
-					break;
-				}
-			}
-		}
-	}
-}
-
 /// Service executable entry point.
 ///
 /// @return 1 if there is a problem, 0 if all is okay
@@ -183,13 +149,18 @@ int main () {
 		ReportErrorReference (ERROR_REF_MAIN);
 		return 1;
 	}
-	if (!CJavaRT::s_oConfig.Read (g_oConfigFile.GetString ())
-	 || !CService::s_oConfig.Read (g_oConfigFile.GetString ())
-	 || !g_oConfigContent.Read (g_oConfigFile.GetString ())) {
+	if (!CJavaRT::s_oConfig.Read (g_oConfigFile.GetString ())) {
 		ReportErrorReference (ERROR_REF_MAIN);
 		return 1;
 	}
-	_setWorkingFolder ();
+	if (!CService::s_oConfig.Read (g_oConfigFile.GetString ())) {
+		ReportErrorReference (ERROR_REF_MAIN);
+		return 1;
+	}
+	if (!EnvironmentInit (g_oConfigFile.GetString ())) {
+		ReportErrorReference (ERROR_REF_MAIN);
+		return 1;
+	}
 	ste[0].lpServiceName = (PSTR)g_oServiceName.GetString ();
 	ste[0].lpServiceProc = _ServiceMain;
 	ste[1].lpServiceName = NULL;

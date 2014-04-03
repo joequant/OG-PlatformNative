@@ -9,6 +9,7 @@
 #include "resource.h"
 #include "runmain.h"
 #include "feedback.h"
+#include "environment.h"
 #include <param.h>
 #include <errorref.h>
 
@@ -81,8 +82,15 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, char *pszCmdLi
 			ReportErrorReference (ERROR_REF_MAIN);
 			break;
 		}
-		if (!CJavaRT::s_oConfig.Read (g_oConfig.GetString ())
-		 || !CMain::s_oConfig.Read (g_oConfig.GetString ())) {
+		if (!CJavaRT::s_oConfig.Read (g_oConfig.GetString ())) {
+			ReportErrorReference (ERROR_REF_MAIN);
+			break;
+		}
+		if (!CMain::s_oConfig.Read (g_oConfig.GetString ())) {
+			ReportErrorReference (ERROR_REF_MAIN);
+			break;
+		}
+		if (!EnvironmentInit (g_oConfig.GetString ())) {
 			ReportErrorReference (ERROR_REF_MAIN);
 			break;
 		}
