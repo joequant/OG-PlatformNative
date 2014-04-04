@@ -32,6 +32,43 @@ public:
 	}
 };
 
+class CAsyncThreadControlOperation : public CAsynchronous::COperation {
+private:
+	CSemaphore *m_pWait;
+	CSemaphore *m_pSignal;
+public:
+	CAsyncThreadControlOperation (CSemaphore *pWait, CSemaphore *pSignal) {
+		m_pWait = pWait;
+		m_pSignal = pSignal;
+	}
+	void Run () {
+		m_pSignal->Signal ();
+		m_pWait->Wait ();
+	}
+};
+
+class CAsyncThreadControl {
+private:
+	CSemaphore m_semA;
+	CSemaphore m_semB;
+public:
+	void Park () {
+		// Short enough to cause tests to terminate eventually if things go wrong, but long
+		// enough to tolerate a really slow test host.
+		m_semA.Wait (TIMEOUT_COMPLETE);
+	}
+	void Release () {
+		m_semB.Signal ();
+	}
+	void Join () {
+		Release ();
+		Park ();
+	}
+	CAsynchronous::COperation *Barrier () {
+		return new CAsyncThreadControlOperation (&m_semB, &m_semA);
+	}
+};
+
 class CTestAsyncOperation2 : public CAsynchronous::COperation {
 private:
 	int *m_pnRunCount;
@@ -51,14 +88,16 @@ private:
 	int *m_pnRun1Count;
 	int m_nRun1Expect;
 	int *m_pnRun2Count;
+	bool *m_pbAssert;
 public:
-	CTestAsyncOperation3 (int *pnRun1Count, int nRun1Expect, int *pnRun2Count) {
+	CTestAsyncOperation3 (int *pnRun1Count, int nRun1Expect, int *pnRun2Count, bool *pbAssert) {
 		m_pnRun1Count = pnRun1Count;
 		m_nRun1Expect = nRun1Expect;
 		m_pnRun2Count = pnRun2Count;
+		m_pbAssert = pbAssert;
 	}
 	void Run () {
-		ASSERT (*m_pnRun1Count == m_nRun1Expect);
+		*m_pbAssert = (*m_pnRun1Count == m_nRun1Expect);
 		(*m_pnRun2Count)++;
 	}
 };
@@ -88,6 +127,7 @@ public:
 static void BasicOperations () {
 	CAsynchronous *poCaller = CAsynchronous::Create ();
 	ASSERT (poCaller);
+	CAsyncThreadControl oAsyncThread;
 	int nRun1 = 0, nRun2 = 0, nRun3 = 0;
 	CTestAsyncOperation1 *poRun1 = new CTestAsyncOperation1 (0, &nRun1);
 	CTestAsyncOperation1 *poRun2 = new CTestAsyncOperation1 (2, &nRun2);
@@ -95,9 +135,9 @@ static void BasicOperations () {
 	ASSERT (poCaller->Run (poRun1));
 	ASSERT (poCaller->Run (poRun2));
 	ASSERT (poCaller->Run (poRun3));
-	CThread::Sleep (TIMEOUT_COMPLETE);
+	ASSERT (poCaller->Run (oAsyncThread.Barrier ()));
+	oAsyncThread.Join ();
 	CAsynchronous::PoisonAndRelease (poCaller);
-	CThread::Sleep (TIMEOUT_COMPLETE / 6);
 	ASSERT (nRun1 == 1);
 	ASSERT (nRun2 == 3);
 	ASSERT (nRun3 == 0);
@@ -106,26 +146,40 @@ static void BasicOperations () {
 static void PrioritizedOperations () {
 	CAsynchronous *poCaller = CAsynchronous::Create ();
 	ASSERT (poCaller);
+	CAsyncThreadControl oAsyncThread;
+	bool bAssert1 = false, bAssert2 = false, bAssert3 = false;
 	int nRun1 = 0, nRun2 = 0, nRun3 = 0;
 	CTestAsyncOperation2 *poRun1 = new CTestAsyncOperation2 (false, &nRun1);
-	CTestAsyncOperation3 *poRun2 = new CTestAsyncOperation3 (&nRun1, 0, &nRun2);
-	CTestAsyncOperation3 *poRun3a = new CTestAsyncOperation3 (&nRun1, 1, &nRun3);
-	CTestAsyncOperation3 *poRun3b = new CTestAsyncOperation3 (&nRun2, 1, &nRun3);
+	CTestAsyncOperation3 *poRun2 = new CTestAsyncOperation3 (&nRun1, 0, &nRun2, &bAssert1);
+	CTestAsyncOperation3 *poRun3a = new CTestAsyncOperation3 (&nRun1, 1, &nRun3, &bAssert2);
+	CTestAsyncOperation3 *poRun3b = new CTestAsyncOperation3 (&nRun2, 1, &nRun3, &bAssert3);
+	// Run an operation that will block the async-thread in the "Run" method
+	ASSERT (poCaller->Run (oAsyncThread.Barrier ()));
+	// Wait for the async-thread to get blocked in the "Run" method joining the barrier
+	oAsyncThread.Park ();
+	// Throw operations at the queue
 	ASSERT (poCaller->Run (poRun1));
-	ASSERT (poCaller->RunFirst (poRun2));
 	ASSERT (poCaller->Run (poRun3a));
+	ASSERT (poCaller->RunFirst (poRun2));
 	ASSERT (poCaller->Run (poRun3b));
-	CThread::Sleep (TIMEOUT_COMPLETE);
+	// Release the async-thread to process its queue - should run jobs as 2, 1, 3a, 3b
+	oAsyncThread.Release ();
+	// Wait for the jobs to run to completion
+	ASSERT (poCaller->Run (oAsyncThread.Barrier ()));
+	oAsyncThread.Join ();
 	CAsynchronous::PoisonAndRelease (poCaller);
-	CThread::Sleep (TIMEOUT_COMPLETE / 6);
 	ASSERT (nRun1 == 1);
 	ASSERT (nRun2 == 1);
 	ASSERT (nRun3 == 2);
+	ASSERT (bAssert1);
+	ASSERT (bAssert2);
+	ASSERT (bAssert3);
 }
 
 static void VitalOperations () {
 	CAsynchronous *poCaller = CAsynchronous::Create ();
 	ASSERT (poCaller);
+	CAsyncThreadControl oAsyncThread;
 	int nRun1 = 0, nRun2 = 0, nRun3 = 0, nRun4 = 0, nRun5 = 0;
 	CTestAsyncOperation2 *poRun1 = new CTestAsyncOperation2 (false, &nRun1);
 	CTestAsyncOperation2 *poRun2 = new CTestAsyncOperation2 (false, &nRun2);
@@ -133,13 +187,16 @@ static void VitalOperations () {
 	CTestAsyncOperation2 *poRun4 = new CTestAsyncOperation2 (false, &nRun4);
 	CTestAsyncOperation2 *poRun5 = new CTestAsyncOperation2 (true, &nRun5);
 	ASSERT (poCaller->Run (poRun1));
+	ASSERT (poCaller->Run (oAsyncThread.Barrier ())); // B1
 	ASSERT (poCaller->Run (poRun2));
 	ASSERT (poCaller->Run (poRun3));
 	ASSERT (poCaller->Run (poRun4));
 	ASSERT (poCaller->Run (poRun5));
-	CThread::Sleep (TIMEOUT_COMPLETE / 6);
+	ASSERT (poCaller->Run (oAsyncThread.Barrier ())); // B2
+	oAsyncThread.Park (); // B1
 	CAsynchronous::PoisonAndRelease (poCaller);
-	CThread::Sleep (TIMEOUT_COMPLETE + (TIMEOUT_COMPLETE / 6));
+	oAsyncThread.Release (); // B1
+	oAsyncThread.Join (); // B2
 	ASSERT (nRun1 == 1); // started before the poison
 	ASSERT (nRun2 == 0); // non-vital operation skipped
 	ASSERT (nRun3 == 1);
