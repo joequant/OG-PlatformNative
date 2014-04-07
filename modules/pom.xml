@@ -112,7 +112,7 @@
       <id>og-platformnative-parent</id>
       <activation>
         <file>
-          <exists>.og-platformnative</exists>
+          <exists>../.og-platformnative</exists>
         </file>
       </activation>
       <build>
@@ -130,7 +130,7 @@
                 </goals>
                 <configuration>
                   <target>
-                    <ant antfile="common/archive.xml" target="archive-ant" />
+                    <ant antfile="../common/archive.xml" target="archive-ant" />
                   </target>
                 </configuration>
               </execution>
@@ -150,7 +150,7 @@
                 <configuration>
                   <artifacts>
                     <artifact>
-                      <file>target/ant-common.zip</file>
+                      <file>../target/ant-common.zip</file>
                       <type>zip</type>
                       <classifier>ant-common</classifier>
                     </artifact>

@@ -57,8 +57,8 @@
   </target>
 
   <target name="archive-ant">
-    <zip destfile="target/ant-common.zip">
-      <zipfileset dir="common" prefix="ant-common">
+    <zip destfile="../target/ant-common.zip">
+      <zipfileset dir="../common" prefix="ant-common">
         <include name="*.vbs" />
         <include name="*.xml" />
       </zipfileset>
