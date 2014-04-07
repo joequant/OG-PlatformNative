@@ -14,9 +14,9 @@ LOGGING (com.opengamma.language.util.AsynchronousTest);
 class CTestAsyncOperation1 : public CAsynchronous::COperation {
 private:
 	int m_nRescheduleCount;
-	int *m_pnRunCount;
+	int volatile *m_pnRunCount;
 public:
-	CTestAsyncOperation1 (int nRescheduleCount, int *pnRunCount) {
+	CTestAsyncOperation1 (int nRescheduleCount, int volatile *pnRunCount) {
 		m_nRescheduleCount = nRescheduleCount;
 		m_pnRunCount = pnRunCount;
 	}
@@ -32,48 +32,78 @@ public:
 	}
 };
 
+class CRCSemaphore {
+private:
+	CSemaphore m_sem;
+	CAtomicInt m_oRC;
+	~CRCSemaphore () {
+		ASSERT (m_oRC.Get () == 0);
+	}
+public:
+	CRCSemaphore () : m_oRC (1) { }
+	void Retain () { m_oRC.IncrementAndGet (); }
+	static void Release (CRCSemaphore *po) { if (!po->m_oRC.DecrementAndGet ()) delete po; }
+	bool Wait () { return m_sem.Wait (); }
+	bool Wait (unsigned long timeout) { return m_sem.Wait (timeout); }
+	void Signal () { m_sem.Signal (); }
+};
+
 class CAsyncThreadControlOperation : public CAsynchronous::COperation {
 private:
-	CSemaphore *m_pWait;
-	CSemaphore *m_pSignal;
+	CRCSemaphore *m_poWait;
+	CRCSemaphore *m_poSignal;
 public:
-	CAsyncThreadControlOperation (CSemaphore *pWait, CSemaphore *pSignal) {
-		m_pWait = pWait;
-		m_pSignal = pSignal;
+	CAsyncThreadControlOperation (CRCSemaphore *poWait, CRCSemaphore *poSignal) {
+		poWait->Retain ();
+		m_poWait = poWait;
+		poSignal->Retain ();
+		m_poSignal = poSignal;
+	}
+	~CAsyncThreadControlOperation () {
+		CRCSemaphore::Release (m_poWait);
+		CRCSemaphore::Release (m_poSignal);
 	}
 	void Run () {
-		m_pSignal->Signal ();
-		m_pWait->Wait ();
+		m_poSignal->Signal ();
+		m_poWait->Wait ();
 	}
 };
 
 class CAsyncThreadControl {
 private:
-	CSemaphore m_semA;
-	CSemaphore m_semB;
+	CRCSemaphore *m_poSemA;
+	CRCSemaphore *m_poSemB;
 public:
+	CAsyncThreadControl () {
+		m_poSemA = new CRCSemaphore ();
+		m_poSemB = new CRCSemaphore ();
+	}
+	~CAsyncThreadControl () {
+		CRCSemaphore::Release (m_poSemA);
+		CRCSemaphore::Release (m_poSemB);
+	}
 	void Park () {
 		// Short enough to cause tests to terminate eventually if things go wrong, but long
 		// enough to tolerate a really slow test host.
-		m_semA.Wait (TIMEOUT_COMPLETE);
+		m_poSemA->Wait (TIMEOUT_COMPLETE);
 	}
 	void Release () {
-		m_semB.Signal ();
+		m_poSemB->Signal ();
 	}
 	void Join () {
 		Release ();
 		Park ();
 	}
 	CAsynchronous::COperation *Barrier () {
-		return new CAsyncThreadControlOperation (&m_semB, &m_semA);
+		return new CAsyncThreadControlOperation (m_poSemB, m_poSemA);
 	}
 };
 
 class CTestAsyncOperation2 : public CAsynchronous::COperation {
 private:
-	int *m_pnRunCount;
+	int volatile *m_pnRunCount;
 public:
-	CTestAsyncOperation2 (bool bVital, int *pnRunCount)
+	CTestAsyncOperation2 (bool bVital, int volatile *pnRunCount)
 	: COperation (bVital) {
 		m_pnRunCount = pnRunCount;
 	}
@@ -85,12 +115,12 @@ public:
 
 class CTestAsyncOperation3 : public CAsynchronous::COperation {
 private:
-	int *m_pnRun1Count;
+	int volatile *m_pnRun1Count;
 	int m_nRun1Expect;
-	int *m_pnRun2Count;
-	bool *m_pbAssert;
+	int volatile *m_pnRun2Count;
+	bool volatile *m_pbAssert;
 public:
-	CTestAsyncOperation3 (int *pnRun1Count, int nRun1Expect, int *pnRun2Count, bool *pbAssert) {
+	CTestAsyncOperation3 (int volatile *pnRun1Count, int nRun1Expect, int volatile *pnRun2Count, bool volatile *pbAssert) {
 		m_pnRun1Count = pnRun1Count;
 		m_nRun1Expect = nRun1Expect;
 		m_pnRun2Count = pnRun2Count;
@@ -104,9 +134,9 @@ public:
 
 class CThreadRecordingOperation : public CAsynchronous::COperation {
 private:
-	CThread::THREAD_REF *m_phThread;
+	CThread::THREAD_REF volatile *m_phThread;
 public:
-	CThreadRecordingOperation (CThread::THREAD_REF *phThread) {
+	CThreadRecordingOperation (CThread::THREAD_REF volatile *phThread) {
 		m_phThread = phThread;
 	}
 	void Run () {
@@ -128,7 +158,7 @@ static void BasicOperations () {
 	CAsynchronous *poCaller = CAsynchronous::Create ();
 	ASSERT (poCaller);
 	CAsyncThreadControl oAsyncThread;
-	int nRun1 = 0, nRun2 = 0, nRun3 = 0;
+	int volatile nRun1 = 0, nRun2 = 0, nRun3 = 0;
 	CTestAsyncOperation1 *poRun1 = new CTestAsyncOperation1 (0, &nRun1);
 	CTestAsyncOperation1 *poRun2 = new CTestAsyncOperation1 (2, &nRun2);
 	CTestAsyncOperation1 *poRun3 = new CTestAsyncOperation1 (-1, &nRun3);
@@ -147,8 +177,8 @@ static void PrioritizedOperations () {
 	CAsynchronous *poCaller = CAsynchronous::Create ();
 	ASSERT (poCaller);
 	CAsyncThreadControl oAsyncThread;
-	bool bAssert1 = false, bAssert2 = false, bAssert3 = false;
-	int nRun1 = 0, nRun2 = 0, nRun3 = 0;
+	bool volatile bAssert1 = false, bAssert2 = false, bAssert3 = false;
+	int volatile nRun1 = 0, nRun2 = 0, nRun3 = 0;
 	CTestAsyncOperation2 *poRun1 = new CTestAsyncOperation2 (false, &nRun1);
 	CTestAsyncOperation3 *poRun2 = new CTestAsyncOperation3 (&nRun1, 0, &nRun2, &bAssert1);
 	CTestAsyncOperation3 *poRun3a = new CTestAsyncOperation3 (&nRun1, 1, &nRun3, &bAssert2);
@@ -180,7 +210,7 @@ static void VitalOperations () {
 	CAsynchronous *poCaller = CAsynchronous::Create ();
 	ASSERT (poCaller);
 	CAsyncThreadControl oAsyncThread;
-	int nRun1 = 0, nRun2 = 0, nRun3 = 0, nRun4 = 0, nRun5 = 0;
+	int volatile nRun1 = 0, nRun2 = 0, nRun3 = 0, nRun4 = 0, nRun5 = 0;
 	CTestAsyncOperation2 *poRun1 = new CTestAsyncOperation2 (false, &nRun1);
 	CTestAsyncOperation2 *poRun2 = new CTestAsyncOperation2 (false, &nRun2);
 	CTestAsyncOperation2 *poRun3 = new CTestAsyncOperation2 (true, &nRun3);
@@ -207,13 +237,15 @@ static void VitalOperations () {
 static void ThreadIdleTimeout () {
 	CAsynchronous *poCaller = CAsynchronous::Create ();
 	ASSERT (poCaller);
+	CAsyncThreadControl oAsyncThread;
 	poCaller->SetTimeoutInactivity (TIMEOUT_COMPLETE / 2);
-	CThread::THREAD_REF hThread1 = 0, hThread2 = 0;
+	CThread::THREAD_REF volatile hThread1 = 0, hThread2 = 0;
 	CThreadRecordingOperation *poRun1 = new CThreadRecordingOperation (&hThread1);
 	CThreadRecordingOperation *poRun2 = new CThreadRecordingOperation (&hThread2);
 	ASSERT (poCaller->Run (poRun1));
 	ASSERT (poCaller->Run (poRun2));
-	CThread::Sleep (TIMEOUT_COMPLETE / 6);
+	ASSERT (poCaller->Run (oAsyncThread.Barrier ()));
+	oAsyncThread.Join ();
 	ASSERT (hThread1 == hThread2);
 	poRun2 = new CThreadRecordingOperation (&hThread2);
 	CThread::Sleep (TIMEOUT_COMPLETE);
@@ -221,34 +253,36 @@ static void ThreadIdleTimeout () {
 	CThread *poDummyThread = new CDummyThread ();
 	CThread::Release (poDummyThread);
 	ASSERT (poCaller->Run (poRun2));
-	CThread::Sleep (TIMEOUT_COMPLETE / 6);
+	ASSERT (poCaller->Run (oAsyncThread.Barrier ()));
+	oAsyncThread.Join ();
 	if (hThread2) {
 		ASSERT (hThread1 != hThread2);
 	} else {
 		LOGWARN (TEXT ("ThreadIdleTimeout test might have failed - no thread identity"));
 	}
 	CAsynchronous::PoisonAndRelease (poCaller);
-	CThread::Sleep (TIMEOUT_COMPLETE / 6);
 }
 
 static void ThreadRecycling () {
 	CAsynchronous *poCaller = CAsynchronous::Create ();
 	ASSERT (poCaller);
-	CThread::THREAD_REF hThread1 = 0, hThread2 = 0;
+	CAsyncThreadControl oAsyncThread;
+	CThread::THREAD_REF volatile hThread1 = 0, hThread2 = 0;
 	CThreadRecordingOperation *poRun1 = new CThreadRecordingOperation (&hThread1);
 	CThreadRecordingOperation *poRun2 = new CThreadRecordingOperation (&hThread2);
 	ASSERT (poCaller->Run (poRun1));
-	CThread::Sleep (TIMEOUT_COMPLETE / 6);
+	ASSERT (poCaller->Run (oAsyncThread.Barrier ()));
+	oAsyncThread.Join ();
 	if (hThread1) {
 		ASSERT (poCaller->RecycleThread ());
 		ASSERT (poCaller->Run (poRun2));
-		CThread::Sleep (TIMEOUT_COMPLETE / 6);
+		ASSERT (poCaller->Run (oAsyncThread.Barrier ()));
+		oAsyncThread.Join ();
 		ASSERT (hThread1 != hThread2);
 	} else {
 		LOGWARN (TEXT ("ThreadRecycling test might have failed - no thread identity"));
 	}
 	CAsynchronous::PoisonAndRelease (poCaller);
-	CThread::Sleep (TIMEOUT_COMPLETE / 6);
 }
 
 /// Tests the functions and objects in Util/Asynchronous.cpp
