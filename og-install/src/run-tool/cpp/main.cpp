@@ -10,6 +10,7 @@
 #include <jvm.h>
 #include <config.h>
 #include <errorref.h>
+#include "environment.h"
 
 static BOOL _ConnectToConsole (int *pargc, char **argv) {
 	if (*pargc < 2) return TRUE;
@@ -102,7 +103,9 @@ static int _RunElevated (int argc, char **argv) {
 	return (int)dwExitCode;
 }
 
-class CRunToolClasspath : public CConfigSourceSection {
+/// Sets up the class path configuration as per the old-style (broken) file system layout.
+/// This is not used if RunTool.exe.defaults is present.
+class CLegacyRunToolClasspath : public CConfigSourceSection {
 private:
 	char m_szConfig[MAX_PATH];
 	char m_szProject[MAX_PATH];
@@ -114,7 +117,7 @@ private:
 		return strlen (pszValue);
 	}
 public:
-	CRunToolClasspath (int *pargc, char **argv) {
+	CLegacyRunToolClasspath (int *pargc, char **argv) {
 		char szBaseDir[MAX_PATH];
 		m_szConfig[0] = 0;
 		m_szProject[0] = 0;
@@ -188,9 +191,19 @@ public:
 	}
 };
 
+/// Presents command line arguments as an INI config section for the shared libraries.
+///
+/// Default MEM_OPTS and GC_OPTS values are hard-coded which can be overridden by the
+/// registry. This is for compatibility with old style installers.
+///
+/// A default config section is passed - these options are presented ahead of anything
+/// from the command line. This is taken from, for example, RunTool.exe.defaults if it
+/// is present.
 class CRunToolOptions : public CConfigSourceSection {
 private:
-	char *m_apsz[32];
+	CConfigSourceSection *m_poDefaults;
+	char **m_apsz;
+	int m_nLength;
 	int m_nCount;
 	BOOL GetRegistryOpts (HKEY hkey, PCSTR pszName, PSTR pszOpts, DWORD cbOpts) {
 		DWORD dwType;
@@ -215,23 +228,31 @@ private:
 		StringCbCopy (pszOpts, cbOpts, "-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+CMSIncrementalPacing");
 		return TRUE;
 	}
+	void ensureCapacity () {
+		if (m_nCount >= m_nLength) {
+			m_nLength = m_nCount * 2;
+			char **apsz = new char*[m_nLength];
+			memcpy (apsz, m_apsz, m_nCount * sizeof (char*));
+			delete m_apsz;
+			m_apsz = apsz;
+		}
+	}
 	void ParseOptions (PSTR psz) {
 		char *pszState;
-		if (m_nCount < sizeof (m_apsz) / sizeof (char*)) {
-			m_apsz[m_nCount] = strtok_s (psz, " ", &pszState);
-			while (m_apsz[m_nCount]) {
-				m_apsz[m_nCount] = _strdup (m_apsz[m_nCount]);
-				m_nCount++;
-				if (m_nCount >= sizeof (m_apsz) / sizeof (char*)) {
-					break;
-				}
-				m_apsz[m_nCount] = strtok_s (NULL, " ", &pszState);
-			}
+		ensureCapacity ();
+		m_apsz[m_nCount] = strtok_s (psz, " ", &pszState);
+		while (m_apsz[m_nCount]) {
+			m_apsz[m_nCount] = _strdup (m_apsz[m_nCount]);
+			m_nCount++;
+			ensureCapacity ();
+			m_apsz[m_nCount] = strtok_s (NULL, " ", &pszState);
 		}
 	}
 public:
-	CRunToolOptions (int *pargc, char **argv) {
+	CRunToolOptions (CConfigSourceSection *poDefaults, int *pargc, char **argv) {
 		char sz[MAX_PATH];
+		m_poDefaults = poDefaults;
+		m_apsz = new char*[m_nLength = 8];
 		m_nCount = 0;
 		if (GetRegistryMemOpts (sz, sizeof (sz)) || GetDefaultMemOpts (sz, sizeof (sz))) {
 			ParseOptions (sz);
@@ -249,9 +270,8 @@ public:
 					memmove (argv[1] + 10, argv[1] + 18, strlen (argv[1] + 18) + 1);
 				}
 			}
-			if (m_nCount < sizeof (m_apsz) / sizeof (char*)) {
-				m_apsz[m_nCount++] = _strdup (argv[1]);
-			}
+			ensureCapacity ();
+			m_apsz[m_nCount++] = _strdup (argv[1]);
 			(*pargc)--;
 			memmove (argv + 1, argv + 2, sizeof (char*) * *pargc);
 		}
@@ -261,14 +281,27 @@ public:
 		for (i = 0; i < m_nCount; i++) {
 			delete m_apsz[i];
 		}
+		delete m_apsz;
+		if (m_poDefaults) delete m_poDefaults;
 	}
 	int ReadInteger (PCSTR pszName, int nDefault) {
-		if (!strcmp (pszName, "count")) return m_nCount;
-		return nDefault;
+		if (!strcmp (pszName, "count")) {
+			int nCount = m_nCount;
+			if (m_poDefaults) nCount += m_poDefaults->ReadInteger (pszName, 0);
+			return nCount;
+		}
+		return m_poDefaults ? m_poDefaults->ReadInteger (pszName, nDefault) : nDefault;
 	}
 	size_t ReadString (PCSTR pszName, PSTR pszBuffer, size_t cbBuffer, PCSTR pszDefault) {
 		if (!strncmp (pszName, "opt", 3)) {
 			int nOpt = atoi (pszName + 3);
+			if (m_poDefaults) {
+				int nDefaultCount = m_poDefaults->ReadInteger ("count", 0);
+				if (nOpt < nDefaultCount) {
+					return m_poDefaults->ReadString (pszName, pszBuffer, cbBuffer, pszDefault);
+				}
+				nOpt -= nDefaultCount;
+			}
 			if ((nOpt >= 0) && nOpt < m_nCount) {
 				StringCbCopy (pszBuffer, cbBuffer, m_apsz[nOpt]);
 				return strlen (m_apsz[nOpt]);
@@ -283,6 +316,7 @@ public:
 	}
 };
 
+/// Presents command line arguments as an INI config section for the shared libraries.
 class CRunToolArgs : public CConfigSourceSection {
 private:
 	int m_nArgs;
@@ -313,19 +347,51 @@ public:
 	}
 };
 
+/// Presents a config source to the shared libraries that contain data from the command
+/// line, assumed data (when running in a legacy mode), and specific defaults from an
+/// INI file.
+///
+/// A file called, for example, RunTool.exe.defaults is checked for and used if found.
+/// Otherwise the previous behaviour is used (see LegacyRunToolClasspath).
 class CRunToolConfigSource : public CConfigSource {
 private:
 	int *m_pargc;
 	char **m_argv;
+	char *m_pszDefaults;
+	CConfigSource *m_poDefaults;
 public:
 	CRunToolConfigSource (int *pargc, char **argv) {
+		char szModule[MAX_PATH];
 		m_pargc = pargc;
 		m_argv = argv;
+		m_pszDefaults = NULL;
+		m_poDefaults = NULL;
+		if (GetModuleFileName (NULL, szModule, MAX_PATH) > 0) {
+			StringCbCat (szModule, sizeof (szModule), TEXT (".defaults"));
+			if (GetFileAttributes (szModule) != INVALID_FILE_ATTRIBUTES) {
+				m_pszDefaults = _strdup (szModule);
+				EnvironmentInit (m_pszDefaults);
+				m_poDefaults = new CFileConfigSource (m_pszDefaults);
+			}
+		}
+	}
+	~CRunToolConfigSource () {
+		if (m_pszDefaults) free (m_pszDefaults);
+		if (m_poDefaults) delete m_poDefaults;
 	}
 	CConfigSourceSection *OpenSection (PCSTR pszSection) {
-		if (!strcmp (pszSection, "Classpath")) return new CRunToolClasspath (m_pargc, m_argv);
-		if (!strcmp (pszSection, "Options")) return new CRunToolOptions (m_pargc, m_argv);
-		return NULL;
+		CConfigSourceSection *poDefaults = m_poDefaults ? m_poDefaults->OpenSection (pszSection) : NULL;
+		if (!strcmp (pszSection, "Classpath")) {
+			if (poDefaults) {
+				return poDefaults;
+			} else {
+				return new CLegacyRunToolClasspath (m_pargc, m_argv);
+			}
+		}
+		if (!strcmp (pszSection, "Options")) {
+			return new CRunToolOptions (poDefaults, m_pargc, m_argv);
+		}
+		return poDefaults;
 	}
 };
 

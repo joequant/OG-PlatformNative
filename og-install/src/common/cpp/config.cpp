@@ -143,35 +143,6 @@ BOOL CConfig::Read (CConfigSource *poConfig) {
 	return TRUE;
 }
 
-class CFileConfigSourceSection : public CConfigSourceSection {
-private:
-	PCSTR m_pszFilename;
-	PCSTR m_pszSection;
-public:
-	CFileConfigSourceSection (PCSTR pszFilename, PCSTR pszSection) {
-		m_pszFilename = pszFilename;
-		m_pszSection = pszSection;
-	}
-	int ReadInteger (PCSTR pszName, int nDefault) {
-		return GetPrivateProfileInt (m_pszSection, pszName, nDefault, m_pszFilename);
-	}
-	size_t ReadString (PCSTR pszName, PSTR pszBuffer, size_t cbBuffer, PCSTR pszDefault) {
-		return GetPrivateProfileString (m_pszSection, pszName, pszDefault, pszBuffer, (DWORD)cbBuffer, m_pszFilename);
-	}
-};
-
-class CFileConfigSource : public CConfigSource {
-private:
-	PCSTR m_pszFilename;
-public:
-	CFileConfigSource (PCSTR pszFilename) {
-		m_pszFilename = pszFilename;
-	}
-	CFileConfigSourceSection *OpenSection (PCSTR pszSection) {
-		return new CFileConfigSourceSection (m_pszFilename, pszSection);
-	}
-};
-
 BOOL CConfig::Read (PCSTR pszFilename) {
 	CFileConfigSource oConfig (pszFilename);
 	return Read (&oConfig);
