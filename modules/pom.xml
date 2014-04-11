@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.opengamma</groupId>
     <artifactId>corporate-parent</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.8</version>
     <relativePath/>
   </parent>  
   <groupId>com.opengamma.platform</groupId>
@@ -34,7 +34,7 @@
     <version.maven-antrun-plugin>1.6</version.maven-antrun-plugin>
     <version.maven-surefire-plugin>2.15</version.maven-surefire-plugin>
     <version.maven-dependency-plugin>2.8</version.maven-dependency-plugin>
-    <version.exec-maven-plugin>1.1.1</version.exec-maven-plugin>
+    <version.exec-maven-plugin>1.2.1</version.exec-maven-plugin>
     <version.build-helper-maven-plugin>1.8</version.build-helper-maven-plugin>
     <version.paranamer>2.3</version.paranamer>
     <version.cpptasks>1.0b5</version.cpptasks>
@@ -43,7 +43,7 @@
     <version.ehcache>2.6.3</version.ehcache>
     <version.activemq>5.3.0</version.activemq>
     <version.ant-contrib>1.0b3</version.ant-contrib>
-    <version.jacoco-maven-plugin>0.6.3.201306030806</version.jacoco-maven-plugin>
+    <version.jacoco-maven-plugin>0.7.0.201403182114</version.jacoco-maven-plugin>
     <skip.msbuild>true</skip.msbuild>
     <skip.cpptasks-build>true</skip.cpptasks-build>
     <skip.cpptasks-build-tests>true</skip.cpptasks-build-tests>
