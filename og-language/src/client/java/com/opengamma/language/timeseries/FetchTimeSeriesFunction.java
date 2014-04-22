@@ -83,7 +83,7 @@ public class FetchTimeSeriesFunction extends AbstractFunctionInvoker implements 
     try {
       return sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, identifier, OpenGammaTypes.UNIQUE_ID);
     } catch (InvalidConversionException e) {
-      throw new InvokeParameterConversionException(IDENTIFIER, e);
+      throw new InvokeParameterConversionException(IDENTIFIER, e.getClientMessage(), e);
     }
   }
 
@@ -91,7 +91,7 @@ public class FetchTimeSeriesFunction extends AbstractFunctionInvoker implements 
     try {
       return sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, identifier, OpenGammaTypes.EXTERNAL_ID_BUNDLE);
     } catch (InvalidConversionException e) {
-      throw new InvokeParameterConversionException(IDENTIFIER, e);
+      throw new InvokeParameterConversionException(IDENTIFIER, e.getClientMessage(), e);
     }
   }
 

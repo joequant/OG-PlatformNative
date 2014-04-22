@@ -27,6 +27,8 @@ import com.opengamma.language.definition.types.OpenGammaTypes;
 import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
+import com.opengamma.language.error.InvokeParameterConversionException;
+import com.opengamma.language.invoke.InvalidConversionException;
 import com.opengamma.language.procedure.AbstractProcedureInvoker;
 import com.opengamma.language.procedure.MetaProcedure;
 import com.opengamma.language.procedure.PublishedProcedure;
@@ -80,6 +82,8 @@ public class StoreConfigItemProcedure extends AbstractProcedureInvoker.SingleRes
   private static Object convert(final SessionContext sessionContext, final FudgeMsg item, final JavaTypeInfo<?> type) {
     try {
       return sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, item, type);
+    } catch (InvalidConversionException e) {
+      throw new InvokeParameterConversionException(ITEM, e.getClientMessage(), e);
     } catch (RuntimeException e) {
       throw new InvokeInvalidArgumentException(ITEM, e);
     }

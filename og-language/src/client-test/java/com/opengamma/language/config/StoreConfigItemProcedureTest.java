@@ -24,6 +24,7 @@ import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.Converters;
 import com.opengamma.language.convert.FudgeTypeConverter;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
+import com.opengamma.language.error.InvokeParameterConversionException;
 import com.opengamma.language.test.TestUtils;
 import com.opengamma.master.config.ConfigDocument;
 import com.opengamma.master.config.ConfigMaster;
@@ -83,7 +84,7 @@ public class StoreConfigItemProcedureTest {
     assertEquals(id, UniqueId.of("MemCfg", "1", "2"));
   }
 
-  @Test(expectedExceptions = InvokeInvalidArgumentException.class)
+  @Test(expectedExceptions = InvokeParameterConversionException.class)
   public void testInvalidType_1() {
     final SessionContext context = createSessionContext();
     StoreConfigItemProcedure.invoke(context, getMockConfigObject(context, 1, false), YieldCurveDefinition.class.getName(), null, UniqueId.of("MemCfg", "1"), MasterID.SESSION);

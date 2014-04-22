@@ -8,6 +8,7 @@ package com.opengamma.language;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.fudgemsg.FudgeContext;
+import org.fudgemsg.FudgeField;
 import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.mapping.FudgeSerializer;
 
@@ -87,6 +88,7 @@ public final class ValueUtils {
    * 
    * @param context the Fudge context to use (only used when encoding {@code Data} to a message)
    * @param data the data to convert
+   * @return the value instance, not null
    */
   public static Value of(final FudgeContext context, final Data data) {
     if (data == null) {
@@ -251,6 +253,63 @@ public final class ValueUtils {
     }
     if (value.getErrorValue() != null) {
       sb.append("}");
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Displayable form of the Value object, summarising as much as possible.
+   * <p>
+   * This is not a full representation of the data, which may be more useful for short status messages to the user than the full strings constructed by {@link #toString(Value,boolean)}.
+   * 
+   * @param value the value to convert to a string
+   * @return a displayable string representation
+   */
+  public static String toSimpleString(final Value value) {
+    if (value == null) {
+      return null;
+    }
+    final StringBuilder sb = new StringBuilder();
+    if (value.getErrorValue() != null) {
+      sb.append("Error ").append(value.getErrorValue());
+    }
+    if (value.getBoolValue() != null) {
+      if (sb.length() > 0) {
+        sb.append(": ");
+      }
+      sb.append(value.getBoolValue());
+    }
+    if (value.getDoubleValue() != null) {
+      if (sb.length() > 0) {
+        sb.append(": ");
+      }
+      sb.append(value.getDoubleValue());
+    }
+    if (value.getIntValue() != null) {
+      if (sb.length() > 0) {
+        sb.append(": ");
+      }
+      sb.append(value.getIntValue());
+    }
+    if (value.getMessageValue() != null) {
+      if (sb.length() > 0) {
+        sb.append(": ");
+      }
+      final FudgeMsg msg = value.getMessageValue();
+      final FudgeField clazz = msg.getByOrdinal(0);
+      if ((clazz != null) && (clazz.getValue() instanceof String)) {
+        final String clazzName = (String) clazz.getValue();
+        final int dot = clazzName.lastIndexOf('.');
+        sb.append(clazzName.substring(dot + 1));
+      } else {
+        sb.append("Message encoded object");
+      }
+    }
+    if (value.getStringValue() != null) {
+      if (sb.length() > 0) {
+        sb.append(": ");
+      }
+      sb.append(value.getStringValue());
     }
     return sb.toString();
   }

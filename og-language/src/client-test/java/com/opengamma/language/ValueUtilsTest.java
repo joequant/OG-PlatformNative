@@ -12,6 +12,8 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import org.fudgemsg.FudgeContext;
 import org.fudgemsg.FudgeMsg;
+import org.fudgemsg.MutableFudgeMsg;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.opengamma.util.test.TestGroup;
@@ -111,6 +113,104 @@ public class ValueUtilsTest {
         assertTrue(ValueUtils.compare(vs[j], vs[i]) > 0);
       }
     }
+  }
+
+  @Test
+  public void testToString() {
+    Assert.assertEquals(ValueUtils.toString(null, false), null);
+    Assert.assertEquals(ValueUtils.toString(null, true), null);
+    final Value v = new Value();
+    Assert.assertEquals(ValueUtils.toString(v, false), "");
+    Assert.assertEquals(ValueUtils.toString(v, true), "");
+    v.setBoolValue(true);
+    Assert.assertEquals(ValueUtils.toString(v, false), "true");
+    Assert.assertEquals(ValueUtils.toString(v, true), "true");
+    v.setBoolValue(null);
+    v.setDoubleValue(3.14);
+    Assert.assertEquals(ValueUtils.toString(v, false), "3.14");
+    Assert.assertEquals(ValueUtils.toString(v, true), "3.14");
+    v.setDoubleValue(null);
+    v.setIntValue(42);
+    Assert.assertEquals(ValueUtils.toString(v, false), "42");
+    Assert.assertEquals(ValueUtils.toString(v, true), "42");
+    v.setIntValue(null);
+    final MutableFudgeMsg msg = FudgeContext.GLOBAL_DEFAULT.newMessage();
+    v.setMessageValue(msg);
+    Assert.assertEquals(ValueUtils.toString(v, false), "FudgeMsg[]");
+    Assert.assertEquals(ValueUtils.toString(v, true), "FudgeMsg[]");
+    msg.add(0, "com.opengamma.example.MockObject");
+    msg.add("Foo", "Bar");
+    Assert.assertEquals(ValueUtils.toString(v, false), "FudgeMsg[0:  => com.opengamma.example.MockObject, Foo => Bar]");
+    Assert.assertEquals(ValueUtils.toString(v, true), "FudgeMsg[0:  => com.opengamma.example.MockObject, Foo => Bar]");
+    v.setMessageValue(null);
+    v.setStringValue("Foo\"Bar");
+    Assert.assertEquals(ValueUtils.toString(v, false), "Foo\"Bar");
+    Assert.assertEquals(ValueUtils.toString(v, true), "\"Foo\\\"Bar\"");
+    v.setStringValue(null);
+    v.setErrorValue(15);
+    Assert.assertEquals(ValueUtils.toString(v, false), "{Error 15}");
+    Assert.assertEquals(ValueUtils.toString(v, true), "{Error 15}");
+    v.setBoolValue(true);
+    Assert.assertEquals(ValueUtils.toString(v, false), "{Error 15, true}");
+    Assert.assertEquals(ValueUtils.toString(v, true), "{Error 15, true}");
+    v.setBoolValue(null);
+    v.setDoubleValue(3.14);
+    Assert.assertEquals(ValueUtils.toString(v, false), "{Error 15, 3.14}");
+    Assert.assertEquals(ValueUtils.toString(v, true), "{Error 15, 3.14}");
+    v.setDoubleValue(null);
+    v.setIntValue(42);
+    Assert.assertEquals(ValueUtils.toString(v, false), "{Error 15, 42}");
+    Assert.assertEquals(ValueUtils.toString(v, true), "{Error 15, 42}");
+    v.setIntValue(null);
+    v.setMessageValue(msg);
+    Assert.assertEquals(ValueUtils.toString(v, false), "{Error 15, FudgeMsg[0:  => com.opengamma.example.MockObject, Foo => Bar]}");
+    Assert.assertEquals(ValueUtils.toString(v, true), "{Error 15, FudgeMsg[0:  => com.opengamma.example.MockObject, Foo => Bar]}");
+    v.setMessageValue(null);
+    v.setStringValue("Foo\"Bar");
+    Assert.assertEquals(ValueUtils.toString(v, false), "{Error 15, Foo\"Bar}");
+    Assert.assertEquals(ValueUtils.toString(v, true), "{Error 15, \"Foo\\\"Bar\"}");
+  }
+
+  @Test
+  public void testToSimpleString() {
+    Assert.assertEquals(ValueUtils.toSimpleString(null), null);
+    final Value v = new Value();
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "");
+    v.setBoolValue(true);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "true");
+    v.setBoolValue(null);
+    v.setDoubleValue(3.14);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "3.14");
+    v.setDoubleValue(null);
+    v.setIntValue(42);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "42");
+    v.setIntValue(null);
+    final MutableFudgeMsg msg = FudgeContext.GLOBAL_DEFAULT.newMessage();
+    v.setMessageValue(msg);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "Message encoded object");
+    msg.add(0, "com.opengamma.example.MockObject");
+    msg.add("Foo", "Bar");
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "MockObject");
+    v.setMessageValue(null);
+    v.setStringValue("Foo\"Bar");
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "Foo\"Bar");
+    v.setStringValue(null);
+    v.setErrorValue(15);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "Error 15");
+    v.setBoolValue(true);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "Error 15: true");
+    v.setBoolValue(null);
+    v.setDoubleValue(3.14);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "Error 15: 3.14");
+    v.setDoubleValue(null);
+    v.setIntValue(42);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "Error 15: 42");
+    v.setIntValue(null);
+    v.setMessageValue(msg);
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "Error 15: MockObject");
+    v.setMessageValue(null);
+    v.setStringValue("Foo\"Bar");
+    Assert.assertEquals(ValueUtils.toSimpleString(v), "Error 15: Foo\"Bar");
   }
 
 }

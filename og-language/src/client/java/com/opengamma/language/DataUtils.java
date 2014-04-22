@@ -90,12 +90,14 @@ public final class DataUtils {
   /**
    * Displayable form of the Data object.
    * 
-   * @param data  the object to convert to a string
-   * @param quoted  true to put quote marks around strings and escape them
+   * @param data the object to convert to a string
+   * @param quoted true to put quote marks around strings and escape them
    * @return the displayable string
    */
   public static String toString(final Data data, final boolean quoted) {
-    if (data.getSingle() != null) {
+    if (data == null) {
+      return null;
+    } else if (data.getSingle() != null) {
       return ValueUtils.toString(data.getSingle(), quoted);
     } else if (data.getLinear() != null) {
       final StringBuilder sb = new StringBuilder();
@@ -126,6 +128,33 @@ public final class DataUtils {
       }
       sb.append(']');
       return sb.toString();
+    } else {
+      return "Data";
+    }
+  }
+
+  /**
+   * Displayable form of the Data object, summarising as much as possible.
+   * <p>
+   * This is not a full representation of the data, which may be more useful for short status messages to the user than the full strings constructed by {@link #toString(Data,boolean)}.
+   * 
+   * @param data the object to convert to a string
+   * @return the displayable string
+   */
+  public static String toSimpleString(final Data data) {
+    if (data == null) {
+      return null;
+    } else if (data.getSingle() != null) {
+      return ValueUtils.toSimpleString(data.getSingle());
+    } else if (data.getLinear() != null) {
+      return "Data[" + data.getLinear().length + "]";
+    } else if (data.getMatrix() != null) {
+      final int rows = data.getMatrix().length;
+      if (rows > 0) {
+        return "Data[" + rows + "][" + data.getMatrix()[0].length + "]";
+      } else {
+        return "Data[" + rows + "][0]";
+      }
     } else {
       return "Data";
     }
