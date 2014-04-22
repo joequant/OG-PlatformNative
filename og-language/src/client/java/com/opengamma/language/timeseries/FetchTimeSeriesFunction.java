@@ -24,7 +24,6 @@ import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.definition.types.ThreeTenTypes;
 import com.opengamma.language.definition.types.TransportTypes;
 import com.opengamma.language.error.InvokeInvalidArgumentException;
-import com.opengamma.language.error.InvokeParameterConversionException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
@@ -83,7 +82,7 @@ public class FetchTimeSeriesFunction extends AbstractFunctionInvoker implements 
     try {
       return sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, identifier, OpenGammaTypes.UNIQUE_ID);
     } catch (InvalidConversionException e) {
-      throw new InvokeParameterConversionException(IDENTIFIER, e.getClientMessage(), e);
+      throw e.toParameterConversionException(sessionContext.getGlobalContext(), IDENTIFIER);
     }
   }
 
@@ -91,7 +90,7 @@ public class FetchTimeSeriesFunction extends AbstractFunctionInvoker implements 
     try {
       return sessionContext.getGlobalContext().getValueConverter().convertValue(sessionContext, identifier, OpenGammaTypes.EXTERNAL_ID_BUNDLE);
     } catch (InvalidConversionException e) {
-      throw new InvokeParameterConversionException(IDENTIFIER, e.getClientMessage(), e);
+      throw e.toParameterConversionException(sessionContext.getGlobalContext(), IDENTIFIER);
     }
   }
 

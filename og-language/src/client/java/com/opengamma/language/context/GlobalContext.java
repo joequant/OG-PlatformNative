@@ -26,6 +26,7 @@ import com.opengamma.financial.analytics.volatility.cube.VolatilityCubeDefinitio
 import com.opengamma.financial.currency.CurrencyPairsSource;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.language.config.ServerMetadata;
+import com.opengamma.language.error.ClientMessageStrings;
 import com.opengamma.language.function.AggregatingFunctionProvider;
 import com.opengamma.language.function.DefaultFunctionDefinitionFilter;
 import com.opengamma.language.function.FunctionDefinitionFilter;
@@ -60,6 +61,11 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
    * Name under which the shared engine client is bound.
    */
   protected static final String CLIENT = "client";
+
+  /**
+   * Name under which the client message strings are bound.
+   */
+  protected static final String CLIENT_MESSAGE_STRINGS = "clientMessageStrings";
 
   /**
    * Name under which the default computation target resolver is bound.
@@ -215,6 +221,7 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
 
   /* package */GlobalContext() {
     super(null);
+    setValue(CLIENT_MESSAGE_STRINGS, ClientMessageStrings.SIMPLE_FORM);
     setValue(FUNCTION_DEFINITION_FILTER, new DefaultFunctionDefinitionFilter());
     setValue(FUNCTION_PROVIDER, AggregatingFunctionProvider.cachingInstance());
     setValue(LIVEDATA_DEFINITION_FILTER, new DefaultLiveDataDefinitionFilter());
@@ -307,6 +314,10 @@ public abstract class GlobalContext extends AbstractContext<AbstractContext<?>> 
 
   public RemoteClient getClient() {
     return getValue(CLIENT);
+  }
+
+  public ClientMessageStrings getClientMessageStrings() {
+    return getValue(CLIENT_MESSAGE_STRINGS);
   }
 
   public ComputationTargetResolver getComputationTargetResolver() {

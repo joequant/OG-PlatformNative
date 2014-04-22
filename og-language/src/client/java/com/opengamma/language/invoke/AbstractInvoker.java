@@ -14,7 +14,6 @@ import com.opengamma.language.Data;
 import com.opengamma.language.context.GlobalContext;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.MetaParameter;
-import com.opengamma.language.error.InvokeResultConversionException;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.livedata.AbstractLiveDataConnector;
 import com.opengamma.language.procedure.AbstractProcedureInvoker;
@@ -31,7 +30,7 @@ public abstract class AbstractInvoker {
   /**
    * Constructs the invoker.
    * 
-   * @param parameters  the invocation parameters, or null for no parameters
+   * @param parameters the invocation parameters, or null for no parameters
    */
   protected AbstractInvoker(final List<MetaParameter> parameters) {
     if ((parameters == null) || parameters.isEmpty()) {
@@ -52,7 +51,7 @@ public abstract class AbstractInvoker {
     try {
       return converter.convertResult(sessionContext, result);
     } catch (InvalidConversionException e) {
-      throw new InvokeResultConversionException(e.getClientMessage());
+      throw e.toResultConversionException(sessionContext.getGlobalContext());
     }
   }
 
@@ -63,7 +62,7 @@ public abstract class AbstractInvoker {
       try {
         result[i] = converter.convertResult(sessionContext, results[i]);
       } catch (InvalidConversionException e) {
-        throw new InvokeResultConversionException(i, e.getClientMessage());
+        throw e.toResultConversionException(sessionContext.getGlobalContext(), i);
       }
     }
     return result;

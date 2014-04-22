@@ -24,6 +24,7 @@ import com.opengamma.financial.analytics.volatility.cube.VolatilityCubeDefinitio
 import com.opengamma.financial.currency.CurrencyPairsSource;
 import com.opengamma.financial.user.rest.RemoteClient;
 import com.opengamma.language.config.ServerMetadata;
+import com.opengamma.language.error.ClientMessageStrings;
 import com.opengamma.language.function.AggregatingFunctionProvider;
 import com.opengamma.language.function.FunctionDefinitionFilter;
 import com.opengamma.language.invoke.AggregatingTypeConverterProvider;
@@ -70,6 +71,11 @@ public class MutableGlobalContext extends GlobalContext {
 
   public void setClient(final RemoteClient client) {
     removeOrReplaceValue(CLIENT, client);
+  }
+
+  public void setClientMessageStrings(final ClientMessageStrings clientMessages) {
+    ArgumentChecker.notNull(clientMessages, "clientMessages");
+    replaceValue(CLIENT_MESSAGE_STRINGS, clientMessages);
   }
 
   public void setComputationTargetResolver(final DefaultComputationTargetResolver computationTargetResolver) {

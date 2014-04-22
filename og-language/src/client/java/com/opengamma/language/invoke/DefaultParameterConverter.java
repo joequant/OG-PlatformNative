@@ -55,7 +55,7 @@ public class DefaultParameterConverter implements ParameterConverter {
       }
       valueConverter.convertValue(context, parameter, typeInfo);
       if (context.isFailed()) {
-        throw new InvokeParameterConversionException(i, InvalidConversionException.createClientMessage(parameter, typeInfo));
+        throw new InvokeParameterConversionException(i, InvalidConversionException.createClientMessage(sessionContext.getGlobalContext(), parameter, typeInfo));
       }
       parameters[i++] = context.getResult();
     }
