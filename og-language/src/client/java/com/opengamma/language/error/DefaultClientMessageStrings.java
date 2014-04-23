@@ -40,8 +40,16 @@ public class DefaultClientMessageStrings implements ClientMessageStrings {
     return value.toString();
   }
 
+  protected String emptyString() {
+    return "";
+  }
+
   protected String stringValue(final String value) {
-    return value;
+    if (value.length() > 0) {
+      return value;
+    } else {
+      return emptyString();
+    }
   }
 
   protected String nonErrorValue(final Value value) {

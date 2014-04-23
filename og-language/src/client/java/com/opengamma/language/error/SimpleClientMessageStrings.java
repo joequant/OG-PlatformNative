@@ -27,6 +27,21 @@ public class SimpleClientMessageStrings extends DefaultClientMessageStrings {
   // DefaultClientMessageStrings
 
   @Override
+  protected String emptyData() {
+    return emptyValue();
+  }
+
+  @Override
+  protected String emptyValue() {
+    return "empty value";
+  }
+
+  @Override
+  protected String emptyString() {
+    return "blank string";
+  }
+
+  @Override
   protected String messageValue(final FudgeMsg value) {
     final FudgeField clazz = value.getByOrdinal(0);
     if ((clazz != null) && (clazz.getValue() instanceof String)) {
@@ -34,7 +49,7 @@ public class SimpleClientMessageStrings extends DefaultClientMessageStrings {
       final int dot = clazzName.lastIndexOf('.');
       return clazzName.substring(dot + 1);
     } else {
-      return "Message encoded object";
+      return "message encoded object";
     }
   }
 
