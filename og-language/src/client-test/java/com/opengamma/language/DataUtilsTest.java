@@ -6,11 +6,13 @@
 
 package com.opengamma.language;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
-import org.testng.Assert;
+import org.fudgemsg.FudgeContext;
 import org.testng.annotations.Test;
 
 import com.opengamma.util.test.TestGroup;
@@ -21,33 +23,29 @@ import com.opengamma.util.test.TestGroup;
 @Test(groups = TestGroup.UNIT)
 public class DataUtilsTest {
 
-  @Test
+  public void testNull() {
+    assertTrue(DataUtils.isNull(new Data()));
+  }
+
   public void testSingle() {
     final Value value = ValueUtils.of(42);
     final Data data = DataUtils.of(value);
     assertNotNull(data);
-    assertEquals(value, data.getSingle());
-  }
-
-  @Test
-  public void testLinear() {
-    final Value[] values = new Value[] {ValueUtils.of(1), ValueUtils.of(2) };
-    final Data data = DataUtils.of(values);
-    assertNotNull(data);
-    assertArrayEquals(values, data.getLinear());
-  }
-
-  @Test
-  public void testMatrix() {
-    final Value[][] values = new Value[][] {new Value[] {ValueUtils.of(1), ValueUtils.of(2) }, new Value[] {ValueUtils.of(3), ValueUtils.of(4) } };
-    final Data data = DataUtils.of(values);
-    assertNotNull(data);
-    assertArrayEquals(values, data.getMatrix());
+    assertFalse(DataUtils.isNull(data));
+    assertEquals(data.getSingle(), value);
   }
 
   @Test(expectedExceptions = IllegalArgumentException.class)
   public void testSingleNull() {
     DataUtils.of((Value) null);
+  }
+
+  public void testLinear() {
+    final Value[] values = new Value[] {ValueUtils.of(1), ValueUtils.of(2) };
+    final Data data = DataUtils.of(values);
+    assertNotNull(data);
+    assertFalse(DataUtils.isNull(data));
+    assertArrayEquals(data.getLinear(), values);
   }
 
   @Test(expectedExceptions = IllegalArgumentException.class)
@@ -59,6 +57,14 @@ public class DataUtilsTest {
   public void testLinearNullElement() {
     final Value[] values = new Value[] {ValueUtils.of(1), null, ValueUtils.of(2) };
     DataUtils.of(values);
+  }
+
+  public void testMatrix() {
+    final Value[][] values = new Value[][] {new Value[] {ValueUtils.of(1), ValueUtils.of(2) }, new Value[] {ValueUtils.of(3), ValueUtils.of(4) } };
+    final Data data = DataUtils.of(values);
+    assertNotNull(data);
+    assertFalse(DataUtils.isNull(data));
+    assertArrayEquals(data.getMatrix(), values);
   }
 
   @Test(expectedExceptions = IllegalArgumentException.class)
@@ -79,30 +85,43 @@ public class DataUtilsTest {
   }
 
   public void testToString() {
-    Assert.assertEquals(DataUtils.toString(null, false), null);
-    Assert.assertEquals(DataUtils.toString(null, true), null);
+    assertEquals(DataUtils.toString(null, false), null);
+    assertEquals(DataUtils.toString(null, true), null);
     final Data data = new Data();
-    Assert.assertEquals(DataUtils.toString(data, false), "Data");
-    Assert.assertEquals(DataUtils.toString(data, true), "Data");
+    assertEquals(DataUtils.toString(data, false), "Data");
+    assertEquals(DataUtils.toString(data, true), "Data");
     final Value value = new Value();
     data.setSingle(value);
-    Assert.assertEquals(DataUtils.toString(data, false), "");
-    Assert.assertEquals(DataUtils.toString(data, true), "");
+    assertEquals(DataUtils.toString(data, false), "");
+    assertEquals(DataUtils.toString(data, true), "");
     value.setStringValue("Foo");
     data.setSingle(value);
-    Assert.assertEquals(DataUtils.toString(data, false), "Foo");
-    Assert.assertEquals(DataUtils.toString(data, true), "\"Foo\"");
+    assertEquals(DataUtils.toString(data, false), "Foo");
+    assertEquals(DataUtils.toString(data, true), "\"Foo\"");
     data.setSingle(null);
     data.setLinear(new Value[] {value, value });
-    Assert.assertEquals(DataUtils.toString(data, false), "[Foo, Foo]");
-    Assert.assertEquals(DataUtils.toString(data, true), "[\"Foo\", \"Foo\"]");
+    data.setLinear(new Value[] {value, value });
+    assertEquals(DataUtils.toString(data, false), "[Foo, Foo]");
+    assertEquals(DataUtils.toString(data, true), "[\"Foo\", \"Foo\"]");
     data.setLinear(null);
     data.setMatrix(new Value[2][0]);
-    Assert.assertEquals(DataUtils.toString(data, false), "[[], []]");
-    Assert.assertEquals(DataUtils.toString(data, true), "[[], []]");
+    assertEquals(DataUtils.toString(data, false), "[[], []]");
+    assertEquals(DataUtils.toString(data, true), "[[], []]");
     data.setMatrix(new Value[][] { {value, value }, {value, value } });
-    Assert.assertEquals(DataUtils.toString(data, false), "[[Foo, Foo], [Foo, Foo]]");
-    Assert.assertEquals(DataUtils.toString(data, true), "[[\"Foo\", \"Foo\"], [\"Foo\", \"Foo\"]]");
+    assertEquals(DataUtils.toString(data, false), "[[Foo, Foo], [Foo, Foo]]");
+    assertEquals(DataUtils.toString(data, true), "[[\"Foo\", \"Foo\"], [\"Foo\", \"Foo\"]]");
+  }
+
+  @SuppressWarnings("deprecation")
+  public void testToBool() {
+    assertEquals(DataUtils.toBool(new Data()), null);
+    assertEquals(DataUtils.toBool(DataUtils.of(true)), Boolean.TRUE);
+    assertEquals(DataUtils.toBool(DataUtils.of("False")), Boolean.FALSE);
+    assertEquals(DataUtils.toBool(DataUtils.of("")), null);
+    assertEquals(DataUtils.toBool(DataUtils.of(1d)), Boolean.TRUE);
+    assertEquals(DataUtils.toBool(DataUtils.of(0)), Boolean.FALSE);
+    assertEquals(DataUtils.toBool(DataUtils.ofError(42)), null);
+    assertEquals(DataUtils.toBool(DataUtils.of(FudgeContext.EMPTY_MESSAGE)), null);
   }
 
 }

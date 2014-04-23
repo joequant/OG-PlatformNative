@@ -24,6 +24,12 @@ public final class ValueUtils {
   private ValueUtils() {
   }
 
+  /**
+   * Tests whether the {@link Value} instance is a form of null (or the value passed is null). To be considered null the object must not have any of its typed members set.
+   * 
+   * @param value the value to test
+   * @return true if value is null or represents a null value
+   */
   public static boolean isNull(final Value value) {
     if (value == null) {
       return true;
@@ -32,6 +38,12 @@ public final class ValueUtils {
         (value.getStringValue() == null);
   }
 
+  /**
+   * Creates a {@link Value} instance representing the boolean value.
+   * 
+   * @param boolValue the boolean value, not null
+   * @return the new instance, not null
+   */
   public static Value of(final Boolean boolValue) {
     ArgumentChecker.notNull(boolValue, "boolValue");
     final Value value = new Value();
@@ -39,6 +51,12 @@ public final class ValueUtils {
     return value;
   }
 
+  /**
+   * Creates a {@link Value} instance representing the double value.
+   * 
+   * @param doubleValue the double value, not null
+   * @return the new instance, not null
+   */
   public static Value of(final Double doubleValue) {
     ArgumentChecker.notNull(doubleValue, "doubleValue");
     final Value value = new Value();
@@ -46,12 +64,24 @@ public final class ValueUtils {
     return value;
   }
 
+  /**
+   * Creates a {@link Value} instance representing the error value.
+   * 
+   * @param errorValue the integer error value, see {@link Constants}
+   * @return the new instance, not null
+   */
   public static Value ofError(final int errorValue) {
     final Value value = new Value();
     value.setErrorValue(errorValue);
     return value;
   }
 
+  /**
+   * Creates a {@link Value} instance representing the integer value.
+   * 
+   * @param intValue the integer value, not null
+   * @return the new instance, not null
+   */
   public static Value of(final Integer intValue) {
     ArgumentChecker.notNull(intValue, "intValue");
     final Value value = new Value();
@@ -59,6 +89,14 @@ public final class ValueUtils {
     return value;
   }
 
+  /**
+   * Creates a {@link Value} instance representing the message.
+   * <p>
+   * The message is held by reference - the caller should either pass an immutable form or not modify the original.
+   * 
+   * @param messageValue the message value, not null
+   * @return the new instance, not null
+   */
   public static Value of(final FudgeMsg messageValue) {
     ArgumentChecker.notNull(messageValue, "messageValue");
     final Value value = new Value();
@@ -66,6 +104,12 @@ public final class ValueUtils {
     return value;
   }
 
+  /**
+   * Creates a {@link Value} instance representing the string.
+   * 
+   * @param stringValue the string value, not null
+   * @return the new instance, not null
+   */
   public static Value of(final String stringValue) {
     ArgumentChecker.notNull(stringValue, "stringValue");
     final Value value = new Value();
@@ -126,6 +170,19 @@ public final class ValueUtils {
     }
   }
 
+  /**
+   * Returns the {@link Value} representation as a boolean if possible.
+   * <ul>
+   * <li>Non-zero numeric values are treated as true
+   * <li>Numeric zeroes are treated as false
+   * <li>String values of "true" and "false" (ignoring case) are treated as true and false respectively
+   * </ul>
+   * 
+   * @param data the instance to convert
+   * @return a boolean form of the value or null if it does not contain suitable data
+   * @deprecated conversions from the transport value types should be performed with the type conversion chains instead
+   */
+  @Deprecated
   public static Boolean toBool(final Value data) {
     if (data == null) {
       return null;
@@ -137,11 +194,31 @@ public final class ValueUtils {
       return data.getIntValue() != 0;
     } else if (data.getDoubleValue() != null) {
       return data.getDoubleValue() != 0;
+    } else if (data.getStringValue() != null) {
+      if ("true".equalsIgnoreCase(data.getStringValue())) {
+        return true;
+      } else if ("false".equalsIgnoreCase(data.getStringValue())) {
+        return false;
+      } else {
+        return null;
+      }
     } else {
       return null;
     }
   }
 
+  /**
+   * Returns the {@link Value} representation as a double if possible.
+   * <ul>
+   * <li>Boolean values are converted to 1.0 (if true) and 0.0 (if false)
+   * <li>String values are parsed using {@link Double#parseDouble}
+   * </ul>
+   * 
+   * @param data the instance to convert
+   * @return a double form of the value or null if it does not contain suitable data
+   * @deprecated conversions from the transport value types should be performed with the type conversion chains instead
+   */
+  @Deprecated
   public static Double toDouble(final Value data) {
     if (data == null) {
       return null;
@@ -154,23 +231,28 @@ public final class ValueUtils {
     } else if (data.getBoolValue() != null) {
       return data.getBoolValue() ? 1.0 : 0.0;
     } else if (data.getStringValue() != null) {
-      return Double.parseDouble(data.getStringValue());
+      try {
+        return Double.parseDouble(data.getStringValue());
+      } catch (NumberFormatException e) {
+        return null;
+      }
     } else {
       return null;
     }
   }
 
-  public static Integer toError(final Value data) {
-    if (data == null) {
-      return null;
-    }
-    if (data.getErrorValue() != null) {
-      return data.getErrorValue();
-    } else {
-      return null;
-    }
-  }
-
+  /**
+   * Returns the {@link Value} representation as an integer if possible.
+   * <ul>
+   * <li>Boolean values are converted to 1 (for true) and 0 (for false)
+   * <li>Strings are parsed using {@link Integer#parseInt}
+   * </ul>
+   * 
+   * @param data the instance to convert
+   * @return the integer value or null if it does not contain suitable data
+   * @deprecated conversions from the transport value types should be performed with the type conversion chains instead
+   */
+  @Deprecated
   public static Integer toInt(final Value data) {
     if (data == null) {
       return null;
@@ -183,24 +265,19 @@ public final class ValueUtils {
     } else if (data.getBoolValue() != null) {
       return data.getBoolValue() ? 1 : 0;
     } else if (data.getStringValue() != null) {
-      return Integer.parseInt(data.getStringValue());
-    } else {
-      return null;
-    }
-  }
-
-  public static FudgeMsg toMessage(final Value data) {
-    if (data == null) {
-      return null;
-    } else if (data.getMessageValue() != null) {
-      return data.getMessageValue();
+      try {
+        return Integer.parseInt(data.getStringValue());
+      } catch (NumberFormatException e) {
+        return null;
+      }
     } else {
       return null;
     }
   }
 
   /**
-   * Displayable form of the Value object.
+   * Displayable form of the Value object for use in diagnostics or error reporting. If the object value is required as a string then the registered type conversion chains appropriate to the client
+   * should be used.
    * <p>
    * This should only be used when the quoted/unquoted form is acceptable. If the requirements of a specific client binding could vary then indirection through the {@link ClientMessageStrings}
    * instance bound to the global context should be used.
@@ -213,32 +290,13 @@ public final class ValueUtils {
     return (quoted ? ClientMessageStrings.QUOTED_FORM : ClientMessageStrings.UNQUOTED_FORM).toString(value);
   }
 
-  public static Object toObject(final Value value) {
-    if (value == null) {
-      return null;
-    }
-    if (value.getErrorValue() != null) {
-      // TODO: This is indistinguishable from the integer value. I reckon it should be an AbstractException instance containing the error value & any other payload. 
-      return value.getErrorValue();
-    }
-    if (value.getBoolValue() != null) {
-      return value.getBoolValue();
-    }
-    if (value.getDoubleValue() != null) {
-      return value.getDoubleValue();
-    }
-    if (value.getIntValue() != null) {
-      return value.getIntValue();
-    }
-    if (value.getMessageValue() != null) {
-      return value.getMessageValue();
-    }
-    if (value.getStringValue() != null) {
-      return value.getStringValue();
-    }
-    return null;
-  }
-
+  /**
+   * Transposes a matrix of values.
+   * 
+   * @param range the matrix to transpose, not null
+   * @return the transposed matrix
+   * @throws IllegalArgumentException if the matrix is jagged
+   */
   public static Value[][] transpose(final Value[][] range) {
     final int rowCount = range.length;
     final int columnCount = rowCount > 0 ? range[0].length : 0;
@@ -368,6 +426,22 @@ public final class ValueUtils {
     }
   }
 
+  /**
+   * Compares two {@link Value} instances for the purpose of returning a consistent order where needed. Values are first grouped as:
+   * <ul>
+   * <li>Errors
+   * <li>Booleans
+   * <li>Integers
+   * <li>Doubles
+   * <li>Strings
+   * <li>Fudge messages
+   * </ul>
+   * Then sorted within each group using the natural sort ordering for that type (except for Fudge messages which are considered equal for the purpose of sorting).
+   * 
+   * @param a the first comparand, not null
+   * @param b the second comparant, not null
+   * @return -1 if {@code a} should precede {@code b}, 1 if {@code a} should succeed {@code b}, 0 otherwise
+   */
   public static int compare(final Value a, final Value b) {
     int c = compareError(a, b);
     if (c != 0) {
