@@ -6,12 +6,11 @@
 
 package com.opengamma.language;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.fudgemsg.FudgeContext;
-import org.fudgemsg.FudgeField;
 import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.mapping.FudgeSerializer;
 
+import com.opengamma.language.error.ClientMessageStrings;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -202,116 +201,16 @@ public final class ValueUtils {
 
   /**
    * Displayable form of the Value object.
+   * <p>
+   * This should only be used when the quoted/unquoted form is acceptable. If the requirements of a specific client binding could vary then indirection through the {@link ClientMessageStrings}
+   * instance bound to the global context should be used.
    * 
    * @param value the value to convert to a string
    * @param quoted true to surround strings in quote marks and escape them
    * @return a displayable string representation
    */
   public static String toString(final Value value, final boolean quoted) {
-    if (value == null) {
-      return null;
-    }
-    final StringBuilder sb = new StringBuilder();
-    if (value.getErrorValue() != null) {
-      sb.append("{Error ").append(value.getErrorValue());
-    }
-    if (value.getBoolValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(", ");
-      }
-      sb.append(value.getBoolValue());
-    }
-    if (value.getDoubleValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(", ");
-      }
-      sb.append(value.getDoubleValue());
-    }
-    if (value.getIntValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(", ");
-      }
-      sb.append(value.getIntValue());
-    }
-    if (value.getMessageValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(", ");
-      }
-      sb.append(value.getMessageValue());
-    }
-    if (value.getStringValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(", ");
-      }
-      if (quoted) {
-        sb.append("\"");
-        sb.append(StringEscapeUtils.escapeJava(value.getStringValue()));
-        sb.append("\"");
-      } else {
-        sb.append(value.getStringValue());
-      }
-    }
-    if (value.getErrorValue() != null) {
-      sb.append("}");
-    }
-    return sb.toString();
-  }
-
-  /**
-   * Displayable form of the Value object, summarising as much as possible.
-   * <p>
-   * This is not a full representation of the data, which may be more useful for short status messages to the user than the full strings constructed by {@link #toString(Value,boolean)}.
-   * 
-   * @param value the value to convert to a string
-   * @return a displayable string representation
-   */
-  public static String toSimpleString(final Value value) {
-    if (value == null) {
-      return null;
-    }
-    final StringBuilder sb = new StringBuilder();
-    if (value.getErrorValue() != null) {
-      sb.append("Error ").append(value.getErrorValue());
-    }
-    if (value.getBoolValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(": ");
-      }
-      sb.append(value.getBoolValue());
-    }
-    if (value.getDoubleValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(": ");
-      }
-      sb.append(value.getDoubleValue());
-    }
-    if (value.getIntValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(": ");
-      }
-      sb.append(value.getIntValue());
-    }
-    if (value.getMessageValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(": ");
-      }
-      final FudgeMsg msg = value.getMessageValue();
-      final FudgeField clazz = msg.getByOrdinal(0);
-      if ((clazz != null) && (clazz.getValue() instanceof String)) {
-        final String clazzName = (String) clazz.getValue();
-        final int dot = clazzName.lastIndexOf('.');
-        sb.append(clazzName.substring(dot + 1));
-      } else {
-        sb.append("Message encoded object");
-      }
-    }
-    if (value.getStringValue() != null) {
-      if (sb.length() > 0) {
-        sb.append(": ");
-      }
-      sb.append(value.getStringValue());
-    }
-    return sb.toString();
+    return (quoted ? ClientMessageStrings.QUOTED_FORM : ClientMessageStrings.UNQUOTED_FORM).toString(value);
   }
 
   public static Object toObject(final Value value) {

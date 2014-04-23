@@ -8,6 +8,7 @@ package com.opengamma.language;
 
 import org.fudgemsg.FudgeMsg;
 
+import com.opengamma.language.error.ClientMessageStrings;
 import com.opengamma.util.ArgumentChecker;
 
 /**
@@ -89,75 +90,16 @@ public final class DataUtils {
 
   /**
    * Displayable form of the Data object.
+   * <p>
+   * This should only be used when the quoted/unquoted form is acceptable. If the requirements of a specific client binding could vary then indirection through the {@link ClientMessageStrings}
+   * instance bound to the global context should be used.
    * 
    * @param data the object to convert to a string
    * @param quoted true to put quote marks around strings and escape them
    * @return the displayable string
    */
   public static String toString(final Data data, final boolean quoted) {
-    if (data == null) {
-      return null;
-    } else if (data.getSingle() != null) {
-      return ValueUtils.toString(data.getSingle(), quoted);
-    } else if (data.getLinear() != null) {
-      final StringBuilder sb = new StringBuilder();
-      sb.append('[');
-      for (int i = 0; i < data.getLinear().length; i++) {
-        if (i > 0) {
-          sb.append(", ");
-        }
-        sb.append(ValueUtils.toString(data.getLinear()[i], quoted));
-      }
-      sb.append(']');
-      return sb.toString();
-    } else if (data.getMatrix() != null) {
-      final StringBuilder sb = new StringBuilder();
-      sb.append('[');
-      for (int i = 0; i < data.getMatrix().length; i++) {
-        if (i > 0) {
-          sb.append(", ");
-        }
-        sb.append('[');
-        for (int j = 0; j < data.getMatrix()[i].length; j++) {
-          if (j > 0) {
-            sb.append(", ");
-          }
-          sb.append(ValueUtils.toString(data.getMatrix()[i][j], quoted));
-        }
-        sb.append(']');
-      }
-      sb.append(']');
-      return sb.toString();
-    } else {
-      return "Data";
-    }
-  }
-
-  /**
-   * Displayable form of the Data object, summarising as much as possible.
-   * <p>
-   * This is not a full representation of the data, which may be more useful for short status messages to the user than the full strings constructed by {@link #toString(Data,boolean)}.
-   * 
-   * @param data the object to convert to a string
-   * @return the displayable string
-   */
-  public static String toSimpleString(final Data data) {
-    if (data == null) {
-      return null;
-    } else if (data.getSingle() != null) {
-      return ValueUtils.toSimpleString(data.getSingle());
-    } else if (data.getLinear() != null) {
-      return "Data[" + data.getLinear().length + "]";
-    } else if (data.getMatrix() != null) {
-      final int rows = data.getMatrix().length;
-      if (rows > 0) {
-        return "Data[" + rows + "][" + data.getMatrix()[0].length + "]";
-      } else {
-        return "Data[" + rows + "][0]";
-      }
-    } else {
-      return "Data";
-    }
+    return (quoted ? ClientMessageStrings.QUOTED_FORM : ClientMessageStrings.UNQUOTED_FORM).toString(data);
   }
 
   public static Value toValue(final Data data) {

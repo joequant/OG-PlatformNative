@@ -27,16 +27,6 @@ public class ClientMessageStringsTest {
         "Data[_single=Value[_boolValue=<null>,_intValue=<null>,_doubleValue=<null>,_stringValue=Foo,_messageValue=<null>,_errorValue=<null>],_linear=<null>,_matrix=<null>]");
   }
 
-  public void testQuotedForm() {
-    assertEquals(ClientMessageStrings.QUOTED_FORM.toString(ValueUtils.of("Foo")), "\"Foo\"");
-    assertEquals(ClientMessageStrings.QUOTED_FORM.toString(DataUtils.of("Foo")), "\"Foo\"");
-  }
-
-  public void testUnquotedForm() {
-    assertEquals(ClientMessageStrings.UNQUOTED_FORM.toString(ValueUtils.of("Foo")), "Foo");
-    assertEquals(ClientMessageStrings.UNQUOTED_FORM.toString(DataUtils.of("Foo")), "Foo");
-  }
-
   public void testSimpleForm() {
     assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(ValueUtils.of("Foo")), "Foo");
     assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(DataUtils.of("Foo")), "Foo");

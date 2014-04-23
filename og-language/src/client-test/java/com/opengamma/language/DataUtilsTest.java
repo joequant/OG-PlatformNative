@@ -105,24 +105,4 @@ public class DataUtilsTest {
     Assert.assertEquals(DataUtils.toString(data, true), "[[\"Foo\", \"Foo\"], [\"Foo\", \"Foo\"]]");
   }
 
-  public void testToSimpleString() {
-    Assert.assertEquals(DataUtils.toSimpleString(null), null);
-    final Data data = new Data();
-    Assert.assertEquals(DataUtils.toSimpleString(data), "Data");
-    final Value value = new Value();
-    data.setSingle(value);
-    Assert.assertEquals(DataUtils.toSimpleString(data), "");
-    value.setStringValue("Foo");
-    data.setSingle(value);
-    Assert.assertEquals(DataUtils.toSimpleString(data), "Foo");
-    data.setSingle(null);
-    data.setLinear(new Value[] {value, value });
-    Assert.assertEquals(DataUtils.toSimpleString(data), "Data[2]");
-    data.setLinear(null);
-    data.setMatrix(new Value[2][0]);
-    Assert.assertEquals(DataUtils.toSimpleString(data), "Data[2][0]");
-    data.setMatrix(new Value[][] { {value, value }, {value, value } });
-    Assert.assertEquals(DataUtils.toSimpleString(data), "Data[2][2]");
-  }
-
 }
