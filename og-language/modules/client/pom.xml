@@ -133,6 +133,55 @@ opengamma.configuration.failOnMissing=false
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${version.jacoco-maven-plugin}</version>
+        <configuration>
+          <excludes>
+            <!-- Exclude generated files -->
+            <exclude>com/opengamma/language/Data.class</exclude>
+            <exclude>com/opengamma/language/Value.class</exclude>
+            <exclude>com/opengamma/language/config/ConfigurationItem.class</exclude>
+            <exclude>com/opengamma/language/config/EnableCycleAccess.class</exclude>
+            <exclude>com/opengamma/language/config/MarketDataOverride.class</exclude>
+            <exclude>com/opengamma/language/config/SystemInfo.class</exclude>
+            <exclude>com/opengamma/language/config/ValueProperty.class</exclude>
+            <exclude>com/opengamma/language/config/ViewCalculationRate.class</exclude>
+            <exclude>com/opengamma/language/connector/ConnectorMessage.class</exclude>
+            <exclude>com/opengamma/language/connector/Custom.class</exclude>
+            <exclude>com/opengamma/language/connector/Function.class</exclude>
+            <exclude>com/opengamma/language/connector/LiveData.class</exclude>
+            <exclude>com/opengamma/language/connector/Procedure.class</exclude>
+            <exclude>com/opengamma/language/connector/UserMessage.class</exclude>
+            <exclude>com/opengamma/language/connector/UserMessagePayload.class</exclude>
+            <exclude>com/opengamma/language/debug/Unhandled.class</exclude>
+            <exclude>com/opengamma/language/definition/Definition.class</exclude>
+            <exclude>com/opengamma/language/definition/Parameter.class</exclude>
+            <exclude>com/opengamma/language/function/Available.class</exclude>
+            <exclude>com/opengamma/language/function/Custom.class</exclude>
+            <exclude>com/opengamma/language/function/Definition.class</exclude>
+            <exclude>com/opengamma/language/function/Invoke.class</exclude>
+            <exclude>com/opengamma/language/function/QueryAvailable.class</exclude>
+            <exclude>com/opengamma/language/function/Result.class</exclude>
+            <exclude>com/opengamma/language/livedata/Available.class</exclude>
+            <exclude>com/opengamma/language/livedata/Connect.class</exclude>
+            <exclude>com/opengamma/language/livedata/Custom.class</exclude>
+            <exclude>com/opengamma/language/livedata/Definition.class</exclude>
+            <exclude>com/opengamma/language/livedata/Disconnect.class</exclude>
+            <exclude>com/opengamma/language/livedata/QueryAvailable.class</exclude>
+            <exclude>com/opengamma/language/livedata/QueryValue.class</exclude>
+            <exclude>com/opengamma/language/livedata/Result.class</exclude>
+            <exclude>com/opengamma/language/procedure/Available.class</exclude>
+            <exclude>com/opengamma/language/procedure/Custom.class</exclude>
+            <exclude>com/opengamma/language/procedure/Definition.class</exclude>
+            <exclude>com/opengamma/language/procedure/Invoke.class</exclude>
+            <exclude>com/opengamma/language/procedure/QueryAvailable.class</exclude>
+            <exclude>com/opengamma/language/procedure/Result.class</exclude>
+            <exclude>com/opengamma/language/test/Test.class</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
