@@ -16,6 +16,14 @@ import com.opengamma.language.Value;
  */
 public class SimpleClientMessageStrings extends DefaultClientMessageStrings {
 
+  protected String linearData(final int length) {
+    return "Data[" + length + "]";
+  }
+
+  protected String matrixData(final int rows, final int cols) {
+    return "Data[" + rows + "][" + cols + "]";
+  }
+
   // DefaultClientMessageStrings
 
   @Override
@@ -32,16 +40,16 @@ public class SimpleClientMessageStrings extends DefaultClientMessageStrings {
 
   @Override
   protected String linearData(final Value[] data) {
-    return "Data[" + data.length + "]";
+    return linearData(data.length);
   }
 
   @Override
   protected String matrixData(final Value[][] data) {
     final int rows = data.length;
     if (rows > 0) {
-      return "Data[" + rows + "][" + data[0].length + "]";
+      return matrixData(rows, data[0].length);
     } else {
-      return "Data[" + rows + "][0]";
+      return matrixData(rows, 0);
     }
   }
 
