@@ -93,6 +93,7 @@ public class Loader extends ContextInitializationBean {
         InterestRateSwapNotionalFunction.INSTANCE,
         InterestRateSwapSecurityFunction.INSTANCE,
         ComplexRateFunction.INSTANCE,
+        ConstantRateFunction.INSTANCE,
         StubCalculationMethodFunction.INSTANCE));
     globalContext.getProcedureProvider().addProvider(new ProcedureProviderBean(StoreSecurityProcedure.INSTANCE));
   }
