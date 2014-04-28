@@ -23,12 +23,17 @@ import com.opengamma.lambdava.functions.Function1;
  * <p>
  * This pattern is made available to allow multi-threading during the Spring context initialization stage - beans which take a while to construct can be returned as an {@code AsyncSupplier} instance
  * so Spring can carry on with any other tasks that are possible until the real bean is finally needed.
+ * 
+ * @param <T> the type returned by this supplier
  */
 public abstract class AsyncSupplier<T> implements Supplier<T> {
 
   private static final Logger s_logger = LoggerFactory.getLogger(AsyncSupplier.class);
 
-  public static Executor EXECUTOR = Executors.newCachedThreadPool();
+  /**
+   * Threads used for background execution.
+   */
+  public static final Executor EXECUTOR = Executors.newCachedThreadPool();
 
   /**
    * Listener for notification when the value becomes available.
@@ -126,6 +131,10 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
    * Passes the result to any blocked callers to {@link #get} or listeners.
    * <p>
    * A sub-class is responsible for making sure this gets called, typically from a spawned thread or as the result of another supplier producing its value.
+   * 
+   * @param instance the result to post, if any
+   * @param exception the exception to throw, if any
+   * @param error the error to throw, if any
    */
   public final void post(final T instance, final RuntimeException exception, final Error error) {
     if (instance == null) {

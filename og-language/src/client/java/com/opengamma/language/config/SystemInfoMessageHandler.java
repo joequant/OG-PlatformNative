@@ -153,14 +153,17 @@ public class SystemInfoMessageHandler {
 
     @Override
     public void set(final ServerMetadata metadata, final String value) {
-      throw new UnsupportedOperationException();
+      metadata.setServerVersion("viewProcessor", value);
     }
 
     @Override
     public String get(final ServerMetadata metadata) {
-      final String version = Main.version();
-      s_logger.error("TODO: PLAT-4766 Server version requested; returning OG-Language version string - {}", version);
-      return version;
+      final String version = metadata.getServerVersion("viewProcessor");
+      if (version != null) {
+        return version;
+      } else {
+        return "Not available";
+      }
     }
 
   };

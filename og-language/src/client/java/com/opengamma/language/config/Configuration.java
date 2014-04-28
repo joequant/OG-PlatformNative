@@ -121,7 +121,7 @@ public final class Configuration {
    * Returns a REST end point as a {@link URI}
    * 
    * @param entry configuration item name
-   * @return the URI, or null if there is none or it is inaccessible (and passive failure is allowed)
+   * @return the URI supplier
    */
   public AsyncSupplier<URI> getURIConfiguration(final String entry) {
     return new AsyncSupplier.Filter<FudgeMsg, URI>(getConfiguration(), new Function1<FudgeMsg, URI>() {
@@ -149,7 +149,7 @@ public final class Configuration {
    * Returns an arbitrary string value, for example a JMS broker string.
    * 
    * @param entry configuration item name
-   * @return the string value
+   * @return the string value supplier
    */
   public AsyncSupplier<String> getStringConfiguration(final String entry) {
     return new AsyncSupplier.Filter<FudgeMsg, String>(getConfiguration(), new Function1<FudgeMsg, String>() {
