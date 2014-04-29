@@ -26,7 +26,7 @@ public class SimpleClientMessageStringsTest {
   public void testValues() {
     assertEquals(ClientMessageStrings.SIMPLE_FORM.toString((Value) null), null);
     final Value v = new Value();
-    assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(v), "");
+    assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(v), "empty value");
     v.setBoolValue(true);
     assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(v), "true");
     v.setBoolValue(null);
@@ -38,7 +38,7 @@ public class SimpleClientMessageStringsTest {
     v.setIntValue(null);
     final MutableFudgeMsg msg = FudgeContext.GLOBAL_DEFAULT.newMessage();
     v.setMessageValue(msg);
-    assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(v), "Message encoded object");
+    assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(v), "message encoded object");
     msg.add(0, "com.opengamma.example.MockObject");
     msg.add("Foo", "Bar");
     assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(v), "MockObject");
@@ -67,10 +67,10 @@ public class SimpleClientMessageStringsTest {
   public void testData() {
     assertEquals(ClientMessageStrings.SIMPLE_FORM.toString((Data) null), null);
     final Data data = new Data();
-    assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(data), "Data");
+    assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(data), "empty value");
     final Value value = new Value();
     data.setSingle(value);
-    assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(data), "");
+    assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(data), "empty value");
     value.setStringValue("Foo");
     data.setSingle(value);
     assertEquals(ClientMessageStrings.SIMPLE_FORM.toString(data), "Foo");

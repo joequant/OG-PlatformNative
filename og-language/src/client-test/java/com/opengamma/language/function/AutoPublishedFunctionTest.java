@@ -128,7 +128,7 @@ public class AutoPublishedFunctionTest {
       fail();
     } catch (InvokeParameterConversionException e) {
       assertEquals((int) e.getParameterIndex(), 0);
-      assertEquals(e.getMessage(), "Could not convert Data to Integer");
+      assertEquals(e.getMessage(), "Could not convert empty value to Integer");
     }
   }
 

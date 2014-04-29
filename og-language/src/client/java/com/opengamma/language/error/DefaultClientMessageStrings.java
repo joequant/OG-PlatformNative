@@ -24,6 +24,16 @@ public class DefaultClientMessageStrings implements ClientMessageStrings {
     return "";
   }
 
+  /**
+   * Tests if the passed value is the {@link #emptyValue} value.
+   * 
+   * @param value the value to test, not null
+   * @return true if this is the {@code emptyValue} value, false otherwise
+   */
+  protected boolean isEmptyValue(final String value) {
+    return value.equals(emptyValue());
+  }
+
   protected String booleanValue(final Boolean value) {
     return value.toString();
   }
@@ -74,7 +84,7 @@ public class DefaultClientMessageStrings implements ClientMessageStrings {
       sb.append("Error ").append(value.getErrorValue());
     }
     final String valueStr = nonErrorValue(value);
-    if ((valueStr != null) && (valueStr.length() > 0)) {
+    if ((valueStr != null) && !isEmptyValue(valueStr)) {
       sb.append(": ");
       sb.append(valueStr);
     }
