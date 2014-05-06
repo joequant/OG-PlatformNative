@@ -236,6 +236,15 @@ static char *_OptionClassPath (const CSettings *pSettings) {
 #else
 	StringCbPrintf (pszOption, cch, "-Djava.class.path=%s" PATH_CHAR_STR, pszPath);
 #endif
+#ifndef _WIN32
+/* Do not recursively scan if the path is ".".  Since the current directory
+   is the root directory, this will cause the entire tree to be scanned.
+*/
+       if (!_tcscmp(pszPath, ".")) {
+         LOGDEBUG ("Using " << pszOption << " (" << strlen (pszOption) << " chars)");
+	 return pszOption;
+       }
+#endif
 	pszOption = _ScanClassPath (pszOption, &cchUsed, &cch, pszPath);
 	LOGDEBUG ("Using " << pszOption << " (" << strlen (pszOption) << " chars)");
 	return pszOption;
