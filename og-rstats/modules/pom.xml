@@ -330,7 +330,7 @@
                   <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <executable>exe-kill</executable>
+                  <executable>${common.dir}${file.separator}exe-kill</executable>
                   <arguments>
                     <argument>${localTarget}/run/Debug/ServiceRunner</argument>
                     <argument>${localTarget}/run/Release/ServiceRunner</argument>
@@ -344,7 +344,7 @@
                   <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <executable>exe-kill</executable>
+                  <executable>${common.dir}${file.separator}exe-kill</executable>
                   <arguments>
                     <argument>${localTarget}/run/Debug/ServiceRunner</argument>
                     <argument>${localTarget}/run/Release/ServiceRunner</argument>

@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+# Kills any programs with exact matching executables. For example:
+# 
+# kill `pgrep -f "./foo/bar"`
+#
+# Will only terminate programs which were started as ./foo/bar regardless
+# of the launch directory. If we are in folder /tmp then:
+#
+# exe-kill ./foo/bar
+#
+# Will only kill processes that are running /tmp/foo/bar and leave any
+# other processes, such as /usr/bin/foo/bar alone.
+
+foreach $i (0 .. $#ARGV) {
+  $cmd = "readlink -f " . $ARGV[$i];
+  $path = `$cmd`;
+  $path =~ s/\s+$//;
+  $oldpath = "$path (deleted)";
+  opendir (PROC, "/proc");
+  while ($proc = readdir (PROC)) {
+    next unless ($proc =~ /^\d+$/);
+    $exe = readlink ("/proc/$proc/exe");
+    if (($path eq $exe) || ($oldpath eq $exe)) {
+      print "Killing process $proc\n";
+      kill "KILL", $proc;
+    }
+  }
+  close (PROC)
+}
