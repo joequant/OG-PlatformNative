@@ -11,11 +11,7 @@ import java.util.List;
 
 import org.threeten.bp.LocalDate;
 
-import com.opengamma.core.position.PortfolioNode;
-import com.opengamma.core.position.Position;
 import com.opengamma.financial.convention.StubType;
-import com.opengamma.financial.security.irs.InterestRateSwapNotional;
-import com.opengamma.financial.security.irs.Rate;
 import com.opengamma.financial.security.irs.StubCalculationMethod;
 import com.opengamma.financial.security.irs.StubCalculationMethod.Builder;
 import com.opengamma.language.context.SessionContext;
@@ -26,7 +22,6 @@ import com.opengamma.language.definition.MetaParameter;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
-import com.opengamma.util.money.Currency;
 import com.opengamma.util.time.Tenor;
 
 /**
@@ -91,18 +86,6 @@ public class StubCalculationMethodFunction extends AbstractFunctionInvoker imple
     if (lastStubEndDate != null) {
       builder.lastStubEndDate(lastStubEndDate);
     }
-    if (firstStubStartIndex != null) {
-      builder.firstStubStartIndex(firstStubStartIndex);
-    }
-    if (firstStubEndIndex != null) {
-      builder.firstStubEndIndex(firstStubEndIndex);
-    }
-    if (lastStubStartIndex != null) {
-      builder.lastStubStartIndex(lastStubStartIndex);
-    }
-    if (lastStubEndIndex != null) {
-      builder.lastStubEndIndex(lastStubEndIndex);
-    }
     return builder.build();
   }
 
@@ -111,7 +94,7 @@ public class StubCalculationMethodFunction extends AbstractFunctionInvoker imple
   @SuppressWarnings("unchecked")
   @Override
   protected Object invokeImpl(final SessionContext sessionContext, final Object[] parameters) {
-    return invoke((StubType) parameters[TYPE], (Double) parameters[FIRST_STUB_RATE], (Double) parameters[LAST_STUB_RATE], 
+    return invoke((StubType) parameters[TYPE], (Double) parameters[FIRST_STUB_RATE], (Double) parameters[LAST_STUB_RATE],
                   (LocalDate) parameters[FIRST_STUB_END_DATE], (LocalDate) parameters[LAST_STUB_END_DATE],
                   (Tenor) parameters[FIRST_STUB_START_INDEX], (Tenor) parameters[FIRST_STUB_END_INDEX],
                   (Tenor) parameters[LAST_STUB_START_INDEX], (Tenor) parameters[LAST_STUB_END_INDEX]);
