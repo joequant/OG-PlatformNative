@@ -52,11 +52,11 @@ public class StubCalculationMethodFunction extends AbstractFunctionInvoker imple
     final MetaParameter lastStubRate = new MetaParameter("lastStubRate", JavaTypeInfo.builder(Double.class).allowNull().get());
     final MetaParameter firstStubEndDate = new MetaParameter("firstStubEndDate", JavaTypeInfo.builder(LocalDate.class).allowNull().get());
     final MetaParameter lastStubEndDate = new MetaParameter("lastStubEndDate", JavaTypeInfo.builder(LocalDate.class).allowNull().get());
-    final MetaParameter firstStubReferenceRateId = new MetaParameter("firstStubStartReferenceRateId", JavaTypeInfo.builder(ExternalId.class).allowNull().get());
+    final MetaParameter firstStubStartReferenceRateId = new MetaParameter("firstStubStartReferenceRateId", JavaTypeInfo.builder(ExternalId.class).allowNull().get());
     final MetaParameter firstStubEndReferenceRateId = new MetaParameter("firstStubEndReferenceRateId", JavaTypeInfo.builder(ExternalId.class).allowNull().get());
     final MetaParameter lastStubStartReferenceRateId = new MetaParameter("lastStubStartReferenceRateId", JavaTypeInfo.builder(ExternalId.class).allowNull().get());
     final MetaParameter lastStubEndReferenceRateId = new MetaParameter("lastStubEndReferenceRateId", JavaTypeInfo.builder(ExternalId.class).allowNull().get());
-    return Arrays.asList(type, firstStubRate, lastStubRate, firstStubEndDate, lastStubEndDate, firstStubReferenceRateId, firstStubEndReferenceRateId, lastStubStartReferenceRateId, lastStubEndReferenceRateId);
+    return Arrays.asList(type, firstStubRate, lastStubRate, firstStubEndDate, lastStubEndDate, firstStubStartReferenceRateId, firstStubEndReferenceRateId, lastStubStartReferenceRateId, lastStubEndReferenceRateId);
   }
 
   private StubCalculationMethodFunction(final DefinitionAnnotater info) {
