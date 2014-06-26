@@ -17,10 +17,12 @@ foreach $i (0 .. $#ARGV) {
   $path = `$cmd`;
   $path =~ s/\s+$//;
   $oldpath = "$path (deleted)";
+  next if ($path eq "");
   opendir (PROC, "/proc");
   while ($proc = readdir (PROC)) {
     next unless ($proc =~ /^\d+$/);
     $exe = readlink ("/proc/$proc/exe");
+    next if ($exe eq "");
     if (($path eq $exe) || ($oldpath eq $exe)) {
       print "Killing process $proc\n";
       kill "KILL", $proc;
