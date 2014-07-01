@@ -106,7 +106,9 @@ opengamma.configuration.failOnMissing=false
   <target name="package" depends="source-package,binary-package" />
   <target name="source-package">
     <tar destfile="${localTarget}/OpenGamma.tgz" basedir="${localTarget}/package" compression="gzip" />
-    <copy file="${localTarget}/${project.artifactId}-${project.version}.jar" tofile="${localTarget}/run/jar/${project.artifactId}.jar" />
+<!--    <copy
+file="${localTarget}/${project.artifactId}-${project.version}.jar"
+tofile="${localTarget}/run/jar/${project.artifactId}.jar" /> -->
   </target>
   <target name="binary-package" if="profile.windows.r" depends="r-configuration">
     <mkdir dir="${localTarget}/package-build" />
