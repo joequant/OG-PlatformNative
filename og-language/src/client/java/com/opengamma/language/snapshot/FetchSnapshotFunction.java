@@ -11,7 +11,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.opengamma.DataNotFoundException;
 import com.opengamma.core.marketdatasnapshot.MarketDataSnapshotSource;
-import com.opengamma.core.marketdatasnapshot.StructuredMarketDataSnapshot;
+import com.opengamma.core.marketdatasnapshot.NamedSnapshot;
 import com.opengamma.id.UniqueId;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
@@ -51,7 +51,7 @@ public class FetchSnapshotFunction extends AbstractFunctionInvoker implements Pu
     this(new DefinitionAnnotater(FetchSnapshotFunction.class));
   }
 
-  public static StructuredMarketDataSnapshot invoke(final SessionContext context, final UniqueId uid) {
+  public static NamedSnapshot invoke(final SessionContext context, final UniqueId uid) {
     try {
       return context.getGlobalContext().getMarketDataSnapshotSource().get(uid);
     } catch (DataNotFoundException ex) {
