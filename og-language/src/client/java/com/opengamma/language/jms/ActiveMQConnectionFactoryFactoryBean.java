@@ -10,11 +10,11 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.pool.PooledConnectionFactory;
 
-import com.opengamma.lambdava.functions.Function1;
 import com.opengamma.language.config.Configuration;
 import com.opengamma.language.connector.AsyncSupplier;
 import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.SingletonFactoryBean;
+import com.opengamma.util.function.Function;
 
 /**
  * Configures an ActiveMQ JMS provider from the configuration document. The document must have a string entry giving the URL for the ActiveMQ server.
@@ -45,9 +45,9 @@ public class ActiveMQConnectionFactoryFactoryBean extends SingletonFactoryBean<A
   @Override
   protected AsyncSupplier<ConnectionFactory> createObject() {
     ArgumentChecker.notNull(getConfiguration(), "configuration");
-    return new AsyncSupplier.Filter<String, ConnectionFactory>(getConfiguration().getStringConfiguration(getConfigurationEntry()), new Function1<String, ConnectionFactory>() {
+    return new AsyncSupplier.Filter<String, ConnectionFactory>(getConfiguration().getStringConfiguration(getConfigurationEntry()), new Function<String, ConnectionFactory>() {
       @Override
-      public ConnectionFactory execute(final String brokerURL) {
+      public ConnectionFactory apply(final String brokerURL) {
         final PooledConnectionFactory factory;
         if (brokerURL == null) {
           factory = new PooledConnectionFactory();

@@ -24,7 +24,6 @@ import com.opengamma.engine.target.ComputationTargetTypeMap;
 import com.opengamma.engine.value.ComputedValue;
 import com.opengamma.id.UniqueId;
 import com.opengamma.id.VersionCorrection;
-import com.opengamma.lambdava.functions.Function2;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.definition.Categories;
 import com.opengamma.language.definition.DefinitionAnnotater;
@@ -34,6 +33,7 @@ import com.opengamma.language.definition.types.PrimitiveTypes;
 import com.opengamma.language.function.AbstractFunctionInvoker;
 import com.opengamma.language.function.MetaFunction;
 import com.opengamma.language.function.PublishedFunction;
+import com.opengamma.util.function.BiFunction;
 
 /**
  * Expands a Fudge representation of a {@link List} of {@link ComputedValue} objects into a 2D structure.
@@ -47,7 +47,7 @@ public class ExpandComputedValuesFunction extends AbstractFunctionInvoker implem
    */
   public static final ExpandComputedValuesFunction INSTANCE = new ExpandComputedValuesFunction();
 
-  private static final ComputationTargetTypeMap<Function2<SessionContext, ComputationTargetSpecification, String>> s_getName = getName();
+  private static final ComputationTargetTypeMap<BiFunction<SessionContext, ComputationTargetSpecification, String>> s_getName = getName();
 
   private final MetaFunction _meta;
 
@@ -71,11 +71,11 @@ public class ExpandComputedValuesFunction extends AbstractFunctionInvoker implem
     return _meta;
   }
 
-  private static ComputationTargetTypeMap<Function2<SessionContext, ComputationTargetSpecification, String>> getName() {
-    final ComputationTargetTypeMap<Function2<SessionContext, ComputationTargetSpecification, String>> map = new ComputationTargetTypeMap<Function2<SessionContext, ComputationTargetSpecification, String>>();
-    map.put(ComputationTargetType.PORTFOLIO_NODE, new Function2<SessionContext, ComputationTargetSpecification, String>() {
+  private static ComputationTargetTypeMap<BiFunction<SessionContext, ComputationTargetSpecification, String>> getName() {
+    final ComputationTargetTypeMap<BiFunction<SessionContext, ComputationTargetSpecification, String>> map = new ComputationTargetTypeMap<>();
+    map.put(ComputationTargetType.PORTFOLIO_NODE, new BiFunction<SessionContext, ComputationTargetSpecification, String>() {
       @Override
-      public String execute(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
+      public String apply(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
         final PositionSource positions = sessionContext.getGlobalContext().getPositionSource();
         if (positions != null) {
           try {
@@ -87,9 +87,9 @@ public class ExpandComputedValuesFunction extends AbstractFunctionInvoker implem
         return "Node " + targetSpec.getUniqueId();
       }
     });
-    map.put(ComputationTargetType.POSITION, new Function2<SessionContext, ComputationTargetSpecification, String>() {
+    map.put(ComputationTargetType.POSITION, new BiFunction<SessionContext, ComputationTargetSpecification, String>() {
       @Override
-      public String execute(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
+      public String apply(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
         final PositionSource positions = sessionContext.getGlobalContext().getPositionSource();
         final SecuritySource securities = sessionContext.getGlobalContext().getSecuritySource();
         if ((positions != null) && (securities != null)) {
@@ -109,9 +109,9 @@ public class ExpandComputedValuesFunction extends AbstractFunctionInvoker implem
         return "Position " + targetSpec.getUniqueId();
       }
     });
-    map.put(ComputationTargetType.TRADE, new Function2<SessionContext, ComputationTargetSpecification, String>() {
+    map.put(ComputationTargetType.TRADE, new BiFunction<SessionContext, ComputationTargetSpecification, String>() {
       @Override
-      public String execute(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
+      public String apply(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
         final PositionSource positions = sessionContext.getGlobalContext().getPositionSource();
         final SecuritySource securities = sessionContext.getGlobalContext().getSecuritySource();
         if ((positions != null) && (securities != null)) {
@@ -131,9 +131,9 @@ public class ExpandComputedValuesFunction extends AbstractFunctionInvoker implem
         return "Trade " + targetSpec.getUniqueId();
       }
     });
-    map.put(ComputationTargetType.SECURITY, new Function2<SessionContext, ComputationTargetSpecification, String>() {
+    map.put(ComputationTargetType.SECURITY, new BiFunction<SessionContext, ComputationTargetSpecification, String>() {
       @Override
-      public String execute(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
+      public String apply(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
         final SecuritySource securities = sessionContext.getGlobalContext().getSecuritySource();
         if (securities != null) {
           final Security security = securities.get(targetSpec.getUniqueId());
@@ -146,15 +146,15 @@ public class ExpandComputedValuesFunction extends AbstractFunctionInvoker implem
         return "Security " + targetSpec.getUniqueId();
       }
     });
-    map.put(ComputationTargetType.NULL, new Function2<SessionContext, ComputationTargetSpecification, String>() {
+    map.put(ComputationTargetType.NULL, new BiFunction<SessionContext, ComputationTargetSpecification, String>() {
       @Override
-      public String execute(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
+      public String apply(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
         return "NULL";
       }
     });
-    map.put(ComputationTargetType.ANYTHING, new Function2<SessionContext, ComputationTargetSpecification, String>() {
+    map.put(ComputationTargetType.ANYTHING, new BiFunction<SessionContext, ComputationTargetSpecification, String>() {
       @Override
-      public String execute(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
+      public String apply(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
         return targetSpec.getType().getName() + " " + targetSpec.getUniqueId();
       }
     });
@@ -162,9 +162,9 @@ public class ExpandComputedValuesFunction extends AbstractFunctionInvoker implem
   }
 
   private static String getName(final SessionContext sessionContext, final ComputationTargetSpecification targetSpec) {
-    final Function2<SessionContext, ComputationTargetSpecification, String> operation = s_getName.get(targetSpec.getType());
+    final BiFunction<SessionContext, ComputationTargetSpecification, String> operation = s_getName.get(targetSpec.getType());
     if (operation != null) {
-      return operation.execute(sessionContext, targetSpec);
+      return operation.apply(sessionContext, targetSpec);
     } else {
       throw new IllegalStateException();
     }

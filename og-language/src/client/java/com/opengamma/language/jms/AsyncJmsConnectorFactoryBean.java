@@ -11,11 +11,11 @@ import java.net.URI;
 import javax.jms.ConnectionFactory;
 
 import com.google.common.base.Supplier;
-import com.opengamma.lambdava.functions.Function1;
 import com.opengamma.language.config.Configuration;
 import com.opengamma.language.connector.AsyncSupplier;
 import com.opengamma.util.ArgumentChecker;
 import com.opengamma.util.SingletonFactoryBean;
+import com.opengamma.util.function.Function;
 import com.opengamma.util.jms.JmsConnector;
 import com.opengamma.util.jms.JmsConnectorFactoryBean;
 
@@ -62,9 +62,9 @@ public class AsyncJmsConnectorFactoryBean extends SingletonFactoryBean<AsyncSupp
 
   @Override
   protected AsyncSupplier<JmsConnector> createObject() {
-    return new AsyncSupplier.Filter<ConnectionFactory, JmsConnector>(getConnectionFactory(), new Function1<ConnectionFactory, JmsConnector>() {
+    return new AsyncSupplier.Filter<ConnectionFactory, JmsConnector>(getConnectionFactory(), new Function<ConnectionFactory, JmsConnector>() {
       @Override
-      public JmsConnector execute(final ConnectionFactory connectionFactory) {
+      public JmsConnector apply(final ConnectionFactory connectionFactory) {
         final JmsConnectorFactoryBean bean = new JmsConnectorFactoryBean();
         bean.setName(getName());
         bean.setConnectionFactory(connectionFactory);

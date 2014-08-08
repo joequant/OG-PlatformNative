@@ -17,7 +17,7 @@ import java.util.concurrent.Executor;
 import org.testng.annotations.Test;
 
 import com.opengamma.OpenGammaRuntimeException;
-import com.opengamma.lambdava.functions.Function1;
+import com.opengamma.util.function.Function;
 import com.opengamma.util.test.TestGroup;
 
 /**
@@ -214,9 +214,9 @@ public class AsyncSupplierTest {
   public void testFilterOk() {
     final AsyncSupplier<Integer> underlying = new AsyncSupplier<Integer>() {
     };
-    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function1<Integer, String>() {
+    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function<Integer, String>() {
       @Override
-      public String execute(final Integer value) {
+      public String apply(final Integer value) {
         return value.toString();
       }
     });
@@ -228,9 +228,9 @@ public class AsyncSupplierTest {
   public void testFilterThrowsException() {
     final AsyncSupplier<Integer> underlying = new AsyncSupplier<Integer>() {
     };
-    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function1<Integer, String>() {
+    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function<Integer, String>() {
       @Override
-      public String execute(final Integer value) {
+      public String apply(final Integer value) {
         throw new OpenGammaRuntimeException("fail");
       }
     });
@@ -242,9 +242,9 @@ public class AsyncSupplierTest {
   public void testFilterThrowsError() {
     final AsyncSupplier<Integer> underlying = new AsyncSupplier<Integer>() {
     };
-    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function1<Integer, String>() {
+    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function<Integer, String>() {
       @Override
-      public String execute(final Integer value) {
+      public String apply(final Integer value) {
         throw new Error("fail");
       }
     });
@@ -256,9 +256,9 @@ public class AsyncSupplierTest {
   public void testFilterException() {
     final AsyncSupplier<Integer> underlying = new AsyncSupplier<Integer>() {
     };
-    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function1<Integer, String>() {
+    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function<Integer, String>() {
       @Override
-      public String execute(final Integer value) {
+      public String apply(final Integer value) {
         throw new InternalError();
       }
     });
@@ -270,9 +270,9 @@ public class AsyncSupplierTest {
   public void testFilterError() {
     final AsyncSupplier<Integer> underlying = new AsyncSupplier<Integer>() {
     };
-    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function1<Integer, String>() {
+    final AsyncSupplier.Filter<Integer, String> instance = new AsyncSupplier.Filter<Integer, String>(underlying, new Function<Integer, String>() {
       @Override
-      public String execute(final Integer value) {
+      public String apply(final Integer value) {
         throw new InternalError();
       }
     });

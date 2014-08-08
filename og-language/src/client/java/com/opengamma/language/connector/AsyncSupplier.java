@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Supplier;
 import com.opengamma.OpenGammaRuntimeException;
-import com.opengamma.lambdava.functions.Function1;
+import com.opengamma.util.function.Function;
 
 /**
  * Implementation of a {@link Supplier} that allows a caller to subscribe for notification when the value becomes available.
@@ -242,14 +242,14 @@ public abstract class AsyncSupplier<T> implements Supplier<T> {
    */
   public static class Filter<X, Y> extends AsyncSupplier<Y> {
 
-    public Filter(final AsyncSupplier<X> underlying, final Function1<X, Y> filter) {
+    public Filter(final AsyncSupplier<X> underlying, final Function<X, Y> filter) {
       underlying.get(new Listener<X>() {
 
         @Override
         public void value(final X instance) {
           final Y filtered;
           try {
-            filtered = filter.execute(instance);
+            filtered = filter.apply(instance);
           } catch (RuntimeException e) {
             exception(e);
             return;

@@ -6,7 +6,6 @@
 
 package com.opengamma.language.object;
 
-import static com.opengamma.lambdava.streams.Lambdava.functional;
 import static com.opengamma.language.object.SetObjectPropertyFunction.propertyValue;
 
 import java.lang.reflect.InvocationTargetException;
@@ -18,8 +17,9 @@ import org.fudgemsg.FudgeMsg;
 import org.fudgemsg.mapping.FudgeDeserializer;
 import org.joda.beans.Bean;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.opengamma.lambdava.functions.Function1;
+import com.google.common.collect.Iterables;
 import com.opengamma.language.Data;
 import com.opengamma.language.context.SessionContext;
 import com.opengamma.language.convert.FudgeTypeConverter;
@@ -81,15 +81,15 @@ public class InvokeObjectMethodFunction extends AbstractFunctionInvoker implemen
   }
 
   public static Object invoke(final SessionContext sessionContext, final Object object, final String methodName, final List<Data> data) {
-    Class clazz = object.getClass();
-    List<Method> methods = functional(clazz.getMethods()).filter(new Function1<Method, Boolean>() {
+    Class<?> clazz = object.getClass();
+    Iterable<Method> methods = Iterables.filter(ImmutableList.copyOf(clazz.getMethods()), new Predicate<Method>() {
       @Override
-      public Boolean execute(Method method) {
+      public boolean apply(Method method) {
         return method.getName().equals(methodName) && method.getParameterTypes().length == data.size();
       }
-    }).asList();
+    });
 
-    if (methods.isEmpty()) {
+    if (Iterables.isEmpty(methods)) {
       throw new InvokeInvalidArgumentException("No method named: " + methodName + " having " + data.size() + " numbers of arguments");
     }
 

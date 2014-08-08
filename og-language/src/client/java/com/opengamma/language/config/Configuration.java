@@ -16,11 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Supplier;
-import com.opengamma.lambdava.functions.Function1;
 import com.opengamma.language.connector.AsyncSupplier;
 import com.opengamma.language.connector.ConnectorStartupError;
 import com.opengamma.transport.jaxrs.UriEndPointDescriptionProvider;
 import com.opengamma.util.ArgumentChecker;
+import com.opengamma.util.function.Function;
 
 /**
  * Configuration document describing how to connect to or otherwise work with components from an OpenGamma installation. Configuration information is typically published at a URL as a Fudge message
@@ -103,9 +103,9 @@ public final class Configuration {
    * @return the configuration document, or null if there is none (and passive failure is allowed)
    */
   public Configuration getSubConfiguration(final String entry) {
-    return new Configuration(_fudgeContext, new AsyncSupplier.Filter<FudgeMsg, FudgeMsg>(getConfiguration(), new Function1<FudgeMsg, FudgeMsg>() {
+    return new Configuration(_fudgeContext, new AsyncSupplier.Filter<FudgeMsg, FudgeMsg>(getConfiguration(), new Function<FudgeMsg, FudgeMsg>() {
       @Override
-      public FudgeMsg execute(final FudgeMsg instance) {
+      public FudgeMsg apply(final FudgeMsg instance) {
         final FudgeMsg submsg = instance.getMessage(entry);
         if (submsg != null) {
           return submsg;
@@ -124,9 +124,9 @@ public final class Configuration {
    * @return the URI supplier
    */
   public AsyncSupplier<URI> getURIConfiguration(final String entry) {
-    return new AsyncSupplier.Filter<FudgeMsg, URI>(getConfiguration(), new Function1<FudgeMsg, URI>() {
+    return new AsyncSupplier.Filter<FudgeMsg, URI>(getConfiguration(), new Function<FudgeMsg, URI>() {
       @Override
-      public URI execute(final FudgeMsg instance) {
+      public URI apply(final FudgeMsg instance) {
         s_logger.info("Searching for accessible URI for {}", entry);
         final FudgeMsg submsg = instance.getMessage(entry);
         if (submsg == null) {
@@ -152,9 +152,9 @@ public final class Configuration {
    * @return the string value supplier
    */
   public AsyncSupplier<String> getStringConfiguration(final String entry) {
-    return new AsyncSupplier.Filter<FudgeMsg, String>(getConfiguration(), new Function1<FudgeMsg, String>() {
+    return new AsyncSupplier.Filter<FudgeMsg, String>(getConfiguration(), new Function<FudgeMsg, String>() {
       @Override
-      public String execute(final FudgeMsg instance) {
+      public String apply(final FudgeMsg instance) {
         final String value = instance.getString(entry);
         if (value != null) {
           return value;
